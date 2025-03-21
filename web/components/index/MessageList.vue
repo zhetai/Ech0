@@ -22,15 +22,14 @@
         <!-- 留言内容 -->
         <div class="rounded-lg overflow-hidden mb-2 w-5/6 mx-auto shadow-lg">
           <a :href="`${BASE_API}${msg.image_url}`" data-fancybox>
-            <img v-if="msg.image_url" :src="`${BASE_API}${msg.image_url}`" alt="Image" class=" max-w-full object-cover"
+            <img v-if="msg.image_url" :src="`${BASE_API}${msg.image_url}`" alt="Image" class="max-w-full object-cover"
               loading="lazy" />
           </a>
         </div>
         <!-- 留言 -->
         <div class="p-2 mb-2 rounded-lg h-3/5 overflow-y-auto">
-          <p class="break-all text-gray-900">
-            {{ msg.content }}
-          </p>
+          <!-- <div v-html="renderMarkdown(msg.content)" class="text-gray-900"></div> -->
+          <MarkdownRenderer :content="msg.content" />
         </div>
         <!-- 昵称 -->
         <!-- <div class="p-1 h-1/3 flex items-center justify-end">
@@ -61,8 +60,11 @@
 <script setup lang="ts">
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import { useMarkdown } from '~/composables/useMarkdown';
 import { useMessageStore } from "~/store/message";
 import { useUserStore } from "~/store/user";
+import MarkdownRenderer from "~/components/index/MarkdownRenderer.vue"; // 导入组件
+const { renderMarkdown } = useMarkdown();
 
 const BASE_API = useRuntimeConfig().public.baseApi;
 const { deleteMessage } = useMessage();

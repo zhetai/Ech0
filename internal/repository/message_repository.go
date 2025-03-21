@@ -6,7 +6,6 @@ import (
 
 	"github.com/lin-snow/ech0/internal/database"
 	"github.com/lin-snow/ech0/internal/models"
-	"github.com/microcosm-cc/bluemonday"
 	"gorm.io/gorm"
 )
 
@@ -36,8 +35,8 @@ func GetMessageByID(id uint) (*models.Message, error) {
 // CreateMessage 保存一条留言
 func CreateMessage(message *models.Message) error {
 	// 防止 XSS 攻击，使用 bluemonday 清理器来清理 HTML 标签
-	p := bluemonday.UGCPolicy()                   // 创建一个新的 HTML 清理器
-	message.Content = p.Sanitize(message.Content) // 清理内容中的 HTML 标签
+	// p := bluemonday.UGCPolicy()                   // 创建一个新的 HTML 清理器
+	// message.Content = p.Sanitize(message.Content) // 清理内容中的 HTML 标签
 
 	message.Content = strings.TrimSpace(message.Content) // 去除内容前后的空格
 	// message.Username = strings.TrimSpace(message.Username) // 去除用户名前后的空格

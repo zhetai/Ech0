@@ -16,7 +16,9 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
   ],
-  css: ['@/assets/fonts/result.css'],
+  css: [
+    '@/assets/fonts/result.css',
+  ],
   colorMode: {
     preference: 'light'
   },

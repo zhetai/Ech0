@@ -9,6 +9,15 @@ import (
 
 // UploadImage 上传图片
 func UploadImage(c *gin.Context) dto.Result[string] {
+	user, err := GetUserByID(c.MustGet("user_id").(uint))
+	if err != nil {
+		return dto.Fail[string](err.Error())
+	}
+
+	if !user.IsAdmin {
+		return dto.Fail[string]("没有权限")
+	}
+
 	// 从配置中读取支持的扩展名
 	allowedExtensions := config.Config.Upload.AllowedTypes
 
