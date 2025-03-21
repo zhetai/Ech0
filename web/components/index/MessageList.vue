@@ -1,7 +1,10 @@
 <template>
   <div class="mx-auto my-4 max-w-sm px-2">
-    <div v-for="msg in message.messages" :key="msg.id"
-      class="w-full h-auto overflow-hidden flex flex-col justify-between">
+    <div
+      v-for="msg in message.messages"
+      :key="msg.id"
+      class="w-full h-auto overflow-hidden flex flex-col justify-between"
+    >
       <div class="flex justify-between items-center">
         <!-- 时间 -->
         <div class="flex justify-start items-center h-3">
@@ -17,13 +20,17 @@
         </div>
       </div>
 
-
       <div class="border-l-2 border-gray-300 p-6 ml-1">
         <!-- 留言内容 -->
         <div class="rounded-lg overflow-hidden mb-2 w-5/6 mx-auto shadow-lg">
           <a :href="`${BASE_API}${msg.image_url}`" data-fancybox>
-            <img v-if="msg.image_url" :src="`${BASE_API}${msg.image_url}`" alt="Image" class="max-w-full object-cover"
-              loading="lazy" />
+            <img
+              v-if="msg.image_url"
+              :src="`${BASE_API}${msg.image_url}`"
+              alt="Image"
+              class="max-w-full object-cover"
+              loading="lazy"
+            />
           </a>
         </div>
         <!-- 留言 -->
@@ -40,11 +47,16 @@
       </div>
     </div>
   </div>
-  
+
   <!-- 加载更多 -->
   <div v-if="message.hasMore" class="mx-auto -mt-3 max-w-sm">
-    <UButton color="gray" variant="outline" size="sm" class="rounded-full border-gray-200 "
-      @click="message.getMessages({ page: message.page + 1, pageSize: 10 })">
+    <UButton
+      color="gray"
+      variant="outline"
+      size="sm"
+      class="rounded-full border-gray-200"
+      @click="message.getMessages({ page: message.page + 1, pageSize: 10 })"
+    >
       继续装填！
     </UButton>
   </div>
@@ -53,32 +65,27 @@
     <UIcon name="i-fluent-emoji-flat-confetti-ball" size="lg" />
     没有啦~
   </div>
-
 </template>
-
 
 <script setup lang="ts">
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
-import { useMarkdown } from '~/composables/useMarkdown';
 import { useMessageStore } from "~/store/message";
 import { useUserStore } from "~/store/user";
 import MarkdownRenderer from "~/components/index/MarkdownRenderer.vue"; // 导入组件
-const { renderMarkdown } = useMarkdown();
 
 const BASE_API = useRuntimeConfig().public.baseApi;
 const { deleteMessage } = useMessage();
 const message = useMessageStore();
 const isLogin = ref<boolean>(false);
 
-
 const deleteMsg = (id: number) => {
   // 显示确认框
   const confirmDelete = confirm("确定要删除这条消息吗？");
   if (confirmDelete) {
-    deleteMessage(id)
+    deleteMessage(id);
   }
-}
+};
 
 const formatDate = (dateString: string) => {
   // 当天则显示（时：分）
@@ -113,7 +120,7 @@ onMounted(() => {
     pageSize: 10,
   });
   Fancybox.bind("[data-fancybox]", {});
-})
+});
 
 onBeforeUnmount(() => {
   Fancybox.destroy();

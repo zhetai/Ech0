@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/config"
 	"github.com/lin-snow/ech0/internal/dto"
+	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/pkg"
 )
 
@@ -15,7 +16,7 @@ func UploadImage(c *gin.Context) dto.Result[string] {
 	}
 
 	if !user.IsAdmin {
-		return dto.Fail[string]("没有权限")
+		return dto.Fail[string](models.NoPermissionMessage)
 	}
 
 	// 从配置中读取支持的扩展名

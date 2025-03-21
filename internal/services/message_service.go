@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/lin-snow/ech0/internal/database"
 	"github.com/lin-snow/ech0/internal/dto"
 	"github.com/lin-snow/ech0/internal/models"
@@ -47,9 +49,14 @@ func GetMessagesByPage(page, pageSize int) (dto.PageQueryResult, error) {
 // CreateMessage 发布一条留言
 func CreateMessage(message *models.Message) error {
 	user, err := GetUserByID(message.UserID)
-	if err != nil || !user.IsAdmin { // TODO : 目前只有管理员可以发布留言
+	if err != nil {
 		return err
 	}
+
+	if !user.IsAdmin {
+		return errors.New(models.NoPermissionMessage)
+	}
+
 	message.Username = user.Username // 获取用户名
 	return repository.CreateMessage(message)
 }

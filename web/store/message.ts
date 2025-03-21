@@ -73,11 +73,11 @@ export const useMessageStore = defineStore("messageStore", () => {
   const deleteMessage = async (id: number) => {
     try {
       const response = await deleteRequest<any>(`messages/${id}`);
-      if (!response) {
+      if (!response || response.code !== 1) {
         console.error("删除留言失败");
         toast.add({
             title: "删除留言失败",
-            description: "请稍后重试",
+            description: response?.msg,
             icon: "i-fluent-error-circle-16-filled",
             color: "red",
             timeout: 2000,
