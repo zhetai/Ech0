@@ -9,7 +9,7 @@ import (
 
 // UploadImage 上传图片
 func UploadImage(c *gin.Context) dto.Result[string] {
-	user, err := GetUserByID(c.MustGet("user_id").(uint))
+	user, err := GetUserByID(c.MustGet("userid").(uint))
 	if err != nil {
 		return dto.Fail[string](err.Error())
 	}
