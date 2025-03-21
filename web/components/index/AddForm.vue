@@ -14,7 +14,7 @@
             <UIcon name="i-mdi-rss" class="w-5 h-5 text-gray-400" />
           </a>
         </ClientOnly>
-        <NuxtLink to="https://github.com/lin-snow/Ech0s/" target="_blank">
+        <NuxtLink to="https://github.com/lin-snow/Ech0/" target="_blank">
           <UIcon name="i-mdi-github" class="w-5 h-5 text-gray-400" />
         </NuxtLink>
         <NuxtLink to="/status">
