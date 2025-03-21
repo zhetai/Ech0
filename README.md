@@ -1,4 +1,4 @@
-# Ech0 - 极致轻量的开源、自托管、**专注思想流动的轻量级发布平台**
+# Ech0 - 开源、自托管、专注思想流动的轻量级发布平台
 
 <p align="center">
   <img alt="Ech0" src="./docs/imgs/FluentEmojiClipboard.svg" width="320">
