@@ -23,7 +23,7 @@ let vditorInstance: Vditor | null = null;
 // 编辑器配置
 const editorOptions: IOptions = {
   mode: "ir",
-  height: 160,
+  height: 140,
   icon: "ant",
   lang: "zh_CN" as keyof II18n,
   theme: "classic",
