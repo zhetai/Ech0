@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div id="markdown-content" v-html="renderedMarkdown" class="text-gray-900"></div>
 </template>
 
@@ -90,13 +90,13 @@ watch(
 }
 
 #markdown-content code {
-  background-color: #000000;
+  background-color: #ffffff;
   padding: 2px 4px;
   border-radius: 8px;
 }
 
 #markdown-content pre {
-  background-color: #000000;
+  background-color: #ffffff;
   padding: 1rem;
   border-radius: 16px;
   white-space: pre-wrap;
@@ -116,4 +116,90 @@ watch(
 }
 
 
-</style>
+</style> -->
+
+<template>
+  <div ref="previewElement" class="markdown-preview"></div>
+</template>
+
+<script setup lang="ts">
+import { onMounted, ref, watch } from 'vue';
+import Vditor from 'vditor';  // 如果你使用的是导入 Vditor 库
+// 或者直接通过方法.min.js 加载
+
+const previewElement = ref<HTMLDivElement | null>(null);
+
+const props = defineProps({
+  content: {
+    type: String,
+    required: true,
+  },
+});
+
+const renderMarkdown = async (markdown: string) => {
+  if (!previewElement.value) return;
+
+  try {
+    // 检查是否已经加载 Vditor
+    if (typeof Vditor === 'undefined') {
+      console.error('Vditor is not loaded.');
+      return;
+    }
+
+    // 调用 Vditor 的 preview 方法渲染 markdown 内容
+    Vditor.preview(previewElement.value, markdown, {
+      mode: 'light', // 设置渲染模式（light 或 dark）
+      lang: 'zh_CN', // 设置语言
+      theme: {
+        current: 'light'
+      }, // 设置主题
+      hljs: {
+        style: 'catppuccin-macchiato',
+      },
+      after: () => {
+        console.log('Rendering complete.');
+      }
+    });
+  } catch (error) {
+    console.error("Error rendering markdown:", error);
+    previewElement.value.innerHTML = ''; // 如果发生错误，清空内容
+  }
+};
+
+// Watcher: 当 content 改变时，重新渲染 Markdown
+watch(
+  () => props.content,
+  async (newContent) => {
+    await renderMarkdown(newContent);
+  },
+  { immediate: true } // 初始化时就渲染一次
+);
+
+onMounted(() => {
+  // 如果初始化时需要渲染，可以放在这里
+  renderMarkdown(props.content);
+});
+</script>
+
+<style>
+.markdown-preview {
+  font-family: "LXGW WenKai Screen";
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 1.5rem; /* 你可以根据需要调整字体大小 */
+  line-height: 1.5;  /* 行高 */
+}
+
+.markdown-preview p {
+  margin-bottom: 1rem;
+}
+
+</style> 

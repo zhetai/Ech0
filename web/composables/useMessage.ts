@@ -1,5 +1,6 @@
 import type { MessageToSave, Message, Response } from "~/types/models"
 import { useMessageStore } from "~/store/message"
+
 export const useMessage = () => {
     const message = useMessageStore()
     const toast = useToast()

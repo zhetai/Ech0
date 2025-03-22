@@ -22,14 +22,16 @@
     </div>
 
     <div class="">
-      <UTextarea
+      <!-- <UTextarea
         v-model="MessageContent"
         size="sm"
         color="gray"
         placeholder="一吐为快！"
         autoresize
         class="mb-4"
-      />
+        id="ech0-textarea"
+      /> -->
+      <VditorEditor ref="vditorEditor" v-model="MessageContent" />
       <div class="flex justify-between items-center">
         <div class="flex items-center justify-start gap-2">
           <!-- <UInput size="sm" color="gray" :trailing="true" placeholder="你の名字" v-model="Username" class="w-24" /> -->
@@ -90,25 +92,29 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import type { MessageToSave } from "~/types/models";
-import { UButton, UTextarea } from "#components";
+import { UButton } from "#components";
 import { useMessage } from "~/composables/useMessage";
-import { useMessageStore } from "~/store/message";
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import VditorEditor from './VditorEditor.vue'
 
 const BASE_API = useRuntimeConfig().public.baseApi;
 const { save, uploadImage } = useMessage();
-const messageStore = useMessageStore();
 
 const Username = ref("");
 const MessageContent = ref("");
 const ImageUrl = ref("");
 const fileInput = ref<HTMLInputElement | null>(null);
+const vditorEditor = ref<InstanceType<typeof VditorEditor> | null>(null); // 添加 vditorEditor 引用
 
 const clearForm = () => {
   Username.value = "";
   MessageContent.value = "";
   ImageUrl.value = "";
+  // 清空 Vditor 编辑器内容
+  if (vditorEditor.value) {
+    vditorEditor.value.clear();
+  }
 };
 
 const addMessage = async () => {
