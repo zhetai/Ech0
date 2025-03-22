@@ -6,7 +6,7 @@
         <UIcon name="i-fluent-emoji-flat-alien-monster" class="w-5 h-5" />
         <h2 class="text-lg font-semibold text-slate-900">Ech0s~</h2>
       </div>
-      <div class="flex gap-1">
+      <div class="flex gap-2">
         <ClientOnly>
           <a href="/rss" target="_blank">
             <UIcon name="i-mdi-rss" class="w-5 h-5 text-gray-400" />
@@ -70,7 +70,7 @@
             icon="i-fluent-add-12-filled"
             variant="solid"
             color="gray"
-            size="sm"
+            size="md"
             @click="addMessage"
           />
         </div>

@@ -88,4 +88,14 @@ defineExpose({
 .vditor-toolbar--pin {
   padding-left: 6px !important;
 }
+
+.vditor-ir pre.vditor-reset {
+    padding: 5px 10px !important;
+}
+
+@media screen and (max-width: 520px) {
+    .vditor-toolbar__item {
+        padding: 0px 4px;
+    }
+}
 </style>
