@@ -8,4 +8,11 @@ html, body {
     scrollbar-arrow-color: transparent;
     scrollbar-base-color: transparent;
     scrollbar-color: transparent transparent;
+
+    /* 大屏幕放大 */
+    @media (min-width: 1920px) {
+        body {
+            zoom: 1.1; /* 大屏幕放大1.1倍 */
+        }
+    }
 }

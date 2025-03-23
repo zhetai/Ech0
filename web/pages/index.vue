@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="py-2 pb-4">
+  <UContainer class="py-2 pb-4 my-4">
     <!-- <HeaderBar /> -->
     <AddForm />
     <MessageList />

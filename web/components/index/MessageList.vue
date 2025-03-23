@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto my-4 max-w-sm px-2">
+  <div class="mx-auto my-4 sm:max-w-sm px-2">
     <div
       v-for="msg in message.messages"
       :key="msg.id"

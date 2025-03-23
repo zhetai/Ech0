@@ -1,10 +1,9 @@
 <template>
-  <div class="mx-auto mt-2 max-w-sm flex justify-end text-gray-400"></div>
-  <UCard class="mx-auto mt-2 max-w-sm">
+  <UCard class="mx-auto sm:max-w-sm hover:shadow-md">
     <div class="flex justify-between mb-3">
       <div class="flex justify-start items-center gap-2">
-        <UIcon name="i-fluent-emoji-flat-alien-monster" class="w-5 h-5" />
-        <h2 class="text-lg font-semibold text-slate-900">Ech0s~</h2>
+        <UIcon name="i-fluent-emoji-flat-alien-monster" class="w-6 h-6" />
+        <h2 class="text-lg font-bold italic text-slate-600">Ech0s~</h2>
       </div>
       <div class="flex gap-2">
         <ClientOnly>
@@ -21,16 +20,7 @@
       </div>
     </div>
 
-    <div class="">
-      <!-- <UTextarea
-        v-model="MessageContent"
-        size="sm"
-        color="gray"
-        placeholder="一吐为快！"
-        autoresize
-        class="mb-4"
-        id="ech0-textarea"
-      /> -->
+    <div>
       <VditorEditor ref="vditorEditor" v-model="MessageContent" />
       <div class="flex justify-between items-center">
         <div class="flex items-center justify-start gap-2">
@@ -70,7 +60,7 @@
             icon="i-fluent-add-12-filled"
             variant="solid"
             color="gray"
-            size="md"
+            size="sm"
             @click="addMessage"
           />
         </div>
