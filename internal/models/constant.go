@@ -54,6 +54,7 @@ const (
 	GetStatusSuccessMessage                = "获取状态成功"
 	CannotBeEmptyMessage                   = "内容不能为空"
 	NoPermissionMessage                    = "没有权限,请联系管理员"
+	GenerateRSSFailMessage                 = "生成 RSS 失败"
 )
 
 // 数据库相关

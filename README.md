@@ -32,7 +32,7 @@ docker run -d \
   --name ech0 \
   -p 1314:1314 \
   -v /opt/ech0/data:/app/data \
-  sn0wl1n/ech0:v3.0.2
+  sn0wl1n/ech0:v3.1.0
 ```
 
 > 💡 部署完成后访问 ip:1314 即可使用
@@ -59,14 +59,14 @@ docker stop ech0
 docker rm ech0
 
 # 拉取最新的镜像
-docker pull sn0wl1n/ech0:v3.0.2
+docker pull sn0wl1n/ech0:v3.1.0
 
 # 启动新版本的容器
 docker run -d \
   --name ech0 \
   -p 1314:1314 \
   -v /opt/ech0/data:/app/data \
-  sn0wl1n/ech0:v3.0.2
+  sn0wl1n/ech0:v3.1.0
 ```
 
 ---

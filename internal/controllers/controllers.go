@@ -1,13 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/feeds"
 	"github.com/lin-snow/ech0/internal/dto"
 	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/internal/services"
@@ -177,51 +174,12 @@ func DeleteMessage(c *gin.Context) {
 }
 
 func GenerateRSS(c *gin.Context) {
-	var messages []models.Message
-	// 调用 Service 层获取所有留言
-	messages, err := services.GetAllMessages()
+
+	atom, err := services.GenerateRSS(c)
 	if err != nil {
-		c.JSON(http.StatusOK, dto.Fail[any](models.GetAllMessagesFailMessage))
+		c.JSON(http.StatusInternalServerError, dto.Fail[string](models.GenerateRSSFailMessage))
 		return
 	}
 
-	scheme := "http"
-	if c.Request.TLS != nil {
-		scheme = "https"
-	}
-	host := c.Request.Host
-	feed := &feeds.Feed{
-		Title:       "Latest Messages",
-		Link:        &feeds.Link{Href: fmt.Sprintf("%s://%s/", scheme, host)},
-		Description: "RSS feed for the latest messages",
-		Author:      &feeds.Author{Name: "Ech0s~"},
-		Created:     time.Now(),
-	}
-
-	for _, msg := range messages {
-		title := truncate(msg.Content, 50)
-		item := &feeds.Item{
-			Title:       title,
-			Link:        &feeds.Link{Href: fmt.Sprintf("%s://%s/api/messages/%d", scheme, host, msg.ID)},
-			Description: msg.Content,
-			Author:      &feeds.Author{Name: msg.Username},
-			Created:     msg.CreatedAt,
-		}
-		feed.Items = append(feed.Items, item)
-	}
-
-	rss, err := feed.ToRss()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate RSS feed"})
-		return
-	}
-
-	c.Data(http.StatusOK, "application/rss+xml; charset=utf-8", []byte(rss))
-}
-
-func truncate(s string, n int) string {
-	if len(s) > n {
-		return s[:n] + "..."
-	}
-	return s
+	c.Data(http.StatusOK, "application/rss+xml; charset=utf-8", []byte(atom))
 }

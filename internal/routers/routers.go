@@ -10,14 +10,14 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/rss", controllers.GenerateRSS) // 生成 RSS 订阅链接
-
 	// 设置 CORS 规则
 	r.Use(middleware.Cors())
 
 	// 映射静态文件目录
 	r.Use(static.Serve("/", static.LocalFile("./public", true)))
 	r.Static("/api/images", "./data/images")
+
+	r.GET("/rss", controllers.GenerateRSS) // 生成 RSS 订阅链接
 
 	// 公共的路由
 	publicRoutes := r.Group("/api")
