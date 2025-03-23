@@ -40,5 +40,11 @@ func SetupRouter() *gin.Engine {
 	// 添加图片上传路由
 	authRoutes.POST("/images/upload", controllers.UploadImage) // 上传图片
 
+	// 更新用户信息
+	authRoutes.PUT("/user/update", controllers.UpdateUser) // 更新用户信息
+
+	// 更新系统设置
+	authRoutes.PUT("/setting/update", controllers.UpdateSetting) // 更新系统设置
+
 	return r
 }

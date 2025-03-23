@@ -183,3 +183,14 @@ func GenerateRSS(c *gin.Context) {
 
 	c.Data(http.StatusOK, "application/rss+xml; charset=utf-8", []byte(atom))
 }
+
+// 更新用户信息 （用户名 、 密码）
+func UpdateUser(c *gin.Context) {
+
+}
+
+// 更改系统设置 （是否允许注册）
+func UpdateSetting(c *gin.Context) {
+	// 解析请求体中的设置参数
+
+}
