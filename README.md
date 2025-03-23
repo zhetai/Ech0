@@ -71,4 +71,8 @@ docker run -d \
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=lin-snow/ech0&type=Date)](https://www.star-history.com/#lin-snow/ech0&Date)
+
 <p align="center">「少即是多」—— 路德维希·密斯·凡德罗</p>
