@@ -7,7 +7,7 @@
     >
       <div class="flex justify-between items-center">
         <!-- 时间 -->
-        <div class="flex justify-start items-center h-3">
+        <div class="flex justify-start items-center h-auto">
           <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
           <!-- 保留年月日 -->
           <div class="flex justify-start text-sm text-orange-500">
