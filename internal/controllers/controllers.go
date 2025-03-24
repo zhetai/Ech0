@@ -247,8 +247,8 @@ func UpdateUserAdmin(c *gin.Context) {
 		return
 	}
 
-	// 从 URL 参数获取用户 ID
-	idStr := c.Param("id")
+	// 从Query参数获取用户 ID
+	idStr := c.Query("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	// 不能和当前用户 ID 一样，不能是系统管理员 ID 1，不能为空
 	if err != nil || id == uint64(user.ID) || id == 1 {
