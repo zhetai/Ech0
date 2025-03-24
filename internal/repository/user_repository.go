@@ -40,11 +40,21 @@ func GetUserByID(id uint) (models.User, error) {
 	return user, nil
 }
 
-func GetAdmin() (models.User, error) {
+func GetSysAdmin() (models.User, error) {
+	// 获取系统管理员（首个注册的用户）
 	user := models.User{}
 	err := database.DB.Where("is_admin = ?", true).First(&user).Error
 	if err != nil {
 		return models.User{}, err
 	}
+
 	return user, nil
+}
+
+func UpdateUser(user *models.User) error {
+	err := database.DB.Save(user).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

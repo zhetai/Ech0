@@ -1,9 +1,9 @@
-import type { User, UserToLogin, UserToRegister, Response } from "~/types/models"
+import type { User, Status, UserToLogin, UserToRegister, Response } from "~/types/models"
 
 
 export const useUserStore = defineStore("userStore", () => {
     // 状态
-    const user = ref<User | null>(null);
+    const status = ref<Status | null>(null);
     const token = ref<string | null>(null);
     const isLogin = ref<boolean>(false);
     const toast = useToast()
@@ -71,11 +71,11 @@ export const useUserStore = defineStore("userStore", () => {
 
     // 获取状态
     const getStatus = async () => {
-        const response = await getRequest<User>("status");
+        const response = await getRequest<Status>("status");
         if (!response || response.code !== 1) {
-            console.log("获取用户信息失败");
+            console.log("获取系统信息失败");
             toast.add({
-                title: "获取用户信息失败",
+                title: "获取系统信息失败",
                 description: response?.msg,
                 icon: "i-fluent-error-circle-16-filled",
                 color: "red",
@@ -85,7 +85,7 @@ export const useUserStore = defineStore("userStore", () => {
         }
 
         if (response && response.code === 1 && response.data) {
-            user.value = response.data;
+            status.value = response.data;
             return true;
         }
     }
@@ -95,14 +95,14 @@ export const useUserStore = defineStore("userStore", () => {
         isLogin.value = false;
         token.value = null;
         localStorage.removeItem("token");
-        user.value = null;
+        status.value = null;
         
 
         return true;
     }
 
     return {
-        user,
+        status,
         token,
         isLogin,
         register,

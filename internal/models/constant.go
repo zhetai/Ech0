@@ -2,17 +2,19 @@ package models
 
 // 成功相关
 const (
-	SuccessMessage             = "请求成功"
-	GetAllMessagesSuccess      = "获取留言成功"
-	GetMessageByIDSuccess      = "获取留言成功"
-	PostMessageSuccess         = "发布留言成功"
-	CreateSuccessMessage       = "创建成功"
-	QuerySuccessMessage        = "查询成功"
-	DeleteSuccessMessage       = "删除成功"
-	ServerLaunchSuccessMessage = "服务器启动成功"
-	GetMessagesByPageSuccess   = "分页获取留言成功"
-	RegisterSuccessMessage     = "注册成功"
-	LoginSuccessMessage        = "登录成功"
+	SuccessMessage               = "请求成功"
+	GetAllMessagesSuccess        = "获取留言成功"
+	GetMessageByIDSuccess        = "获取留言成功"
+	PostMessageSuccess           = "发布留言成功"
+	CreateSuccessMessage         = "创建成功"
+	QuerySuccessMessage          = "查询成功"
+	DeleteSuccessMessage         = "删除成功"
+	ServerLaunchSuccessMessage   = "服务器启动成功"
+	GetMessagesByPageSuccess     = "分页获取留言成功"
+	RegisterSuccessMessage       = "注册成功"
+	LoginSuccessMessage          = "登录成功"
+	UpdateUserSuccessMessage     = "更新用户成功"
+	ChangePasswordSuccessMessage = "修改密码成功"
 )
 
 // 失败相关
@@ -44,6 +46,8 @@ const (
 	TokenNotFoundMessage                   = "未找到令牌"
 	TokenInvalidMessage                    = "令牌无效，请点击右上角登录"
 	UsernameOrPasswordCannotBeEmptyMessage = "用户名或密码不能为空"
+	UsernameCannotBeEmptyMessage           = "用户名不能为空"
+	PasswordCannotBeEmptyMessage           = "密码不能为空"
 	UsernameAlreadyExistsMessage           = "用户名已存在"
 	CreateUserFailMessage                  = "创建用户失败"
 	UserNotFoundMessage                    = "用户未找到"
@@ -55,6 +59,7 @@ const (
 	CannotBeEmptyMessage                   = "内容不能为空"
 	NoPermissionMessage                    = "没有权限,请联系管理员"
 	GenerateRSSFailMessage                 = "生成 RSS 失败"
+	PasswordCannotBeSameAsBeforeMessage    = "新密码不能与旧密码相同"
 )
 
 // 数据库相关

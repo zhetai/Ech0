@@ -7,11 +7,11 @@
             <!-- 当前系统状态 -->
             <div class="flex justify-start items-center">
                 <span class="text-gray-500 text-md">当前系统管理员:</span>
-                <span class="font-bold text-md text-gray-600 ml-2">{{ userStore?.user?.username }}</span>
+                <span class="font-bold text-md text-gray-600 ml-2">{{ userStore?.status?.username }}</span>
             </div>
             <div class="flex justify-start items-center mt-2">
                 <span class="text-gray-500 text-md">当前Ech0共有:</span>
-                <span class="font-bold text-md text-gray-600 ml-2">{{ userStore?.user?.total_messages }}</span>
+                <span class="font-bold text-md text-gray-600 ml-2">{{ userStore?.status?.total_messages }}</span>
                 <span class="text-gray-500 text-md ml-2">条</span>
             </div>
             <!-- 退出登录按钮 -->

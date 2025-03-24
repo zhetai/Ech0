@@ -43,6 +43,19 @@ export interface User {
     token?: string;
 }
 
+export interface UserStatus {
+    user_id: number;
+    username: string;
+    is_admin: boolean;
+}
+
+export interface Status {
+    sys_admin_id: number;
+    username: string;
+    users: UserStatus[];
+    total_messages: number;
+}
+
 export interface Response<T> {
     code: number;
     msg: string;

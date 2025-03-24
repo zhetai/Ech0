@@ -41,10 +41,12 @@ func SetupRouter() *gin.Engine {
 	authRoutes.POST("/images/upload", controllers.UploadImage) // 上传图片
 
 	// 更新用户信息
-	authRoutes.PUT("/user/update", controllers.UpdateUser) // 更新用户信息
+	authRoutes.PUT("/user/change_password", controllers.ChangePassword) // 修改密码
+	authRoutes.PUT("/user/update", controllers.UpdateUser)              // 更新用户信息
+	authRoutes.PUT("/user/admin/:id", controllers.UpdateUserAdmin)      // 更新用户权限
 
 	// 更新系统设置
-	authRoutes.PUT("/setting/update", controllers.UpdateSetting) // 更新系统设置
+	// authRoutes.PUT("/setting/update", controllers.UpdateSetting) // 更新系统设置
 
 	return r
 }

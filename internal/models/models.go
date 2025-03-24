@@ -22,11 +22,17 @@ type User struct {
 	IsAdmin  bool   `json:"is_admin"`
 }
 
+type UserStatus struct {
+	UserID   uint   `json:"user_id"`  // 用户ID
+	UserName string `json:"username"` // 用户名
+	IsAdmin  bool   `json:"is_admin"` // 是否是管理员
+}
+
 type Status struct {
-	UserID        uint   `json:"user_id"`
-	Username      string `json:"username"`
-	IsAdmin       bool   `json:"is_admin"`
-	TotalMessages int    `json:"total_messages"`
+	SysAdminID    uint         `json:"sys_admin_id"` // 系统管理员ID
+	Username      string       `json:"username"`     // 系统管理员用户名
+	Users         []UserStatus `json:"users"`        // 所有用户
+	TotalMessages int          `json:"total_messages"`
 }
 
 type MyCliams struct {
