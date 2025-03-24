@@ -98,7 +98,3 @@ Ech0 旨在保持简洁和轻量，因此在设计时没有复杂的权限系统
 
 ---
 
-# Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=lin-snow/ech0&type=Date)](https://www.star-history.com/#lin-snow/ech0&Date)
-
