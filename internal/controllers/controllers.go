@@ -265,7 +265,7 @@ func UpdateUserAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.OK[any](nil, models.UpdateUserSuccessMessage))
 }
 
-// // 更改系统设置 （是否允许注册）
+// 更改系统设置 （是否允许注册）
 // func UpdateSetting(c *gin.Context) {
 // 	// 解析请求体中的设置参数
 
