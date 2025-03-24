@@ -40,8 +40,8 @@
         </div>
         <!-- 昵称 -->
         <!-- <div class="p-1 h-1/3 flex items-center justify-end">
-          <span class="text-xs text-gray-500 italic underline max-w-20">
-            {{ msg.username ? msg.username : "匿名" }}
+          <span class="text-xs text-gray-500 italic underline -mb-5">
+            {{ msg.username ? msg.username : "ech0" }}
           </span>
         </div> -->
       </div>
