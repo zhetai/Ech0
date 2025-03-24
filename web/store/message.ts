@@ -62,9 +62,6 @@ export const useMessageStore = defineStore("messageStore", () => {
 
       // 更新分页状态
       hasMore.value = messages.value.length < total.value;
-
-    //   console.log("PAGE" + page.value);
-    //   console.log("@@@@@@" + messages.value.length, total.value, hasMore.value);
     } catch (error) {
       console.error(error);
     }

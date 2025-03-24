@@ -12,7 +12,7 @@ import (
 // GetAllMessages 从数据库获取所有留言
 func GetAllMessages() ([]models.Message, error) {
 	var messages []models.Message
-	result := database.DB.Limit(10).Order("created_at DESC").Find(&messages)
+	result := database.DB.Order("created_at DESC").Find(&messages)
 	if result.Error != nil {
 		return nil, result.Error
 	}

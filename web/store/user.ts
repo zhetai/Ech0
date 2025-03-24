@@ -3,6 +3,7 @@ import type { User, Status, UserToLogin, UserToRegister, Response } from "~/type
 
 export const useUserStore = defineStore("userStore", () => {
     // 状态
+    const user = ref<User | null>(null);
     const status = ref<Status | null>(null);
     const token = ref<string | null>(null);
     const isLogin = ref<boolean>(false);
@@ -90,6 +91,27 @@ export const useUserStore = defineStore("userStore", () => {
         }
     }
 
+    // 获取当前登录用户信息
+    const getUser = async () => {
+        const response = await getRequest<User>("user");
+        if (!response || response.code !== 1) {
+            console.log("获取用户信息失败");
+            toast.add({
+                title: "获取用户信息失败",
+                description: response?.msg,
+                icon: "i-fluent-error-circle-16-filled",
+                color: "red",
+                timeout: 2000,
+            });
+            return false;
+        }
+
+        if (response && response.code === 1 && response.data) {
+            user.value = response.data;
+            return true;
+        }
+    }
+
     // 退出登录
     const logout = async () => {
         isLogin.value = false;
@@ -102,6 +124,7 @@ export const useUserStore = defineStore("userStore", () => {
     }
 
     return {
+        user,
         status,
         token,
         isLogin,
@@ -109,5 +132,6 @@ export const useUserStore = defineStore("userStore", () => {
         login,
         getStatus,
         logout,
+        getUser,
     }
 })

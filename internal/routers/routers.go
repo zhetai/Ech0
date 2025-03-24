@@ -45,6 +45,9 @@ func SetupRouter() *gin.Engine {
 	authRoutes.PUT("/user/update", controllers.UpdateUser)              // 更新用户信息
 	authRoutes.PUT("/user/admin", controllers.UpdateUserAdmin)          // 更新用户权限
 
+	// 获取当前登录的用户信息
+	authRoutes.GET("/user", controllers.GetUserInfo) // 获取当前登录的用户信息
+
 	// 更新系统设置
 	// authRoutes.PUT("/setting/update", controllers.UpdateSetting) // 更新系统设置
 

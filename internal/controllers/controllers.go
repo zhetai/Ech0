@@ -265,6 +265,23 @@ func UpdateUserAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, dto.OK[any](nil, models.UpdateUserSuccessMessage))
 }
 
+// 获取当前登录用户的信息
+func GetUserInfo(c *gin.Context) {
+	// 获取当前用户 ID
+	userID := c.MustGet("userid").(uint)
+
+	// 调用 Service 层获取用户信息
+	user, err := services.GetUserByID(userID)
+	user.Password = "" // 不返回密码
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
+		return
+	}
+
+	// 返回成功响应
+	c.JSON(http.StatusOK, dto.OK(user, models.QuerySuccessMessage))
+}
+
 // 更改系统设置 （是否允许注册）
 // func UpdateSetting(c *gin.Context) {
 // 	// 解析请求体中的设置参数

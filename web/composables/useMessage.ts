@@ -1,4 +1,4 @@
-import type { MessageToSave, Message, Response } from "~/types/models"
+import type { MessageToSave, Message } from "~/types/models"
 import { useMessageStore } from "~/store/message"
 
 export const useMessage = () => {

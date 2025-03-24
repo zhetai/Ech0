@@ -4,7 +4,6 @@ import { useToast } from "#imports";
 
 export const postRequest = async <T>(url: string, body: object | FormData) => {
     const BASE_API = useRuntimeConfig().public.baseApi;
-    // const toast = useToast();
     const userStore = useUserStore()
     const token = userStore.token;
 
@@ -17,17 +16,6 @@ export const postRequest = async <T>(url: string, body: object | FormData) => {
             body: isFormData ? body : JSON.stringify(body),
         });
 
-        // if (!response) {
-        //     // console.log(response.msg);
-        //     toast.add({
-        //         title: "请求失败",
-        //         icon: "i-fluent-error-circle-16-filled",
-        //         color: "red",
-        //         timeout: 2000,
-        //     });
-        //     return null;
-        // }
-
         return response;
     } catch (error) {
         console.error(error);
@@ -39,17 +27,8 @@ export const getRequest = async <T>(url: string, params?: any) => {
     const userStore = useUserStore()
     const token = userStore.token;
     const BASE_API = useRuntimeConfig().public.baseApi;
-    // const toast = useToast();
 
     try {
-        // console.log('BASE_API:', BASE_API);
-        // console.log(auth.getToken());
-
-        // if (!auth.getToken() || auth.getToken() === '') {
-        //     console.log('No token');
-        //     return null;
-        // }
-
         // Params Query
         const queryParamString: string = params ? "?" + Object.keys(params).map(key => key + "=" + params[key]).join("&") : "";
         // console.log('queryParamString:', queryParamString);
@@ -59,18 +38,6 @@ export const getRequest = async <T>(url: string, params?: any) => {
                 'Authorization': `${token}`,
             }
         })
-
-        // if (response.code !== 1) {
-        //     console.log(response.msg);
-        //     toast.add({
-        //         title: "请求失败",
-        //         description: response.msg,
-        //         icon: "i-fluent-error-circle-16-filled",
-        //         color: "red",
-        //         timeout: 2000,
-        //     })
-        //     return null;
-        // }
 
         return response;
     } catch (error) {
@@ -127,18 +94,6 @@ export const deleteRequest = async <T>(url: string, params?: any) => {
                 'Authorization': `${token}`,
             }
         })
-
-        // if (response.code !== 1) {
-        //     console.log(response.msg);
-        //     toast.add({
-        //         title: "请求失败",
-        //         description: response.msg,
-        //         icon: "i-fluent-error-circle-16-filled",
-        //         color: "red",
-        //         timeout: 2000,
-        //     })
-        //     return null;
-        // }
 
         return response;
     } catch (error) {

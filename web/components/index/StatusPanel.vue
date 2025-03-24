@@ -1,28 +1,46 @@
 <template>
     <div class="h-3/5 max-w-sm">
         <h1 class="text-5xl italic font-bold text-center text-gray-300 mb-14">Ech0s Status</h1>
+        
 
         <!-- 登录后显示的内容 -->
         <div v-if="showStatus">
             <!-- 当前系统状态 -->
+            <!-- 当前系统管理员 -->
             <div class="flex justify-start items-center">
                 <span class="text-gray-500 text-md">当前系统管理员:</span>
                 <span class="font-bold text-md text-gray-600 ml-2">{{ userStore?.status?.username }}</span>
             </div>
-            <div class="flex justify-start items-center mt-2">
+            <!-- 当前登录用户 -->
+             <div>
+                <span class="text-gray-500 text-md">当前登录用户:</span>
+                <span class="font-bold text-md text-gray-600 ml-2">{{ userStore?.user?.username ? userStore.user.username : "当前未登录"}}</span>
+             </div>
+            <!-- 当前共有Ech0 -->
+            <div class="flex justify-start items-center">
                 <span class="text-gray-500 text-md">当前Ech0共有:</span>
                 <span class="font-bold text-md text-gray-600 ml-2">{{ userStore?.status?.total_messages }}</span>
                 <span class="text-gray-500 text-md ml-2">条</span>
             </div>
-            <!-- 退出登录按钮 -->
-            <div v-if="isLogin">
-                <UButton size="sm" icon="i-mdi-logout" @click="logout" color="gray" variant="solid"
-                    class="text-gray-500 mt-6" />
-            </div>
-            <div v-else>
-                <UButton size="sm" icon="i-mdi-account-key-outline" @click="showStatusChange" color="gray"
-                    variant="solid" class="text-gray-500 mt-6" />
-            </div>
+            <!-- 操作按钮 -->
+             <div class="flex justify-between items-center mt-6">
+                <div>
+                    <!-- 返回首页 -->
+                    <UButton size="sm" icon="i-fluent-arrow-left-16-filled" @click="$router.push('/')" color="gray" variant="ghost"
+                        class="text-gray-500 mt-6" />
+                </div>
+                <div>
+                    <div v-if="isLogin">
+                        <UButton size="sm" icon="i-mdi-logout" @click="logout" color="gray" variant="solid"
+                            class="text-gray-500 mt-6" />
+                    </div>
+                    <div v-else>
+                        <UButton size="sm" icon="i-mdi-account-key-outline" @click="showStatusChange" color="gray"
+                            variant="solid" class="text-gray-500 mt-6" />
+                    </div>
+                </div>
+             </div>
+            
         </div>
         <div v-else>
             <!-- 登录或注册 -->
@@ -94,6 +112,7 @@ const authForm = reactive<UserToLogin | UserToRegister>({
 onMounted(() => {
     showStatus.value = true
     userStore.getStatus()
+    userStore.getUser()
 })
 
 </script>
