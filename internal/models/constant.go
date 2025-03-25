@@ -43,7 +43,7 @@ const (
 	InvalidPageParametersMessage           = "无效的分页参数"
 	InvalidPageSizeMessage                 = "无效的页码或页大小"
 	GetMessagesByPageFailMessage           = "分页获取留言失败"
-	TokenNotFoundMessage                   = "未找到令牌"
+	TokenNotFoundMessage                   = "未找到令牌,请点击右上角登录"
 	TokenInvalidMessage                    = "令牌无效，请点击右上角登录"
 	UsernameOrPasswordCannotBeEmptyMessage = "用户名或密码不能为空"
 	UsernameCannotBeEmptyMessage           = "用户名不能为空"
