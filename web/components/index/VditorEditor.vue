@@ -22,12 +22,13 @@ let vditorInstance: Vditor | null = null;
 
 // 编辑器配置
 const editorOptions: IOptions = {
-  mode: "ir",
+  mode: "wysiwyg",
+  undoDelay: 100,
   height: 140,
-  icon: "ant",
+  icon: "material",
   lang: "zh_CN" as keyof II18n,
   theme: "classic",
-  toolbar: ["preview", "fullscreen"],
+  toolbar: ["fullscreen"],
   toolbarConfig: {
     pin: true,
   },
@@ -45,7 +46,8 @@ const editorOptions: IOptions = {
     hljs: {
       style: "native",
     },
-    actions: [],
+    actions: [
+    ],
   },
   placeholder: "一吐为快~"
 };
@@ -86,10 +88,21 @@ defineExpose({
 }
 
 .vditor-toolbar--pin {
-  padding-left: 6px !important;
+  /* padding-left: 6px !important; */
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.vditor-toolbar__item button svg{
+  color: #b4bcc2;
 }
 
 .vditor-ir pre.vditor-reset {
+    padding: 5px 10px !important;
+}
+
+.vditor-wysiwyg pre.vditor-reset {
     padding: 5px 10px !important;
 }
 

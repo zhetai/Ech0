@@ -36,6 +36,12 @@ const renderMarkdown = async (markdown: string) => {
       hljs: {
         style: 'catppuccin-macchiato',
       },
+      markdown: {
+        gfmAutoLink: false,
+        footnotes: false,
+        toc: false,
+        sanitize: false,
+      },
       after: () => {
         console.log('Rendering complete.');
       }
