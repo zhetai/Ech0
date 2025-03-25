@@ -14,9 +14,16 @@
             {{ formatDate(msg.created_at) }}
           </div>
         </div>
-        <!-- 编辑按钮 -->
-        <div v-if="isLogin" class="w-5 h-5" @click="deleteMsg(msg.id)">
-          <UIcon name="i-mdi-paper-roll-outline" class="text-gray-400" />
+        <!-- 操作按钮 -->
+        <div class="flex justify-end items-center">
+          <!-- 显示是否为私密 -->
+          <div v-if="msg.private" class="w-5 h-5">
+            <UIcon name="i-mdi-lock-outline" class="text-gray-400" />
+          </div>
+          <!-- 删除按钮 -->
+          <div v-if="isLogin" class="w-5 h-5" @click="deleteMsg(msg.id)">
+            <UIcon name="i-mdi-paper-roll-outline" class="text-gray-400" />
+          </div>
         </div>
       </div>
 
