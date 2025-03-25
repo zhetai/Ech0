@@ -43,6 +43,14 @@
             icon="i-fluent-image-20-regular"
             @click="triggerFileInput"
           />
+          <!-- 是否设为私密？ -->
+          <UButton
+            color="gray"
+            variant="solid"
+            size="sm"
+            @click="Private = !Private"
+            :icon="privateIcon"
+           />
         </div>
 
         <div class="flex gap-2">
@@ -93,14 +101,18 @@ const { save, uploadImage } = useMessage();
 
 const Username = ref("");
 const MessageContent = ref("");
+const Private = ref<boolean>(false);
 const ImageUrl = ref("");
 const fileInput = ref<HTMLInputElement | null>(null);
 const vditorEditor = ref<InstanceType<typeof VditorEditor> | null>(null); // 添加 vditorEditor 引用
+
+const privateIcon = computed(() => (Private.value ? 'i-mdi-eye-off-outline' : 'i-mdi-eye-outline'));
 
 const clearForm = () => {
   Username.value = "";
   MessageContent.value = "";
   ImageUrl.value = "";
+  Private.value = false;
   // 清空 Vditor 编辑器内容
   if (vditorEditor.value) {
     vditorEditor.value.clear();
@@ -111,6 +123,7 @@ const addMessage = async () => {
   const message: MessageToSave = {
     username: Username.value,
     content: MessageContent.value,
+    private: Private.value,
     image_url: ImageUrl.value,
   };
 

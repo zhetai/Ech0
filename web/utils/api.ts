@@ -5,7 +5,7 @@ import { useToast } from "#imports";
 export const postRequest = async <T>(url: string, body: object | FormData) => {
     const BASE_API = useRuntimeConfig().public.baseApi;
     const userStore = useUserStore()
-    const token = userStore.token;
+    const token = userStore.token ? userStore.token : "null";
 
     try {
         const isFormData = body instanceof FormData;
@@ -25,7 +25,7 @@ export const postRequest = async <T>(url: string, body: object | FormData) => {
 
 export const getRequest = async <T>(url: string, params?: any) => {
     const userStore = useUserStore()
-    const token = userStore.token;
+    const token = userStore.token ? userStore.token : "null";
     const BASE_API = useRuntimeConfig().public.baseApi;
 
     try {
@@ -49,7 +49,7 @@ export const putRequest = async <T>(url: string, body: object) => {
     const BASE_API = useRuntimeConfig().public.baseApi;
     const toast = useToast();
     const userStore = useUserStore()
-    const token = userStore.token;
+    const token = userStore.token ? userStore.token : "null";
 
     try {
         const response: Response<T> = await $fetch(`${BASE_API}/${url}`, {
@@ -83,7 +83,7 @@ export const deleteRequest = async <T>(url: string, params?: any) => {
     const BASE_API = useRuntimeConfig().public.baseApi;
     const toast = useToast();
     const userStore = useUserStore()
-    const token = userStore.token;
+    const token = userStore.token ? userStore.token : "null";
 
     try {
         // Params Query

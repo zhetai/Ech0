@@ -51,7 +51,7 @@ func Register(c *gin.Context) {
 
 // GetMessages 处理 GET /messages 请求，返回所有留言
 func GetMessages(c *gin.Context) {
-	messages, err := services.GetAllMessages()
+	messages, err := services.GetAllMessages(false)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](models.GetAllMessagesFailMessage))
 		return
@@ -69,8 +69,24 @@ func GetMessage(c *gin.Context) {
 		return
 	}
 
+	// 获取当前用户 ID (为0表示未登录，不返回隐私数据,不为零时则必须为管理员)
+	userID := c.MustGet("userid").(uint)
+	showPrivate := false
+	if userID != 0 {
+		// 获取当前用户信息
+		user, err := services.GetUserByID(userID)
+		if err != nil {
+			c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
+			return
+		}
+		// 如果是管理员，则可以查看所有留言
+		if user.IsAdmin {
+			showPrivate = true
+		}
+	}
+
 	// 调用 Service 层根据 ID 获取留言
-	message, err := services.GetMessageByID(uint(id))
+	message, err := services.GetMessageByID(uint(id), showPrivate)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](models.GetMessageByIDFailMessage))
 		return
@@ -94,8 +110,25 @@ func GetMessagesByPage(c *gin.Context) {
 		return
 	}
 
+	// 获取当前用户 ID (为0表示未登录，不返回隐私数据,不为零时则必须为管理员)
+	userID := c.MustGet("userid").(uint)
+	showPrivate := false
+
+	if userID != 0 {
+		// 获取当前用户信息
+		user, err := services.GetUserByID(userID)
+		if err != nil {
+			c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
+			return
+		}
+		// 如果是管理员，则可以查看所有留言
+		if user.IsAdmin {
+			showPrivate = true
+		}
+	}
+
 	// 调用 Service 层获取分页留言
-	pageQueryResult, err := services.GetMessagesByPage(pageRequest.Page, pageRequest.PageSize)
+	pageQueryResult, err := services.GetMessagesByPage(pageRequest.Page, pageRequest.PageSize, showPrivate)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return

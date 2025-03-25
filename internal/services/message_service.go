@@ -15,17 +15,17 @@ import (
 )
 
 // GetAllMessages 封装业务逻辑，获取所有留言
-func GetAllMessages() ([]models.Message, error) {
-	return repository.GetAllMessages()
+func GetAllMessages(showPrivate bool) ([]models.Message, error) {
+	return repository.GetAllMessages(showPrivate)
 }
 
 // GetMessageByID 根据 ID 获取留言
-func GetMessageByID(id uint) (*models.Message, error) {
-	return repository.GetMessageByID(id)
+func GetMessageByID(id uint, showPrivate bool) (*models.Message, error) {
+	return repository.GetMessageByID(id, showPrivate)
 }
 
 // GetMessagesByPage 分页获取留言
-func GetMessagesByPage(page, pageSize int) (dto.PageQueryResult, error) {
+func GetMessagesByPage(page, pageSize int, showPrivate bool) (dto.PageQueryResult, error) {
 	// 参数校验
 	if page < 1 {
 		page = 1
@@ -40,8 +40,15 @@ func GetMessagesByPage(page, pageSize int) (dto.PageQueryResult, error) {
 	var messages []models.Message
 	var total int64
 
-	database.DB.Model(&models.Message{}).Count(&total)
-	database.DB.Limit(pageSize).Offset(offset).Order("created_at DESC").Find(&messages)
+	if showPrivate {
+		// 如果是管理员，则不需要过滤私密留言
+		database.DB.Model(&models.Message{}).Count(&total)
+		database.DB.Limit(pageSize).Offset(offset).Order("created_at DESC").Find(&messages)
+	} else {
+		// 如果不是管理员，则只查询公开的留言
+		database.DB.Model(&models.Message{}).Where("private = ?", false).Count(&total)
+		database.DB.Limit(pageSize).Offset(offset).Where("private = ?", false).Order("created_at DESC").Find(&messages)
+	}
 
 	// 返回结果
 	var PageQueryResult dto.PageQueryResult
@@ -73,7 +80,8 @@ func DeleteMessage(id uint) error {
 
 func GenerateRSS(c *gin.Context) (string, error) {
 	// 获取所有留言
-	messages, err := GetAllMessages()
+	showPrivate := false
+	messages, err := GetAllMessages(showPrivate)
 	if err != nil {
 		return "", err
 	}

@@ -112,6 +112,10 @@ defineExpose({
     padding: 5px 10px !important;
 }
 
+.vditor-panel--none {
+  display: none !important;
+}
+
 /* @media screen and (max-width: 520px) {
     .vditor-toolbar__item {
         padding: 0px 4px;

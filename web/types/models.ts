@@ -3,6 +3,7 @@ export interface Message {
     content: string;
     username?: string;
     image_url?: string;
+    private: boolean;
     created_at: string;
 }
 
@@ -10,6 +11,7 @@ export interface MessageToSave {
     username?: string;
     content: string;
     image_url?: string;
+    private: boolean;
 }
 
 export interface PageQuery {

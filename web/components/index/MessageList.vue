@@ -35,7 +35,6 @@
         </div>
         <!-- 留言 -->
         <div class="p-2 mb-2 rounded-lg h-3/5 overflow-y-auto">
-          <!-- <div v-html="renderMarkdown(msg.content)" class="text-gray-900"></div> -->
           <MarkdownRenderer :content="msg.content" />
         </div>
         <!-- 昵称 -->

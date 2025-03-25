@@ -95,7 +95,7 @@ func GetStatus() (models.Status, error) {
 
 	status := models.Status{}
 
-	messages, err := repository.GetAllMessages()
+	messages, err := repository.GetAllMessages(true)
 	if err != nil {
 		return status, errors.New(models.GetAllMessagesFailMessage)
 	}
