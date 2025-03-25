@@ -12,10 +12,18 @@ import (
 // GetAllMessages 从数据库获取所有留言
 func GetAllMessages(showPrivate bool) ([]models.Message, error) {
 	var messages []models.Message
-	result := database.DB.Where("private = ?", showPrivate).Order("created_at DESC").Find(&messages)
-	if result.Error != nil {
-		return nil, result.Error
+
+	// 是否将私密内容也查询出来
+	if showPrivate {
+		if err := database.DB.Find(&messages).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		if err := database.DB.Where("private = ?", false).Find(&messages).Error; err != nil {
+			return nil, err
+		}
 	}
+
 	return messages, nil
 }
 
