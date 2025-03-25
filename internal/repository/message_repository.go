@@ -15,7 +15,7 @@ func GetAllMessages(showPrivate bool) ([]models.Message, error) {
 
 	// 是否将私密内容也查询出来
 	if showPrivate {
-		if err := database.DB.Find(&messages).Error; err != nil {
+		if err := database.DB.Order("created_at DESC").Find(&messages).Error; err != nil {
 			return nil, err
 		}
 	} else {
