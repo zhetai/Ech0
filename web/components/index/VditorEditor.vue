@@ -30,7 +30,7 @@ const editorOptions: IOptions = {
   theme: "classic",
   toolbar: ["fullscreen"],
   toolbarConfig: {
-    pin: true,
+    pin: false,
   },
   counter: {
     enable: false,
@@ -94,6 +94,12 @@ defineExpose({
   justify-content: end;
 }
 
+.vditor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
 .vditor-toolbar__item button svg{
   color: #b4bcc2;
 }
@@ -106,9 +112,9 @@ defineExpose({
     padding: 5px 10px !important;
 }
 
-@media screen and (max-width: 520px) {
+/* @media screen and (max-width: 520px) {
     .vditor-toolbar__item {
         padding: 0px 4px;
     }
-}
+} */
 </style>
