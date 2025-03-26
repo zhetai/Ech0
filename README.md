@@ -113,6 +113,7 @@ go run cmd/server/main.go
 ```
 
 前端（新终端）：
+将`.env`文件中的prod那一行注释掉，然后保留dev即可
 ```shell
 cd web # 进入前端目录
 
