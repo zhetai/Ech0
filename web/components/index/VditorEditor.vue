@@ -116,9 +116,9 @@ defineExpose({
   display: none !important;
 }
 
-/* @media screen and (max-width: 520px) {
+@media screen and (max-width: 520px) {
     .vditor-toolbar__item {
-        padding: 0px 4px;
+        padding: 0 0px;
     }
-} */
+}
 </style>

@@ -12,7 +12,7 @@ import StatusPanel from '@/components/index/StatusPanel.vue'
 import Notification from '~/components/widgets/Notification.vue';
 </script>
 
-<style scoped>
+<style>
 body {
     background-color: #f4f1ec;
 }

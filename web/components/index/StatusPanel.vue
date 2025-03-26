@@ -1,7 +1,9 @@
 <template>
     <div class="h-3/5 max-w-sm">
-        <h1 class="text-5xl italic font-bold text-center text-gray-300 mb-14">Ech0s Status</h1>
-        
+        <h1 class="text-5xl italic font-bold text-center text-gray-300 mb-2">Ech0s Status</h1>
+        <div class="flex justify-end mb-12">
+            <UBadge color="yellow" variant="outline" size="sm">3.4.2</UBadge> 
+        </div>
 
         <!-- 登录后显示的内容 -->
         <div v-if="showStatus">
@@ -82,7 +84,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
