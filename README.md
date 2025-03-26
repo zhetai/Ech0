@@ -25,7 +25,7 @@ Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快
 
 ## 3秒极速部署
 
-### docker部署
+### 🐳 docker部署
 
 ```shell
 docker run -d \
@@ -41,7 +41,7 @@ docker run -d \
 >
 > 🎈 数据存储在/opt/ech0/data下  
 
-### docker-componse部署
+### 🐋 docker-componse部署
 
 创建一个新目录并将 `docker-compose.yml` 文件放入其中
 
@@ -51,7 +51,7 @@ docker run -d \
 docker-compose up -d
 ```
 
-## 如何更新
+## 🔄 如何更新 
 
 ```shell
 # 停止当前的容器
@@ -73,7 +73,7 @@ docker run -d \
 
 ---
 
-# 常见问题
+# ❓ 常见问题
 
 1. **Ech0是什么？**
 Ech0 是一款轻量级的开源自托管平台，专为快速发布与分享个人想法、文字和链接而设计。它提供简洁的界面，支持零干扰的写作体验，所有数据存储于本地，确保用户对内容的完全控制。
@@ -98,3 +98,23 @@ Ech0 旨在保持简洁和轻量，因此在设计时没有复杂的权限系统
 
 ---
 
+# 🛠️ 开发
+
+🔧 依赖环境
+📌 后端： `Go 1.24.1+`
+📌 前端： `NodeJS v22.13.0,NPM`
+
+🏗️ 启动
+在Ech0根目录下：
+
+后端：
+```shell
+go run cmd/server/main.go
+```
+
+前端（新终端）：
+```shell
+cd web # 进入前端目录
+
+npm run dev
+```
