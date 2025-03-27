@@ -29,16 +29,16 @@
                 <div>
                     <!-- 返回首页 -->
                     <UButton size="sm" icon="i-fluent-arrow-left-16-filled" @click="$router.push('/')" color="gray" variant="ghost"
-                        class="text-gray-500 mt-6" />
+                        class="text-gray-500 mt-6" title="返回首页" />
                 </div>
                 <div>
                     <div v-if="isLogin">
                         <UButton size="sm" icon="i-mdi-logout" @click="logout" color="gray" variant="solid"
-                            class="text-gray-500 mt-6" />
+                            class="text-gray-500 mt-6" title="退出登录" />
                     </div>
                     <div v-else>
                         <UButton size="sm" icon="i-mdi-account-key-outline" @click="showStatusChange" color="gray"
-                            variant="solid" class="text-gray-500 mt-6" />
+                            variant="solid" class="text-gray-500 mt-6" title="登录/注册" />
                     </div>
                 </div>
              </div>
@@ -51,14 +51,14 @@
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-gray-500 text-md ml-1">登录</span>
                         <UButton size="sm" icon="i-mdi-account-plus-outline" @click="authmode = false" color="gray"
-                            variant="solid" class="text-gray-400" />
+                            variant="solid" class="text-gray-400" title="登录" />
                     </div>
 
                     <UForm :state="authForm" class="flex flex-col gap-2 mt-1">
                         <UInput v-model="authForm.username" placeholder="用户名" />
                         <UInput v-model="authForm.password" type="password" placeholder="密码" />
                         <UButton size="md" @click="login(authForm)" color="gray" variant="solid"
-                            class="text-gray-500 mt-6 w-1/3 mx-auto">
+                            class="text-gray-500 mt-6 w-1/3 mx-auto" title="登录">
                             <span class="mx-auto">
                                 登录
                             </span>
@@ -69,13 +69,13 @@
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-gray-500 text-md ml-1">注册</span>
                         <UButton size="sm" icon="i-mdi-account-key-outline" @click="authmode = true" color="gray"
-                            variant="solid" class="text-gray-400" />
+                            variant="solid" class="text-gray-400" title="注册" />
                     </div>
                     <UForm :state="authForm" class="flex flex-col gap-2 mt-1">
                         <UInput v-model="authForm.username" placeholder="用户名" />
                         <UInput v-model="authForm.password" type="password" placeholder="密码" />
                         <UButton size="md" @click="register(authForm)" color="gray" variant="solid"
-                            class="text-gray-500 mt-6 w-1/3 mx-auto">
+                            class="text-gray-500 mt-6 w-1/3 mx-auto" title="注册">
                             <span class="mx-auto">
                                 注册
                             </span>

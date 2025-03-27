@@ -1,55 +1,68 @@
 <template>
   <div class="mx-auto my-4 sm:max-w-sm px-2">
-    <div
-      v-for="msg in message.messages"
-      :key="msg.id"
-      class="w-full h-auto overflow-hidden flex flex-col justify-between"
-    >
-      <div class="flex justify-between items-center">
-        <!-- 时间 -->
-        <div class="flex justify-start items-center h-auto">
-          <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
-          <!-- 保留年月日 -->
-          <div class="flex justify-start text-sm text-orange-500">
-            {{ formatDate(msg.created_at) }}
-          </div>
-        </div>
-        <!-- 操作按钮 -->
-        <div class="flex justify-end items-center">
-          <!-- 显示是否为私密 -->
-          <div v-if="msg.private" class="w-5 h-5">
-            <UIcon name="i-mdi-lock-outline" class="text-gray-400" />
-          </div>
-          <!-- 删除按钮 -->
-          <div v-if="isLogin" class="w-5 h-5" @click="deleteMsg(msg.id)">
-            <UIcon name="i-mdi-paper-roll-outline" class="text-gray-400" />
-          </div>
-        </div>
-      </div>
+    <div v-if="message.loading">
+      <div class="space-y-2">
+        <!-- 图片骨架 -->
+        <USkeleton class="h-28 w-3/5 bg-gray-200 rounded-lg" />
 
-      <div class="border-l-2 border-gray-300 p-6 ml-1">
-        <!-- 留言内容 -->
-        <div class="rounded-lg overflow-hidden mb-2 w-5/6 mx-auto shadow-lg">
-          <a :href="`${BASE_API}${msg.image_url}`" data-fancybox>
-            <img
-              v-if="msg.image_url"
-              :src="`${BASE_API}${msg.image_url}`"
-              alt="Image"
-              class="max-w-full object-cover"
-              loading="lazy"
-            />
-          </a>
+        <!-- 内容骨架 -->
+        <USkeleton class="h-4 w-3/5 bg-slate-300" />
+        <USkeleton class="h-4 w-2/5 bg-slate-300" />
+        <USkeleton class="h-4 w-1/5 bg-slate-300" />
+      </div>
+    </div>
+    <div v-else>
+      <div
+        v-for="msg in message.messages"
+        :key="msg.id"
+        class="w-full h-auto overflow-hidden flex flex-col justify-between"
+      >
+        <div class="flex justify-between items-center">
+          <!-- 时间 -->
+          <div class="flex justify-start items-center h-auto">
+            <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
+            <!-- 保留年月日 -->
+            <div class="flex justify-start text-sm text-orange-500">
+              {{ formatDate(msg.created_at) }}
+            </div>
+          </div>
+          <!-- 操作按钮 -->
+          <div class="flex justify-end items-center">
+            <!-- 显示是否为私密 -->
+            <div v-if="msg.private" class="w-5 h-5">
+              <UIcon name="i-mdi-lock-outline" class="text-gray-400" />
+            </div>
+            <!-- 删除按钮 -->
+            <div v-if="isLogin" class="w-5 h-5" @click="deleteMsg(msg.id)">
+              <UIcon name="i-mdi-paper-roll-outline" class="text-gray-400" />
+            </div>
+          </div>
         </div>
-        <!-- 留言 -->
-        <div class="p-2 mb-2 rounded-lg h-3/5 overflow-y-auto">
-          <MarkdownRenderer :content="msg.content" />
-        </div>
-        <!-- 昵称 -->
-        <!-- <div class="p-1 h-1/3 flex items-center justify-end">
+
+        <div class="border-l-2 border-gray-300 p-6 ml-1">
+          <!-- 留言内容 -->
+          <div class="rounded-lg overflow-hidden mb-2 w-5/6 mx-auto shadow-lg">
+            <a :href="`${BASE_API}${msg.image_url}`" data-fancybox>
+              <img
+                v-if="msg.image_url"
+                :src="`${BASE_API}${msg.image_url}`"
+                alt="Image"
+                class="max-w-full object-cover"
+                loading="lazy"
+              />
+            </a>
+          </div>
+          <!-- 留言 -->
+          <div class="p-2 mb-2 rounded-lg h-3/5 overflow-y-auto">
+            <MarkdownRenderer :content="msg.content" />
+          </div>
+          <!-- 昵称 -->
+          <!-- <div class="p-1 h-1/3 flex items-center justify-end">
           <span class="text-xs text-gray-500 italic underline -mb-5">
             {{ msg.username ? msg.username : "ech0" }}
           </span>
         </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -58,10 +71,10 @@
   <div v-if="message.hasMore" class="mx-auto -mt-3 max-w-sm">
     <UButton
       color="gray"
-      variant="outline"
+      variant="solid"
       size="sm"
-      class="rounded-full border-gray-200"
-      @click="message.getMessages({ page: message.page + 1, pageSize: 10 })"
+      class="rounded-full border-1 border-gray-100 text-gray-500 text-md hover:bg-orange-100"
+      @click="message.getMessages({ page: message.page + 1, pageSize: 5 })"
     >
       继续装填！
     </UButton>
@@ -123,7 +136,7 @@ onMounted(() => {
 
   message.getMessages({
     page: 1,
-    pageSize: 10,
+    pageSize: 5,
   });
   Fancybox.bind("[data-fancybox]", {});
 });

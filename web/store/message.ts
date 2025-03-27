@@ -8,8 +8,9 @@ export const useMessageStore = defineStore("messageStore", () => {
   const total = ref(0);
   const hasMore = ref(true);
   const page = ref<number>(0);
-  const pageSize = ref(10);
+  const pageSize = ref(5);
   const toast = useToast();
+  const loading = ref<boolean>(true); // 添加loading状态
 
   // 获取留言列表
 //   const getAllMessages = async () => {
@@ -64,6 +65,8 @@ export const useMessageStore = defineStore("messageStore", () => {
       hasMore.value = messages.value.length < total.value;
     } catch (error) {
       console.error(error);
+    } finally {
+      loading.value = false; // 数据加载完成时设置为 false
     }
   };
 
@@ -96,6 +99,7 @@ export const useMessageStore = defineStore("messageStore", () => {
     messages,
     total,
     hasMore,
+    loading,
     getMessages,
     deleteMessage,
   };

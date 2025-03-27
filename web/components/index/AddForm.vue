@@ -8,14 +8,14 @@
       <div class="flex gap-2">
         <ClientOnly>
           <a href="/rss" target="_blank">
-            <UIcon name="i-mdi-rss" class="w-5 h-5 text-gray-400" />
+            <UIcon name="i-mdi-rss" class="w-5 h-5 text-gray-400" title="RSS" />
           </a>
         </ClientOnly>
         <NuxtLink to="https://github.com/lin-snow/Ech0/" target="_blank">
-          <UIcon name="i-mdi-github" class="w-5 h-5 text-gray-400" />
+          <UIcon name="i-mdi-github" class="w-5 h-5 text-gray-400" title="GitHub" />
         </NuxtLink>
         <NuxtLink to="/status">
-          <UIcon name="i-mdi-server-outline" class="w-5 h-5 text-gray-400" />
+          <UIcon name="i-mdi-server-outline" class="w-5 h-5 text-gray-400" title="Status" />
         </NuxtLink>
       </div>
     </div>
@@ -42,6 +42,7 @@
             size="sm"
             icon="i-fluent-image-20-regular"
             @click="triggerFileInput"
+            title="上传图片"
           />
           <!-- 是否设为私密？ -->
           <UButton
@@ -50,6 +51,7 @@
             size="sm"
             @click="Private = !Private"
             :icon="privateIcon"
+            title="设为私密？"
            />
         </div>
 
@@ -61,6 +63,7 @@
             color="gray"
             size="sm"
             @click="clearForm"
+            title="清空内容"
           />
 
           <!-- 添加Ech0 -->
@@ -70,6 +73,7 @@
             color="gray"
             size="sm"
             @click="addMessage"
+            title="发布Ech0"
           />
         </div>
       </div>
