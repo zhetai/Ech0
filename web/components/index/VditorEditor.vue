@@ -22,8 +22,7 @@ let vditorInstance: Vditor | null = null;
 
 // 编辑器配置
 const editorOptions: IOptions = {
-  mode: "wysiwyg",
-  undoDelay: 100,
+  mode: "ir",
   height: 140,
   icon: "material",
   lang: "zh_CN" as keyof II18n,
@@ -43,6 +42,11 @@ const editorOptions: IOptions = {
     emit("update:modelValue", content);
   },
   preview: {
+    delay: 1000,
+    mode: 'editor',
+    theme: {
+      current: "light",
+    },
     hljs: {
       style: "native",
     },
