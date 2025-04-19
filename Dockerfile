@@ -1,19 +1,25 @@
 # 使用 Node.js Alpine 镜像作为前端构建阶段
 FROM node:22.14.0-alpine AS frontend-build
 
+# 设置时区为上海
+ENV TZ=Asia/Shanghai
+
 # 设置前端工作目录
 WORKDIR /app/web
 
+# 安装PNPM 10.x 版本
+RUN npm install -g pnpm@latest-10
+
 # 复制前端依赖文件并安装依赖
-COPY ./web/package.json ./web/package-lock.json* ./
-RUN npm install --production
+COPY ./web_v2/package.json ./web_v2/pnpm-lock.yaml ./
+RUN pnpm install
 
 # 复制前端源代码并构建项目
-COPY ./web/ .
-RUN npm run generate  # 生成静态文件
+COPY ./web_v2/ .
+RUN pnpm build --mode production 
 
 # 复制构建后的文件到后端 public 目录
-RUN cp -r .output/public /app/public/
+RUN cp -r dist /app/dist/
 
 # 使用 Golang Alpine 镜像作为后端构建阶段
 FROM golang:1.24.1-alpine AS backend-build
@@ -50,7 +56,7 @@ WORKDIR /app
 # 复制构建阶段的文件
 COPY --from=backend-build /app/config /app/config
 COPY --from=backend-build /app/ech0 /app/ech0
-COPY --from=frontend-build /app/public /app/public
+COPY --from=frontend-build /app/dist /app/dist
 
 # 暴露端口
 EXPOSE 1314

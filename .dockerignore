@@ -8,3 +8,5 @@ node_modules/
 .DS_Store
 
 web/dist/
+
+web_v2/node_modules

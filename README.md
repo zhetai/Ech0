@@ -16,10 +16,11 @@ Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快
 
 ☁️ **原子级轻量**：内存占用仅**约11MB**，整个镜像大小不到**45MB**，单SQLite文件存储架构  
 🚀 **极速部署**：无需配置，从安装到使用只需1条命令  
-✍️ **零干扰写作**：纯净的在线Markdown编辑器，**所见即所得**  
+✍️ **零干扰写作**：纯净的在线Markdown编辑器，**支持丰富的Markdown插件与预览**  
 📦 **数据主权**：所有内容存储于本地SQLite文件，支持RSS订阅  
 🎉 **永久免费**：MIT协议开源，无追踪/无订阅/无服务依赖  
-🌍 **跨端适配**：完美兼容桌面/移动浏览器  
+🌍 **跨端适配**：完美兼容桌面/移动浏览器
+👾 **WPA适配**：支持作为Web应用安装
 
 ---
 
@@ -32,7 +33,7 @@ docker run -d \
   --name ech0 \
   -p 1314:1314 \
   -v /opt/ech0/data:/app/data \
-  sn0wl1n/ech0:v3.4.4
+  sn0wl1n/ech0:v4.0.0
 ```
 
 > 💡 部署完成后访问 ip:1314 即可使用  
@@ -59,21 +60,27 @@ docker stop ech0
 docker rm ech0
 
 # 拉取最新的镜像
-docker pull sn0wl1n/ech0:v3.4.4
+docker pull sn0wl1n/ech0:v4.0.0
 
 # 启动新版本的容器
 docker run -d \
   --name ech0 \
   -p 1314:1314 \
   -v /opt/ech0/data:/app/data \
-  sn0wl1n/ech0:v3.4.4
+  sn0wl1n/ech0:v4.0.0
 ```
 
 ---
 
+# 🎉 最新更新日志
+4.0.0版本现已基本完成了整个前端的重构，整个前端项目（现为web_v2）在开发、性能和使用体验均有大幅度提升！ 
+前端项目基于最新版Vue3+Vite+TypeScript+UnoCSS并采用CSR和SPA模式进行**重写**，使用严格的TypeScript类型约束，更加规范的项目结构，更加精简高效的处理逻辑，去除了繁重的NuxtJS框架和NuxtUI组件库，使用自定义组件，整体风格更加统一...
+
 # 🦖 未来目标
 
-- [ ] 使用React / NextJS重构整个前端
+- [x] 使用裸Vue3重写整个前端
+- [ ] 重构后端，使其更加优雅高效
+- [ ] 优化各项画面细节 && 增加更多实用功能
 - [ ] 修复一个安全性的问题
 - [ ] 增加快速发布内容接口
 - [ ] 性能优化 && 美化界面
@@ -123,11 +130,12 @@ go run cmd/server/main.go
 ```
 
 前端（新终端）：
-将`.env`文件中的prod那一行注释掉，然后保留dev即可
 ```shell
-cd web # 进入前端目录
+cd web_v2 # 进入前端目录
 
-npm run dev
+pnpm install
+
+pnpm dev
 ```
 
 ---

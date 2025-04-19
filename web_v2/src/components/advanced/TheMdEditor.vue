@@ -1,0 +1,59 @@
+<template>
+  <MdEditor
+    v-model="content"
+    :id="initEditor.id"
+    :theme="initEditor.theme"
+    :language="initEditor.language"
+    :show-code-row-number="initEditor.showCodeRowNumber"
+    :preview-theme="initEditor.previewTheme"
+    :code-theme="initEditor.codeTheme"
+    :code-style-reverse="initEditor.codeStyleReverse"
+    :no-img-zoom-in="initEditor.noImgZoomIn"
+    :code-foldable="initEditor.codeFoldable"
+    :auto-fold-threshold="initEditor.autoFoldThreshold"
+    :toolbars="initEditor.toolbars"
+    :no-prettier="initEditor.noPrettier"
+    :tab-width="initEditor.tabWidth"
+    :placeholder="initEditor.placeholder"
+    :preview="initEditor.preview"
+    :scroll-auto="initEditor.scrollAuto"
+    :show-toolbar-name="initEditor.showToolbarName"
+    :footers="initEditor.footers"
+  />
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+import { MdEditor } from 'md-editor-v3'
+import type { ToolbarNames } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
+
+const content = defineModel<string>()
+const initEditor = reactive({
+  class: 'theMdEditor',
+  theme: 'light' as 'light' | 'dark',
+  language: 'zh_CN',
+  id: 'theMdEditor',
+  showCodeRowNumber: false,
+  previewTheme: 'github',
+  codeTheme: 'atom',
+  codeStyleReverse: false,
+  noImgZoomIn: false,
+  codeFoldable: true,
+  autoFoldThreshold: 15,
+  preview: false,
+  toolbars: ['=', 'pageFullscreen', 'previewOnly'] as ToolbarNames[],
+  noPrettier: false,
+  tabWidth: 2,
+  placeholder: '一吐为快~',
+  scrollAuto: true,
+  showToolbarName: false,
+  footers: [],
+})
+</script>
+
+<style lang="css" scoped>
+#theMdEditor {
+  height: 10rem;
+}
+</style>

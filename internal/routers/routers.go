@@ -14,7 +14,7 @@ func SetupRouter() *gin.Engine {
 	r.Use(middleware.Cors())
 
 	// 映射静态文件目录
-	r.Use(static.Serve("/", static.LocalFile("./public", true)))
+	r.Use(static.Serve("/", static.LocalFile("./dist", true)))
 	r.Static("/api/images", "./data/images")
 
 	r.GET("/rss", controllers.GenerateRSS) // 生成 RSS 订阅链接
@@ -51,6 +51,11 @@ func SetupRouter() *gin.Engine {
 
 	// 更新系统设置
 	// authRoutes.PUT("/setting/update", controllers.UpdateSetting) // 更新系统设置
+
+	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./dist/index.html")
+	})
 
 	return r
 }
