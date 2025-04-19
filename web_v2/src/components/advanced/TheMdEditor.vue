@@ -52,8 +52,12 @@ const initEditor = reactive({
 })
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 #theMdEditor {
   height: 10rem;
+}
+
+.md-editor-toolbar-item {
+  color: #939393 !important;
 }
 </style>
