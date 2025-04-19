@@ -134,4 +134,17 @@ onMounted(() => {
 .md-editor {
   font-family: 'LXGW WenKai Screen';
 }
+
+:deep(ul li) {
+  list-style-type: disc;
+}
+:deep(ul li li) {
+  list-style-type: circle;
+}
+:deep(ul li li li) {
+  list-style-type: square;
+}
+:deep(ol li) {
+  list-style-type: decimal;
+}
 </style>

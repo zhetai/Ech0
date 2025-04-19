@@ -52,12 +52,25 @@ const initEditor = reactive({
 })
 </script>
 
-<style lang="css">
+<style scoped lang="css">
 #theMdEditor {
   height: 10rem;
 }
 
-.md-editor-toolbar-item {
+:deep(.md-editor-toolbar-item) {
   color: #939393 !important;
+}
+
+:deep(ul li) {
+  list-style-type: disc;
+}
+:deep(ul li li) {
+  list-style-type: circle;
+}
+:deep(ul li li li) {
+  list-style-type: square;
+}
+:deep(ol li) {
+  list-style-type: decimal;
 }
 </style>
