@@ -33,10 +33,13 @@ docker run -d \
   --name ech0 \
   -p 1314:1314 \
   -v /opt/ech0/data:/app/data \
-  sn0wl1n/ech0:v4.0.0
+  -v /opt/ech0/config/config.yaml:/app/data/config/config.yaml \
+  -e JWT_SECRET="Hello Echos!" \ 
+  sn0wl1n/ech0:v4.1.0
 ```
 
 > 💡 部署完成后访问 ip:1314 即可使用  
+> 🚷 建议把`-e JWT_SECRET="Hello Echos!"`里的`Hello Echos!`改成别的内容以提高安全性  
 > 📍 首次使用注册的账号会被设置为管理员（目前仅管理员支持发布内容）  
 > 🎈 数据存储在/opt/ech0/data下  
 
@@ -60,14 +63,16 @@ docker stop ech0
 docker rm ech0
 
 # 拉取最新的镜像
-docker pull sn0wl1n/ech0:v4.0.0
+docker pull sn0wl1n/ech0:v4.1.0
 
 # 启动新版本的容器
 docker run -d \
   --name ech0 \
   -p 1314:1314 \
   -v /opt/ech0/data:/app/data \
-  sn0wl1n/ech0:v4.0.0
+  -v /opt/ech0/config/config.yaml:/app/data/config/config.yaml \
+  -e JWT_SECRET="Hello Echos!" \
+  sn0wl1n/ech0:v4.1.0
 ```
 
 ---
@@ -81,7 +86,7 @@ docker run -d \
 - [x] 使用裸Vue3重写整个前端
 - [ ] 重构后端，使其更加优雅高效
 - [ ] 优化各项画面细节 && 增加更多实用功能
-- [ ] 修复一个安全性的问题
+- [x] 修复一个安全性的问题
 - [ ] 增加快速发布内容接口
 - [ ] 性能优化 && 美化界面
 

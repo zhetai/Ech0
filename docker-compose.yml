@@ -7,3 +7,6 @@ services:
       - "1314:1314"
     volumes:
       - ./ech0/data:/app/data
+      - ./ech0/data/config/config.yaml:/app/data/config/config.yaml
+    environment:
+      - JWT_SECRET="Hello Echos!"

@@ -15,7 +15,9 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		auth := ctx.Request.Header.Get("Authorization")
 
-		if auth == "" || auth == "null" || auth == "undefined" || len(auth) < 7 {
+		parts := strings.SplitN(auth, " ", 2)
+
+		if auth == "" || len(parts[1]) == 0 || parts[1] == "null" || parts[1] == "undefined" {
 			// 如果只是分页获取首页留言，则不需要鉴权
 			if strings.HasPrefix(ctx.Request.URL.Path, "/api/messages/page") {
 				ctx.Set("userid", uint(0))
@@ -35,7 +37,13 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		mc, err := pkg.ParseToken(auth)
+		if !(len(parts) == 2 && parts[0] == "Bearer") {
+			ctx.JSON(http.StatusOK, dto.Fail[any](models.TokenInvalidMessage))
+			ctx.Abort()
+			return
+		}
+
+		mc, err := pkg.ParseToken(parts[1])
 		if err != nil {
 			ctx.JSON(http.StatusOK, dto.Fail[any](models.TokenInvalidMessage))
 			ctx.Abort()

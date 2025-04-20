@@ -2,8 +2,7 @@ import { localStg } from '@/utils/storage'
 
 export const getAuthToken = () => {
   const token = localStg.getItem<string>('token')
-  // TODO: return token ? `Bearer ${token}` : ''
-  return token ? token : ''
+  return token ? `Bearer ${token}` : ''
 }
 
 export const saveAuthToken = (token: string) => {

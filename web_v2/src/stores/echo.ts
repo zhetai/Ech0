@@ -30,9 +30,11 @@ export const useEchoStore = defineStore('echoStore', () => {
       pageSize: pageSize.value,
     })
       .then((res) => {
-        total.value = res.data.total
-        echoList.value = [...echoList.value, ...res.data.items]
-        page.value += 1
+        if (res.code === 1) {
+          total.value = res.data.total
+          echoList.value = [...echoList.value, ...res.data.items]
+          page.value += 1
+        }
       })
       .finally(() => {
         isLoading.value = false

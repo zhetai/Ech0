@@ -1,7 +1,7 @@
 server:
   port: 1314
   host: "0.0.0.0"
-  mode: "debug" # "release" or "debug"
+  mode: "release" # "release" or "debug"
 
 database:
   type: "sqlite"
@@ -19,7 +19,6 @@ upload:
 
 auth:
   jwt:
-    secret: "HelloEch0s!"
     expires: 2592000 # 30天（单位秒）
     issuer: "ech0s"
     audience: "ech0s"

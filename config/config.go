@@ -1,7 +1,10 @@
 package config
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"log"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -23,7 +26,6 @@ type AppConfig struct {
 	} `yaml:"upload"`
 	Auth struct {
 		Jwt struct {
-			Secret   string `yaml:"secret"`
 			Expires  int    `yaml:"expires"`
 			Issuer   string `yaml:"issuer"`
 			Audience string `yaml:"audience"`
@@ -32,6 +34,7 @@ type AppConfig struct {
 }
 
 var Config AppConfig
+var JWT_SECRET []byte
 
 func LoadConfig() error {
 	viper.SetConfigFile("config/config.yaml")
@@ -49,5 +52,25 @@ func LoadConfig() error {
 		return err
 	}
 
+	JWT_SECRET = GetJWTSecret()
+
 	return nil
+}
+
+// 获取JWT密钥
+func GetJWTSecret() []byte {
+	// 从环境变量中获取JWT密钥
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" { // 如果没有设置环境变量，则使用UUID生成默认密钥
+		b := make([]byte, 16)
+		_, err := rand.Read(b)
+		if err != nil {
+			log.Fatal("failed to generate random JWT secret:", err)
+		}
+		secret = hex.EncodeToString(b)
+	}
+
+	// log.Println("JWT secret:", secret)
+
+	return []byte(secret)
 }

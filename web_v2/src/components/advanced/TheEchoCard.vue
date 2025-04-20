@@ -13,7 +13,7 @@
       </div>
       <!-- 操作按钮 -->
       <div>
-        <button @click="handleDeleteEcho(props.echo.id)">
+        <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)">
           <Roll />
         </button>
       </div>
@@ -61,6 +61,7 @@ import { getApiUrl } from '@/service/request/shared'
 import { onMounted } from 'vue'
 import { fetchDeleteEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
+import { useUserStore } from '@/stores/user'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
 import Roll from '../icons/roll.vue'
@@ -71,6 +72,7 @@ type Echo = App.Api.Ech0.Echo
 
 const props = defineProps<{ echo: Echo }>()
 const API_URL = getApiUrl()
+const userStore = useUserStore()
 const previewOptions = {
   proviewId: 'preview-only',
   theme: 'light' as 'light' | 'dark',
