@@ -15,12 +15,15 @@ import (
 )
 
 // 上传图片并返回图片的URL
-func UploadImage(c *gin.Context, allowedExtensions []string) (string, error) {
+func UploadImage(c *gin.Context) (string, error) {
 	// 获取上传的文件
 	file, err := c.FormFile("image")
 	if err != nil {
 		return "", errors.New(models.NotUploadImageErrorMessage)
 	}
+
+	// 从配置中读取支持的扩展名
+	allowedExtensions := config.Config.Upload.AllowedTypes
 
 	// 检查图片类型是否合法
 	if !isAllowedType(file.Header.Get("Content-Type"), allowedExtensions) {

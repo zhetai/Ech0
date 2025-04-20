@@ -50,6 +50,15 @@ export const useUserStore = defineStore('userStore', () => {
     })
   }
 
+  async function logout() {
+    // 清除token
+    localStg.removeItem('token')
+    user.value = null
+
+    // 跳转到首页
+    router.push({ name: 'home' })
+  }
+
   async function autoLogin() {
     // 检查localStorage中是否有token
     const token = String(localStg.getItem('token'))
@@ -61,5 +70,5 @@ export const useUserStore = defineStore('userStore', () => {
     }
   }
 
-  return { user, isLogin, login, signup, autoLogin }
+  return { user, isLogin, login, signup, logout, autoLogin }
 })

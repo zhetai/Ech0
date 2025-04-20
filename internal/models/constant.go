@@ -15,6 +15,8 @@ const (
 	LoginSuccessMessage          = "登录成功"
 	UpdateUserSuccessMessage     = "更新用户成功"
 	ChangePasswordSuccessMessage = "修改密码成功"
+	GetSettingsSuccessMessage    = "获取设置成功"
+	UpdateSettingsSuccessMessage = "更新设置成功"
 )
 
 // 失败相关
@@ -60,6 +62,7 @@ const (
 	NoPermissionMessage                    = "没有权限,请联系管理员"
 	GenerateRSSFailMessage                 = "生成 RSS 失败"
 	PasswordCannotBeSameAsBeforeMessage    = "新密码不能与旧密码相同"
+	GetSettingsFailMessage                 = "获取设置失败"
 )
 
 // 数据库相关
@@ -72,6 +75,11 @@ const (
 	DatabaseConnectionSuccess = "数据库连接成功"
 	DuplicateEntryMessage     = "重复的条目"
 	RecordNotFoundMessage     = "记录未找到"
+)
+
+// 键值对相关
+const (
+	SystemSettingsKey = "system_settings" // 系统设置的键
 )
 
 // 验证相关

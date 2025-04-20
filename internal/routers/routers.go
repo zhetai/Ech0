@@ -22,9 +22,10 @@ func SetupRouter() *gin.Engine {
 	// 公共的路由
 	publicRoutes := r.Group("/api")
 
-	publicRoutes.POST("/login", controllers.Login)       // 登录
-	publicRoutes.POST("/register", controllers.Register) // 注册
-	publicRoutes.GET("/status", controllers.GetStatus)   // 获取用户信息
+	publicRoutes.POST("/login", controllers.Login)         // 登录
+	publicRoutes.POST("/register", controllers.Register)   // 注册
+	publicRoutes.GET("/status", controllers.GetStatus)     // 获取用户信息
+	publicRoutes.GET("/settings", controllers.GetSettings) // 获取系统设置
 
 	// publicRoutes.GET("/messages", controllers.GetMessages) // 获取留言列表
 
@@ -50,7 +51,7 @@ func SetupRouter() *gin.Engine {
 	authRoutes.GET("/user", controllers.GetUserInfo) // 获取当前登录的用户信息
 
 	// 更新系统设置
-	// authRoutes.PUT("/setting/update", controllers.UpdateSetting) // 更新系统设置
+	authRoutes.PUT("/settings", controllers.UpdateSettings) // 更新系统设置
 
 	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
 	r.NoRoute(func(c *gin.Context) {

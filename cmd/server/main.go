@@ -17,7 +17,6 @@ func main() {
 	}
 
 	// 初始化数据库
-
 	if err := database.InitDB(); err != nil {
 		log.Fatalf(models.DatabaseInitErrorMessage+": %v", err)
 	}

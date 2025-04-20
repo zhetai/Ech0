@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import StatusPage from './modules/StatusPage.vue'
+import PanelPage from './modules/PanelPage.vue'
 </script>
 
 <template>
   <div class="w-full">
-    <StatusPage />
+    <PanelPage />
   </div>
 </template>
 

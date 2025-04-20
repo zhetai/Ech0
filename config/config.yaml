@@ -7,6 +7,9 @@ database:
   type: "sqlite"
   path: "data/ech0.db"
 
+setting:
+  servername: "Ech0s~"
+
 upload:
   maxsize: 5242880
   savepath: "data/images/"

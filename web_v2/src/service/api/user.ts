@@ -7,3 +7,6 @@ export function fetchGetCurrentUser() {
     method: 'GET',
   })
 }
+
+
+

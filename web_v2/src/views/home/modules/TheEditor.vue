@@ -24,11 +24,11 @@
               <Github class="w-5 h-5 text-gray-400" />
             </a>
           </div>
-          <!-- StatusPage -->
+          <!-- PanelPage -->
           <div>
-            <RouterLink to="/status">
+            <RouterLink to="/panel">
               <!-- icon -->
-              <Status class="w-5 h-5 text-gray-400" />
+              <Panel class="w-5 h-5 text-gray-400" />
             </RouterLink>
           </div>
         </div>
@@ -97,7 +97,7 @@
 <script setup lang="ts">
 import Github from '@/components/icons/github.vue'
 import Rss from '@/components/icons/rss.vue'
-import Status from '@/components/icons/status.vue'
+import Panel from '@/components/icons/panel.vue'
 import ImageUpload from '@/components/icons/image.vue'
 import Public from '@/components/icons/public.vue'
 import Private from '@/components/icons/private.vue'
@@ -108,12 +108,12 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
 import { onMounted, ref } from 'vue'
-import { fetchUploadImage, fetchAddEcho } from '@/service/api'
+import { fetchUploadImage, fetchAddEcho, fetchGetSettings } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 
-const appName = import.meta.env.VITE_APP_NAME
+const appName = ref<string>(import.meta.env.VITE_APP_NAME)
 const apiUrl = getApiUrl()
 const echoStore = useEchoStore()
 
@@ -169,5 +169,10 @@ const handleAddEcho = () => {
 
 onMounted(() => {
   Fancybox.bind('[data-fancybox]', {})
+  fetchGetSettings().then((res) => {
+    if (res.code === 1) {
+      appName.value = res.data.server_name
+    }
+  })
 })
 </script>

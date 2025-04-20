@@ -23,6 +23,11 @@ type User struct {
 	IsAdmin  bool   `json:"is_admin"`
 }
 
+type SystemSetting struct {
+	ServerName string `json:"server_name"` // 服务器名称
+	// AllowedRegister bool   `json:"allowed_register"` // 是否允许注册
+}
+
 type UserStatus struct {
 	UserID   uint   `json:"user_id"`  // 用户ID
 	UserName string `json:"username"` // 用户名
@@ -40,4 +45,10 @@ type MyCliams struct {
 	Userid   uint   `json:"user_id"`
 	Username string `json:"username"`
 	jwt.RegisteredClaims
+}
+
+// key value表
+type KeyValue struct {
+	Key   string `json:"key" gorm:"primaryKey"`
+	Value string `json:"value"`
 }

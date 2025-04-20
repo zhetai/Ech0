@@ -19,6 +19,9 @@ type AppConfig struct {
 		Type string `yaml:"type"`
 		Path string `yaml:"path"`
 	} `yaml:"database"`
+	Setting struct {
+		Servername string `yaml:"servername"`
+	}
 	Upload struct {
 		MaxSize      int      `yaml:"maxsize"`
 		AllowedTypes []string `yaml:"allowedtypes"`

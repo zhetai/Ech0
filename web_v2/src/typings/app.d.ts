@@ -74,5 +74,11 @@ declare namespace App {
         total_messages: number
       }
     }
+
+    namespace Setting {
+      type SystemSetting = {
+        server_name: string
+      }
+    }
   }
 }
