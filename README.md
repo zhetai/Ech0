@@ -35,7 +35,7 @@ docker run -d \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/config/config.yaml:/app/data/config/config.yaml \
   -e JWT_SECRET="Hello Echos!" \ 
-  sn0wl1n/ech0:v4.2.0
+  sn0wl1n/ech0:v4.3.0
 ```
 
 > 💡 部署完成后访问 ip:1314 即可使用  
@@ -63,7 +63,7 @@ docker stop ech0
 docker rm ech0
 
 # 拉取最新的镜像
-docker pull sn0wl1n/ech0:v4.2.0
+docker pull sn0wl1n/ech0:v4.3.0
 
 # 启动新版本的容器
 docker run -d \
@@ -72,7 +72,7 @@ docker run -d \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/config/config.yaml:/app/data/config/config.yaml \
   -e JWT_SECRET="Hello Echos!" \
-  sn0wl1n/ech0:v4.2.0
+  sn0wl1n/ech0:v4.3.0
 ```
 
 ---

@@ -4,7 +4,7 @@
   >
     <div class="mx-auto w-full px-3 py-4">
       <!-- Title && Nav -->
-      <div class="flex justify-between items-center p-1">
+      <div class="flex justify-between items-center py-1 px-2">
         <div class="flex flex-row items-center gap-2 justify-between">
           <div class="text-xl">👾</div>
           <h2 class="text-slate-600 font-bold italic">{{ appName }}</h2>
@@ -14,21 +14,21 @@
           <div>
             <a href="/rss">
               <!-- icon -->
-              <Rss class="w-5 h-5 text-gray-400" />
+              <Rss class="w-6 h-6 text-gray-400" />
             </a>
           </div>
           <!-- Github -->
           <div>
             <a href="https://github.com/lin-snow/Ech0">
               <!-- icon -->
-              <Github class="w-5 h-5 text-gray-400" />
+              <Github class="w-6 h-6 text-gray-400" />
             </a>
           </div>
           <!-- PanelPage -->
           <div>
             <RouterLink to="/panel">
               <!-- icon -->
-              <Panel class="w-5 h-5 text-gray-400" />
+              <Panel class="w-6 h-6 text-gray-400" />
             </RouterLink>
           </div>
         </div>
