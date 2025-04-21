@@ -7,7 +7,11 @@ import UnoCSS from 'unocss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), vueDevTools(), UnoCSS()],
+  plugins: [
+    vue(),
+    vueDevTools(),
+    UnoCSS()
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
