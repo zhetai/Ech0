@@ -11,11 +11,11 @@ WORKDIR /app/web
 RUN npm install -g pnpm@latest-10
 
 # 复制前端依赖文件并安装依赖
-COPY ./web_v2/package.json ./web_v2/pnpm-lock.yaml ./
+COPY ./web/package.json ./web/pnpm-lock.yaml ./
 RUN pnpm install
 
 # 复制前端源代码并构建项目
-COPY ./web_v2/ .
+COPY ./web/ .
 RUN pnpm build --mode production 
 
 # 复制构建后的文件到后端 public 目录
