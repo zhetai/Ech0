@@ -53,7 +53,12 @@
               ref="fileInput"
               @change="handleUploadImage"
             />
-            <BaseButton :icon="ImageUpload" @click="handTriggerUpload" class="w-8 h-8 rounded-md" />
+            <BaseButton
+              :icon="ImageUpload"
+              @click="handTriggerUpload"
+              class="w-8 h-8 rounded-md"
+              title="上传图片"
+            />
           </div>
           <!-- Privacy Set -->
           <div>
@@ -61,6 +66,7 @@
               :icon="echoToAdd.private ? Private : Public"
               @click="handlePrivate"
               class="w-8 h-8 rounded-md"
+              title="是否私密"
             />
           </div>
         </div>
@@ -68,11 +74,21 @@
         <div class="flex flex-row items-center gap-2">
           <!-- Clear -->
           <div>
-            <BaseButton :icon="Clear" @click="handleClear" class="w-8 h-8 rounded-md" />
+            <BaseButton
+              :icon="Clear"
+              @click="handleClear"
+              class="w-8 h-8 rounded-md"
+              title="清空输入和图片"
+            />
           </div>
           <!-- Publish -->
           <div>
-            <BaseButton :icon="Publish" @click="handleAddEcho" class="w-8 h-8 rounded-md" />
+            <BaseButton
+              :icon="Publish"
+              @click="handleAddEcho"
+              class="w-8 h-8 rounded-md"
+              title="发布"
+            />
           </div>
         </div>
       </div>
