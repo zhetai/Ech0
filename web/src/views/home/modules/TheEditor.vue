@@ -12,21 +12,21 @@
         <div class="flex flex-row items-center gap-2">
           <!-- RSS -->
           <div>
-            <a href="/rss">
+            <a href="/rss" title="RSS">
               <!-- icon -->
               <Rss class="w-6 h-6 text-gray-400" />
             </a>
           </div>
           <!-- Github -->
           <div>
-            <a href="https://github.com/lin-snow/Ech0">
+            <a href="https://github.com/lin-snow/Ech0" target="_blank" title="Github">
               <!-- icon -->
               <Github class="w-6 h-6 text-gray-400" />
             </a>
           </div>
           <!-- PanelPage -->
           <div class="relative">
-            <RouterLink to="/panel">
+            <RouterLink to="/panel" title="面板">
               <!-- icon -->
               <Panel class="w-6 h-6 text-gray-400" />
             </RouterLink>
