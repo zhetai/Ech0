@@ -13,6 +13,7 @@ func GetSetting() (models.SystemSetting, error) {
 	if err != nil {
 		// 未获取到设置，将默认值加入到数据库中
 		setting.ServerName = config.Config.Setting.Servername
+		setting.AllowRegister = config.Config.Setting.AllowRegister
 		error := repository.AddKeyValue(models.SystemSettingsKey, setting)
 		if error != nil {
 			return setting, error

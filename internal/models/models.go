@@ -24,8 +24,8 @@ type User struct {
 }
 
 type SystemSetting struct {
-	ServerName string `json:"server_name"` // 服务器名称
-	// AllowedRegister bool   `json:"allowed_register"` // 是否允许注册
+	ServerName    string `json:"server_name"`    // 服务器名称
+	AllowRegister bool   `json:"allow_register"` // 是否允许注册'
 }
 
 type UserStatus struct {

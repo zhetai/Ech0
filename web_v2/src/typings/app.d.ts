@@ -78,6 +78,7 @@ declare namespace App {
     namespace Setting {
       type SystemSetting = {
         server_name: string
+        allow_register: boolean
       }
     }
   }

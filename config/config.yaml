@@ -9,6 +9,7 @@ database:
 
 setting:
   servername: "Ech0s~"
+  allowregister: true
 
 upload:
   maxsize: 5242880

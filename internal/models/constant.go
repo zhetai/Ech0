@@ -63,6 +63,7 @@ const (
 	GenerateRSSFailMessage                 = "生成 RSS 失败"
 	PasswordCannotBeSameAsBeforeMessage    = "新密码不能与旧密码相同"
 	GetSettingsFailMessage                 = "获取设置失败"
+	RegisterNotAllowedMessage              = "当前系统不允许注册新用户"
 )
 
 // 数据库相关

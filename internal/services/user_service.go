@@ -39,6 +39,17 @@ func Register(userdto dto.RegisterDto) error {
 	}
 
 	// 创建新用户
+	// 检查是否允许注册
+	setting, err := GetSetting()
+	if err != nil {
+		return errors.New(models.GetSettingsFailMessage)
+	}
+
+	// 如果第一次注册用户，则不需要检查是否允许注册，否则检查是否允许注册
+	if len(users) != 0 && !setting.AllowRegister {
+		return errors.New(models.RegisterNotAllowedMessage)
+	}
+
 	if err := repository.CreateUser(&newuser); err != nil {
 		return errors.New(models.CreateUserFailMessage)
 	}

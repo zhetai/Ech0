@@ -25,6 +25,14 @@
             class="w-32 !py-1"
           />
         </div>
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
+          <h2 class="font-semibold w-24">允许注册:</h2>
+          <BaseSwitch
+            v-model="sysSetting.allow_register"
+            :disabled="!editMode"
+            class="w-14"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -37,9 +45,11 @@ import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
 import { fetchGetSettings, fetchUpdateSettings } from '@/service/api'
 import { theToast } from '@/utils/toast'
+import BaseSwitch from '@/components/common/BaseSwitch.vue'
 
 const sysSetting = ref<App.Api.Setting.SystemSetting>({
   server_name: '',
+  allow_register: true,
 })
 const editMode = ref<boolean>(false)
 

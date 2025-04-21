@@ -353,6 +353,7 @@ func UpdateSettings(c *gin.Context) {
 	// 调用 Service 层更新系统设置
 	var newSettings models.SystemSetting
 	newSettings.ServerName = settings.ServerName
+	newSettings.AllowRegister = settings.AllowRegister
 	if err := services.UpdateSetting(newSettings); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
