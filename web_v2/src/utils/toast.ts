@@ -5,6 +5,7 @@ const toast = useToast()
 const toastDefaultOptions = {
   position: POSITION.TOP_RIGHT,
   timeout: 2000,
+  draggable: false,
 }
 
 interface customToastOptions {

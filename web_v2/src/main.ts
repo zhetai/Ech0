@@ -1,5 +1,6 @@
 import './assets/main.css'
 import 'virtual:uno.css'
+import "vue-toastification/dist/index.css";
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -13,7 +14,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(Toast, {
-  transition: 'Vue-Toastification__bounce',
+  transition: 'Vue-Toastification__fade',
   maxToasts: 10,
   newestOnTop: true,
 })
