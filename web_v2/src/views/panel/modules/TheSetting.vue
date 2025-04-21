@@ -5,8 +5,8 @@
       <div>
         <div class="flex flex-row items-center justify-between mb-3">
           <h1 class="text-gray-600 font-bold text-lg">系统设置</h1>
-          <div class="flex flex-row items-center justify-between gap-2 w-14">
-            <button @click="handleUpdateSystemSetting" title="编辑">
+          <div class="flex flex-row items-center justify-end gap-2 w-14">
+            <button v-if="editMode" @click="handleUpdateSystemSetting" title="编辑">
               <Saveupdate class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
             </button>
             <button @click="editMode = !editMode" title="编辑">
