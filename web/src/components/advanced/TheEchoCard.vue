@@ -12,8 +12,11 @@
         </div>
       </div>
       <!-- 操作按钮 -->
-      <div>
-        <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)">
+      <div class="flex justify-end items-center gap-1 h-auto">
+        <!-- 是否隐私 -->
+        <span v-if="props.echo.private" title="私密状态"><Lock /></span>
+        <!-- 删除 -->
+        <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)" title="删除">
           <Roll />
         </button>
       </div>
@@ -65,6 +68,7 @@ import { useUserStore } from '@/stores/user'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
 import Roll from '../icons/roll.vue'
+import Lock from '../icons/lock.vue'
 
 const emit = defineEmits(['refresh'])
 
