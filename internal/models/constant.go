@@ -17,6 +17,7 @@ const (
 	ChangePasswordSuccessMessage = "修改密码成功"
 	GetSettingsSuccessMessage    = "获取设置成功"
 	UpdateSettingsSuccessMessage = "更新设置成功"
+	GetHeatMapSuccessMessage     = "获取热力图成功"
 )
 
 // 失败相关
@@ -64,6 +65,7 @@ const (
 	PasswordCannotBeSameAsBeforeMessage    = "新密码不能与旧密码相同"
 	GetSettingsFailMessage                 = "获取设置失败"
 	RegisterNotAllowedMessage              = "当前系统不允许注册新用户"
+	GetHeatMapFailMessage                  = "获取热力图失败"
 )
 
 // 数据库相关

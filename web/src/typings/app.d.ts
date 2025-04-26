@@ -73,6 +73,11 @@ declare namespace App {
         users: App.Api.User.UserStatus[]
         total_messages: number
       }
+
+      type HeatMap = {
+        date: string
+        count: number
+      }[]
     }
 
     namespace Setting {

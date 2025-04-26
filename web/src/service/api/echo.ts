@@ -9,14 +9,6 @@ export function fetchGetEchosByPage(searchParams: App.Api.Ech0.ParamsByPaginatio
   })
 }
 
-// 获取status
-export function fetchGetStatus() {
-  return request<App.Api.Ech0.Status>({
-    url: `/status`,
-    method: 'GET',
-  })
-}
-
 // 上传图片
 export function fetchUploadImage(file: File) {
   const formData = new FormData()
@@ -42,5 +34,21 @@ export function fetchDeleteEcho(echoId: number) {
   return request({
     url: `/messages/${echoId}`,
     method: 'DELETE',
+  })
+}
+
+// 获取status
+export function fetchGetStatus() {
+  return request<App.Api.Ech0.Status>({
+    url: `/status`,
+    method: 'GET',
+  })
+}
+
+// 获取一个月内的热力图
+export function fetchGetHeatMap() {
+  return request<App.Api.Ech0.HeatMap>({
+    url: `/heatmap`,
+    method: 'GET',
   })
 }

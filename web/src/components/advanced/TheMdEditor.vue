@@ -19,6 +19,7 @@
     :scroll-auto="initEditor.scrollAuto"
     :show-toolbar-name="initEditor.showToolbarName"
     :footers="initEditor.footers"
+    :no-upload-img="initEditor.noUploadImg"
   />
 </template>
 
@@ -42,13 +43,14 @@ const initEditor = reactive({
   codeFoldable: true,
   autoFoldThreshold: 15,
   preview: false,
-  toolbars: ['=', 'pageFullscreen', 'previewOnly'] as ToolbarNames[],
+  toolbars: ['=', 'previewOnly', 'pageFullscreen'] as ToolbarNames[],
   noPrettier: false,
   tabWidth: 2,
   placeholder: '一吐为快~',
   scrollAuto: true,
   showToolbarName: false,
   footers: [],
+  noUploadImg: true,
 })
 </script>
 

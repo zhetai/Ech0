@@ -34,6 +34,11 @@ type UserStatus struct {
 	IsAdmin  bool   `json:"is_admin"` // 是否是管理员
 }
 
+type Heapmap struct {
+	Date  string `json:"date"`  // 日期
+	Count int    `json:"count"` // 留言数量
+}
+
 type Status struct {
 	SysAdminID    uint         `json:"sys_admin_id"` // 系统管理员ID
 	Username      string       `json:"username"`     // 系统管理员用户名

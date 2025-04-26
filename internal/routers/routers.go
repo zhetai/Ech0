@@ -16,7 +16,6 @@ func SetupRouter() *gin.Engine {
 	// 映射静态文件目录
 	r.Use(static.Serve("/", static.LocalFile("./dist", true)))
 	r.Static("/api/images", "./data/images")
-
 	r.GET("/rss", controllers.GenerateRSS) // 生成 RSS 订阅链接
 
 	// 公共的路由
@@ -26,6 +25,7 @@ func SetupRouter() *gin.Engine {
 	publicRoutes.POST("/register", controllers.Register)   // 注册
 	publicRoutes.GET("/status", controllers.GetStatus)     // 获取用户信息
 	publicRoutes.GET("/settings", controllers.GetSettings) // 获取系统设置
+	publicRoutes.GET("/heatmap", controllers.GetHeatMap)   // 获取热力图数据
 
 	// publicRoutes.GET("/messages", controllers.GetMessages) // 获取留言列表
 
@@ -33,24 +33,20 @@ func SetupRouter() *gin.Engine {
 	authRoutes := r.Group("/api")
 	authRoutes.Use(middleware.JWTAuthMiddleware()) // 使用 JWT 鉴权中间件
 
+	// 留言相关路由
 	authRoutes.GET("/messages/:id", controllers.GetMessage)          // 获取留言详情
 	authRoutes.POST("/messages/page", controllers.GetMessagesByPage) // 分页获取留言列表
+	authRoutes.POST("/messages", controllers.PostMessage)            // 发布留言
+	authRoutes.DELETE("/messages/:id", controllers.DeleteMessage)    // 删除留言
+	authRoutes.POST("/images/upload", controllers.UploadImage)       // 上传图片
 
-	authRoutes.POST("/messages", controllers.PostMessage)         // 发布留言
-	authRoutes.DELETE("/messages/:id", controllers.DeleteMessage) // 删除留言
-
-	// 添加图片上传路由
-	authRoutes.POST("/images/upload", controllers.UploadImage) // 上传图片
-
-	// 更新用户信息
+	// 用户相关路由
 	authRoutes.PUT("/user/change_password", controllers.ChangePassword) // 修改密码
 	authRoutes.PUT("/user/update", controllers.UpdateUser)              // 更新用户信息
 	authRoutes.PUT("/user/admin", controllers.UpdateUserAdmin)          // 更新用户权限
+	authRoutes.GET("/user", controllers.GetUserInfo)                    // 获取当前登录的用户信息
 
-	// 获取当前登录的用户信息
-	authRoutes.GET("/user", controllers.GetUserInfo) // 获取当前登录的用户信息
-
-	// 更新系统设置
+	// 设置相关路由
 	authRoutes.PUT("/settings", controllers.UpdateSettings) // 更新系统设置
 
 	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)

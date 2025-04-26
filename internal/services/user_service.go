@@ -83,42 +83,6 @@ func Login(userdto dto.LoginDto) (string, error) {
 	return token, nil
 }
 
-func GetStatus() (models.Status, error) {
-	// 获取系统管理员信息
-	sysuser, err := repository.GetSysAdmin()
-	if err != nil {
-		return models.Status{}, errors.New(models.UserNotFoundMessage)
-	}
-
-	// 获取所有用户状态信息
-	var users []models.UserStatus
-	allusers, err := repository.GetAllUsers()
-	if err != nil {
-		return models.Status{}, errors.New(models.GetAllUsersFailMessage)
-	}
-	for _, user := range allusers {
-		users = append(users, models.UserStatus{
-			UserID:   user.ID,
-			UserName: user.Username,
-			IsAdmin:  user.IsAdmin,
-		})
-	}
-
-	status := models.Status{}
-
-	messages, err := repository.GetAllMessages(true)
-	if err != nil {
-		return status, errors.New(models.GetAllMessagesFailMessage)
-	}
-
-	status.SysAdminID = sysuser.ID
-	status.Username = sysuser.Username
-	status.Users = users
-	status.TotalMessages = len(messages)
-
-	return status, nil
-}
-
 func GetUserByID(userID uint) (models.User, error) {
 	user, err := repository.GetUserByID(userID)
 	if err != nil {
