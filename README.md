@@ -135,7 +135,7 @@ go run cmd/server/main.go
 
 前端（新终端）：
 ```shell
-cd web_v2 # 进入前端目录
+cd web # 进入前端目录
 
 pnpm install
 
