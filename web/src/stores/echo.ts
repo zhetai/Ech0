@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { fetchGetEchosByPage } from '@/service/api'
 
 export const useEchoStore = defineStore('echoStore', () => {
@@ -13,9 +13,19 @@ export const useEchoStore = defineStore('echoStore', () => {
   const page = ref<number>(0)
   const current = ref<number>(1)
   const searchValue = ref<string>('')
-  const searchingMode = ref<boolean>(false)
   const hasMore = computed(() => {
     return total.value > echoList.value.length
+  })
+  const searchingMode = computed(() => {
+    return searchValue.value.length > 0
+  })
+
+  // 监听 searchingMode 的变化
+  watch(searchingMode, (newValue, oldValue) => {
+    // 如果从搜索模式切换到非搜索模式，重置当前页码和数据列表
+    if (newValue === false && oldValue === true) {
+      refreshEchos()
+    }
   })
 
   /**
@@ -48,7 +58,6 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
-    searchingMode.value = false
     getEchosByPage()
   }
 
@@ -56,7 +65,6 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
-    searchingMode.value = true
   }
 
   return {

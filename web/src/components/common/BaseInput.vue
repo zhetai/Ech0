@@ -23,6 +23,7 @@
           customClass,
         ]"
         @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+        v-bind="$attrs"
       />
       <slot name="suffix" />
     </div>
