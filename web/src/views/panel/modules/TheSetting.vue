@@ -16,43 +16,43 @@
         </div>
         <!-- 站点标题 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
-          <h2 class="font-semibold w-24">站点标题:</h2>
+          <h2 class="font-semibold w-30">站点标题:</h2>
           <span v-if="!editMode">{{ SystemSetting?.site_title.length === 0 ? "暂无" : SystemSetting.site_title }}</span>
           <BaseInput
             v-else
             v-model="SystemSetting.site_title"
             type="text"
             placeholder="请输入站点标题"
-            class="w-32 !py-1"
+            class="w-38 !py-1"
           />
         </div>
         <!-- 服务名称 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
-          <h2 class="font-semibold w-24">服务名称:</h2>
+          <h2 class="font-semibold w-30">服务名称:</h2>
           <span v-if="!editMode">{{ SystemSetting?.server_name.length === 0 ? "暂无" : SystemSetting.server_name }}</span>
           <BaseInput
             v-else
             v-model="SystemSetting.server_name"
             type="text"
             placeholder="请输入服务名称"
-            class="w-32 !py-1"
+            class="w-38 !py-1"
           />
         </div>
         <!-- ICP备案号 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
-          <h2 class="font-semibold w-24">ICP备案号:</h2>
+          <h2 class="font-semibold w-30">ICP备案号:</h2>
           <span v-if="!editMode">{{ SystemSetting.ICP_number.length === 0 ? "暂无" : SystemSetting.ICP_number }}</span>
           <BaseInput
             v-else
             v-model="SystemSetting.ICP_number"
             type="text"
             placeholder="请输入ICP备案号"
-            class="w-32 !py-1"
+            class="w-38 !py-1"
           />
         </div>
         <!-- 允许注册 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
-          <h2 class="font-semibold w-24">允许注册:</h2>
+          <h2 class="font-semibold w-30">允许注册:</h2>
           <BaseSwitch
             v-model="SystemSetting.allow_register"
             :disabled="!editMode"

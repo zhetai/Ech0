@@ -90,7 +90,7 @@ func GetMessagesByPage(c *gin.Context) {
 	}
 
 	// 调用 Service 层获取分页留言
-	pageQueryResult, err := services.GetMessagesByPage(pageRequest.Page, pageRequest.PageSize, showPrivate)
+	pageQueryResult, err := services.GetMessagesByPage(pageRequest.Page, pageRequest.PageSize, pageRequest.Search, showPrivate)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return

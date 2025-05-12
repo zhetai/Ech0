@@ -44,6 +44,7 @@ declare namespace App {
       type ParamsByPagination = {
         page: number
         pageSize: number
+        search?: string
       }
 
       type Echo = {

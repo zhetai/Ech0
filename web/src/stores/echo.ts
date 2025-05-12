@@ -12,6 +12,8 @@ export const useEchoStore = defineStore('echoStore', () => {
   const pageSize = ref<number>(5)
   const page = ref<number>(0)
   const current = ref<number>(1)
+  const searchValue = ref<string>('')
+  const searchingMode = ref<boolean>(false)
   const hasMore = computed(() => {
     return total.value > echoList.value.length
   })
@@ -28,6 +30,7 @@ export const useEchoStore = defineStore('echoStore', () => {
     await fetchGetEchosByPage({
       page: current.value,
       pageSize: pageSize.value,
+      search: searchValue.value,
     })
       .then((res) => {
         if (res.code === 1) {
@@ -45,8 +48,29 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
+    searchingMode.value = false
     getEchosByPage()
   }
 
-  return { echoList, isLoading, total, pageSize, page, current, hasMore, getEchosByPage, refreshEchos }
+  const refreshForSearch = () => {
+    current.value = 1
+    page.value = 0
+    echoList.value = []
+    searchingMode.value = true
+  }
+
+  return {
+    echoList,
+    isLoading,
+    total,
+    pageSize,
+    page,
+    current,
+    searchValue,
+    searchingMode,
+    hasMore,
+    getEchosByPage,
+    refreshEchos,
+    refreshForSearch,
+  }
 })

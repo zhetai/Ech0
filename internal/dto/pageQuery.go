@@ -5,8 +5,9 @@ import (
 )
 
 type PageQueryDto struct {
-	Page     int `json:"page"`
-	PageSize int `json:"pageSize"`
+	Page     int    `json:"page"`
+	PageSize int    `json:"pageSize"`
+	Search   string `json:"search"`
 }
 
 type PageQueryResult struct {

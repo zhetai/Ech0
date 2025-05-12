@@ -27,6 +27,38 @@ func GetAllMessages(showPrivate bool) ([]models.Message, error) {
 	return messages, nil
 }
 
+// GetMessagesByPage 分页获取留言
+func GetMessagesByPage(page, pageSize int, search string, showPrivate bool) ([]models.Message, int64) {
+	// 计算偏移量
+	offset := (page - 1) * pageSize
+
+	// 查询数据库
+	var messages []models.Message
+	var total int64
+
+	query := database.DB.Model(&models.Message{})
+
+	// 如果 search 不为空，添加模糊查询条件
+	if search != "" || len(search) > 0 {
+		searchPattern := "%" + search + "%" // 模糊匹配模式
+		query = query.Where("content LIKE ?", searchPattern)
+	}
+
+	// 如果不是管理员，过滤私密留言
+	if !showPrivate {
+		query = query.Where("private = ?", false)
+	}
+
+	// 获取总数
+	query.Count(&total)
+
+	// 分页查询
+	query.Limit(pageSize).Offset(offset).Order("created_at DESC").Find(&messages)
+
+	// 返回结果
+	return messages, total
+}
+
 // GetMessageByID 根据 ID 获取留言
 func GetMessageByID(id uint, showPrivate bool) (*models.Message, error) {
 	var message models.Message

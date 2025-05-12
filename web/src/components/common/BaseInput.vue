@@ -1,5 +1,5 @@
 <template>
-  <div class="base-input">
+  <div class="base-input w-full">
     <!-- Label -->
     <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1">
       {{ label }}
