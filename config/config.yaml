@@ -8,8 +8,10 @@ database:
   path: "data/ech0.db"
 
 setting:
+  sitetitle: "Ech0s~"
   servername: "Ech0s~"
   allowregister: true
+  icpnumber: ""
 
 upload:
   maxsize: 5242880

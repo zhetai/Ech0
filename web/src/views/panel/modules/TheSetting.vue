@@ -14,21 +14,47 @@
             </button>
           </div>
         </div>
+        <!-- 站点标题 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
-          <h2 class="font-semibold w-24">服务名称:</h2>
-          <span v-if="!editMode">{{ sysSetting?.server_name }}</span>
+          <h2 class="font-semibold w-24">站点标题:</h2>
+          <span v-if="!editMode">{{ SystemSetting?.site_title.length === 0 ? "暂无" : SystemSetting.site_title }}</span>
           <BaseInput
             v-else
-            v-model="sysSetting.server_name"
+            v-model="SystemSetting.site_title"
+            type="text"
+            placeholder="请输入站点标题"
+            class="w-32 !py-1"
+          />
+        </div>
+        <!-- 服务名称 -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
+          <h2 class="font-semibold w-24">服务名称:</h2>
+          <span v-if="!editMode">{{ SystemSetting?.server_name.length === 0 ? "暂无" : SystemSetting.server_name }}</span>
+          <BaseInput
+            v-else
+            v-model="SystemSetting.server_name"
             type="text"
             placeholder="请输入服务名称"
             class="w-32 !py-1"
           />
         </div>
+        <!-- ICP备案号 -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
+          <h2 class="font-semibold w-24">ICP备案号:</h2>
+          <span v-if="!editMode">{{ SystemSetting.ICP_number.length === 0 ? "暂无" : SystemSetting.ICP_number }}</span>
+          <BaseInput
+            v-else
+            v-model="SystemSetting.ICP_number"
+            type="text"
+            placeholder="请输入ICP备案号"
+            class="w-32 !py-1"
+          />
+        </div>
+        <!-- 允许注册 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
           <h2 class="font-semibold w-24">允许注册:</h2>
           <BaseSwitch
-            v-model="sysSetting.allow_register"
+            v-model="SystemSetting.allow_register"
             :disabled="!editMode"
             class="w-14"
           />
@@ -40,21 +66,23 @@
 
 <script setup lang="ts">
 import BaseInput from '@/components/common/BaseInput.vue'
+import BaseSwitch from '@/components/common/BaseSwitch.vue'
 import Edit from '@/components/icons/edit.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
-import { fetchGetSettings, fetchUpdateSettings } from '@/service/api'
+import { fetchUpdateSettings } from '@/service/api'
 import { theToast } from '@/utils/toast'
-import BaseSwitch from '@/components/common/BaseSwitch.vue'
+import { useSettingStore } from '@/stores/settting'
+import { storeToRefs } from 'pinia'
 
-const sysSetting = ref<App.Api.Setting.SystemSetting>({
-  server_name: '',
-  allow_register: true,
-})
+const settingStore = useSettingStore();
+const { getSystemSetting } = settingStore
+const { SystemSetting } = storeToRefs(settingStore)
+
 const editMode = ref<boolean>(false)
 
 const handleUpdateSystemSetting = async () => {
-  await fetchUpdateSettings(sysSetting.value)
+  await fetchUpdateSettings(settingStore.SystemSetting)
     .then((res) => {
       if (res.code === 1) {
         theToast.success(res.msg)
@@ -63,15 +91,11 @@ const handleUpdateSystemSetting = async () => {
     .finally(() => {
       editMode.value = false
       // 重新获取设置
-      fetchGetSettings().then((res) => {
-        sysSetting.value = res.data
-      })
+      getSystemSetting();
     })
 }
 
-onMounted(() => {
-  fetchGetSettings().then((res) => {
-    sysSetting.value = res.data
-  })
+onMounted(async () => {
+  await getSystemSetting()
 })
 </script>

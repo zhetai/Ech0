@@ -16,6 +16,14 @@
     <div v-else class="mx-auto my-5 text-center">
       <span class="text-xl text-gray-400">没有啦！🎉</span>
     </div>
+    <!-- 备案号 -->
+    <div class="text-center">
+      <a href="https://beian.miit.gov.cn/" target="_blank">
+        <span class="text-gray-400 text-sm">
+          {{ SystemSetting.ICP_number }}
+        </span>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -23,9 +31,13 @@
 import TheEchoCard from '@/components/advanced/TheEchoCard.vue'
 import { onMounted } from 'vue'
 import { useEchoStore } from '@/stores/echo'
+import { useSettingStore } from '@/stores/settting'
 import BaseButton from '@/components/common/BaseButton.vue'
+import { storeToRefs } from 'pinia'
 
 const echoStore = useEchoStore()
+const settingStore = useSettingStore()
+const { SystemSetting } = storeToRefs(settingStore)
 
 const handleLoadMore = async () => {
   echoStore.current = echoStore.current + 1

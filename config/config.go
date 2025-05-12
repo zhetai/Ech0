@@ -20,8 +20,10 @@ type AppConfig struct {
 		Path string `yaml:"path"`
 	} `yaml:"database"`
 	Setting struct {
+		SiteTitle     string `yaml:"sitetitle"`
 		Servername    string `yaml:"servername"`
 		AllowRegister bool   `yaml:"allowregister"`
+		Icpnumber     string `yaml:"icpnumber"`
 	}
 	Upload struct {
 		MaxSize      int      `yaml:"maxsize"`

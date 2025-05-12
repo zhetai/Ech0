@@ -7,7 +7,7 @@
       <div class="flex justify-between items-center py-1 px-2">
         <div class="flex flex-row items-center gap-2 justify-between">
           <div class="text-xl">👾</div>
-          <h2 class="text-slate-600 font-bold italic">{{ appName }}</h2>
+          <h2 class="text-slate-600 font-bold italic">{{ SystemSetting.server_name }}</h2>
         </div>
         <div class="flex flex-row items-center gap-2">
           <!-- RSS -->
@@ -125,14 +125,19 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
 import { onMounted, ref } from 'vue'
-import { fetchUploadImage, fetchAddEcho, fetchGetSettings } from '@/service/api'
+import { fetchUploadImage, fetchAddEcho } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
+import { useSettingStore } from '@/stores/settting'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
+import { storeToRefs } from 'pinia'
 
-const appName = ref<string>(import.meta.env.VITE_APP_NAME)
+
 const apiUrl = getApiUrl()
 const echoStore = useEchoStore()
+const settingStore = useSettingStore()
+
+const { SystemSetting } = storeToRefs(settingStore)
 
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
@@ -186,10 +191,5 @@ const handleAddEcho = () => {
 
 onMounted(() => {
   Fancybox.bind('[data-fancybox]', {})
-  fetchGetSettings().then((res) => {
-    if (res.code === 1) {
-      appName.value = res.data.server_name
-    }
-  })
 })
 </script>

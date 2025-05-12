@@ -8,4 +8,12 @@
 <script setup lang="ts">
 import TheEditor from './TheEditor.vue'
 import TheEchos from './TheEchos.vue'
+import { onMounted } from 'vue'
+import { useSettingStore } from '@/stores/settting';
+
+const { getSystemSetting } = useSettingStore()
+
+onMounted(async () => {
+  await getSystemSetting()
+})
 </script>

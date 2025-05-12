@@ -82,8 +82,10 @@ declare namespace App {
 
     namespace Setting {
       type SystemSetting = {
+        site_title: string
         server_name: string
         allow_register: boolean
+        ICP_number: string
       }
     }
   }
