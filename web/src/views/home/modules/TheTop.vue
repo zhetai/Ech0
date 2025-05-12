@@ -9,6 +9,12 @@
           class="w-1/3 h-9"
           @blur="handleSearch"
         />
+        <BaseButton
+          :icon="Other"
+          @click="notDeveloper"
+          class="w-10 h-9 rounded-md !shadow-none !border-none !ring-0 !bg-transparent"
+          title="外界"
+        />
     </div>
   </div>
 </template>
@@ -16,10 +22,12 @@
 <script setup lang="ts">
 import BaseButton from '@/components/common/BaseButton.vue';
 import BaseInput from '@/components/common/BaseInput.vue';
-import User from '@/components/icons/user.vue';
+import Other from '@/components/icons/other.vue';
+import router from '@/router';
 import { useEchoStore } from '@/stores/echo';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
+import { theToast } from '@/utils/toast';
 const echoStore = useEchoStore()
 const { refreshForSearch, getEchosByPage } = echoStore
 const { searchingMode } = storeToRefs(echoStore)
@@ -37,5 +45,9 @@ const handleSearch = () => {
     // 开始搜索
     getEchosByPage();
   }
+}
+
+const notDeveloper = () => {
+  theToast.info('该功能正在开发中，请耐心等待！')
 }
 </script>
