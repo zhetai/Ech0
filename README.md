@@ -34,7 +34,7 @@ docker run -d \
   -p 1314:1314 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/config/config.yaml:/app/data/config/config.yaml \
-  -e JWT_SECRET="Hello Echos!" \ 
+  -e JWT_SECRET="Hello Echos!" \
   sn0wl1n/ech0:latest
 ```
 
