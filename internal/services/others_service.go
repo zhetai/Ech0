@@ -102,6 +102,7 @@ func GetStatus() (models.Status, error) {
 
 	status.SysAdminID = sysuser.ID
 	status.Username = sysuser.Username
+	status.Logo = sysuser.Avatar
 	status.Users = users
 	status.TotalMessages = len(messages)
 

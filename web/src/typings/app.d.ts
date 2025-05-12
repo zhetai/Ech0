@@ -79,6 +79,7 @@ declare namespace App {
       type Status = {
         sys_admin_id: number
         username: string
+        logo: string
         users: App.Api.User.UserStatus[]
         total_messages: number
       }

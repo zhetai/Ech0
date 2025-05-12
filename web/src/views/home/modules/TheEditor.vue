@@ -9,7 +9,7 @@
           <!-- <div class="text-xl">👾</div> -->
           <div>
             <img
-              :src="user?.avatar?.length === 0 ? '/favicon.svg' : `${apiUrl}${user?.avatar}`"
+              :src="logo"
               alt="logo"
               class="w-6 h-6 rounded-full ring-1 ring-gray-200 shadow-sm"
             />
@@ -132,7 +132,7 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
 import { onMounted, ref } from 'vue'
-import { fetchUploadImage, fetchAddEcho } from '@/service/api'
+import { fetchUploadImage, fetchAddEcho, fetchGetStatus } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
 import { useUserStore } from '@/stores/user'
@@ -148,6 +148,8 @@ const userStore = useUserStore()
 
 const { SystemSetting } = storeToRefs(settingStore)
 const { user } = storeToRefs(userStore)
+
+const logo = ref<string>('/favicon.svg')
 
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
@@ -201,5 +203,13 @@ const handleAddEcho = () => {
 
 onMounted(() => {
   Fancybox.bind('[data-fancybox]', {})
+  fetchGetStatus().then((res) => {
+    if (res.code === 1) {
+      const theLogo = res.data.logo
+      if (theLogo && theLogo !== '') {
+        logo.value = `${apiUrl}${theLogo}`
+      }
+    }
+  })
 })
 </script>
