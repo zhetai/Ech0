@@ -17,6 +17,7 @@ export const useUserStore = defineStore('userStore', () => {
   /**
    * actions
    */
+  // 登录
   async function login(userInfo: App.Api.Auth.LoginParams) {
     await fetchLogin(userInfo).then((res) => {
       const token = String(res.data)
@@ -25,10 +26,8 @@ export const useUserStore = defineStore('userStore', () => {
         // 保存token到localStorage
         saveAuthToken(token)
 
-        // 获取用户信息
-        fetchGetCurrentUser().then((res) => {
-          user.value = res.data
-        })
+        // 获取当前登录用户信息
+        refreshCurrentUser()
 
         // 登录成功
         theToast.success('登录成功')
@@ -37,6 +36,7 @@ export const useUserStore = defineStore('userStore', () => {
     })
   }
 
+  // 注册
   async function signup(userInfo: App.Api.Auth.SignupParams) {
     return await fetchSignup(userInfo).then((res) => {
       // 注册成功，前往登录
@@ -50,6 +50,7 @@ export const useUserStore = defineStore('userStore', () => {
     })
   }
 
+  // 退出登录
   async function logout() {
     // 清除token
     localStg.removeItem('token')
@@ -59,16 +60,22 @@ export const useUserStore = defineStore('userStore', () => {
     router.push({ name: 'home' })
   }
 
+  // 自动登录
   async function autoLogin() {
     // 检查localStorage中是否有token
     const token = String(localStg.getItem('token'))
     if (token && token.length > 0 && token !== 'undefined' && token !== 'null') {
       // 如果有token，则获取用户信息
-      await fetchGetCurrentUser().then((res) => {
-        user.value = res.data
-      })
+      await refreshCurrentUser()
     }
   }
 
-  return { user, isLogin, login, signup, logout, autoLogin }
+  // 获取当前登录用户信息
+  async function refreshCurrentUser() {
+    await fetchGetCurrentUser().then((res) => {
+      user.value = res.data
+    })
+  }
+
+  return { user, isLogin, login, signup, logout, autoLogin, refreshCurrentUser }
 })

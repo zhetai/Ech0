@@ -1,7 +1,7 @@
 <template>
   <div class="w-full px-2">
     <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4">
-      <!-- 系统设置 -->
+      <!-- 设置 -->
       <div>
         <div class="flex flex-row items-center justify-between mb-3">
           <h1 class="text-gray-600 font-bold text-lg">系统设置</h1>
@@ -10,12 +10,13 @@
               <Saveupdate class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
             </button>
             <button @click="editMode = !editMode" title="编辑">
-              <Edit class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
+              <Edit v-if="!editMode" class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
+              <Close v-else class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
             </button>
           </div>
         </div>
         <!-- 站点标题 -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30">站点标题:</h2>
           <span v-if="!editMode">{{ SystemSetting?.site_title.length === 0 ? "暂无" : SystemSetting.site_title }}</span>
           <BaseInput
@@ -23,11 +24,11 @@
             v-model="SystemSetting.site_title"
             type="text"
             placeholder="请输入站点标题"
-            class="w-38 !py-1"
+            class="w-36 !py-1"
           />
         </div>
         <!-- 服务名称 -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30">服务名称:</h2>
           <span v-if="!editMode">{{ SystemSetting?.server_name.length === 0 ? "暂无" : SystemSetting.server_name }}</span>
           <BaseInput
@@ -35,23 +36,23 @@
             v-model="SystemSetting.server_name"
             type="text"
             placeholder="请输入服务名称"
-            class="w-38 !py-1"
+            class="w-36 !py-1"
           />
         </div>
         <!-- ICP备案号 -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
-          <h2 class="font-semibold w-30">ICP备案号:</h2>
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30">ICP备案:</h2>
           <span v-if="!editMode">{{ SystemSetting.ICP_number.length === 0 ? "暂无" : SystemSetting.ICP_number }}</span>
           <BaseInput
             v-else
             v-model="SystemSetting.ICP_number"
             type="text"
             placeholder="请输入ICP备案号"
-            class="w-38 !py-1"
+            class="w-36 !py-1"
           />
         </div>
         <!-- 允许注册 -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-14">
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30">允许注册:</h2>
           <BaseSwitch
             v-model="SystemSetting.allow_register"
@@ -68,6 +69,7 @@
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseSwitch from '@/components/common/BaseSwitch.vue'
 import Edit from '@/components/icons/edit.vue'
+import Close from '@/components/icons/close.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
 import { fetchUpdateSettings } from '@/service/api'

@@ -66,6 +66,7 @@ const (
 	GetSettingsFailMessage                 = "获取设置失败"
 	RegisterNotAllowedMessage              = "当前系统不允许注册新用户"
 	GetHeatMapFailMessage                  = "获取热力图失败"
+	UpdateUserFailMessage                  = "更新用户失败"
 )
 
 // 数据库相关

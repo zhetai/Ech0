@@ -21,6 +21,7 @@ type User struct {
 	Username string `gorm:"size:255;not null;unique" json:"username"`
 	Password string `gorm:"size:255;not null" json:"password"`
 	IsAdmin  bool   `json:"is_admin"`
+	Avatar   string `gorm:"size:255" json:"avatar"`
 }
 
 type SystemSetting struct {

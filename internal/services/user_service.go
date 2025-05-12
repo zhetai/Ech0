@@ -100,40 +100,35 @@ func IsUserAdmin(userID uint) (bool, error) {
 }
 
 func UpdateUser(user models.User, userdto dto.UserInfoDto) error {
-	// 检查更新的用户名是否与之前一样，如果一样则不更新
-	if user.Username == userdto.Username {
-		return nil
+	// 检查是否需要更新用户名
+	if userdto.Username != "" && userdto.Username != user.Username {
+		// 检查用户名是否已存在
+		existingUser, _ := repository.GetUserByUsername(userdto.Username)
+		if existingUser.ID != 0 {
+			return errors.New(models.UsernameAlreadyExistsMessage)
+		}
+		user.Username = userdto.Username
 	}
 
-	// 检查用户名是否为空
-	if userdto.Username == "" {
-		return errors.New(models.UsernameCannotBeEmptyMessage)
+	// 检查是否需要更新密码
+	if userdto.Password != "" && pkg.MD5Encrypt(userdto.Password) != user.Password {
+		// 检查密码是否为空
+		if userdto.Password == "" {
+			return errors.New(models.PasswordCannotBeEmptyMessage)
+		}
+		// 更新密码
+		user.Password = pkg.MD5Encrypt(userdto.Password)
 	}
 
-	// 更新用户名
-	user.Username = userdto.Username
+	// 检查是否需要更新头像
+	if userdto.Avatar != "" && userdto.Avatar != user.Avatar {
+		// 更新头像
+		user.Avatar = userdto.Avatar
+	}
+
+	// 更新用户信息
 	if err := repository.UpdateUser(&user); err != nil {
-		return errors.New(err.Error())
-	}
-
-	return nil
-}
-
-func ChangePassword(user models.User, userdto dto.UserInfoDto) error {
-	// 检查待更新的密码是否与之前一样，如果一样则不更新
-	if user.Password == pkg.MD5Encrypt(userdto.Password) {
-		return errors.New(models.PasswordCannotBeSameAsBeforeMessage)
-	}
-
-	// 检查密码是否为空
-	if userdto.Password == "" {
-		return errors.New(models.PasswordCannotBeEmptyMessage)
-	}
-
-	// 更新密码
-	user.Password = pkg.MD5Encrypt(userdto.Password)
-	if err := repository.UpdateUser(&user); err != nil {
-		return errors.New(err.Error())
+		return errors.New(models.UpdateUserFailMessage)
 	}
 
 	return nil

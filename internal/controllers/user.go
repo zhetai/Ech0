@@ -10,33 +10,8 @@ import (
 	"github.com/lin-snow/ech0/internal/services"
 )
 
-// 更新用户信息 （用户名 、 密码）
+// 更新用户信息 (用户名、密码、头像)
 func UpdateUser(c *gin.Context) {
-	// 检查用户是否为管理员
-	user, err := services.GetUserByID(c.MustGet("userid").(uint))
-	if err != nil {
-		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
-		return
-	}
-
-	// 解析请求体中的参数
-	var userdto dto.UserInfoDto
-	if err := c.ShouldBindJSON(&userdto); err != nil {
-		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidRequestBodyMessage))
-		return
-	}
-
-	// 调用 Service 层更新用户信息
-	if err := services.UpdateUser(user, userdto); err != nil {
-		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
-		return
-	}
-
-	c.JSON(http.StatusOK, dto.OK[any](nil, models.UpdateUserSuccessMessage))
-}
-
-// 更改密码
-func ChangePassword(c *gin.Context) {
 	// 解析用户请求体中的参数
 	var userdto dto.UserInfoDto
 	if err := c.ShouldBindJSON(&userdto); err != nil {
@@ -51,13 +26,13 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	// 调用 Service 层更改密码
-	if err := services.ChangePassword(user, userdto); err != nil {
+	// 调用 Service 层更新用户信息
+	if err := services.UpdateUser(user, userdto); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.OK[any](nil, models.ChangePasswordSuccessMessage))
+	c.JSON(http.StatusOK, dto.OK[any](nil, models.UpdateUserSuccessMessage))
 }
 
 // 更新用户权限

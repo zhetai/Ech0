@@ -41,10 +41,9 @@ func SetupRouter() *gin.Engine {
 	authRoutes.POST("/images/upload", controllers.UploadImage)       // 上传图片
 
 	// 用户相关路由
-	authRoutes.PUT("/user/change_password", controllers.ChangePassword) // 修改密码
-	authRoutes.PUT("/user/update", controllers.UpdateUser)              // 更新用户信息
-	authRoutes.PUT("/user/admin", controllers.UpdateUserAdmin)          // 更新用户权限
-	authRoutes.GET("/user", controllers.GetUserInfo)                    // 获取当前登录的用户信息
+	authRoutes.PUT("/user", controllers.UpdateUser)            // 更新用户信息
+	authRoutes.PUT("/user/admin", controllers.UpdateUserAdmin) // 更新用户权限
+	authRoutes.GET("/user", controllers.GetUserInfo)           // 获取当前登录的用户信息
 
 	// 设置相关路由
 	authRoutes.PUT("/settings", controllers.UpdateSettings) // 更新系统设置

@@ -6,7 +6,14 @@
       <!-- Title && Nav -->
       <div class="flex justify-between items-center py-1 px-2">
         <div class="flex flex-row items-center gap-2 justify-between">
-          <div class="text-xl">👾</div>
+          <!-- <div class="text-xl">👾</div> -->
+          <div>
+            <img
+              :src="user?.avatar?.length === 0 ? '/favicon.svg' : `${apiUrl}${user?.avatar}`"
+              alt="logo"
+              class="w-6 h-6 rounded-full ring-1 ring-gray-200 shadow-sm"
+            />
+          </div>
           <h2 class="text-slate-600 font-bold italic">{{ SystemSetting.server_name }}</h2>
         </div>
         <div class="flex flex-row items-center gap-2">
@@ -128,6 +135,7 @@ import { onMounted, ref } from 'vue'
 import { fetchUploadImage, fetchAddEcho } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
+import { useUserStore } from '@/stores/user'
 import { useSettingStore } from '@/stores/settting'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { storeToRefs } from 'pinia'
@@ -136,8 +144,10 @@ import { storeToRefs } from 'pinia'
 const apiUrl = getApiUrl()
 const echoStore = useEchoStore()
 const settingStore = useSettingStore()
+const userStore = useUserStore()
 
 const { SystemSetting } = storeToRefs(settingStore)
+const { user } = storeToRefs(userStore)
 
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',

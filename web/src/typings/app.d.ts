@@ -31,6 +31,14 @@ declare namespace App {
         username: string
         password?: string
         is_admin: boolean
+        avatar?: string
+      }
+
+      type UserInfo = {
+        username: string
+        password: string
+        is_admin: boolean
+        avatar: string
       }
 
       type UserStatus = {

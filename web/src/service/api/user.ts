@@ -8,5 +8,12 @@ export function fetchGetCurrentUser() {
   })
 }
 
-
+// 更新用户信息
+export function fetchUpdateUser(user: App.Api.User.UserInfo) {
+  return request({
+    url: '/user',
+    method: 'PUT',
+    data: user,
+  })
+}
 

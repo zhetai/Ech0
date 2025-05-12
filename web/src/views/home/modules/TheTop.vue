@@ -1,6 +1,6 @@
 <template>
   <div class="sm:max-w-sm mx-auto flex justify-between items-center mb-2">
-    <div class="w-full">
+    <div class="w-full flex justify-between items-center">
         <BaseInput
           title="搜索"
           type="text"
@@ -14,7 +14,9 @@
 </template>
 
 <script setup lang="ts">
+import BaseButton from '@/components/common/BaseButton.vue';
 import BaseInput from '@/components/common/BaseInput.vue';
+import User from '@/components/icons/user.vue';
 import { useEchoStore } from '@/stores/echo';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
