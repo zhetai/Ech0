@@ -41,18 +41,22 @@
       <!-- Buttons -->
       <div class="flex flex-row items-center justify-between px-2">
         <div class="flex flex-row items-center gap-2">
-            <!-- Todo -->
-            <div>
+          <!-- Todo -->
+          <!-- <div>
             <BaseButton
               :icon="Todo"
               @click="handleChangeMode"
-              :class="[
-              'w-8 h-8 rounded-md',
-              isTodoMode ? 'bg-orange-100 shadow-[0_0_12px_-4px_rgba(255,140,0,0.6)] !ring-0 !text-white' : ''
-              ].join(' ')"
+              :class="
+                [
+                  'w-8 h-8 rounded-md',
+                  isTodoMode
+                    ? 'bg-orange-100 shadow-[0_0_12px_-4px_rgba(255,140,0,0.6)] !ring-0 !text-white'
+                    : '',
+                ].join(' ')
+              "
               title="切换待办模式"
             />
-            </div>
+          </div> -->
           <!-- Photo Upload -->
           <div v-if="!isTodoMode">
             <input

@@ -9,6 +9,7 @@ export const useSettingStore = defineStore("settingStore", () => {
   const SystemSetting = ref<App.Api.Setting.SystemSetting>({
     site_title: import.meta.env.VITE_APP_TITLE,
     server_name: import.meta.env.VITE_APP_NAME,
+    server_url: "",
     allow_register: true,
     ICP_number: ""
   })

@@ -94,8 +94,24 @@ declare namespace App {
       type SystemSetting = {
         site_title: string
         server_name: string
+        server_url: string
         allow_register: boolean
         ICP_number: string
+      }
+    }
+
+    namespace Connect {
+      type Connect = {
+        server_name: string
+        server_url: string
+        logo: string
+        ech0s: number
+        sys_username: string
+      }
+
+      type Connected = {
+        id: number
+        connect_url: string
       }
     }
   }

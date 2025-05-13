@@ -23,6 +23,9 @@ const (
 	UpdateTodoSuccessMessage     = "更新待办事项成功"
 	DeleteTodoSuccessMessage     = "删除待办事项成功"
 	GetConnectSuccessMessage     = "连接成功"
+	AddConnectSuccessMessage     = "添加连接成功"
+	GetConnectsSuccessMessage    = "获取连接列表成功"
+	DeleteConnectSuccessMessage  = "连接已取消"
 )
 
 // 失败相关
@@ -79,6 +82,9 @@ const (
 	TodoNotFoundMessage                    = "待办事项未找到"
 	MaxTodoCountMessage                    = "待办事项数量已达上限"
 	GetConnectFailMessage                  = "获取 Connect 信息失败"
+	ConnectAlreadyExistsMessage            = "请不要重复添加"
+	GetConnectsFailMessage                 = "获取 Connect 列表失败"
+	ConnectURLIsEmptyMessage               = "连接地址不能为空"
 )
 
 // 数据库相关
@@ -96,6 +102,7 @@ const (
 // 键值对相关
 const (
 	SystemSettingsKey = "system_settings" // 系统设置的键
+	ConnectKey        = "connect"         // Connect 信息的键
 )
 
 // Todo 相关

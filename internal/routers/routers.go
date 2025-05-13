@@ -27,6 +27,7 @@ func SetupRouter() *gin.Engine {
 	publicRoutes.GET("/settings", controllers.GetSettings) // 获取系统设置
 	publicRoutes.GET("/heatmap", controllers.GetHeatMap)   // 获取热力图数据
 	publicRoutes.GET("/connect", controllers.GetConnect)   // 获取Connect信息
+	publicRoutes.GET("/connects", controllers.GetConnects) // 获取 Connect 列表
 
 	// publicRoutes.GET("/messages", controllers.GetMessages) // 获取留言列表
 
@@ -54,6 +55,9 @@ func SetupRouter() *gin.Engine {
 
 	// 设置相关路由
 	authRoutes.PUT("/settings", controllers.UpdateSettings) // 更新系统设置
+
+	authRoutes.POST("/addConnect", controllers.AddConnect)          // 添加 Connect
+	authRoutes.DELETE("/delConnect/:id", controllers.DeleteConnect) // 删除 Connect
 
 	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
 	r.NoRoute(func(c *gin.Context) {

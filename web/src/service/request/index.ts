@@ -5,6 +5,7 @@ import { getAuthToken } from './shared'
 import { theToast } from '@/utils/toast'
 
 interface RequestOptions {
+  dirrectUrl?: string
   url: string
   method: 'GET' | 'POST' | 'PUT' | 'DELETE'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,6 +40,11 @@ export const request = async <T>(requestOptions: RequestOptions): Promise<App.Ap
       throw new Error('Proxy URL is not defined')
     }
     requestOptions.url = `${proxyUrl}${requestOptions.url}`
+  }
+
+  // 检查是否使用直接请求
+  if (requestOptions.dirrectUrl) {
+    requestOptions.url = requestOptions.dirrectUrl
   }
 
   // 处理响应数据（code1表示成功，code0表示失败）
