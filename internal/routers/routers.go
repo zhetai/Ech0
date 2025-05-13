@@ -40,6 +40,12 @@ func SetupRouter() *gin.Engine {
 	authRoutes.DELETE("/messages/:id", controllers.DeleteMessage)    // 删除留言
 	authRoutes.POST("/images/upload", controllers.UploadImage)       // 上传图片
 
+	// Todo 相关路由
+	authRoutes.GET("/todos", controllers.GetTodos)          // 获取 Todo 列表
+	authRoutes.POST("/todos", controllers.PostTodo)         // 发布 Todo
+	authRoutes.PUT("/todos/:id", controllers.UpdateTodo)    // 更新 Todo
+	authRoutes.DELETE("/todos/:id", controllers.DeleteTodo) // 删除 Todo
+
 	// 用户相关路由
 	authRoutes.PUT("/user", controllers.UpdateUser)            // 更新用户信息
 	authRoutes.PUT("/user/admin", controllers.UpdateUserAdmin) // 更新用户权限

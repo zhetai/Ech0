@@ -18,6 +18,10 @@ const (
 	GetSettingsSuccessMessage    = "获取设置成功"
 	UpdateSettingsSuccessMessage = "更新设置成功"
 	GetHeatMapSuccessMessage     = "获取热力图成功"
+	CreateTodoSuccessMessage     = "创建待办事项成功"
+	GetTodosSuccessMessage       = "获取待办事项成功"
+	UpdateTodoSuccessMessage     = "更新待办事项成功"
+	DeleteTodoSuccessMessage     = "删除待办事项成功"
 )
 
 // 失败相关
@@ -67,6 +71,10 @@ const (
 	RegisterNotAllowedMessage              = "当前系统不允许注册新用户"
 	GetHeatMapFailMessage                  = "获取热力图失败"
 	UpdateUserFailMessage                  = "更新用户失败"
+	CreateTodoFailMessage                  = "创建待办事项失败"
+	GetTodosFailMessage                    = "获取待办事项失败"
+	UpdateTodoFailMessage                  = "更新待办事项失败"
+	DeleteTodoFailMessage                  = "删除待办事项失败"
 )
 
 // 数据库相关
@@ -84,6 +92,13 @@ const (
 // 键值对相关
 const (
 	SystemSettingsKey = "system_settings" // 系统设置的键
+)
+
+// Todo 相关
+const (
+	Done         = 1 // 待办事项已完成状态
+	NotDone      = 0 // 待办事项状态
+	MaxTodoCount = 3 // 最大待办事项数量
 )
 
 // 验证相关
