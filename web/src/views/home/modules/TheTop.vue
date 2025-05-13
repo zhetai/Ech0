@@ -1,33 +1,54 @@
 <template>
   <div class="sm:max-w-sm mx-auto flex justify-between items-center mb-2">
     <div class="w-full flex justify-between items-center">
-        <BaseInput
-          title="搜索"
-          type="text"
-          v-model="searchContent"
-          placeholder="搜索..."
-          class="w-1/3 h-9"
-          @blur="handleSearch"
-        />
-        <BaseButton
-          :icon="Other"
-          @click="notDeveloper"
-          class="w-10 h-9 rounded-md !shadow-none !border-none !ring-0 !bg-transparent"
-          title="外界"
-        />
+      <BaseInput
+        title="搜索"
+        type="text"
+        v-model="searchContent"
+        placeholder="搜索..."
+        class="w-1/3 h-9"
+        @keyup.enter="$event.target.blur()"
+        @blur="handleSearch"
+      />
+      <!-- RSS -->
+      <div class="relative mr-1">
+        <a href="/rss" title="RSS">
+          <!-- icon -->
+          <Rss class="w-8 h-8 text-gray-400" />
+        </a>
+      </div>
+      <!-- ConnectPage -->
+      <div class="relative mr-2">
+        <RouterLink to="/connect" title="连接">
+          <!-- icon -->
+          <Other class="w-8 h-8 text-gray-400" />
+        </RouterLink>
+        <!-- <span class="absolute -top-1 -right-1 block w-2 h-2 bg-green-500 rounded-full ring-1 ring-white"></span> -->
+      </div>
+      <!-- PanelPage -->
+      <div class="relative mr-1">
+        <RouterLink to="/panel" title="面板">
+          <!-- icon -->
+          <Panel class="w-8 h-8 text-gray-400" />
+        </RouterLink>
+        <!-- <span class="absolute -top-1 -right-1 block w-2 h-2 bg-green-500 rounded-full ring-1 ring-white"></span> -->
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import BaseButton from '@/components/common/BaseButton.vue';
-import BaseInput from '@/components/common/BaseInput.vue';
-import Other from '@/components/icons/other.vue';
-import router from '@/router';
-import { useEchoStore } from '@/stores/echo';
-import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
-import { theToast } from '@/utils/toast';
+import BaseButton from '@/components/common/BaseButton.vue'
+import BaseInput from '@/components/common/BaseInput.vue'
+import Other from '@/components/icons/other.vue'
+import Panel from '@/components/icons/panel.vue'
+import Github from '@/components/icons/github.vue'
+import Rss from '@/components/icons/rss.vue'
+import { RouterLink } from 'vue-router'
+import { useEchoStore } from '@/stores/echo'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import { theToast } from '@/utils/toast'
 const echoStore = useEchoStore()
 const { refreshForSearch, getEchosByPage } = echoStore
 const { searchingMode } = storeToRefs(echoStore)
@@ -41,9 +62,9 @@ const handleSearch = () => {
   // 判断是否是搜索模式
   if (searchingMode.value) {
     // 初始化搜索
-    refreshForSearch();
+    refreshForSearch()
     // 开始搜索
-    getEchosByPage();
+    getEchosByPage()
   }
 }
 

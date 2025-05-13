@@ -1,7 +1,10 @@
 <template>
   <button
-    class="cursor-pointer p-1.5 bg-gray-50 shadow-sm ring-inset ring-1 ring-gray-300 text-gray-700"
-    :class="customClass"
+    :class="[
+      'cursor-pointer p-1.5 shadow-sm ring-inset ring-1 ring-gray-300 text-gray-700',
+      hasBg ? '' : 'bg-gray-50',
+      props.class,
+    ]"
     :disabled="disabled"
     @click="onClick"
   >
@@ -14,6 +17,7 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps<{
   icon?: Component
@@ -26,6 +30,7 @@ const emit = defineEmits<{
 }>()
 
 const customClass = props.class
+const hasBg = computed(() => props.class?.includes('bg-') || props.class?.includes('!bg-'))
 
 function onClick(event: MouseEvent) {
   if (!props.disabled) emit('click', event)
