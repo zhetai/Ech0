@@ -11,7 +11,7 @@
             <img
               :src="logo"
               alt="logo"
-              class="w-6 h-6 rounded-full ring-1 ring-gray-200 shadow-sm"
+              class="w-6 h-6 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
             />
           </div>
           <h2 class="text-slate-600 font-bold italic">{{ SystemSetting.server_name }}</h2>

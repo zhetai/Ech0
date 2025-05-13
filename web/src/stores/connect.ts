@@ -25,7 +25,7 @@ export const useConnectStore = defineStore('connectStore', () => {
   }
 
   async function getConnectInfo() {
-    getConnect()
+    await getConnect()
     // 根据connects的url获取connect的详细信息
     const connecteds = ref<App.Api.Connect.Connect[]>([])
     connects.value.forEach((connect) => {

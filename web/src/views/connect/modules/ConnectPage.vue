@@ -28,7 +28,11 @@
                   class="relative flex flex-col items-center justify-center w-8 h-8 border-2 border-gray-200 shadow-sm rounded-full hover:shadow-md transition duration-200 ease-in-out group"
                 >
                   <a :href="connect.server_url" target="_blank">
-                    <img :src="connect.logo" alt="avatar" class="w-8 h-8 rounded-full" />
+                    <img
+                      :src="connect.logo"
+                      alt="avatar"
+                      class="w-8 h-8 rounded-full object-cover"
+                    />
                     <!-- 小绿点 -->
                     <span
                       class="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"
