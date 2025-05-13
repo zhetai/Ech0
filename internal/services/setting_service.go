@@ -4,6 +4,7 @@ import (
 	"github.com/lin-snow/ech0/config"
 	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/internal/repository"
+	"github.com/lin-snow/ech0/pkg"
 )
 
 // GetSettings 获取系统设置
@@ -14,7 +15,7 @@ func GetSetting() (models.SystemSetting, error) {
 		// 未获取到设置，将默认值加入到数据库中
 		setting.SiteTitle = config.Config.Setting.SiteTitle
 		setting.ServerName = config.Config.Setting.Servername
-		setting.ServerURL = config.Config.Setting.Serverurl
+		setting.ServerURL = pkg.TrimURL(config.Config.Setting.Serverurl)
 		setting.AllowRegister = config.Config.Setting.AllowRegister
 		setting.ICPNumber = config.Config.Setting.Icpnumber
 		error := repository.AddKeyValue(models.SystemSettingsKey, setting)
@@ -28,6 +29,9 @@ func GetSetting() (models.SystemSetting, error) {
 
 // 更新系统设置
 func UpdateSetting(newSetting models.SystemSetting) error {
+	// 处理 URL
+	newSetting.ServerURL = pkg.TrimURL(newSetting.ServerURL)
+
 	// 更新数据库中的设置
 	err := repository.UpdateKeyValue(models.SystemSettingsKey, newSetting)
 	if err != nil {

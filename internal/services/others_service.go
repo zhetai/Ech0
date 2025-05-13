@@ -187,7 +187,7 @@ func GetConnect() (models.Connect, error) {
 		if len(logoPath) > 0 && logoPath[0] == '/' {
 			logoPath = logoPath[1:]
 		}
-		connect.Logo = fmt.Sprintf("%s/%s", trimmedServerURL, logoPath)
+		connect.Logo = fmt.Sprintf("%s/api/%s", trimmedServerURL, logoPath)
 	} else {
 		connect.Logo = fmt.Sprintf("%s/favicon.svg", trimmedServerURL)
 	}
