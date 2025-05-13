@@ -16,6 +16,14 @@ type Message struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type Todo struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	Content   string    `gorm:"type:text;not null" json:"content"`
+	Username  string    `gorm:"type:varchar(100)" json:"username,omitempty"`
+	Status    uint      `gorm:"default:0" json:"status"` // 0:未完成 1:已完成
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type User struct {
 	ID       uint   `gorm:"primaryKey" json:"id"`
 	Username string `gorm:"size:255;not null;unique" json:"username"`
