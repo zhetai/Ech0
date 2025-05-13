@@ -22,6 +22,7 @@ const (
 	GetTodosSuccessMessage       = "获取待办事项成功"
 	UpdateTodoSuccessMessage     = "更新待办事项成功"
 	DeleteTodoSuccessMessage     = "删除待办事项成功"
+	GetConnectSuccessMessage     = "连接成功"
 )
 
 // 失败相关
@@ -75,6 +76,9 @@ const (
 	GetTodosFailMessage                    = "获取待办事项失败"
 	UpdateTodoFailMessage                  = "更新待办事项失败"
 	DeleteTodoFailMessage                  = "删除待办事项失败"
+	TodoNotFoundMessage                    = "待办事项未找到"
+	MaxTodoCountMessage                    = "待办事项数量已达上限"
+	GetConnectFailMessage                  = "获取 Connect 信息失败"
 )
 
 // 数据库相关

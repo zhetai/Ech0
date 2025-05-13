@@ -26,6 +26,15 @@ func CreateTodo(todo *models.Todo) error {
 	return nil
 }
 
+func GetTodoByID(todoID uint) (*models.Todo, error) {
+	var todo models.Todo
+	// 根据 ID 查找 Todo
+	if err := database.DB.Where("id = ?", todoID).First(&todo).Error; err != nil {
+		return nil, err
+	}
+	return &todo, nil
+}
+
 func UpdateTodo(todo *models.Todo) error {
 	// 根据 ID 查找 Todo 并更新
 	if err := database.DB.Model(&models.Todo{}).Where("id = ?", todo.ID).Updates(todo).Error; err != nil {

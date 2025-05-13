@@ -153,3 +153,28 @@ func GetHeatMap() ([]models.Heapmap, error) {
 
 	return results[:], nil
 }
+
+func GetConnect() (models.Connect, error) {
+	var connect models.Connect
+
+	// 获取系统设置
+	setting, err := GetSetting()
+	if err != nil {
+		return connect, err
+	}
+
+	// 获取系统状态
+	status, err := GetStatus()
+	if err != nil {
+		return connect, err
+	}
+
+	// 设置 Connect 信息
+	connect.ServerName = setting.ServerName
+	connect.ServerURL = setting.ServerURL
+	connect.Logo = status.Logo
+	connect.Ech0s = status.TotalMessages
+	connect.SysUsername = status.Username
+
+	return connect, nil
+}

@@ -22,6 +22,7 @@ type AppConfig struct {
 	Setting struct {
 		SiteTitle     string `yaml:"sitetitle"`
 		Servername    string `yaml:"servername"`
+		Serverurl     string `yaml:"serverurl"`
 		AllowRegister bool   `yaml:"allowregister"`
 		Icpnumber     string `yaml:"icpnumber"`
 	}

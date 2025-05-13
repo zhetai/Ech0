@@ -14,6 +14,7 @@ func GetSetting() (models.SystemSetting, error) {
 		// 未获取到设置，将默认值加入到数据库中
 		setting.SiteTitle = config.Config.Setting.SiteTitle
 		setting.ServerName = config.Config.Setting.Servername
+		setting.ServerURL = config.Config.Setting.Serverurl
 		setting.AllowRegister = config.Config.Setting.AllowRegister
 		setting.ICPNumber = config.Config.Setting.Icpnumber
 		error := repository.AddKeyValue(models.SystemSettingsKey, setting)

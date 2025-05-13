@@ -48,17 +48,16 @@ func PostTodo(c *gin.Context) {
 
 	// 调用 Service 层发布 Todo
 	if err := services.AddTodo(&todo); err != nil {
-		c.JSON(http.StatusOK, dto.Fail[string](models.CreateTodoFailMessage))
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
 	}
 
 	c.JSON(http.StatusOK, dto.OK(todo, models.CreateTodoSuccessMessage))
 }
 
-// 更新 Todo
+// 更新 Todo (完成/未完成)
 func UpdateTodo(c *gin.Context) {
 	var todo models.Todo
-
 	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidRequestBodyMessage))
 		return
@@ -66,28 +65,40 @@ func UpdateTodo(c *gin.Context) {
 
 	// 获取当前用户 ID
 	userID := c.MustGet("userid").(uint)
+	// 调用 Service 层获取 Todo
+	theTodo, err := services.GetTodoById(uint(todo.ID))
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
+		return
+	}
 
 	// 检查该 Todo 是否属于当前用户
-	if todo.UserID != userID {
+	if theTodo.UserID != userID {
 		c.JSON(http.StatusOK, dto.Fail[string](models.UpdateTodoFailMessage))
 		return
 	}
 
 	// 调用 Service 层更新 Todo
-	if err := services.UpdateTodo(&todo); err != nil {
+	if err := services.UpdateTodo(theTodo); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.OK(todo, models.UpdateTodoSuccessMessage))
+	c.JSON(http.StatusOK, dto.OK(theTodo, models.UpdateTodoSuccessMessage))
 }
 
 // 删除 Todo
 func DeleteTodo(c *gin.Context) {
 	var todo models.Todo
-
 	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidRequestBodyMessage))
+		return
+	}
+
+	// 调用 Service 层获取 Todo
+	theTodo, err := services.GetTodoById(uint(todo.ID))
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
 	}
 
@@ -95,16 +106,16 @@ func DeleteTodo(c *gin.Context) {
 	userID := c.MustGet("userid").(uint)
 
 	// 检查该 Todo 是否属于当前用户
-	if todo.UserID != userID {
+	if theTodo.UserID != userID {
 		c.JSON(http.StatusOK, dto.Fail[string](models.DeleteTodoFailMessage))
 		return
 	}
 
 	// 调用 Service 层删除 Todo
-	if err := services.DeleteTodo(&todo); err != nil {
+	if err := services.DeleteTodo(theTodo); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.OK(todo, models.DeleteTodoSuccessMessage))
+	c.JSON(http.StatusOK, dto.OK(theTodo, models.DeleteTodoSuccessMessage))
 }

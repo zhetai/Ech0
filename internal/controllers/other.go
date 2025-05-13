@@ -49,3 +49,15 @@ func GenerateRSS(c *gin.Context) {
 func UploadImage(c *gin.Context) {
 	c.JSON(http.StatusOK, services.UploadImage(c))
 }
+
+// GetConnect 处理 GET /connect 请求，获取 Connect 信息
+func GetConnect(c *gin.Context) {
+	// 调用 Service 层获取 Connect 信息
+	connect, err := services.GetConnect()
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.GetConnectFailMessage))
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.OK(connect, models.GetConnectSuccessMessage))
+}

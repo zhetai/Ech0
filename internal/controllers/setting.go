@@ -48,6 +48,7 @@ func UpdateSettings(c *gin.Context) {
 	var newSettings models.SystemSetting
 	newSettings.SiteTitle = settings.SiteTitle
 	newSettings.ServerName = settings.ServerName
+	newSettings.ServerURL = settings.ServerURL
 	newSettings.AllowRegister = settings.AllowRegister
 	newSettings.ICPNumber = settings.ICPNumber
 	if err := services.UpdateSetting(newSettings); err != nil {

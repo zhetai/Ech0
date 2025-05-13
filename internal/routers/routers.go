@@ -26,6 +26,7 @@ func SetupRouter() *gin.Engine {
 	publicRoutes.GET("/status", controllers.GetStatus)     // 获取用户信息
 	publicRoutes.GET("/settings", controllers.GetSettings) // 获取系统设置
 	publicRoutes.GET("/heatmap", controllers.GetHeatMap)   // 获取热力图数据
+	publicRoutes.GET("/connect", controllers.GetConnect)   // 获取Connect信息
 
 	// publicRoutes.GET("/messages", controllers.GetMessages) // 获取留言列表
 
@@ -41,10 +42,10 @@ func SetupRouter() *gin.Engine {
 	authRoutes.POST("/images/upload", controllers.UploadImage)       // 上传图片
 
 	// Todo 相关路由
-	authRoutes.GET("/todos", controllers.GetTodos)          // 获取 Todo 列表
-	authRoutes.POST("/todos", controllers.PostTodo)         // 发布 Todo
-	authRoutes.PUT("/todos/:id", controllers.UpdateTodo)    // 更新 Todo
-	authRoutes.DELETE("/todos/:id", controllers.DeleteTodo) // 删除 Todo
+	authRoutes.GET("/todo", controllers.GetTodos)      // 获取 Todo 列表
+	authRoutes.POST("/todo", controllers.PostTodo)     // 发布 Todo
+	authRoutes.PUT("/todo", controllers.UpdateTodo)    // 更新 Todo
+	authRoutes.DELETE("/todo", controllers.DeleteTodo) // 删除 Todo
 
 	// 用户相关路由
 	authRoutes.PUT("/user", controllers.UpdateUser)            // 更新用户信息
