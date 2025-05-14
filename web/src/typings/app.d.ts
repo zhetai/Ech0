@@ -114,5 +114,20 @@ declare namespace App {
         connect_url: string
       }
     }
+
+    namespace Todo {
+      type Todo = {
+        id: number
+        content: string
+        user_id: number
+        username: string
+        status: number
+        created_at: string
+      }
+
+      type TodoToAdd = {
+        content: string
+      }
+    }
   }
 }

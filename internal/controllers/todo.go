@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/internal/dto"
@@ -57,16 +58,18 @@ func PostTodo(c *gin.Context) {
 
 // 更新 Todo (完成/未完成)
 func UpdateTodo(c *gin.Context) {
-	var todo models.Todo
-	if err := c.ShouldBindJSON(&todo); err != nil {
-		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidRequestBodyMessage))
+	// 从 URL 参数获取留言 ID
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidIDMessage))
 		return
 	}
 
 	// 获取当前用户 ID
 	userID := c.MustGet("userid").(uint)
 	// 调用 Service 层获取 Todo
-	theTodo, err := services.GetTodoById(uint(todo.ID))
+	theTodo, err := services.GetTodoById(uint(id))
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
@@ -89,14 +92,16 @@ func UpdateTodo(c *gin.Context) {
 
 // 删除 Todo
 func DeleteTodo(c *gin.Context) {
-	var todo models.Todo
-	if err := c.ShouldBindJSON(&todo); err != nil {
-		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidRequestBodyMessage))
+	// 从 URL 参数获取留言 ID
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidIDMessage))
 		return
 	}
 
 	// 调用 Service 层获取 Todo
-	theTodo, err := services.GetTodoById(uint(todo.ID))
+	theTodo, err := services.GetTodoById(uint(id))
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return

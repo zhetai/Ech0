@@ -28,13 +28,13 @@
 
       <!-- Editor -->
       <div class="rounded-lg p-2 mb-1">
-        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="!isTodoMode" />
+        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="!todoMode" />
         <BaseTextArea
-          v-model="echoToAdd.content"
+          v-else
+          v-model="todoToAdd.content"
           class="rounded-lg"
           placeholder="请输入待办事项..."
           :rows="3"
-          v-else
         />
       </div>
 
@@ -42,23 +42,23 @@
       <div class="flex flex-row items-center justify-between px-2">
         <div class="flex flex-row items-center gap-2">
           <!-- Todo -->
-          <!-- <div>
+          <div>
             <BaseButton
               :icon="Todo"
               @click="handleChangeMode"
               :class="
                 [
                   'w-8 h-8 rounded-md',
-                  isTodoMode
+                  todoMode
                     ? 'bg-orange-100 shadow-[0_0_12px_-4px_rgba(255,140,0,0.6)] !ring-0 !text-white'
                     : '',
                 ].join(' ')
               "
               title="切换待办模式"
             />
-          </div> -->
+          </div>
           <!-- Photo Upload -->
-          <div v-if="!isTodoMode">
+          <div v-if="!todoMode">
             <input
               id="file-input"
               class="hidden"
@@ -75,7 +75,7 @@
             />
           </div>
           <!-- Privacy Set -->
-          <div v-if="!isTodoMode">
+          <div v-if="!todoMode">
             <BaseButton
               :icon="echoToAdd.private ? Private : Public"
               @click="handlePrivate"
@@ -99,7 +99,7 @@
           <div>
             <BaseButton
               :icon="Publish"
-              @click="handleAddEcho"
+              @click="handleAdd"
               class="w-8 h-8 rounded-md"
               title="发布"
             />
@@ -147,36 +147,38 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
 import { onMounted, ref } from 'vue'
-import { fetchUploadImage, fetchAddEcho, fetchGetStatus } from '@/service/api'
+import { fetchUploadImage, fetchAddEcho, fetchGetStatus, fetchAddTodo } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
 import { useSettingStore } from '@/stores/settting'
+import { useTodoStore } from '@/stores/todo'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { storeToRefs } from 'pinia'
 import BaseTextArea from '@/components/common/BaseTextArea.vue'
 
 const apiUrl = getApiUrl()
 const echoStore = useEchoStore()
+const todoStore = useTodoStore()
 const settingStore = useSettingStore()
 
+const { setTodoMode, getTodos } = todoStore
 const { SystemSetting } = storeToRefs(settingStore)
+const { todoMode } = storeToRefs(todoStore)
 
 const logo = ref<string>('/favicon.svg')
 
-const isTodoMode = ref<boolean>(false)
 const handleChangeMode = () => {
-  isTodoMode.value = !isTodoMode.value
-  // if (isTodoMode.value) {
-  //   theToast.success('已切换到待办模式')
-  // } else {
-  //   theToast.info('已关闭待办模式')
-  // }
+  setTodoMode(!todoMode.value)
 }
 
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
   image_url: null,
   private: false,
+})
+
+const todoToAdd = ref<App.Api.Todo.TodoToAdd>({
+  content: '',
 })
 
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -228,6 +230,29 @@ const handleAddEcho = () => {
       echoStore.refreshEchos()
     }
   })
+}
+
+const handleAddTodo = () => {
+  if (todoToAdd.value.content === '') {
+    theToast.error('内容不能为空！')
+    return
+  }
+
+  fetchAddTodo(todoToAdd.value).then((res) => {
+    if (res.code === 1) {
+      theToast.success('添加成功！')
+      todoToAdd.value.content = ''
+      getTodos()
+    }
+  })
+}
+
+const handleAdd = () => {
+  if (todoMode.value) {
+    handleAddTodo()
+  } else {
+    handleAddEcho()
+  }
 }
 
 onMounted(() => {

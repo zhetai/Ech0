@@ -1,6 +1,6 @@
-import { ref } from "vue";
-import { defineStore } from "pinia";
-import { fetchGetConnects, fetchGetConnect } from "@/service/api";
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { fetchGetConnects, fetchGetConnect } from '@/service/api'
 
 export const useConnectStore = defineStore('connectStore', () => {
   /**
@@ -38,7 +38,7 @@ export const useConnectStore = defineStore('connectStore', () => {
         .catch((err) => {
           console.error(err)
           return null
-        })
+        }),
     )
     const results = await Promise.all(promises)
     connectsInfo.value = results.filter((item) => item !== null) as App.Api.Connect.Connect[]
@@ -48,6 +48,6 @@ export const useConnectStore = defineStore('connectStore', () => {
     connects,
     connectsInfo,
     getConnect,
-    getConnectInfo
+    getConnectInfo,
   }
 })

@@ -43,10 +43,10 @@ func SetupRouter() *gin.Engine {
 	authRoutes.POST("/images/upload", controllers.UploadImage)       // 上传图片
 
 	// Todo 相关路由
-	authRoutes.GET("/todo", controllers.GetTodos)      // 获取 Todo 列表
-	authRoutes.POST("/todo", controllers.PostTodo)     // 发布 Todo
-	authRoutes.PUT("/todo", controllers.UpdateTodo)    // 更新 Todo
-	authRoutes.DELETE("/todo", controllers.DeleteTodo) // 删除 Todo
+	authRoutes.GET("/todo", controllers.GetTodos)          // 获取 Todo 列表
+	authRoutes.POST("/todo", controllers.PostTodo)         // 发布 Todo
+	authRoutes.PUT("/todo/:id", controllers.UpdateTodo)    // 更新 Todo
+	authRoutes.DELETE("/todo/:id", controllers.DeleteTodo) // 删除 Todo
 
 	// 用户相关路由
 	authRoutes.PUT("/user", controllers.UpdateUser)            // 更新用户信息

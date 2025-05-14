@@ -1,0 +1,74 @@
+<template>
+  <div class="flex flex-col gap-2 bg-white shadow-md rounded-lg p-4">
+    <!-- 顶部id + 按钮 -->
+    <div class="flex justify-between items-center">
+      <!-- id -->
+      <div class="flex justify-start gap-1 items-center h-auto font-bold">
+        <span class="italic text-gray-300">#</span>
+        <span class="text-gray-400">{{ props.index }}</span>
+      </div>
+      <!-- 按钮 -->
+       <div class="flex gap-2">
+        <BaseButton
+          :icon="Delete"
+          @click="handleDeleteTodo"
+          class="w-7 h-7 rounded-md !text-red-200"
+          title="删除待办"
+        />
+        <BaseButton
+          :icon="Done"
+          @click="handleChangeTodoStatus"
+          class="w-7 h-7 rounded-md"
+          title="切换待办状态"
+        />
+       </div>
+    </div>
+    <!-- 具体内容 -->
+    <div>
+      <p class="text-gray-500 text-sm">
+        {{ props.todo.content }}
+      </p>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import Done from '../icons/done.vue';
+import Delete from '../icons/delete.vue';
+import BaseButton from '../common/BaseButton.vue';
+import { fetchUpdateTodo, fetchDeleteTodo } from '@/service/api';
+import { theToast } from '@/utils/toast';
+type todo = App.Api.Todo.Todo
+const props = defineProps<{
+  todo: todo;
+  index: number;
+}>()
+
+const emit = defineEmits(['refresh'])
+
+const handleDeleteTodo = () => {
+  if (confirm('确定要删除待办吗？')) {
+    fetchDeleteTodo(props.todo.id)
+    .then((res) => {
+      if (res.code === 1) {
+        theToast.success('待办已删除！')
+        emit('refresh')
+      }
+    })
+  }
+}
+
+const handleChangeTodoStatus = () => {
+  if (confirm('确定要切换待办状态吗？')) {
+    fetchUpdateTodo(props.todo.id)
+    .then((res) => {
+      if (res.code === 1) {
+        theToast.success('待办已完成！')
+        emit('refresh')
+      }
+    })
+  }
+}
+</script>
+
+<style scoped></style>
