@@ -1,12 +1,15 @@
 <template>
   <div class="sm:max-w-sm mx-auto px-2 my-4">
     <!-- Todos -->
-    <div v-if="isLogin">
+    <div v-if="isLogin && todos.length > 0">
       <div v-for="(todo, index) in todos" :key="todo.id" class="mb-4">
         <TheTodoCard :todo="todo" :index="index" @refresh="getTodos" />
       </div>
     </div>
-    <div v-else>
+    <div v-if="isLogin && todos.length === 0">
+      <div class="h-auto text-gray-300 text-center font-bold text-xl">🎉今日无事，好好休息吧！</div>
+    </div>
+    <div v-if="!isLogin">
       <div class="h-auto text-gray-300 text-center font-bold text-xl">📦登录后查看待办事项...</div>
     </div>
 

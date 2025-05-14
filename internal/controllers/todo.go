@@ -44,6 +44,13 @@ func PostTodo(c *gin.Context) {
 		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
 		return
 	}
+
+	// 检查是否为管理员
+	if !user.IsAdmin {
+		c.JSON(http.StatusOK, dto.Fail[string](models.NoPermissionMessage))
+		return
+	}
+
 	// 设置用户名
 	todo.Username = user.Username
 

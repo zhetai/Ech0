@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col gap-2 bg-white shadow-md rounded-lg p-4">
+  <div class="flex flex-col gap-2 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md">
     <!-- 顶部id + 按钮 -->
     <div class="flex justify-between items-center">
       <!-- id -->
-      <div class="flex justify-start gap-1 items-center h-auto font-bold">
+      <div class="flex justify-start gap-1 items-center h-auto font-bold text-2xl">
         <span class="italic text-gray-300">#</span>
         <span class="text-gray-400">{{ props.index }}</span>
       </div>
