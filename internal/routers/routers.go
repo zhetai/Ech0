@@ -42,6 +42,7 @@ func SetupRouter() *gin.Engine {
 	authRoutes.POST("/messages", controllers.PostMessage)            // 发布留言
 	authRoutes.DELETE("/messages/:id", controllers.DeleteMessage)    // 删除留言
 	authRoutes.POST("/images/upload", controllers.UploadImage)       // 上传图片
+	// authRoutes.DELETE("/images", controllers.DeleteImage)            // 删除图片
 
 	// Todo 相关路由
 	authRoutes.GET("/todo", controllers.GetTodos)          // 获取 Todo 列表
@@ -53,6 +54,7 @@ func SetupRouter() *gin.Engine {
 	authRoutes.PUT("/user", controllers.UpdateUser)                // 更新用户信息
 	authRoutes.PUT("/user/admin/:id", controllers.UpdateUserAdmin) // 更新用户权限
 	authRoutes.GET("/user", controllers.GetUserInfo)               // 获取当前登录的用户信息
+	authRoutes.DELETE("/user/:id", controllers.DeleteUser)         // 删除用户
 
 	// 设置相关路由
 	authRoutes.PUT("/settings", controllers.UpdateSettings) // 更新系统设置

@@ -26,6 +26,7 @@ const (
 	AddConnectSuccessMessage     = "添加连接成功"
 	GetConnectsSuccessMessage    = "获取连接列表成功"
 	DeleteConnectSuccessMessage  = "连接已取消"
+	DeleteUserSuccessMessage     = "删除用户成功"
 )
 
 // 失败相关

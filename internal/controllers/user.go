@@ -107,3 +107,40 @@ func GetAllUsers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, dto.OK(allusers, models.QuerySuccessMessage))
 }
+
+func DeleteUser(c *gin.Context) {
+	// 检查用户是否为系统管理员
+	user, err := services.GetUserByID(c.MustGet("userid").(uint))
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
+		return
+	}
+	if !user.IsAdmin {
+		c.JSON(http.StatusOK, dto.Fail[string](models.NoPermissionMessage))
+		return
+	}
+
+	sysadmin, err := services.GetSysAdmin()
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
+		return
+	}
+	if sysadmin.ID != user.ID {
+		c.JSON(http.StatusOK, dto.Fail[string](models.NoSysPermissionMessage))
+		return
+	}
+
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil || id == uint64(user.ID) || id == uint64(sysadmin.ID) {
+		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidIDMessage))
+		return
+	}
+
+	if err := services.DeleteUser(uint(id)); err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.OK[any](nil, models.DeleteUserSuccessMessage))
+}

@@ -94,9 +94,15 @@
           :key="user.id"
           class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10"
         >
-            <h2 class="font-semibold w-30">{{ user.username }}:</h2>
+            <h2 class="font-semibold w-30">{{ user.username }}</h2>
             <BaseSwitch v-model="user.is_admin" :disabled="!userEditMode" class="w-14" @click="handleUpdateUserPermission(user.id)" />
-        </div>
+            <BaseButton
+              :icon="Deluser"
+              class="rounded-md text-center w-auto text-align-center h-8"
+              :disabled="!userEditMode"
+              @click="handleDeleteUser(user.id)"
+            />
+          </div>
       </div>
     </div>
   </div>
@@ -108,6 +114,7 @@ import BaseInput from '@/components/common/BaseInput.vue'
 import BaseSwitch from '@/components/common/BaseSwitch.vue'
 import Edit from '@/components/icons/edit.vue'
 import Close from '@/components/icons/close.vue'
+import Deluser from '@/components/icons/deluser.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
 import {
@@ -116,6 +123,7 @@ import {
   fetchUploadImage,
   fetchGetAllUsers,
   fetchUpdateUserPermission,
+  fetchDeleteUser
 } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { storeToRefs } from 'pinia'
@@ -153,12 +161,27 @@ const handleUpdateUser = async () => {
     })
 }
 
-const handleUpdateUserPermission = async (userId: number) => {
-  fetchUpdateUserPermission(userId)
+const handleDeleteUser = async (userId: number) => {
+  if (confirm('确定要删除该用户吗？')) {
+    fetchDeleteUser(userId)
     .then((res) => {
       if (res.code === 1) {
         getAllUsers()
       }
+    })
+  }
+}
+
+const handleUpdateUserPermission = async (userId: number) => {
+  fetchUpdateUserPermission(userId)
+    .then((res) => {
+      if (res.code === 1) {
+        theToast.success(res.msg)
+      }
+    })
+    .finally(() => {
+      // 重新获取设置
+      getAllUsers()
     })
 }
 

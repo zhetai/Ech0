@@ -190,3 +190,12 @@ func GetAllUsers() ([]models.User, error) {
 
 	return alluser, nil
 }
+
+func DeleteUser(userID uint) error {
+	// 删除用户
+	if err := repository.DeleteUser(userID); err != nil {
+		return err
+	}
+
+	return nil
+}

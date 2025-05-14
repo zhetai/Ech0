@@ -25,6 +25,17 @@ func GetConnect(c *gin.Context) {
 }
 
 func AddConnect(c *gin.Context) {
+	// 检查用户是否为管理员
+	user, err := services.GetUserByID(c.MustGet("userid").(uint))
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
+		return
+	}
+	if !user.IsAdmin {
+		c.JSON(http.StatusOK, dto.Fail[string](models.NoPermissionMessage))
+		return
+	}
+
 	var connected models.Connected
 	if err := c.ShouldBindJSON(&connected); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidRequestBodyMessage))
@@ -52,6 +63,17 @@ func GetConnects(c *gin.Context) {
 }
 
 func DeleteConnect(c *gin.Context) {
+	// 检查用户是否为管理员
+	user, err := services.GetUserByID(c.MustGet("userid").(uint))
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
+		return
+	}
+	if !user.IsAdmin {
+		c.JSON(http.StatusOK, dto.Fail[string](models.NoPermissionMessage))
+		return
+	}
+
 	// 从 URL 参数获取留言 ID
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)

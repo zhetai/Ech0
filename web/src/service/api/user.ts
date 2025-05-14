@@ -33,3 +33,10 @@ export function fetchUpdateUserPermission(id: number) {
   })
 }
 
+// 删除用户
+export function fetchDeleteUser(id: number) {
+  return request({
+    url: `/user/${id}`,
+    method: 'DELETE',
+  })
+}

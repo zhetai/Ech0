@@ -138,6 +138,7 @@
             </div>
             <BaseButton
               :icon="Disconnect"
+              :disabled="!connectsEdit"
               @click="handleDisconnect(connect.id)"
               class="w-7 h-7 rounded-md"
               title="断开连接"

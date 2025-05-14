@@ -58,3 +58,11 @@ func UpdateUser(user *models.User) error {
 	}
 	return nil
 }
+
+func DeleteUser(id uint) error {
+	err := database.DB.Delete(&models.User{}, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
