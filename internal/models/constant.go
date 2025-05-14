@@ -27,6 +27,7 @@ const (
 	GetConnectsSuccessMessage    = "获取连接列表成功"
 	DeleteConnectSuccessMessage  = "连接已取消"
 	DeleteUserSuccessMessage     = "删除用户成功"
+	DeleteImageSuccessMessage    = "删除图片成功"
 )
 
 // 失败相关
@@ -88,6 +89,7 @@ const (
 	ConnectURLIsEmptyMessage               = "连接地址不能为空"
 	UserCountExceedsLimitMessage           = "用户数量超过限制"
 	NoSysPermissionMessage                 = "请使用系统管理员权限"
+	ImageNotFoundMessage                   = "图片未找到"
 )
 
 // 数据库相关

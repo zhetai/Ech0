@@ -147,7 +147,7 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
 import { onMounted, ref } from 'vue'
-import { fetchUploadImage, fetchAddEcho, fetchGetStatus, fetchAddTodo } from '@/service/api'
+import { fetchUploadImage, fetchAddEcho, fetchGetStatus, fetchAddTodo, fetchDeleteImage } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
 import { useSettingStore } from '@/stores/settting'
@@ -202,8 +202,16 @@ const handleUploadImage = async (event: Event) => {
 
 const handleRemoveImage = () => {
   if (confirm('确定要移除图片吗？')) {
-    echoToAdd.value.image_url = null
-    theToast.info('图片已移除')
+    fetchDeleteImage({
+      url: echoToAdd.value.image_url ?? '',
+    }).then((res) => {
+      if (res.code === 1) {
+        // theToast.success('图片已移除')
+      }
+    })
+    .finally(() => {
+      echoToAdd.value.image_url = null
+    })
   }
 }
 

@@ -52,3 +52,12 @@ export function fetchGetHeatMap() {
     method: 'GET',
   })
 }
+
+// 删除Image
+export function fetchDeleteImage(image: App.Api.Ech0.ImageToDelete) {
+  return request({
+    url: `/images/delete`,
+    method: 'DELETE',
+    data: image,
+  })
+}

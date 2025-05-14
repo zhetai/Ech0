@@ -88,6 +88,10 @@ declare namespace App {
         date: string
         count: number
       }[]
+
+      type ImageToDelete = {
+        url: string
+      }
     }
 
     namespace Setting {

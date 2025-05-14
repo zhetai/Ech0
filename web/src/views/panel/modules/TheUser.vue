@@ -78,7 +78,7 @@
 
     <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4">
       <div class="flex flex-row items-center justify-between mb-3">
-        <h1 class="text-gray-600 font-bold text-lg">用户权限管理</h1>
+        <h1 class="text-gray-600 font-bold text-lg">用户管理</h1>
         <div class="flex flex-row items-center justify-end gap-2 w-14">
           <button @click="userEditMode = !userEditMode" title="编辑">
             <Edit v-if="!userEditMode" class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />

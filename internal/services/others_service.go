@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
+	"github.com/lin-snow/ech0/internal/dto"
 	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/internal/repository"
 	"github.com/lin-snow/ech0/pkg"
@@ -152,4 +153,20 @@ func GetHeatMap() ([]models.Heapmap, error) {
 	}
 
 	return results[:], nil
+}
+
+func DeleteImage(image dto.ImageDto) error {
+	// 检查图片是否存在
+	if image.URL == "" {
+		return errors.New(models.ImageNotFoundMessage)
+	}
+
+	// 获取图片名字（去除前面的/images/)
+	imageName := image.URL[len("/images/"):]
+
+	// 构造图片路径
+	imagePath := fmt.Sprintf("data/images/%s", imageName)
+
+	// 删除图片
+	return pkg.DeleteImage(imagePath)
 }
