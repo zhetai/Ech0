@@ -85,6 +85,8 @@ const (
 	ConnectAlreadyExistsMessage            = "请不要重复添加"
 	GetConnectsFailMessage                 = "获取 Connect 列表失败"
 	ConnectURLIsEmptyMessage               = "连接地址不能为空"
+	UserCountExceedsLimitMessage           = "用户数量超过限制"
+	NoSysPermissionMessage                 = "请使用系统管理员权限"
 )
 
 // 数据库相关
@@ -103,6 +105,11 @@ const (
 const (
 	SystemSettingsKey = "system_settings" // 系统设置的键
 	ConnectKey        = "connect"         // Connect 信息的键
+)
+
+// User 相关
+const (
+	MaxUserCount = 4 // 最多注册用户数
 )
 
 // Todo 相关

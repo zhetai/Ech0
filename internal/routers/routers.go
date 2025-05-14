@@ -26,6 +26,7 @@ func SetupRouter() *gin.Engine {
 	publicRoutes.GET("/status", controllers.GetStatus)     // 获取用户信息
 	publicRoutes.GET("/settings", controllers.GetSettings) // 获取系统设置
 	publicRoutes.GET("/heatmap", controllers.GetHeatMap)   // 获取热力图数据
+	publicRoutes.GET("/allusers", controllers.GetAllUsers) // 获取所有用户
 	publicRoutes.GET("/connect", controllers.GetConnect)   // 获取Connect信息
 	publicRoutes.GET("/connects", controllers.GetConnects) // 获取 Connect 列表
 
@@ -49,9 +50,9 @@ func SetupRouter() *gin.Engine {
 	authRoutes.DELETE("/todo/:id", controllers.DeleteTodo) // 删除 Todo
 
 	// 用户相关路由
-	authRoutes.PUT("/user", controllers.UpdateUser)            // 更新用户信息
-	authRoutes.PUT("/user/admin", controllers.UpdateUserAdmin) // 更新用户权限
-	authRoutes.GET("/user", controllers.GetUserInfo)           // 获取当前登录的用户信息
+	authRoutes.PUT("/user", controllers.UpdateUser)                // 更新用户信息
+	authRoutes.PUT("/user/admin/:id", controllers.UpdateUserAdmin) // 更新用户权限
+	authRoutes.GET("/user", controllers.GetUserInfo)               // 获取当前登录的用户信息
 
 	// 设置相关路由
 	authRoutes.PUT("/settings", controllers.UpdateSettings) // 更新系统设置

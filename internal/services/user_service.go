@@ -10,6 +10,16 @@ import (
 )
 
 func Register(userdto dto.RegisterDto) error {
+	// 检查用户数量是否超过限制
+	users, err := repository.GetAllUsers()
+	if err != nil {
+		return errors.New(models.GetAllUsersFailMessage)
+	}
+	if len(users) >= models.MaxUserCount {
+		return errors.New(models.UserCountExceedsLimitMessage)
+	}
+
+	// 检查用户名和密码是否为空
 	if userdto.Username == "" || userdto.Password == "" {
 		return errors.New(models.UsernameOrPasswordCannotBeEmptyMessage)
 	}
@@ -30,10 +40,6 @@ func Register(userdto dto.RegisterDto) error {
 	}
 
 	// 检查是否该系统第一次注册用户
-	users, err := repository.GetAllUsers()
-	if err != nil {
-		return errors.New(models.GetAllUsersFailMessage)
-	}
 	if len(users) == 0 {
 		newuser.IsAdmin = true
 	}
@@ -89,6 +95,15 @@ func GetUserByID(userID uint) (models.User, error) {
 		return models.User{}, errors.New(models.UserNotFoundMessage)
 	}
 	return user, nil
+}
+
+func GetSysAdmin() (models.User, error) {
+	sysadmin, err := repository.GetSysAdmin()
+	if err != nil {
+		return models.User{}, errors.New(models.UserNotFoundMessage)
+	}
+
+	return sysadmin, nil
 }
 
 func IsUserAdmin(userID uint) (bool, error) {
@@ -147,4 +162,31 @@ func UpdateUserAdmin(userID uint) error {
 	}
 
 	return nil
+}
+
+func GetAllUsers() ([]models.User, error) {
+	alluser, err := repository.GetAllUsers()
+	if err != nil {
+		return nil, errors.New(models.GetAllUsersFailMessage)
+	}
+
+	sysadmin, err := GetSysAdmin()
+	if err != nil {
+		return nil, err
+	}
+
+	// 处理用户信息(去掉管理员用户)
+	for i := range alluser {
+		if alluser[i].ID == sysadmin.ID {
+			alluser = append(alluser[:i], alluser[i+1:]...)
+			break
+		}
+	}
+
+	// 处理用户信息(去掉密码)
+	for i := range alluser {
+		alluser[i].Password = ""
+	}
+
+	return alluser, nil
 }

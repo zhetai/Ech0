@@ -37,7 +37,7 @@ func UpdateUser(c *gin.Context) {
 
 // 更新用户权限
 func UpdateUserAdmin(c *gin.Context) {
-	// 检查用户是否为管理员
+	// 检查用户是否为系统管理员
 	user, err := services.GetUserByID(c.MustGet("userid").(uint))
 	if err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
@@ -48,11 +48,21 @@ func UpdateUserAdmin(c *gin.Context) {
 		return
 	}
 
+	sysadmin, err := services.GetSysAdmin()
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
+		return
+	}
+	if sysadmin.ID != user.ID {
+		c.JSON(http.StatusOK, dto.Fail[string](models.NoSysPermissionMessage))
+		return
+	}
+
 	// 从Query参数获取用户 ID
-	idStr := c.Query("id")
+	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	// 不能和当前用户 ID 一样，不能是系统管理员 ID 1，不能为空
-	if err != nil || id == uint64(user.ID) || id == 1 {
+	if err != nil || id == uint64(user.ID) || id == uint64(sysadmin.ID) {
 		c.JSON(http.StatusOK, dto.Fail[string](models.InvalidIDMessage))
 		return
 	}
@@ -81,4 +91,19 @@ func GetUserInfo(c *gin.Context) {
 
 	// 返回成功响应
 	c.JSON(http.StatusOK, dto.OK(user, models.QuerySuccessMessage))
+}
+
+func GetAllUsers(c *gin.Context) {
+	allusers, err := services.GetAllUsers()
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
+		return
+	}
+
+	// 除掉系统管理
+	if len(allusers) > 0 {
+
+	}
+
+	c.JSON(http.StatusOK, dto.OK(allusers, models.QuerySuccessMessage))
 }

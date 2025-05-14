@@ -1,6 +1,6 @@
 <template>
   <div class="w-full px-2">
-    <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4">
+    <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-2">
       <!-- 设置 -->
       <div>
         <div class="flex flex-row items-center justify-between mb-3">
@@ -16,16 +16,20 @@
           </div>
         </div>
 
-      <!-- 头像 -->
-      <div class="flex justify-start items-center">
-        <img
-          :src="!user?.avatar || user?.avatar.length === 0 ? '/favicon.svg' : `${API_URL}${user?.avatar}`"
-          alt="头像"
-          class="w-12 h-12 rounded-full ml-2 mr-9 ring-1 ring-gray-200 shadow-sm"
-        />
-        <div>
-          <!-- 点击上传头像 -->
-           <input
+        <!-- 头像 -->
+        <div class="flex justify-start items-center">
+          <img
+            :src="
+              !user?.avatar || user?.avatar.length === 0
+                ? '/favicon.svg'
+                : `${API_URL}${user?.avatar}`
+            "
+            alt="头像"
+            class="w-12 h-12 rounded-full ml-2 mr-9 ring-1 ring-gray-200 shadow-sm"
+          />
+          <div>
+            <!-- 点击上传头像 -->
+            <input
               id="file-input"
               class="hidden"
               type="file"
@@ -33,39 +37,66 @@
               ref="fileInput"
               @change="handleUploadImage"
             />
-          <BaseButton v-if="editMode" class="rounded-md text-center w-auto text-align-center h-8" @click="handTriggerUpload">
-            更改
-          </BaseButton>
+            <BaseButton
+              v-if="editMode"
+              class="rounded-md text-center w-auto text-align-center h-8"
+              @click="handTriggerUpload"
+            >
+              更改
+            </BaseButton>
+          </div>
+        </div>
+
+        <!-- 用户名 -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30">用户名:</h2>
+          <span v-if="!editMode">{{ user?.username }}</span>
+          <BaseInput
+            v-else
+            v-model="userInfo.username"
+            type="text"
+            placeholder="请输入用户名"
+            class="w-36 !py-1"
+          />
+        </div>
+
+        <!-- 密码 -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30">密码:</h2>
+          <span v-if="!editMode">******</span>
+          <BaseInput
+            v-else
+            v-model="userInfo.password"
+            type="password"
+            placeholder="请输入密码"
+            class="w-36 !py-1"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4">
+      <div class="flex flex-row items-center justify-between mb-3">
+        <h1 class="text-gray-600 font-bold text-lg">用户权限管理</h1>
+        <div class="flex flex-row items-center justify-end gap-2 w-14">
+          <button @click="userEditMode = !userEditMode" title="编辑">
+            <Edit v-if="!userEditMode" class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
+            <Close v-else class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
+          </button>
         </div>
       </div>
 
-      <!-- 用户名 -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30">用户名:</h2>
-        <span v-if="!editMode">{{ user?.username }}</span>
-        <BaseInput
-          v-else
-          v-model="userInfo.username"
-          type="text"
-          placeholder="请输入用户名"
-          class="w-36 !py-1"
-        />
-      </div>
-
-      <!-- 密码 -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30">密码:</h2>
-        <span v-if="!editMode">******</span>
-        <BaseInput
-          v-else
-          v-model="userInfo.password"
-          type="password"
-          placeholder="请输入密码"
-          class="w-36 !py-1"
-          autocomplete="off"
-        />
-      </div>
-
+      <!-- 用户列表 -->
+      <div>
+        <div
+          v-for="user in allusers"
+          :key="user.id"
+          class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10"
+        >
+            <h2 class="font-semibold w-30">{{ user.username }}:</h2>
+            <BaseSwitch v-model="user.is_admin" :disabled="!userEditMode" class="w-14" @click="handleUpdateUserPermission(user.id)" />
+        </div>
       </div>
     </div>
   </div>
@@ -79,12 +110,17 @@ import Edit from '@/components/icons/edit.vue'
 import Close from '@/components/icons/close.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
-import { fetchGetCurrentUser, fetchUpdateUser, fetchUploadImage } from '@/service/api'
+import {
+  fetchGetCurrentUser,
+  fetchUpdateUser,
+  fetchUploadImage,
+  fetchGetAllUsers,
+  fetchUpdateUserPermission,
+} from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { getApiUrl } from '@/service/request/shared'
-
 
 const userStore = useUserStore()
 const { refreshCurrentUser } = userStore
@@ -95,7 +131,9 @@ const userInfo = ref<App.Api.User.UserInfo>({
   is_admin: false,
   avatar: '',
 })
+const allusers = ref<App.Api.User.User[]>([])
 const editMode = ref<boolean>(false)
+const userEditMode = ref<boolean>(false)
 const API_URL = getApiUrl()
 
 const handleUpdateUser = async () => {
@@ -112,6 +150,15 @@ const handleUpdateUser = async () => {
     })
     .catch((err) => {
       console.error(err)
+    })
+}
+
+const handleUpdateUserPermission = async (userId: number) => {
+  fetchUpdateUserPermission(userId)
+    .then((res) => {
+      if (res.code === 1) {
+        getAllUsers()
+      }
     })
 }
 
@@ -135,18 +182,24 @@ const handleUploadImage = async (event: Event) => {
   }
 }
 
+const getAllUsers = async () => {
+  await fetchGetAllUsers().then((res) => {
+    if (res.code === 1) {
+      allusers.value = res.data
+    }
+  })
+}
+
 onMounted(async () => {
-  await fetchGetCurrentUser()
-    .then((res) => {
-      if (res.code === 1) {
-        userInfo.value.username = res.data.username
-        userInfo.value.password = res.data.password || ''
-        userInfo.value.avatar = res.data.avatar || ''
-        userInfo.value.is_admin = res.data.is_admin
-      }
-    })
-    .catch((err) => {
-      console.error(err)
-    })
+  await fetchGetCurrentUser().then((res) => {
+    if (res.code === 1) {
+      userInfo.value.username = res.data.username
+      userInfo.value.password = res.data.password || ''
+      userInfo.value.avatar = res.data.avatar || ''
+      userInfo.value.is_admin = res.data.is_admin
+    }
+  })
+
+  await getAllUsers()
 })
 </script>

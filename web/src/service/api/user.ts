@@ -17,3 +17,19 @@ export function fetchUpdateUser(user: App.Api.User.UserInfo) {
   })
 }
 
+// 获取用户列表
+export function fetchGetAllUsers() {
+  return request<App.Api.User.User[]>({
+    url: '/allusers',
+    method: 'GET'
+  })
+}
+
+// 更新用户权限
+export function fetchUpdateUserPermission(id: number) {
+  return request({
+    url: `/user/admin/${id}`,
+    method: 'PUT',
+  })
+}
+
