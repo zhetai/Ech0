@@ -4,7 +4,7 @@
       'cursor-pointer p-1.5 shadow-sm ring-inset ring-1 ring-gray-300 text-gray-700',
       hasBg ? '' : 'bg-gray-50',
       props.class,
-      disabled ? 'cursor-not-allowed opacity-70' : 'hover:bg-gray-100',
+      disabled ? 'cursor-not-allowed opacity-70' : '',
     ]"
     :disabled="disabled"
     @click="onClick"
