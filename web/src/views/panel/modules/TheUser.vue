@@ -88,21 +88,29 @@
       </div>
 
       <!-- 用户列表 -->
-      <div>
+      <div v-if="allusers.length === 0">
+        <h2 class="text-gray-500 font-semibold text-center">暂无其它用户</h2>
+      </div>
+      <div v-else>
         <div
           v-for="user in allusers"
           :key="user.id"
           class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10"
         >
-            <h2 class="font-semibold w-30">{{ user.username }}</h2>
-            <BaseSwitch v-model="user.is_admin" :disabled="!userEditMode" class="w-14" @click="handleUpdateUserPermission(user.id)" />
-            <BaseButton
-              :icon="Deluser"
-              class="rounded-md text-center w-auto text-align-center h-8"
-              :disabled="!userEditMode"
-              @click="handleDeleteUser(user.id)"
-            />
-          </div>
+          <h2 class="font-semibold w-30">{{ user.username }}</h2>
+          <BaseSwitch
+            v-model="user.is_admin"
+            :disabled="!userEditMode"
+            class="w-14"
+            @click="handleUpdateUserPermission(user.id)"
+          />
+          <BaseButton
+            :icon="Deluser"
+            class="rounded-md text-center w-auto text-align-center h-8"
+            :disabled="!userEditMode"
+            @click="handleDeleteUser(user.id)"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -123,7 +131,7 @@ import {
   fetchUploadImage,
   fetchGetAllUsers,
   fetchUpdateUserPermission,
-  fetchDeleteUser
+  fetchDeleteUser,
 } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { storeToRefs } from 'pinia'
@@ -163,8 +171,7 @@ const handleUpdateUser = async () => {
 
 const handleDeleteUser = async (userId: number) => {
   if (confirm('确定要删除该用户吗？')) {
-    fetchDeleteUser(userId)
-    .then((res) => {
+    fetchDeleteUser(userId).then((res) => {
       if (res.code === 1) {
         getAllUsers()
       }
