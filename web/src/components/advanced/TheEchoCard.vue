@@ -10,6 +10,11 @@
         <div class="flex justify-start text-sm text-orange-500">
           {{ formatDate(props.echo.created_at) }}
         </div>
+        <!-- 用户名称 -->
+        <!-- <div class="flex justify-start items-center">
+          <span class="text-md mx-1 text-orange-400"> @ </span>
+          <span class="text-sm text-orange-400">{{ props.echo.username }}</span>
+        </div> -->
       </div>
       <!-- 操作按钮 -->
       <div class="flex justify-end items-center gap-1 h-auto">
@@ -74,7 +79,9 @@ const emit = defineEmits(['refresh'])
 
 type Echo = App.Api.Ech0.Echo
 
-const props = defineProps<{ echo: Echo }>()
+const props = defineProps<{
+  echo: Echo
+}>()
 const API_URL = getApiUrl()
 const userStore = useUserStore()
 const previewOptions = {

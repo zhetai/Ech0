@@ -6,7 +6,7 @@
         type="text"
         v-model="searchContent"
         placeholder="搜索..."
-        class="w-1/3 h-9"
+        class="w-1/2 h-9"
         @keyup.enter="$event.target.blur()"
         @blur="handleSearch"
       />
