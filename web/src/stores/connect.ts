@@ -13,7 +13,7 @@ export const useConnectStore = defineStore('connectStore', () => {
    * Actions
    */
   async function getConnect() {
-    fetchGetConnects()
+    await fetchGetConnects()
       .then((res) => {
         if (res.code === 1) {
           connects.value = res.data
@@ -26,20 +26,22 @@ export const useConnectStore = defineStore('connectStore', () => {
 
   async function getConnectInfo() {
     await getConnect()
-    // 根据connects的url获取connect的详细信息
-    const connecteds = ref<App.Api.Connect.Connect[]>([])
-    connects.value.forEach((connect) => {
+    // 根据 connects 的 url 获取 connect 的详细信息
+    const promises = connects.value.map((connect) =>
       fetchGetConnect(connect.connect_url)
         .then((res) => {
           if (res.code === 1) {
-            connecteds.value.push(res.data)
+            return res.data
           }
+          return null
         })
         .catch((err) => {
           console.error(err)
+          return null
         })
-    })
-    connectsInfo.value = connecteds.value
+    )
+    const results = await Promise.all(promises)
+    connectsInfo.value = results.filter((item) => item !== null) as App.Api.Connect.Connect[]
   }
 
   return {
