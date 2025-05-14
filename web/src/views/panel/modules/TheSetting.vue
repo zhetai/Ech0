@@ -60,9 +60,18 @@
         <!-- ICP备案号 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30">ICP备案:</h2>
-          <span v-if="!editMode">{{
-            SystemSetting.ICP_number.length === 0 ? '暂无' : SystemSetting.ICP_number
-          }}</span>
+            <span
+            v-if="!editMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="SystemSetting.ICP_number"
+            style="vertical-align: middle;"
+            >
+            {{
+              SystemSetting.ICP_number.length === 0
+              ? '暂无'
+              : SystemSetting.ICP_number
+            }}
+            </span>
           <BaseInput
             v-else
             v-model="SystemSetting.ICP_number"
