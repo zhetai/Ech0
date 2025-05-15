@@ -13,8 +13,8 @@ body {
 
   /* 大屏幕放大 */
   @media (min-width: 1920px) {
-    body {
-      zoom: 1.3; /* 大屏幕放大1.3倍 */
-    }
+    /* body {
+      zoom: 1.1;
+    } */
   }
 }

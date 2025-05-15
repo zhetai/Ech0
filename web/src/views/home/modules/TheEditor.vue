@@ -4,30 +4,30 @@
   >
     <div class="mx-auto w-full px-3 py-4">
       <!-- Title && Nav -->
-      <div class="flex justify-between items-center py-1 px-2">
+      <div class="flex justify-between items-center py-1 px-3">
         <div class="flex flex-row items-center gap-2 justify-between">
           <!-- <div class="text-xl">👾</div> -->
           <div>
             <img
               :src="logo"
               alt="logo"
-              class="w-6 md:w-7 h-6 md:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
+              class="w-6 sm:w-7 h-6 sm:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
             />
           </div>
-          <h2 class="text-slate-600 font-bold italic">{{ SystemSetting.server_name }}</h2>
+          <h1 class="text-slate-600 font-bold italic sm:text-xl">{{ SystemSetting.server_name }}</h1>
         </div>
         <div class="flex flex-row items-center gap-2">
           <!-- Github -->
           <div>
             <a href="https://github.com/lin-snow/Ech0" target="_blank" title="Github">
-              <Github class="w-6 h-6 text-gray-400" />
+              <Github class="w-6 sm:w-7 h-6 sm:h-7 text-gray-400" />
             </a>
           </div>
         </div>
       </div>
 
       <!-- Editor -->
-      <div class="rounded-lg p-2 mb-1">
+      <div class="rounded-lg p-2 sm:p-3 mb-1">
         <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="!todoMode" />
         <BaseTextArea
           v-else
