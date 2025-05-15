@@ -56,8 +56,8 @@ export const useUserStore = defineStore('userStore', () => {
     localStg.removeItem('token')
     user.value = null
 
-    // 跳转到首页
-    router.push({ name: 'home' })
+    // 重新登录
+    router.push({ name: 'auth' })
   }
 
   // 自动登录
@@ -73,7 +73,12 @@ export const useUserStore = defineStore('userStore', () => {
   // 获取当前登录用户信息
   async function refreshCurrentUser() {
     await fetchGetCurrentUser().then((res) => {
-      user.value = res.data
+      if (res.code === 1) {
+        user.value = res.data
+      } else {
+        // 获取用户信息失败，清除token
+        logout()
+      }
     })
   }
 
