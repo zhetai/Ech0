@@ -28,6 +28,7 @@ const (
 	DeleteConnectSuccessMessage  = "连接已取消"
 	DeleteUserSuccessMessage     = "删除用户成功"
 	DeleteImageSuccessMessage    = "删除图片成功"
+	PleaseSignUpFirstMessage     = "请先注册用户"
 )
 
 // 失败相关
@@ -126,4 +127,10 @@ const (
 const (
 	InvalidDataMessage  = "无效数据"
 	MissingFieldMessage = "缺少必填字段"
+)
+
+// 其他
+
+const (
+	InitInstallCode = 666
 )

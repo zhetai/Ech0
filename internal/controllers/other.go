@@ -11,6 +11,13 @@ import (
 
 // GetStatus 处理 GET /status 请求，获取服务器状态
 func GetStatus(c *gin.Context) {
+	// 检查系统是否存在管理员（第一次安装时）
+	_, err := services.GetSysAdmin()
+	if err != nil {
+		c.JSON(http.StatusOK, dto.OKWithCode[any](nil, models.InitInstallCode, models.PleaseSignUpFirstMessage))
+		return
+	}
+
 	// 调用 Service 层获取状态
 	status, err := services.GetStatus()
 	if err != nil {

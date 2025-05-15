@@ -1,7 +1,7 @@
 // 封装ofetch
 
 import { ofetch } from 'ofetch'
-import { getAuthToken } from './shared'
+import { getAuthToken, getSystemReadyStatus } from './shared'
 import { theToast } from '@/utils/toast'
 
 interface RequestOptions {
@@ -33,6 +33,9 @@ const ofetchInstance = ofetch.create({
 })
 
 export const request = async <T>(requestOptions: RequestOptions): Promise<App.Api.Response<T>> => {
+  // 检查系统是否已经准备好
+  const isSystemReady = getSystemReadyStatus()
+
   // 检查是否使用正向代理
   if (import.meta.env.VITE_PROXY === 'YES') {
     const proxyUrl = import.meta.env.VITE_PROXY_URL
@@ -53,7 +56,9 @@ export const request = async <T>(requestOptions: RequestOptions): Promise<App.Ap
     body: requestOptions.data,
   }).then((res) => {
     if (res.code !== 1) {
-      theToast.error(res.msg || '请求失败')
+      if (isSystemReady) {
+        theToast.error(res.msg)
+      }
     }
 
     return res
