@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center h-screen">
-    <div class="h-1/2">
+    <div class="h-1/2 max-w-sm sm:max-w-md md:max-w-lg">
       <h1 class="text-6xl italic font-bold text-center text-gray-300 mb-4">Ech0s~</h1>
       <!-- 登录 / 注册 -->
       <div v-if="AuthMode === 'login'">

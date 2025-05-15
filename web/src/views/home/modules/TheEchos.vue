@@ -1,5 +1,5 @@
 <template>
-  <div class="sm:max-w-sm mx-auto px-2 my-4">
+  <div class="mx-auto px-2 sm:px-4 md:px-6 my-4 sm:my-5 md:my-6">
     <!-- Echos -->
     <div>
       <div v-for="echo in echoStore.echoList" :key="echo.id">

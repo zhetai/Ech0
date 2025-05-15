@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 pb-4 py-2 mt-4 mb-10 mx-auto">
+  <div class="max-w-sm sm:max-w-md md:max-w-lg px-4 pb-4 py-2 mt-4 mb-10 mx-auto">
     <TheTop />
     <TheEditor />
     <TheEchos v-if="!todoMode" />

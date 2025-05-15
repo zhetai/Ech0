@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sm:max-w-sm bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
+    class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
   >
     <div class="mx-auto w-full px-3 py-4">
       <!-- Title && Nav -->

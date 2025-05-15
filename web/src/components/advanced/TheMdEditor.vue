@@ -1,5 +1,6 @@
 <template>
   <MdEditor
+    class="h-auto sm:min-h-[8rem] md:min-h-[13rem]"
     v-model="content"
     :id="initEditor.id"
     :theme="initEditor.theme"

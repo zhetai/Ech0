@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 pb-4 py-2 mt-4 mb-10 mx-auto flex justify-center items-center h-screen">
-    <div class="h-3/5 sm:h-1/2 sm:max-w-sm px-2 my-4">
+    <div class="h-3/5 sm:h-1/2 max-w-sm sm:max-w-md md:max-w-lg px-2 sm:px-4 md:px-6 my-4 sm:my-5 md:my-6">
       <h1 class="text-5xl italic font-bold text-center text-gray-300 mb-5">Ech0s Connect</h1>
       <div class="mb-5">
         <!-- 返回首页 -->

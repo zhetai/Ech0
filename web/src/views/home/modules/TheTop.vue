@@ -1,5 +1,5 @@
 <template>
-  <div class="sm:max-w-sm mx-auto flex justify-between items-center mb-2">
+  <div class="mx-auto flex justify-between items-center mb-2">
     <div class="w-full flex justify-between items-center">
       <BaseInput
         title="搜索"
