@@ -22,7 +22,7 @@
         <BaseInput v-model="password" type="password" placeholder="请输入密码" class="mb-4" />
         <div class="flex justify-between items-center px-0.5">
           <BaseButton
-            @click="$router.push({ name: 'home' })"
+            @click="router.push({ name: 'home' })"
             title="返回首页"
             :icon="Home"
             class="rounded-md w-9 h-9"
@@ -51,7 +51,7 @@
         <BaseInput v-model="password" type="password" placeholder="请输入密码" class="mb-4" />
         <div class="flex justify-between items-center px-0.5">
           <BaseButton
-            @click="$router.push({ name: 'home' })"
+            @click="router.push({ name: 'home' })"
             title="返回首页"
             :icon="Home"
             class="rounded-md w-9 h-9"
@@ -67,6 +67,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import { useUserStore } from '@/stores/user'
@@ -77,6 +78,7 @@ const AuthMode = ref<'login' | 'register'>('login') // login / register
 const username = ref<string>('')
 const password = ref<string>('')
 const userStore = useUserStore()
+const router = useRouter()
 
 const handleLogin = async () => {
   // console.log('登录', username.value, password.value)

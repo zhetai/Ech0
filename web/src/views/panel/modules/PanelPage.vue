@@ -7,7 +7,7 @@
         <!-- 返回首页 -->
         <div class="">
           <BaseButton
-            @click="$router.push('/')"
+            @click="router.push('/')"
             class="text-gray-600 rounded-md !shadow-none !border-none !ring-0 !bg-transparent group"
             title="返回首页"
           >
@@ -37,7 +37,7 @@
           <!-- 登录 / 注册 -->
           <BaseButton
             :icon="Auth"
-            @click="$router.push('/auth')"
+            @click="router.push('/auth')"
             class="text-gray-600 rounded-md w-8 h-8"
             title="登录 / 注册"
           />
@@ -66,8 +66,10 @@ import TheUser from './TheUser.vue'
 import Logout from '@/components/icons/logout.vue'
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
+const router = useRouter()
 // 控制面板的状态
 enum ShowWhichEnum {
   Status = 'status',
