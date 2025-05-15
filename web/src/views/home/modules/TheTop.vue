@@ -14,14 +14,14 @@
       <div class="relative mr-1">
         <a href="/rss" title="RSS">
           <!-- icon -->
-          <Rss class="w-8 h-8 text-gray-400" />
+          <Rss class="w-8 h-8 sm:w-9 sm:h-9 text-gray-400" />
         </a>
       </div>
       <!-- ConnectPage -->
       <div class="relative mr-2">
         <RouterLink to="/connect" title="连接">
           <!-- icon -->
-          <Other class="w-8 h-8 text-gray-400" />
+          <Other class="w-8 h-8 sm:w-9 sm:h-9 text-gray-400" />
         </RouterLink>
         <!-- <span class="absolute -top-1 -right-1 block w-2 h-2 bg-green-500 rounded-full ring-1 ring-white"></span> -->
       </div>
@@ -29,7 +29,7 @@
       <div class="relative mr-1">
         <RouterLink to="/panel" title="面板">
           <!-- icon -->
-          <Panel class="w-8 h-8 text-gray-400" />
+          <Panel class="w-8 h-8 sm:w-9 sm:h-9 text-gray-400" />
         </RouterLink>
         <!-- <span class="absolute -top-1 -right-1 block w-2 h-2 bg-green-500 rounded-full ring-1 ring-white"></span> -->
       </div>

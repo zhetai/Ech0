@@ -11,7 +11,7 @@
             <img
               :src="logo"
               alt="logo"
-              class="w-6 h-6 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
+              class="w-6 md:w-7 h-6 md:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
             />
           </div>
           <h2 class="text-slate-600 font-bold italic">{{ SystemSetting.server_name }}</h2>
@@ -48,7 +48,7 @@
               @click="handleChangeMode"
               :class="
                 [
-                  'w-8 h-8 rounded-md',
+                  'w-8 h-8 sm:w-9 sm:h-9 rounded-md',
                   todoMode
                     ? 'bg-orange-100 shadow-[0_0_12px_-4px_rgba(255,140,0,0.6)] !ring-0 !text-white'
                     : '',
@@ -70,7 +70,7 @@
             <BaseButton
               :icon="ImageUpload"
               @click="handTriggerUpload"
-              class="w-8 h-8 rounded-md"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
               title="上传图片"
             />
           </div>
@@ -79,7 +79,7 @@
             <BaseButton
               :icon="echoToAdd.private ? Private : Public"
               @click="handlePrivate"
-              class="w-8 h-8 rounded-md"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
               title="是否私密"
             />
           </div>
@@ -100,7 +100,7 @@
             <BaseButton
               :icon="Publish"
               @click="handleAdd"
-              class="w-8 h-8 rounded-md"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
               title="发布"
             />
           </div>

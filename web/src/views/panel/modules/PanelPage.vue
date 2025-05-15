@@ -22,7 +22,7 @@
           <BaseButton
             :icon="[Setting, User, Status][ShowingIndex]"
             @click="changeShow"
-            class="text-gray-600 rounded-md w-8 h-8"
+            class="text-gray-600 rounded-md w-8 h-8 sm:w-9 sm:h-9"
             title="状态 / 设置 / 个人中心"
           />
 
@@ -30,7 +30,7 @@
           <BaseButton
             :icon="Logout"
             @click="handleLogout"
-            class="text-gray-600 rounded-md w-8 h-8"
+            class="text-gray-600 rounded-md w-8 h-8 sm:w-9 sm:h-9"
             title="退出登录"
           />
 
@@ -38,7 +38,7 @@
           <BaseButton
             :icon="Auth"
             @click="router.push('/auth')"
-            class="text-gray-600 rounded-md w-8 h-8"
+            class="text-gray-600 rounded-md w-8 h-8 sm:w-9 sm:h-9"
             title="登录 / 注册"
           />
         </div>
