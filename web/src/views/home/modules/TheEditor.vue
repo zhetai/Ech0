@@ -32,7 +32,7 @@
         <BaseTextArea
           v-else
           v-model="todoToAdd.content"
-          class="rounded-lg"
+          class="rounded-lg h-auto sm:min-h-[6rem] md:min-h-[9rem]"
           placeholder="请输入待办事项..."
           :rows="3"
         />
