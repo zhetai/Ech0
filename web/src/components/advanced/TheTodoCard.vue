@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col gap-2 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md">
+  <div
+    class="flex flex-col gap-2 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
+  >
     <!-- 顶部id + 按钮 -->
     <div class="flex justify-between items-center">
       <!-- id -->
@@ -8,7 +10,7 @@
         <span class="text-gray-400">{{ props.index }}</span>
       </div>
       <!-- 按钮 -->
-       <div class="flex gap-2">
+      <div class="flex gap-2">
         <BaseButton
           :icon="Delete"
           @click="handleDeleteTodo"
@@ -21,7 +23,7 @@
           class="w-7 h-7 rounded-md"
           title="切换待办状态"
         />
-       </div>
+      </div>
     </div>
     <!-- 具体内容 -->
     <div>
@@ -33,23 +35,22 @@
 </template>
 
 <script setup lang="ts">
-import Done from '../icons/done.vue';
-import Delete from '../icons/delete.vue';
-import BaseButton from '../common/BaseButton.vue';
-import { fetchUpdateTodo, fetchDeleteTodo } from '@/service/api';
-import { theToast } from '@/utils/toast';
+import Done from '../icons/done.vue'
+import Delete from '../icons/delete.vue'
+import BaseButton from '../common/BaseButton.vue'
+import { fetchUpdateTodo, fetchDeleteTodo } from '@/service/api'
+import { theToast } from '@/utils/toast'
 type todo = App.Api.Todo.Todo
 const props = defineProps<{
-  todo: todo;
-  index: number;
+  todo: todo
+  index: number
 }>()
 
 const emit = defineEmits(['refresh'])
 
 const handleDeleteTodo = () => {
   if (confirm('确定要删除待办吗？')) {
-    fetchDeleteTodo(props.todo.id)
-    .then((res) => {
+    fetchDeleteTodo(props.todo.id).then((res) => {
       if (res.code === 1) {
         theToast.success('待办已删除！')
         emit('refresh')
@@ -60,8 +61,7 @@ const handleDeleteTodo = () => {
 
 const handleChangeTodoStatus = () => {
   if (confirm('确定要切换待办状态吗？')) {
-    fetchUpdateTodo(props.todo.id)
-    .then((res) => {
+    fetchUpdateTodo(props.todo.id).then((res) => {
       if (res.code === 1) {
         theToast.success('待办已完成！')
         emit('refresh')

@@ -74,13 +74,9 @@ const router = useRouter()
 enum ShowWhichEnum {
   Status = 'status',
   Setting = 'setting',
-  UserCenter = 'usercenter'
+  UserCenter = 'usercenter',
 }
-const ShowingArray = [
-  ShowWhichEnum.Status,
-  ShowWhichEnum.Setting,
-  ShowWhichEnum.UserCenter
-]
+const ShowingArray = [ShowWhichEnum.Status, ShowWhichEnum.Setting, ShowWhichEnum.UserCenter]
 const ShowingIndex = ref<number>(0)
 const Showing = ref<string>(ShowWhichEnum.Status)
 

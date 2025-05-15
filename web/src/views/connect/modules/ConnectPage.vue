@@ -1,6 +1,8 @@
 <template>
   <div class="px-4 pb-4 py-2 mt-4 mb-10 mx-auto flex justify-center items-center h-screen">
-    <div class="h-3/5 sm:h-1/2 max-w-sm sm:max-w-md md:max-w-lg px-2 sm:px-4 md:px-6 my-4 sm:my-5 md:my-6">
+    <div
+      class="h-3/5 sm:h-1/2 max-w-sm sm:max-w-md md:max-w-lg px-2 sm:px-4 md:px-6 my-4 sm:my-5 md:my-6"
+    >
       <h1 class="text-5xl italic font-bold text-center text-gray-300 mb-5">Ech0s Connect</h1>
       <div class="mb-5">
         <!-- 返回首页 -->
@@ -21,9 +23,7 @@
           <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4">
             <h2 class="text-gray-600 font-bold text-lg mb-2">我连接的Ech0s:</h2>
             <div>
-              <div v-if="!connectsInfo.length" class="text-gray-500 text-sm mb-2">
-                当前暂无连接
-              </div>
+              <div v-if="!connectsInfo.length" class="text-gray-500 text-sm mb-2">当前暂无连接</div>
               <div v-else class="flex flex-wrap gap-4">
                 <div
                   v-for="(connect, index) in connectsInfo"

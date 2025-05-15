@@ -15,7 +15,7 @@ watch(
   (title) => {
     if (title) document.title = title
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 onMounted(async () => {

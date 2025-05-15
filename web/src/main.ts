@@ -52,7 +52,6 @@ config({
 
 // Md-Editor End
 
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import Toast from 'vue-toastification'

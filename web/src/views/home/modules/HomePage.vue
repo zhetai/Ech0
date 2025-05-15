@@ -8,14 +8,14 @@
 </template>
 
 <script setup lang="ts">
-import TheTop from './TheTop.vue';
+import TheTop from './TheTop.vue'
 import TheEditor from './TheEditor.vue'
 import TheEchos from './TheEchos.vue'
-import TheTodos from './TheTodos.vue';
+import TheTodos from './TheTodos.vue'
 import { onMounted } from 'vue'
-import { useSettingStore } from '@/stores/settting';
-import { useTodoStore } from '@/stores/todo';
-import { storeToRefs } from 'pinia';
+import { useSettingStore } from '@/stores/settting'
+import { useTodoStore } from '@/stores/todo'
+import { storeToRefs } from 'pinia'
 
 const { getSystemSetting } = useSettingStore()
 const todoStore = useTodoStore()

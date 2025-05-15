@@ -22,7 +22,9 @@
           customClass,
         ]"
         :maxlength="maxLength"
-        @input="$emit('update:modelValue', $event.target && ($event.target as HTMLTextAreaElement).value)"
+        @input="
+          $emit('update:modelValue', $event.target && ($event.target as HTMLTextAreaElement).value)
+        "
         v-bind="$attrs"
       ></textarea>
     </div>

@@ -32,8 +32,7 @@ export const useEchoStore = defineStore('echoStore', () => {
    * actions
    */
   async function getEchosByPage() {
-    if (current.value <= page.value)
-      return
+    if (current.value <= page.value) return
 
     isLoading.value = true
 

@@ -21,7 +21,7 @@ export function fetchUpdateUser(user: App.Api.User.UserInfo) {
 export function fetchGetAllUsers() {
   return request<App.Api.User.User[]>({
     url: '/allusers',
-    method: 'GET'
+    method: 'GET',
   })
 }
 

@@ -14,7 +14,9 @@
               class="w-6 sm:w-7 h-6 sm:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
             />
           </div>
-          <h1 class="text-slate-600 font-bold italic sm:text-xl">{{ SystemSetting.server_name }}</h1>
+          <h1 class="text-slate-600 font-bold italic sm:text-xl">
+            {{ SystemSetting.server_name }}
+          </h1>
         </div>
         <div class="flex flex-row items-center gap-2">
           <!-- Github -->
@@ -147,7 +149,13 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
 import { onMounted, ref } from 'vue'
-import { fetchUploadImage, fetchAddEcho, fetchGetStatus, fetchAddTodo, fetchDeleteImage } from '@/service/api'
+import {
+  fetchUploadImage,
+  fetchAddEcho,
+  fetchGetStatus,
+  fetchAddTodo,
+  fetchDeleteImage,
+} from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
 import { useSettingStore } from '@/stores/settting'
@@ -204,14 +212,15 @@ const handleRemoveImage = () => {
   if (confirm('确定要移除图片吗？')) {
     fetchDeleteImage({
       url: echoToAdd.value.image_url ?? '',
-    }).then((res) => {
-      if (res.code === 1) {
-        // theToast.success('图片已移除')
-      }
     })
-    .finally(() => {
-      echoToAdd.value.image_url = null
-    })
+      .then((res) => {
+        if (res.code === 1) {
+          // theToast.success('图片已移除')
+        }
+      })
+      .finally(() => {
+        echoToAdd.value.image_url = null
+      })
   }
 }
 

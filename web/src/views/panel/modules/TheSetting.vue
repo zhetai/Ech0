@@ -60,18 +60,14 @@
         <!-- ICP备案号 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30">ICP备案:</h2>
-            <span
+          <span
             v-if="!editMode"
             class="truncate max-w-40 inline-block align-middle"
             :title="SystemSetting.ICP_number"
-            style="vertical-align: middle;"
-            >
-            {{
-              SystemSetting.ICP_number.length === 0
-              ? '暂无'
-              : SystemSetting.ICP_number
-            }}
-            </span>
+            style="vertical-align: middle"
+          >
+            {{ SystemSetting.ICP_number.length === 0 ? '暂无' : SystemSetting.ICP_number }}
+          </span>
           <BaseInput
             v-else
             v-model="SystemSetting.ICP_number"
@@ -131,10 +127,11 @@
             <div class="flex justify-start max-w-70">
               <h2 class="font-semibold w-30">Connect {{ index + 1 }}:</h2>
               <span
-              class="truncate max-w-40"
-              :title="connect.connect_url"
-              style="display: inline-block;"
-              >{{ connect.connect_url }}</span>
+                class="truncate max-w-40"
+                :title="connect.connect_url"
+                style="display: inline-block"
+                >{{ connect.connect_url }}</span
+              >
             </div>
             <BaseButton
               :icon="Disconnect"
@@ -160,11 +157,7 @@ import Close from '@/components/icons/close.vue'
 import Publish from '@/components/icons/publish.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
-import {
-  fetchUpdateSettings,
-  fetchAddConnect,
-  fetchDeleteConnect,
-} from '@/service/api'
+import { fetchUpdateSettings, fetchAddConnect, fetchDeleteConnect } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useSettingStore } from '@/stores/settting'
 import { useConnectStore } from '@/stores/connect'

@@ -11,7 +11,7 @@ const router = createRouter({
       component: HomeView,
       meta: {
         title: 'Home',
-      }
+      },
     },
     {
       path: '/panel',
@@ -40,7 +40,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: NotFoundView,
-    }
+    },
   ],
 })
 
