@@ -44,6 +44,7 @@ export const useSettingStore = defineStore('settingStore', () => {
           router.push({ name: 'auth' })
         } else {
           isSystemReady.value = true
+          console.log('系统已准备好')
         }
       }).finally(() => {
         // 保存系统状态到localStorage

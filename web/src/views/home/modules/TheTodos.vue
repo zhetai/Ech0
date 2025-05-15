@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto px-2 my-4">
+  <div class="mx-auto px-2 sm:px-5 my-4">
     <!-- Todos -->
     <div v-if="isLogin && todos.length > 0">
       <div v-for="(todo, index) in todos" :key="todo.id" class="mb-4">

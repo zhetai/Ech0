@@ -6,7 +6,7 @@
         type="text"
         v-model="searchContent"
         placeholder="搜索..."
-        class="w-1/2 h-9"
+        class="w-2/3 h-9"
         @keyup.enter="$event.target.blur()"
         @blur="handleSearch"
       />
@@ -18,7 +18,7 @@
         </a>
       </div>
       <!-- ConnectPage -->
-      <div class="relative mr-2">
+      <div class="relative mr-2 xl:hidden">
         <RouterLink to="/connect" title="连接">
           <!-- icon -->
           <Other class="w-8 h-8 sm:w-9 sm:h-9 text-gray-400" />

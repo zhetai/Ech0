@@ -26,17 +26,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { fetchGetHeatMap } from '@/service/api';
 
-const props = defineProps<{
-  heatmapData: (App.Api.Ech0.HeatMap[0] | null)[]
-}>()
+// const props = defineProps<{
+//   heatmapData: (App.Api.Ech0.HeatMap[0] | null)[]
+// }>()
+
+const heatmapData = ref<App.Api.Ech0.HeatMap>([])
 
 const grid = computed(() => {
-  const cells = [...props.heatmapData]
+  const cells = [...(heatmapData.value)]
   const total = 3 * 10
   while (cells.length < total) cells.push(null as any)
-  const result: ((typeof props.heatmapData)[0] | null)[][] = []
+  const result: (App.Api.Ech0.HeatMap[0] | null)[][] = []
   for (let row = 0; row < 3; row++) {
     result.push(cells.slice(row * 10, (row + 1) * 10))
   }
@@ -52,7 +55,7 @@ const getColor = (count: number): string => {
   if (count >= 3) return '#239a3b'
   if (count >= 2) return '#7bc96f'
   if (count >= 1) return '#c6e48b'
-  return '#ebedf0'
+  return '#fff'
 }
 
 // Tooltip 相关
@@ -82,4 +85,10 @@ function showTooltip(row: number, col: number, event: MouseEvent) {
 function hideTooltip() {
   tooltip.value.visible = false
 }
+
+onMounted(async () => {
+  await fetchGetHeatMap().then((res) => {
+    heatmapData.value = res.data
+  })
+})
 </script>

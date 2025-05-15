@@ -57,7 +57,7 @@ export const request = async <T>(requestOptions: RequestOptions): Promise<App.Ap
   }).then((res) => {
     if (res.code !== 1) {
       if (isSystemReady) {
-        theToast.error(res.msg)
+        theToast.error(res.msg ? String(res.msg) : '请求失败')
       }
     }
 

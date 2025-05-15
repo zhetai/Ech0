@@ -2,7 +2,7 @@
   <div class="w-full px-2">
     <!-- 一个月内的热力图 -->
     <div>
-      <TheHeatMap :heatmapData="heatmapData" />
+      <TheHeatMap />
     </div>
 
     <div class="flex justify-center my-5">
@@ -37,22 +37,17 @@
 </template>
 
 <script setup lang="ts">
-import { fetchGetHeatMap, fetchGetStatus } from '@/service/api'
+import { fetchGetStatus } from '@/service/api'
 import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import TheHeatMap from '@/components/advanced/TheHeatMap.vue'
 
 const status = ref<App.Api.Ech0.Status>()
-const heatmapData = ref<App.Api.Ech0.HeatMap>([])
 const userStore = useUserStore()
 
 onMounted(async () => {
   await fetchGetStatus().then((res) => {
     status.value = res.data
-  })
-
-  await fetchGetHeatMap().then((res) => {
-    heatmapData.value = res.data
   })
 })
 </script>
