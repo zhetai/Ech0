@@ -1,7 +1,7 @@
 <template>
   <div class="w-full px-2">
     <!-- 一个月内的热力图 -->
-    <div>
+    <div class="flex justify-center items-center">
       <TheHeatMap />
     </div>
 

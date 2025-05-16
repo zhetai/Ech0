@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center p-2">
+  <div class=" flex justify-center items-center p-2">
     <div class="">
       <div class="flex">
         <div v-for="col in 10" :key="col" class="flex flex-col gap-1 mr-1">
