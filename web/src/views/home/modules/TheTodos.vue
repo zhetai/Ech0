@@ -3,7 +3,7 @@
     <!-- Todos -->
     <div v-if="isLogin && todos.length > 0">
       <div v-for="(todo, index) in todos" :key="todo.id" class="mb-4">
-        <TheTodoCard :todo="todo" :index="index" @refresh="getTodos" />
+        <TheTodoCard :todo="todo" :index="index" :operative="true" @refresh="getTodos" />
       </div>
     </div>
     <div v-if="isLogin && todos.length === 0">

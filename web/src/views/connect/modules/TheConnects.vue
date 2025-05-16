@@ -2,7 +2,9 @@
   <div class="px-11">
     <!-- 列出所有连接（列出每个连接的头像） -->
     <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-3 mb-4">
-      <h2 class="text-gray-600 font-bold text-lg mb-2">连接到的Ech0:</h2>
+      <h2 class="text-gray-600 font-bold text-lg mb-2 flex items-center">
+        <Connect class="mr-2" />连接到的Ech0:
+      </h2>
       <div>
       <div v-if="!connectsInfo.length" class="text-gray-500 text-sm mb-2">当前暂无连接</div>
       <div v-else class="flex flex-wrap gap-4">
@@ -29,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import Connect from '@/components/icons/connect.vue'
 import { useConnectStore } from '@/stores/connect'
 import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'

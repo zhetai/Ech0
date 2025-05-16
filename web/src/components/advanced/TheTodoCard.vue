@@ -1,9 +1,9 @@
 <template>
   <div
-    class="flex flex-col gap-2 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
+    class="w-full flex flex-col gap-2 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
   >
     <!-- 顶部id + 按钮 -->
-    <div class="flex justify-between items-center">
+    <div v-if="props.operative" class="flex justify-between items-center">
       <!-- id -->
       <div class="flex justify-start gap-1 items-center h-auto font-bold text-2xl">
         <span class="italic text-gray-300">#</span>
@@ -25,6 +25,11 @@
         />
       </div>
     </div>
+    <div v-else>
+      <p class="text-gray-600 font-bold text-lg flex items-center">
+       <Busy class="mr-1" /> 正忙着的事情：
+      </p>
+    </div>
     <!-- 具体内容 -->
     <div>
       <p class="text-gray-500 text-sm">
@@ -36,6 +41,7 @@
 
 <script setup lang="ts">
 import Done from '../icons/done.vue'
+import Busy from '../icons/busy.vue'
 import Delete from '../icons/delete.vue'
 import BaseButton from '../common/BaseButton.vue'
 import { fetchUpdateTodo, fetchDeleteTodo } from '@/service/api'
@@ -44,6 +50,7 @@ type todo = App.Api.Todo.Todo
 const props = defineProps<{
   todo: todo
   index: number
+  operative: boolean
 }>()
 
 const emit = defineEmits(['refresh'])

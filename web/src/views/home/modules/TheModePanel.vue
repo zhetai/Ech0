@@ -24,12 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import Image from '@/components/icons/image.vue'
 import Todo from '@/components/icons/todo.vue'
 import Music from '@/components/icons/music.vue'
 import Video from '@/components/icons/video.vue'
 import Githubproj from '@/components/icons/githubproj.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
+import { theToast } from '@/utils/toast'
 
 const enum ExtensionType {
   MUSIC = 'MUSIC',
@@ -40,7 +40,8 @@ const enum ExtensionType {
 const emit = defineEmits(['switchTodo', 'switchExtension', 'addMusic', 'addVideo', 'addGithubproj'])
 
 const handleAddExtension = (type: ExtensionType) => {
-  emit('switchExtension', type)
+  theToast.info('功能正在开发中，敬请期待！')
+  // emit('switchExtension', type)
 }
 </script>
 
