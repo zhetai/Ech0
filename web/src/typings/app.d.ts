@@ -62,12 +62,16 @@ declare namespace App {
         image_url: string
         private: boolean
         user_id: number
+        extension: string
+        extension_type: string
         created_at: string
       }
 
       type EchoToAdd = {
         content: string
         image_url?: string | null
+        extension?: string | null
+        extension_type?: string | null
         private: boolean
       }
 

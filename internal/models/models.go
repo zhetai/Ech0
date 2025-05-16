@@ -7,13 +7,15 @@ import (
 )
 
 type Message struct {
-	ID        uint      `gorm:"primaryKey" json:"id"`
-	Content   string    `gorm:"type:text;not null" json:"content"`
-	Username  string    `gorm:"type:varchar(100)" json:"username,omitempty"`
-	ImageURL  string    `gorm:"type:text" json:"image_url,omitempty"`
-	Private   bool      `gorm:"default:false" json:"private"`
-	UserID    uint      `gorm:"not null;index" json:"user_id"`
-	CreatedAt time.Time `json:"created_at"`
+	ID            uint      `gorm:"primaryKey" json:"id"`
+	Content       string    `gorm:"type:text;not null" json:"content"`
+	Username      string    `gorm:"type:varchar(100)" json:"username,omitempty"`
+	ImageURL      string    `gorm:"type:text" json:"image_url,omitempty"`
+	Private       bool      `gorm:"default:false" json:"private"`
+	UserID        uint      `gorm:"not null;index" json:"user_id"`
+	Extension     string    `gorm:"type:text" json:"extension,omitempty"`
+	ExtensionType string    `gorm:"type:varchar(100)" json:"extension_type,omitempty"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type Todo struct {

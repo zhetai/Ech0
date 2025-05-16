@@ -30,23 +30,29 @@
 
       <!-- Editor -->
       <div class="rounded-lg p-2 sm:p-3 mb-1">
-        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="!todoMode" />
+        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="currentMode === Mode.ECH0" />
+        <!-- todoMode -->
         <BaseTextArea
-          v-else
+          v-if="currentMode === Mode.TODO"
           v-model="todoToAdd.content"
           class="rounded-lg h-auto sm:min-h-[6rem] md:min-h-[9rem]"
           placeholder="请输入待办事项..."
           :rows="3"
         />
+        <!-- Panel -->
+        <TheModePanel v-if="currentMode === Mode.Panel"
+            @switch-todo="handleSwitchTodoMode"
+            @switch-extension="handleSwitchExtensionMode"
+          />
       </div>
 
       <!-- Buttons -->
       <div class="flex flex-row items-center justify-between px-2">
         <div class="flex flex-row items-center gap-2">
-          <!-- Todo -->
+          <!-- ShowMore -->
           <div>
             <BaseButton
-              :icon="Todo"
+              :icon="Advance"
               @click="handleChangeMode"
               :class="
                 [
@@ -56,11 +62,11 @@
                     : '',
                 ].join(' ')
               "
-              title="切换待办模式"
+              title="其它"
             />
           </div>
           <!-- Photo Upload -->
-          <div v-if="!todoMode">
+          <div v-if="currentMode === Mode.ECH0">
             <input
               id="file-input"
               class="hidden"
@@ -77,7 +83,7 @@
             />
           </div>
           <!-- Privacy Set -->
-          <div v-if="!todoMode">
+          <div v-if="currentMode === Mode.ECH0">
             <BaseButton
               :icon="echoToAdd.private ? Private : Public"
               @click="handlePrivate"
@@ -98,7 +104,7 @@
             />
           </div> -->
           <!-- Publish -->
-          <div>
+          <div v-if="currentMode !== Mode.Panel">
             <BaseButton
               :icon="Publish"
               @click="handleAdd"
@@ -136,6 +142,7 @@
 <script setup lang="ts">
 import Github from '@/components/icons/github.vue'
 import Rss from '@/components/icons/rss.vue'
+import Advance from '@/components/icons/advance.vue'
 import Close from '@/components/icons/close.vue'
 import Todo from '@/components/icons/todo.vue'
 import Panel from '@/components/icons/panel.vue'
@@ -146,6 +153,7 @@ import Clear from '@/components/icons/clear.vue'
 import Publish from '@/components/icons/publish.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
+import TheModePanel from './TheModePanel.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
 import { onMounted, ref } from 'vue'
@@ -173,16 +181,47 @@ const { setTodoMode, getTodos } = todoStore
 const { SystemSetting } = storeToRefs(settingStore)
 const { todoMode } = storeToRefs(todoStore)
 
+const enum Mode {
+  ECH0 = 0,
+  Panel = 1,
+  TODO = 2,
+  EXTEN = 3,
+}
+const enum ExtensionType {
+  MUSIC = 'MUSIC',
+  VIDEO = 'VIDEO',
+  GITHUBPROJ = 'GITHUBPROJ',
+}
+const currentMode = ref<Mode>(Mode.ECH0)
+const currentExtensionType = ref<ExtensionType>()
+
 const logo = ref<string>('/favicon.svg')
 
 const handleChangeMode = () => {
-  setTodoMode(!todoMode.value)
+  if (currentMode.value === Mode.ECH0) {
+    currentMode.value = Mode.Panel
+  } else if (currentMode.value === Mode.TODO) {
+    currentMode.value = Mode.ECH0
+    setTodoMode(false)
+  } else {
+    currentMode.value = Mode.ECH0
+  }
+}
+const handleSwitchExtensionMode = (type: ExtensionType) => {
+  currentMode.value = Mode.EXTEN
+  currentExtensionType.value = type
+}
+const handleSwitchTodoMode = () => {
+  setTodoMode(true)
+  currentMode.value = Mode.TODO
 }
 
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
   image_url: null,
   private: false,
+  extension: null,
+  extension_type: null,
 })
 
 const todoToAdd = ref<App.Api.Todo.TodoToAdd>({
