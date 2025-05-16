@@ -11,7 +11,7 @@
     </div>
     <div class="hidden xl:block sm:max-w-sm w-full px-6">
       <TheHeatMap class="mb-2" />
-      <div v-if="todos.length > 0" class="mb-2 px-11">
+      <div v-if="isLogin && todos.length > 0 " class="mb-2 px-11">
         <TheTodoCard :todo="todos[0]" :index="0" :operative="false" @refresh="getTodos" />
       </div>
       <TheConnects />
@@ -29,17 +29,22 @@ import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
 import TheHeatMap from '@/components/advanced/TheHeatMap.vue'
 import { onMounted } from 'vue'
 import { useSettingStore } from '@/stores/settting'
+import { useUserStore } from '@/stores/user'
 import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
 
 const { getSystemSetting } = useSettingStore()
 const todoStore = useTodoStore()
+const userStore = useUserStore()
 const { getTodos } = todoStore
 const { todoMode, todos } = storeToRefs(todoStore)
+const { isLogin } = storeToRefs(userStore)
 
 onMounted(async () => {
   // 获取数据
   await getSystemSetting()
-  await getTodos()
+  if (isLogin.value) {
+    await getTodos()
+  }
 })
 </script>
