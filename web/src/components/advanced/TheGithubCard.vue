@@ -1,7 +1,8 @@
 <template>
-  <div class="max-w-sm flex justify-around items-center bg-white rounded-lg shadow-sm p-2 gap-2">
-    <img v-if="CardData?.owner?.avatar_url" :src="CardData?.owner?.avatar_url" alt="头像" class="w-10 h-10 rounded-full shadow" />
-    <Githubproj v-else class="w-10 h-10 shadow" />
+  <div class="max-w-sm flex justify-center items-center bg-white rounded-lg shadow-sm p-2 gap-2">
+    <div class="flex justify-start items-center">
+      <img v-if="CardData?.owner?.avatar_url" :src="CardData?.owner?.avatar_url" alt="头像" class="w-10 h-10 rounded-full shadow" />
+    <Githubproj v-else class="w-10 h-10" />
     <div class="px-3">
       <a :href="props.GithubURL" target="_blank">
         <span class="text-md font-bold text-gray-500">{{ CardData?.name || repo }}</span>
@@ -20,6 +21,7 @@
           </div>
         </div>
       </a>
+    </div>
     </div>
   </div>
 </template>

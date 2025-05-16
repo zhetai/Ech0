@@ -60,7 +60,7 @@
       </div>
 
       <!-- 扩展内容 -->
-      <div v-if="props.echo.extension">
+      <div v-if="props.echo.extension" class="mt-2">
         <div v-if="props.echo.extension_type === ExtensionType.MUSIC">
           <!-- TODO: 暂无 -->
         </div>
