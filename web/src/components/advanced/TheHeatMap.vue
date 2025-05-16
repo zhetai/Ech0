@@ -1,5 +1,5 @@
 <template>
-  <div class=" flex justify-center items-center p-2">
+  <div class="flex justify-center items-center p-2">
     <div class="">
       <div class="flex">
         <div v-for="col in 10" :key="col" class="flex flex-col gap-1 mr-1">
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { fetchGetHeatMap } from '@/service/api';
+import { fetchGetHeatMap } from '@/service/api'
 
 // const props = defineProps<{
 //   heatmapData: (App.Api.Ech0.HeatMap[0] | null)[]
@@ -36,7 +36,7 @@ import { fetchGetHeatMap } from '@/service/api';
 const heatmapData = ref<App.Api.Ech0.HeatMap>([])
 
 const grid = computed(() => {
-  const cells = [...(heatmapData.value)]
+  const cells = [...heatmapData.value]
   const total = 3 * 10
   while (cells.length < total) cells.push(null as any)
   const result: (App.Api.Ech0.HeatMap[0] | null)[][] = []

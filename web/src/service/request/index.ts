@@ -66,14 +66,19 @@ export const request = async <T>(requestOptions: RequestOptions): Promise<App.Ap
 }
 
 // 直接请求
-export const requestWithDirectUrl = async <T>(requestOptions: RequestOptions): Promise<App.Api.Response<T>> => {
+export const requestWithDirectUrl = async <T>(
+  requestOptions: RequestOptions,
+): Promise<App.Api.Response<T>> => {
   // 检查系统是否已经准备好
   const isSystemReady = getSystemReadyStatus()
 
-  return ofetchInstance<App.Api.Response<T>>(requestOptions.dirrectUrl ? requestOptions.dirrectUrl : '', {
-    method: requestOptions.method,
-    body: requestOptions.data,
-  }).then((res) => {
+  return ofetchInstance<App.Api.Response<T>>(
+    requestOptions.dirrectUrl ? requestOptions.dirrectUrl : '',
+    {
+      method: requestOptions.method,
+      body: requestOptions.data,
+    },
+  ).then((res) => {
     if (res.code !== 1) {
       if (isSystemReady) {
         theToast.error(res.msg ? String(res.msg) : '请求失败')
@@ -85,14 +90,19 @@ export const requestWithDirectUrl = async <T>(requestOptions: RequestOptions): P
 }
 
 // 直接请求 && 直接传递数据
-export const requestWithDirectUrlAndData = async <T>(requestOptions: RequestOptions): Promise<T> => {
-  return ofetchInstance<T>(requestOptions.dirrectUrlAndData ? requestOptions.dirrectUrlAndData : '', {
-    method: requestOptions.method,
-    body: requestOptions.data,
-    headers: {
-      'X-Direct-URL': requestOptions.dirrectUrlAndData ? requestOptions.dirrectUrlAndData : '',
-    }
-  }).then((res) => {
+export const requestWithDirectUrlAndData = async <T>(
+  requestOptions: RequestOptions,
+): Promise<T> => {
+  return ofetchInstance<T>(
+    requestOptions.dirrectUrlAndData ? requestOptions.dirrectUrlAndData : '',
+    {
+      method: requestOptions.method,
+      body: requestOptions.data,
+      headers: {
+        'X-Direct-URL': requestOptions.dirrectUrlAndData ? requestOptions.dirrectUrlAndData : '',
+      },
+    },
+  ).then((res) => {
     return res
   })
 }

@@ -67,7 +67,11 @@
         <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
           <!-- TODO: 暂无 -->
         </div>
-        <TheGithubCard v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ" :GithubURL="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
+        <TheGithubCard
+          v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ"
+          :GithubURL="props.echo.extension"
+          class="px-2 mx-auto hover:shadow-md"
+        />
       </div>
     </div>
   </div>

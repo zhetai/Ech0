@@ -63,10 +63,7 @@ export function fetchDeleteImage(image: App.Api.Ech0.ImageToDelete) {
 }
 
 // 获取Github仓库数据
-export function fetchGetGithubRepo(githubRepo: {
-  owner: string
-  repo: string
-}) {
+export function fetchGetGithubRepo(githubRepo: { owner: string; repo: string }) {
   return requestWithDirectUrlAndData<App.Api.Ech0.GithubCardData>({
     dirrectUrlAndData: `https://api.github.com/repos/${githubRepo.owner}/${githubRepo.repo}`,
     url: `/github`,

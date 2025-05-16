@@ -30,7 +30,11 @@
 
       <!-- Editor -->
       <div class="rounded-lg p-2 sm:p-3 mb-1">
-        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="currentMode === Mode.ECH0" />
+        <TheMdEditor
+          v-model="echoToAdd.content"
+          class="rounded-lg"
+          v-if="currentMode === Mode.ECH0"
+        />
         <!-- todoMode -->
         <BaseTextArea
           v-if="currentMode === Mode.TODO"
@@ -40,12 +44,13 @@
           :rows="3"
         />
         <!-- Panel -->
-        <TheModePanel v-if="currentMode === Mode.Panel"
-            @switch-todo="handleSwitchTodoMode"
-            @switch-extension="handleSwitchExtensionMode"
-          />
+        <TheModePanel
+          v-if="currentMode === Mode.Panel"
+          @switch-todo="handleSwitchTodoMode"
+          @switch-extension="handleSwitchExtensionMode"
+        />
         <!-- Extension -->
-         <div v-if="currentMode === Mode.EXTEN">
+        <div v-if="currentMode === Mode.EXTEN">
           <div v-if="currentExtensionType === ExtensionType.MUSIC"></div>
           <div v-if="currentExtensionType === ExtensionType.VIDEO"></div>
           <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
@@ -56,7 +61,7 @@
               placeholder="https://github.com/username/repo"
             />
           </div>
-         </div>
+        </div>
       </div>
 
       <!-- Buttons -->
@@ -308,7 +313,8 @@ const handleAddEcho = () => {
   if (
     !echoToAdd.value.content &&
     !echoToAdd.value.image_url &&
-    (!echoToAdd.value.extension && !echoToAdd.value.extension_type)
+    !echoToAdd.value.extension &&
+    !echoToAdd.value.extension_type
   ) {
     theToast.error('内容不能为空！')
     return

@@ -27,5 +27,5 @@
 <script setup lang="ts">
 import BaseButton from '@/components/common/BaseButton.vue'
 import Arrow from '@/components/icons/arrow.vue'
-import TheConnects from './TheConnects.vue';
+import TheConnects from './TheConnects.vue'
 </script>
