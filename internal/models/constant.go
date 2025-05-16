@@ -111,6 +111,13 @@ const (
 	ConnectKey        = "connect"         // Connect 信息的键
 )
 
+// Ech0 相关
+const (
+	Extension_MUSIC      = "MUSIC"
+	Extension_VIDEO      = "VIDEO"
+	Extension_GITHUBPROJ = "GITHUBPROJ"
+)
+
 // User 相关
 const (
 	MaxUserCount = 4 // 最多注册用户数

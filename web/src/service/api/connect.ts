@@ -1,4 +1,4 @@
-import { request } from '../request'
+import { request, requestWithDirectUrl } from '../request'
 
 // 获取Connect列表
 export function fetchGetConnects() {
@@ -10,7 +10,7 @@ export function fetchGetConnects() {
 
 // 获取Connect详情 (直接根据URL获取，不需要request的url)
 export function fetchGetConnect(connectUrl: string) {
-  return request<App.Api.Connect.Connect>({
+  return requestWithDirectUrl<App.Api.Connect.Connect>({
     dirrectUrl: `${connectUrl}/api/connect`,
     url: '/',
     method: 'GET',

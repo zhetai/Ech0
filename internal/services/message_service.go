@@ -6,6 +6,7 @@ import (
 	"github.com/lin-snow/ech0/internal/dto"
 	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/internal/repository"
+	"github.com/lin-snow/ech0/pkg"
 )
 
 // GetAllMessages 封装业务逻辑，获取所有留言
@@ -48,6 +49,21 @@ func CreateMessage(message *models.Message) error {
 
 	if !user.IsAdmin {
 		return errors.New(models.NoPermissionMessage)
+	}
+
+	// 检查Extension内容
+	if message.Extension != "" && message.ExtensionType != "" {
+		if message.ExtensionType == models.Extension_MUSIC {
+
+		} else if message.ExtensionType == models.Extension_VIDEO {
+
+		} else if message.ExtensionType == models.Extension_GITHUBPROJ {
+			// 处理GitHub项目的链接
+			message.Extension = pkg.TrimURL(message.Extension)
+		}
+	} else {
+		message.Extension = ""
+		message.ExtensionType = ""
 	}
 
 	message.Username = user.Username // 获取用户名

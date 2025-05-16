@@ -44,6 +44,19 @@
             @switch-todo="handleSwitchTodoMode"
             @switch-extension="handleSwitchExtensionMode"
           />
+        <!-- Extension -->
+         <div v-if="currentMode === Mode.EXTEN">
+          <div v-if="currentExtensionType === ExtensionType.MUSIC"></div>
+          <div v-if="currentExtensionType === ExtensionType.VIDEO"></div>
+          <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
+            <div class="text-gray-500 font-bold mb-1">Github项目地址</div>
+            <BaseInput
+              v-model="extensionToAdd.extension"
+              class="rounded-lg h-auto w-full"
+              placeholder="https://github.com/username/repo"
+            />
+          </div>
+         </div>
       </div>
 
       <!-- Buttons -->
@@ -152,6 +165,7 @@ import Private from '@/components/icons/private.vue'
 import Clear from '@/components/icons/clear.vue'
 import Publish from '@/components/icons/publish.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
+import BaseInput from '@/components/common/BaseInput.vue'
 import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import TheModePanel from './TheModePanel.vue'
 import { theToast } from '@/utils/toast'
@@ -207,15 +221,20 @@ const handleChangeMode = () => {
     currentMode.value = Mode.ECH0
   }
 }
-const handleSwitchExtensionMode = (type: ExtensionType) => {
+const handleSwitchExtensionMode = (extensiontype: ExtensionType) => {
   currentMode.value = Mode.EXTEN
-  currentExtensionType.value = type
+  currentExtensionType.value = extensiontype
+  extensionToAdd.value.extension_type = extensiontype
 }
 const handleSwitchTodoMode = () => {
   setTodoMode(true)
   currentMode.value = Mode.TODO
 }
 
+const extensionToAdd = ref({
+  extension: '',
+  extension_type: '',
+})
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
   image_url: null,
@@ -271,10 +290,26 @@ const handleClear = () => {
   echoToAdd.value.content = ''
   echoToAdd.value.image_url = null
   echoToAdd.value.private = false
+  echoToAdd.value.extension = null
+  echoToAdd.value.extension_type = null
+  extensionToAdd.value.extension = ''
+  extensionToAdd.value.extension_type = ''
 }
 
 const handleAddEcho = () => {
-  if (!echoToAdd.value.content && !echoToAdd.value.image_url) {
+  if (extensionToAdd.value.extension.length > 0 && extensionToAdd.value.extension_type.length > 0) {
+    echoToAdd.value.extension = extensionToAdd.value.extension
+    echoToAdd.value.extension_type = extensionToAdd.value.extension_type
+  } else {
+    echoToAdd.value.extension = null
+    echoToAdd.value.extension_type = null
+  }
+
+  if (
+    !echoToAdd.value.content &&
+    !echoToAdd.value.image_url &&
+    (!echoToAdd.value.extension && !echoToAdd.value.extension_type)
+  ) {
     theToast.error('内容不能为空！')
     return
   }

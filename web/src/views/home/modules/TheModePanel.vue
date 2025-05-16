@@ -39,9 +39,12 @@ const enum ExtensionType {
 
 const emit = defineEmits(['switchTodo', 'switchExtension', 'addMusic', 'addVideo', 'addGithubproj'])
 
-const handleAddExtension = (type: ExtensionType) => {
-  theToast.info('功能正在开发中，敬请期待！')
-  // emit('switchExtension', type)
+const handleAddExtension = (extensiontype: ExtensionType) => {
+  if (extensiontype !== ExtensionType.GITHUBPROJ) {
+    theToast.info('该功能正在开发中，敬请期待！')
+    return
+  }
+  emit('switchExtension', extensiontype)
 }
 </script>
 

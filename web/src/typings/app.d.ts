@@ -96,6 +96,16 @@ declare namespace App {
       type ImageToDelete = {
         url: string
       }
+
+      type GithubCardData = {
+        name: string
+        stargazers_count: number
+        forks_count: number
+        description: string
+        owner: {
+          avatar_url: string
+        }
+      }
     }
 
     namespace Setting {

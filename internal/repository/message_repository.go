@@ -86,7 +86,7 @@ func CreateMessage(message *models.Message) error {
 	message.Content = strings.TrimSpace(message.Content) // 去除内容前后的空格
 	// message.Username = strings.TrimSpace(message.Username) // 去除用户名前后的空格
 
-	if message.Content == "" && message.ImageURL == "" {
+	if message.Content == "" && message.ImageURL == "" && (message.Extension == "" || message.ExtensionType == "") {
 		return errors.New(models.CannotBeEmptyMessage) // 如果内容和图片链接都为空，则返回错误
 	}
 

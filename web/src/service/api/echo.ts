@@ -1,4 +1,4 @@
-import { request } from '../request'
+import { request, requestWithDirectUrlAndData } from '../request'
 
 // 分页获取Echos
 export function fetchGetEchosByPage(searchParams: App.Api.Ech0.ParamsByPagination) {
@@ -59,5 +59,17 @@ export function fetchDeleteImage(image: App.Api.Ech0.ImageToDelete) {
     url: `/images/delete`,
     method: 'DELETE',
     data: image,
+  })
+}
+
+// 获取Github仓库数据
+export function fetchGetGithubRepo(githubRepo: {
+  owner: string
+  repo: string
+}) {
+  return requestWithDirectUrlAndData<App.Api.Ech0.GithubCardData>({
+    dirrectUrlAndData: `https://api.github.com/repos/${githubRepo.owner}/${githubRepo.repo}`,
+    url: `/github`,
+    method: 'GET',
   })
 }

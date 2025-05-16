@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
     <!-- 日期时间 && 操作按钮 -->
     <div class="flex justify-between items-center">
       <!-- 日期时间 -->
@@ -58,6 +58,17 @@
           :auto-fold-threshold="previewOptions.autoFoldThreshold"
         />
       </div>
+
+      <!-- 扩展内容 -->
+      <div v-if="props.echo.extension">
+        <div v-if="props.echo.extension_type === ExtensionType.MUSIC">
+          <!-- TODO: 暂无 -->
+        </div>
+        <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
+          <!-- TODO: 暂无 -->
+        </div>
+        <TheGithubCard v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ" :GithubURL="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
+      </div>
     </div>
   </div>
 </template>
@@ -70,6 +81,7 @@ import { onMounted } from 'vue'
 import { fetchDeleteEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
+import TheGithubCard from './TheGithubCard.vue'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
 import Roll from '../icons/roll.vue'
@@ -78,6 +90,11 @@ import Lock from '../icons/lock.vue'
 const emit = defineEmits(['refresh'])
 
 type Echo = App.Api.Ech0.Echo
+const enum ExtensionType {
+  MUSIC = 'MUSIC',
+  VIDEO = 'VIDEO',
+  GITHUBPROJ = 'GITHUBPROJ',
+}
 
 const props = defineProps<{
   echo: Echo
