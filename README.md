@@ -31,7 +31,7 @@ Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快
 ```shell
 docker run -d \
   --name ech0 \
-  -p 1314:1314 \
+  -p 6277:6277 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/config/config.yaml:/app/data/config/config.yaml \
   -e JWT_SECRET="Hello Echos!" \
@@ -122,7 +122,7 @@ Ech0 旨在保持简洁和轻量，因此在设计时没有复杂的权限系统
 # 🛠️ 开发
 
 🔧 依赖环境  
-📌 后端： `Go 1.24.1+`  
+📌 后端： `Go 1.24.3+`  
 📌 前端： `NodeJS v22.15.0, PNPM`  
 
 🏗️ 启动  

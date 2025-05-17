@@ -4,7 +4,7 @@ services:
     image: sn0wl1n/ech0:latest
     container_name: ech0
     ports:
-      - "1314:1314"
+      - "6277:6277"
     volumes:
       - ./ech0/data:/app/data
       - ./ech0/data/config/config.yaml:/app/data/config/config.yaml
