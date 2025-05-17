@@ -23,7 +23,7 @@ jobs:
 
       # ✅ 配置 GO 缓存
       - name: Cache Go modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/go-build
@@ -38,7 +38,7 @@ jobs:
 
       # ✅ 设置 PNPM 缓存
       - name: Cache pnpm store
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('web/pnpm-lock.yaml') }}
