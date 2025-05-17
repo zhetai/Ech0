@@ -322,42 +322,43 @@ INSTALL_CLI() {
         return 1
     fi
 
-    SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-    SCRIPT_NAME=$(basename "$0")
-    SCRIPT_PATH="$SCRIPT_DIR/$SCRIPT_NAME"
-
-    if [ ! -f "$SCRIPT_PATH" ]; then
-        echo -e "${RED_COLOR}错误：找不到源脚本文件：$SCRIPT_PATH${RES}"
-        return 1
-    fi
-
+    # Create directories for manager script and command link
     mkdir -p "$(dirname "$MANAGER_PATH")" || {
         echo -e "${RED_COLOR}错误：无法创建目录 $(dirname "$MANAGER_PATH")${RES}"
         return 1
     }
-    cp "$SCRIPT_PATH" "$MANAGER_PATH" || {
-        echo -e "${RED_COLOR}错误：无法复制管理脚本到 $MANAGER_PATH${RES}"
-        return 1
-    }
-    chmod 755 "$MANAGER_PATH" || {
-        echo -e "${RED_COLOR}错误：设置 $MANAGER_PATH 权限失败${RES}"
-        rm -f "$MANAGER_PATH"
-        return 1
-    }
-    chmod 755 "$(dirname "$MANAGER_PATH")" # Ensure parent dir is executable
+    chmod 755 "$(dirname "$MANAGER_PATH")"
 
     mkdir -p "$(dirname "$COMMAND_LINK")" || {
         echo -e "${RED_COLOR}错误：无法创建目录 $(dirname "$COMMAND_LINK")${RES}"
-        rm -f "$MANAGER_PATH"
-        return 1
-    }
-    ln -sf "$MANAGER_PATH" "$COMMAND_LINK" || {
-        echo -e "${RED_COLOR}错误：创建命令链接 $COMMAND_LINK 失败${RES}"
-        rm -f "$MANAGER_PATH"
+        # Attempt to clean up manager path dir if command link dir fails
+        # This is a best-effort cleanup, might not always be necessary or perfect
+        # Consider if rm -rf "$(dirname "$MANAGER_PATH")" is too aggressive if it contained other things
         return 1
     }
 
-    echo -e "${GREEN_COLOR}命令行工具安装成功！${RES}"
+    echo -e "${GREEN_COLOR}正在从 ${SELF_INSTALLER_URL} 下载最新的管理脚本到 ${MANAGER_PATH} ...${RES}"
+    if ! curl -sSL "${SELF_INSTALLER_URL}" -o "${MANAGER_PATH}"; then
+        echo -e "${RED_COLOR}错误：无法下载管理脚本从 ${SELF_INSTALLER_URL} 到 ${MANAGER_PATH}${RES}"
+        echo -e "${RED_COLOR}请检查网络连接以及URL是否正确: ${SELF_INSTALLER_URL}${RES}"
+        # Clean up manager path if download fails, to avoid leaving a potentially empty/corrupt file
+        rm -f "${MANAGER_PATH}" 
+        return 1
+    fi
+    
+    chmod 755 "$MANAGER_PATH" || {
+        echo -e "${RED_COLOR}错误：设置 ${MANAGER_PATH} 权限失败${RES}"
+        rm -f "$MANAGER_PATH" # Clean up downloaded script if chmod fails
+        return 1
+    }
+
+    ln -sf "$MANAGER_PATH" "$COMMAND_LINK" || {
+        echo -e "${RED_COLOR}错误：创建命令链接 $COMMAND_LINK 失败${RES}"
+        rm -f "$MANAGER_PATH" # Clean up manager script if symlink fails
+        return 1
+    }
+
+    echo -e "${GREEN_COLOR}命令行工具已成功安装/更新！${RES}"
     echo -e "现在你可以使用以下命令："
     echo -e "1. ${GREEN_COLOR}${APP_NAME}${RES}          - 快捷命令 (打开管理菜单)"
     echo -e "2. ${GREEN_COLOR}${APP_NAME}-manager${RES}  - 完整命令 (例如: ${APP_NAME}-manager install)"
