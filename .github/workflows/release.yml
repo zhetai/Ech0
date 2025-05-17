@@ -107,6 +107,7 @@ jobs:
         run: |
           mkdir -p dist/ech0-release/config
           mkdir -p dist/ech0-release/template
+          mkdir -p dist/ech0-release/data
 
           cp dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} dist/ech0-release/ech0
 
