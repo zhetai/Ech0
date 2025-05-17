@@ -25,6 +25,10 @@ jobs:
       - name: 🔄 Checkout source code
         uses: actions/checkout@v4
 
+      # ✅ 清理 Go 缓存目录
+      - name: Clean Go cache directory
+        run: rm -rf ~/.cache/go-build
+
       # 配置 Go 缓存
       - name: Cache Go modules
         uses: actions/cache@v4
