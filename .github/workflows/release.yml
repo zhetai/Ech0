@@ -90,7 +90,6 @@ jobs:
         run: |
           cd dist
           tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
-          rm ech0-${{ matrix.goos }}-${{ matrix.goarch }}
 
       # ✅ 打包前端构建产物（只执行一次）
       - name: 📦 Package frontend (only once)
