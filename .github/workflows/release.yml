@@ -48,9 +48,6 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
-
       # 验证 PNPM 安装
       - name: Verify PNPM installation
         run: pnpm --version
