@@ -413,7 +413,7 @@ UPDATE() {
     }
 
     echo -e "${GREEN_COLOR}解压新版本到临时目录 ${UPDATE_TEMP_DIR} ...${RES}"
-    if ! tar zxf "/tmp/${TARBALL_NAME}" -C "$UPDATE_TEMP_DIR/"; then
+    if ! tar zxf "/tmp/${TARBALL_NAME}" -C "$UPDATE_TEMP_DIR/" --strip-components=1; then
         echo -e "${RED_COLOR}解压失败，更新终止。正在恢复之前的版本...${RES}"
         mv "/tmp/${BINARY_NAME}.bak" "$INSTALL_PATH/${BINARY_NAME}" # 恢复备份
         systemctl start "${SERVICE_NAME}"
