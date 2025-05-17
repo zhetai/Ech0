@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,16 @@ import (
 	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/internal/routers"
 )
+
+func printGreetings(port string) {
+	fmt.Printf("---\nGin Server Starting\nport: %s\n---\n", port)
+	fmt.Print(models.GreetingBanner)
+	fmt.Printf("Server has started on port %s\n", port)
+	fmt.Printf("---\n📦 Version: %s\n", models.Version)
+	fmt.Printf("🧙 Author: L1nSn0w\n")
+	fmt.Printf("👉 Website: https://echo.soopy.cn/\n")
+	fmt.Printf("👉 GitHub: https://github.com/lin-snow/Ech0\n---\n")
+}
 
 func main() {
 	// 加载配置
@@ -36,6 +47,7 @@ func main() {
 
 	// 启动服务器
 	address := config.Config.Server.Host + ":" + config.Config.Server.Port
+	printGreetings(config.Config.Server.Port)
 	if err := r.Run(address); err != nil {
 		log.Fatalf(models.ServerLaunchErrorMessage+": %v", err)
 	}
