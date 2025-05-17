@@ -210,9 +210,9 @@ INSTALL() {
     # Ensure INSTALL_PATH exists before extracting
     mkdir -p "$INSTALL_PATH" || handle_error 1 "无法创建最终安装目录 $INSTALL_PATH"
 
-    if ! tar zxf "/tmp/${TARBALL_NAME}" -C "$INSTALL_PATH/"; then
+    if ! tar zxf "/tmp/${TARBALL_NAME}" -C "$INSTALL_PATH/" --strip-components=1; then
         rm -f "/tmp/${TARBALL_NAME}"
-        handle_error 1 "解压失败！请检查tarball是否有效以及目标路径是否有写入权限。"
+        handle_error 1 "解压失败！请检查tarball是否有效、目标路径是否有写入权限或压缩包结构是否正确（是否需要 --strip-components=1）。"
     fi
     
     # Check if the binary exists after extraction
@@ -232,9 +232,8 @@ INSTALL() {
         chmod +x "$INSTALL_PATH/${BINARY_NAME}"
     else
         echo -e "${RED_COLOR}安装失败！${BINARY_NAME} 未在 $INSTALL_PATH 中找到。${RES}"
-        echo -e "${YELLOW_COLOR}请检查 ${TARBALL_NAME} 的内容结构。脚本期望 ${BINARY_NAME} 直接位于解压后的根目录。${RES}"
-        # rm -rf "$INSTALL_PATH" # Be cautious with this line, might remove user data if path is reused.
-        # mkdir -p "$INSTALL_PATH"
+        echo -e "${YELLOW_COLOR}请检查 ${TARBALL_NAME} 的内容结构以及解压命令。${RES}"
+        echo -e "${YELLOW_COLOR}如果压缩包内有顶层目录，脚本已尝试使用 --strip-components=1。如果仍然失败，请手动检查压缩包。${RES}"
         rm -f "/tmp/${TARBALL_NAME}"
         exit 1
     fi
@@ -259,7 +258,7 @@ After=network-online.target network.service
 [Service]
 Type=simple
 WorkingDirectory=${INSTALL_PATH}
-ExecStart=${INSTALL_PATH}/${BINARY_NAME} server # !!! ADJUST 'server' IF YOUR APP STARTS DIFFERENTLY !!!
+ExecStart=${INSTALL_PATH}/${BINARY_NAME} # !!! ADJUST 'server' IF YOUR APP STARTS DIFFERENTLY !!!
 KillMode=process
 Restart=on-failure
 RestartSec=5s
