@@ -86,12 +86,12 @@ jobs:
       - name: 📦 Package frontend (only once)
         if: matrix.goarch == 'amd64' && matrix.goos == 'linux'
         run: |
-          tar -czvf dist/template.tar.gz -C web/dist .
+          tar -czvf dist/ech0-template.tar.gz -C web/dist .
 
       # ✅ 打包配置文件
       - name: 📦 Package config file
         run: |
-          tar -czvf dist/config.tar.gz -C config .
+          tar -czvf dist/ech0-config.tar.gz -C config .
         
       # ✅ 上传 Release 资源
       - name: 🚀 Upload release assets
