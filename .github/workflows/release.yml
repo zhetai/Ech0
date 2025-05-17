@@ -21,7 +21,7 @@ jobs:
       - name: 🔄 Checkout source code
         uses: actions/checkout@v4
 
-      # ✅ 配置 GO 缓存
+      # 配置 Go 缓存
       - name: Cache Go modules
         uses: actions/cache@v4
         with:
@@ -29,12 +29,18 @@ jobs:
             ~/.cache/go-build
             ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       # ✅ 设置 Go 环境
       - name: 🧰 Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.24.3'
+      
+      # 设置 Go 代理
+      - name: Set Go proxy
+        run: go env -w GOPROXY=https://proxy.golang.org,direct
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
