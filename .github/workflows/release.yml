@@ -102,7 +102,23 @@ jobs:
       - name: 📦 Package config file
         run: |
           tar -czvf dist/ech0-config.tar.gz -C config .
-        
+
+      # ✅ 打包最终的完整压缩包
+      - name: 📦 Package final release bundle
+        run: |
+          mkdir -p dist/ech0-release/config
+          mkdir -p dist/ech0-release/template
+
+          cp dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} dist/ech0-release/ech0
+
+          cp -r config/* dist/ech0-release/config/
+
+          cp -r web/dist/* dist/ech0-release/template/
+
+          cd dist
+          tar -czvf ech0-release-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-release
+          rm -rf ech0-release
+              
       # ✅ 上传 Release 资源
       - name: 🚀 Upload release assets
         uses: softprops/action-gh-release@v2
