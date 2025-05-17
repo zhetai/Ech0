@@ -43,15 +43,22 @@ jobs:
           path: ~/.pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('web/pnpm-lock.yaml') }}
 
-      # ✅ 设置 Node.js + PNPM（前端构建）
+      # 设置 Node.js 和 PNPM
       - name: 🧰 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.15.0'
           cache: 'pnpm'
 
+      # 安装 PNPM（推荐使用 pnpm/action-setup）
       - name: 📦 Install PNPM
-        run: npm install -g pnpm@latest-10
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # 验证 PNPM 安装
+      - name: Verify PNPM installation
+        run: pnpm --version
 
       # ✅ 安装前端依赖并构建
       - name: 📦 Install frontend deps
