@@ -35,6 +35,9 @@ TARBALL_NAME_PREFIX="${APP_NAME}-release-linux" # Used to build the full tarball
 BINARY_NAME="${APP_NAME}" # Assumed binary name inside the tarball
 SERVICE_NAME="${APP_NAME}"
 DEFAULT_PORT="6277" # !!! CHANGE IF ECH0 USES A DIFFERENT DEFAULT PORT !!!
+
+# Installer script's own URL - IMPORTANT: Ensure this URL is correct and publicly accessible
+SELF_INSTALLER_URL="http://echo.soopy.cn/install.sh"
 #######################
 
 # 颜色配置
