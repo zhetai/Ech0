@@ -122,14 +122,28 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
 
+      # ✅ 登录 Docker Hub
+      - name: 🐳 Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       # ✅ 构建 Docker 镜像（带 tag 版本）
       - name: 🐳 Build Docker image
         run: |
-          IMAGE_TAG=ghcr.io/${{ github.repository_owner }}/ech0:${{ github.ref_name }}
-          docker build -t $IMAGE_TAG .
+          GHCR_TAG=ghcr.io/${{ github.repository_owner }}/ech0:${{ github.ref_name }}
+          GHCR_LATEST=ghcr.io/${{ github.repository_owner }}/ech0:latest
+          DOCKER_TAG=docker.io/${{ vars.DOCKERHUB_USERNAME }}/ech0:${{ github.ref_name }}
+          DOCKER_LATEST=docker.io/${{ vars.DOCKERHUB_USERNAME }}/ech0:latest
+
+          docker build -t $GHCR_TAG -t $GHCR_LATEST -t $DOCKER_TAG -t $DOCKER_LATEST .
+
 
       # ✅ 推送 Docker 镜像
-      - name: 📤 Push Docker image
+      - name: 📤 Push Docker images
         run: |
-          IMAGE_TAG=ghcr.io/${{ github.repository_owner }}/ech0:${{ github.ref_name }}
-          docker push $IMAGE_TAG
+          docker push ghcr.io/${{ github.repository_owner }}/ech0:${{ github.ref_name }}
+          docker push ghcr.io/${{ github.repository_owner }}/ech0:latest
+          docker push docker.io/${{ vars.DOCKERHUB_USERNAME }}/ech0:${{ github.ref_name }}
+          docker push docker.io/${{ vars.DOCKERHUB_USERNAME }}/ech0:latest
