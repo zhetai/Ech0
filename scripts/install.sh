@@ -464,6 +464,21 @@ UPDATE() {
         echo -e "${YELLOW_COLOR}新版本压缩包中未找到 template 文件夹，跳过更新 template。${RES}"
     fi
 
+    # 注意：这会覆盖用户在 $INSTALL_PATH/config 中的任何手动修改。
+    # 如果您希望保留用户修改，则不应执行此操作，或者需要更复杂的合并逻辑。
+    # 以下操作会覆盖现有的 config 目录。
+    if [ -d "$UPDATE_TEMP_DIR/config" ]; then
+        echo -e "${GREEN_COLOR}更新 config 文件夹到 ${INSTALL_PATH} ...${RES}"
+        if [ -d "$INSTALL_PATH/config" ]; then
+            rm -rf "$INSTALL_PATH/config" || echo -e "${YELLOW_COLOR}警告：删除旧的 config 文件夹失败，可能导致更新不完全。${RES}"
+        fi
+        if ! cp -R "$UPDATE_TEMP_DIR/config" "$INSTALL_PATH/"; then
+            echo -e "${YELLOW_COLOR}警告：复制新的 config 文件夹失败。二进制文件已更新，但配置可能未更新。${RES}"
+        fi
+    else
+        echo -e "${YELLOW_COLOR}新版本压缩包中未找到 config 文件夹，跳过更新 config。${RES}"
+    fi
+
     echo -e "${GREEN_COLOR}设置新版 ${BINARY_NAME} 执行权限...${RES}"
     chmod +x "$INSTALL_PATH/${BINARY_NAME}"
 
