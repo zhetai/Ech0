@@ -46,6 +46,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache-dependency-path: 'web/pnpm-lock.yaml'
           cache: 'pnpm'
 
       # 验证 PNPM 安装
@@ -54,7 +55,7 @@ jobs:
 
       # ✅ 安装前端依赖并构建
       - name: 📦 Install frontend deps
-        working-directory: ./web  # ⚠️ 替换成你前端目录
+        working-directory: ./web 
         run: pnpm install
 
       - name: 🔧 Build frontend
