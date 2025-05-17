@@ -14,7 +14,7 @@ func SetupRouter() *gin.Engine {
 	r.Use(middleware.Cors())
 
 	// 映射静态文件目录
-	r.Use(static.Serve("/", static.LocalFile("./dist", true)))
+	r.Use(static.Serve("/", static.LocalFile("./template", true)))
 	r.Static("/api/images", "./data/images")
 	r.GET("/rss", controllers.GenerateRSS) // 生成 RSS 订阅链接
 

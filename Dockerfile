@@ -18,11 +18,11 @@ RUN pnpm install
 COPY ./web/ .
 RUN pnpm build --mode production 
 
-# 复制构建后的文件到后端 public 目录
-RUN cp -r dist /app/dist/
+# 复制构建后的文件到后端 template 目录
+RUN mv dist /app/template
 
 # 使用 Golang Alpine 镜像作为后端构建阶段
-FROM golang:1.24.1-alpine AS backend-build
+FROM golang:1.24.3-alpine AS backend-build
 
 # 设置后端工作目录
 WORKDIR /app
@@ -56,10 +56,10 @@ WORKDIR /app
 # 复制构建阶段的文件
 COPY --from=backend-build /app/config /app/config
 COPY --from=backend-build /app/ech0 /app/ech0
-COPY --from=frontend-build /app/dist /app/dist
+COPY --from=frontend-build /app/template /app/template
 
 # 暴露端口
-EXPOSE 1314
+EXPOSE 6277
 
 # 运行后端服务
 CMD ["/app/ech0"]

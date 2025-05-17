@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # 触发条件：打 Tag，比如 v1.0.0
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+
+    # 🍱 构建多个平台的版本（这里以 Linux/amd64 和 Linux/arm64 为例）
+    strategy:
+      matrix:
+        goos: [linux]
+        goarch: [amd64, arm64]
+
+    steps:
+      # ✅ 拉取源码
+      - name: 🔄 Checkout source code
+        uses: actions/checkout@v4
+
+      # ✅ 配置 GO 缓存
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      # ✅ 设置 Go 环境
+      - name: 🧰 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.3'
+
+      # ✅ 设置 PNPM 缓存
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('web/pnpm-lock.yaml') }}
+
+      # ✅ 设置 Node.js + PNPM（前端构建）
+      - name: 🧰 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.15.0'
+          cache: 'pnpm'
+
+      - name: 📦 Install PNPM
+        run: npm install -g pnpm@latest-10
+
+      # ✅ 安装前端依赖并构建
+      - name: 📦 Install frontend deps
+        working-directory: ./web  # ⚠️ 替换成你前端目录
+        run: pnpm install
+
+      - name: 🔧 Build frontend
+        working-directory: ./web
+        run: pnpm build --mode production
+
+      # ✅ 构建后端二进制
+      - name: 🛠️ Build Go backend (${{ matrix.goos }}/${{ matrix.goarch }})
+        run: |
+          mkdir -p dist
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
+          go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/server/main.go
+
+      # ✅ 打包后端二进制
+      - name: 📦 Package backend binary
+        run: |
+          cd dist
+          tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
+          rm ech0-${{ matrix.goos }}-${{ matrix.goarch }}
+
+      # ✅ 打包前端构建产物（只执行一次）
+      - name: 📦 Package frontend (only once)
+        if: matrix.goarch == 'amd64' && matrix.goos == 'linux'
+        run: |
+          tar -czvf dist/template.tar.gz -C web/dist .
+
+      # ✅ 打包配置文件
+      - name: 📦 Package config file
+        run: |
+          tar -czvf dist/config.tar.gz -C config .
+        
+      # ✅ 上传 Release 资源
+      - name: 🚀 Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
