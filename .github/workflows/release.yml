@@ -30,16 +30,16 @@ jobs:
         run: rm -rf ~/.cache/go-build ~/go/pkg/mod
 
       # 配置 Go 缓存
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-          fail-on-cache-miss: false
+      # - name: Cache Go modules
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       ~/.cache/go-build
+      #       ~/go/pkg/mod
+      #     key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-go-
+      #     fail-on-cache-miss: false
 
       # ✅ 设置 Go 环境
       - name: 🧰 Setup Go
