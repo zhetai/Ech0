@@ -120,7 +120,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # ✅ 构建 Docker 镜像（带 tag 版本）
       - name: 🐳 Build Docker image
