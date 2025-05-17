@@ -1,14 +1,15 @@
 # Ech0 - 开源、自托管、专注思想流动的轻量级发布平台
 
-<p align="center">
+<!-- <p align="center">
   <img alt="Ech0" src="./docs/imgs/FluentEmojiClipboard.svg" width="320">
-</p>
+</p> -->
 
 Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快速发布与分享你的想法、文字与链接。简单直观的操作界面，轻松管理你的内容，让分享变得更加自由，确保数据完全掌控，随时随地与世界连接。
 
 ![界面预览](./docs/imgs/screenshot.png)
 
 [预览地址](https://soopy.cn/)
+[官网地址](https://echo.soopy.cn/)
 
 ---
 
@@ -19,14 +20,21 @@ Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快
 ✍️ **零干扰写作**：纯净的在线Markdown编辑器，**支持丰富的Markdown插件与预览**  
 📦 **数据主权**：所有内容存储于本地SQLite文件，支持RSS订阅  
 🎉 **永久免费**：MIT协议开源，无追踪/无订阅/无服务依赖  
-🌍 **跨端适配**：完美兼容桌面/移动浏览器
-👾 **WPA适配**：支持作为Web应用安装
+🌍 **跨端适配**：完美兼容桌面/移动浏览器  
+👾 **WPA适配**：支持作为Web应用安装  
+📝 **内置Todo管理**：轻松记录、管理每日待办事项，支持勾选完成与优先级标记，帮助你高效规划和追踪任务进度  
+🔗 **Ech0 Connect**：全新内容聚合与互联功能，支持多实例间互通、内容订阅与同步，打造属于你的去中心化内容网络  
 
 ---
 
 ## 3秒极速部署
 
-### 🐳 docker部署
+### 🧙 脚本一键部署（推荐）
+```shell
+curl -fsSL "http://echo.soopy.cn/install.sh" -o install_ech0.sh && bash install_ech0.sh
+```
+
+### 🐳 docker部署（推荐）
 
 ```shell
 docker run -d \
@@ -76,10 +84,6 @@ docker run -d \
 ```
 
 ---
-
-# 🎉 最新更新日志
-**4.0.0**版本现已基本完成了整个前端的重写，整个前端项目（现为web_v2）在开发、性能和使用体验均有大幅度提升！ 
-前端项目基于**最新版Vue3+Vite+TypeScript+UnoCSS并采用CSR和SPA模式进行重写**，使用严格的TypeScript类型约束，更加规范的项目结构，更加精简高效的处理逻辑，去除了繁重的NuxtJS框架和NuxtUI组件库，使用自定义组件，整体风格更加统一，更改Markdown编辑器为`md-editor-v3`...
 
 # 🦖 未来目标
 
