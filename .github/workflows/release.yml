@@ -97,10 +97,10 @@ jobs:
         run: |
           tar -czvf dist/ech0-template.tar.gz -C web/dist .
 
-      # ✅ 打包配置文件
-      - name: 📦 Package config file
+      # ✅ 打包配置文件（只包含 config.yaml）
+      - name: 📦 Package config.yaml only
         run: |
-          tar -czvf dist/ech0-config.tar.gz -C config .
+          tar -czvf dist/ech0-config.tar.gz -C config config.yaml
 
       # ✅ 打包最终的完整压缩包
       - name: 📦 Package final release bundle
