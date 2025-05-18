@@ -12,7 +12,7 @@ export function fetchGetEchosByPage(searchParams: App.Api.Ech0.ParamsByPaginatio
 // 上传图片
 export function fetchUploadImage(file: File) {
   const formData = new FormData()
-  formData.append('image', file)
+  formData.append('file', file)
   return request<string>({
     url: `/images/upload`,
     method: 'POST',

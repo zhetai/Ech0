@@ -16,6 +16,7 @@ func SetupRouter() *gin.Engine {
 	// 映射静态文件目录
 	r.Use(static.Serve("/", static.LocalFile("./template", true)))
 	r.Static("/api/images", "./data/images")
+	r.Static("/api/audios", "./data/audios")
 	r.GET("/rss", controllers.GenerateRSS) // 生成 RSS 订阅链接
 
 	// 公共的路由
@@ -43,6 +44,8 @@ func SetupRouter() *gin.Engine {
 	authRoutes.DELETE("/messages/:id", controllers.DeleteMessage)    // 删除留言
 	authRoutes.POST("/images/upload", controllers.UploadImage)       // 上传图片
 	authRoutes.DELETE("/images/delete", controllers.DeleteImage)     // 删除图片
+	authRoutes.POST("/audios/upload", controllers.UploadAudio)       // 上传音频
+	authRoutes.DELETE("/audios/delete", controllers.DeleteAudio)     // 删除音频
 
 	// Todo 相关路由
 	authRoutes.GET("/todo", controllers.GetTodos)          // 获取 Todo 列表
@@ -59,8 +62,11 @@ func SetupRouter() *gin.Engine {
 	// 设置相关路由
 	authRoutes.PUT("/settings", controllers.UpdateSettings) // 更新系统设置
 
+	// Connect相关路由
 	authRoutes.POST("/addConnect", controllers.AddConnect)          // 添加 Connect
 	authRoutes.DELETE("/delConnect/:id", controllers.DeleteConnect) // 删除 Connect
+
+	// 其它路由
 
 	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
 	r.NoRoute(func(c *gin.Context) {

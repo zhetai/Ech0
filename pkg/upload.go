@@ -14,20 +14,19 @@ import (
 	"github.com/lin-snow/ech0/internal/models"
 )
 
-// 上传图片并返回图片的URL
-func UploadImage(c *gin.Context) (string, error) {
+// 通用上传函数
+func UploadFile(c *gin.Context, fileType models.FileType) (string, error) {
 	// 获取上传的文件
-	file, err := c.FormFile("image")
+	file, err := c.FormFile("file")
 	if err != nil {
-		return "", errors.New(models.NotUploadImageErrorMessage)
+		return "", errors.New(models.NotUploadFileErrorMessage)
 	}
 
-	// 从配置中读取支持的扩展名
+	// 检查文件扩展名
 	allowedExtensions := config.Config.Upload.AllowedTypes
-
-	// 检查图片类型是否合法
+	// 检查文件类型是否合法
 	if !isAllowedType(file.Header.Get("Content-Type"), allowedExtensions) {
-		return "", errors.New(models.NotSupportedImageTypeMessage)
+		return "", errors.New(models.NotSupportedFileTypeErrorMessage)
 	}
 
 	// 检查文件大小
@@ -35,28 +34,50 @@ func UploadImage(c *gin.Context) (string, error) {
 		return "", errors.New(models.ImageSizeLimitErrorMessage + strconv.Itoa(config.Config.Upload.MaxSize/1024/1024) + "MB")
 	}
 
-	// 创建存储图片的目录（如果没有的话）
-	if err := createImageDirIfNotExist(config.Config.Upload.SavePath); err != nil {
-		return "", err
-	}
-
 	// 获取原始文件名和扩展名
 	ext := filepath.Ext(file.Filename)
 	baseName := strings.TrimSuffix(file.Filename, ext)
 
-	// 使用 UUID 和原始文件名生成新的文件名
-	newFileName := fmt.Sprintf("%s_%s%s", baseName, uuid.New().String(), ext)
+	// 根据文件类型分为音频和图片
+	var savePath string
+	if strings.HasPrefix(file.Header.Get("Content-Type"), "image/") {
+		// 创建存储图片的目录（如果没有的话）
+		if err := createImageDirIfNotExist(config.Config.Upload.ImagePath); err != nil {
+			return "", err
+		}
 
-	// 保存文件到指定目录
-	savePath := filepath.Join(config.Config.Upload.SavePath, newFileName)
-	if err := c.SaveUploadedFile(file, savePath); err != nil {
-		fmt.Println(savePath)
-		return "", errors.New(models.ImageUploadErrorMessage)
+		// 使用 UUID 和原始文件名生成新的文件名
+		newFileName := fmt.Sprintf("%s_%s%s", baseName, uuid.New().String(), ext)
+		// 保存文件到指定目录
+		savePath = filepath.Join(config.Config.Upload.ImagePath, newFileName)
+		if err := c.SaveUploadedFile(file, savePath); err != nil {
+			fmt.Println(savePath)
+			return "", errors.New(models.ImageUploadErrorMessage)
+		}
+
+		// 返回图片的 URL
+		imageURL := fmt.Sprintf("/images/%s", newFileName)
+		return imageURL, nil
+	} else if strings.HasPrefix(file.Header.Get("Content-Type"), "audio/") {
+		// 创建存储音频的目录（如果没有的话）
+		if err := createImageDirIfNotExist(config.Config.Upload.AudioPath); err != nil {
+			return "", err
+		}
+
+		// 重名音频文件名（暂时使用固定名字 music + 扩展名）
+		newFileName := fmt.Sprintf("music%s", ext)
+		savePath = filepath.Join(config.Config.Upload.AudioPath, newFileName)
+		if err := c.SaveUploadedFile(file, savePath); err != nil {
+			fmt.Println(savePath)
+			return "", errors.New(models.AudioUploadErrorMessage)
+		}
+
+		// 返回音频的 URL
+		audioURL := fmt.Sprintf("/audios/%s", newFileName)
+		return audioURL, nil
+	} else {
+		return "", errors.New(models.NotSupportedFileTypeErrorMessage)
 	}
-
-	// 返回图片的 URL
-	imageURL := fmt.Sprintf("/images/%s", newFileName)
-	return imageURL, nil
 }
 
 // 检查文件类型是否合法

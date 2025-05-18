@@ -54,7 +54,12 @@ func GenerateRSS(c *gin.Context) {
 
 // UploadImage 控制器，调用 service 上传图片
 func UploadImage(c *gin.Context) {
-	c.JSON(http.StatusOK, services.UploadImage(c))
+	c.JSON(http.StatusOK, services.UploadFile(c, models.ImageType))
+}
+
+// UploadAudio 控制器，调用 service 上传音频
+func UploadAudio(c *gin.Context) {
+	c.JSON(http.StatusOK, services.UploadFile(c, models.AudioType))
 }
 
 // DeleteImage 控制器，调用 service 删除图片
@@ -83,4 +88,9 @@ func DeleteImage(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.OK[any](nil, models.DeleteImageSuccessMessage))
+}
+
+// DeleteAudio 控制器，调用 service 删除音频
+func DeleteAudio(c *gin.Context) {
+
 }

@@ -91,6 +91,9 @@ const (
 	UserCountExceedsLimitMessage           = "用户数量超过限制"
 	NoSysPermissionMessage                 = "请使用系统管理员权限"
 	ImageNotFoundMessage                   = "图片未找到"
+	NotUploadFileErrorMessage              = "未上传文件"
+	NotSupportedFileTypeErrorMessage       = "不支持的文件类型"
+	AudioUploadErrorMessage                = "音频上传失败"
 )
 
 // 数据库相关
@@ -128,6 +131,14 @@ const (
 	Done         = 1 // 待办事项已完成状态
 	NotDone      = 0 // 待办事项状态
 	MaxTodoCount = 3 // 最大待办事项数量
+)
+
+// File 相关
+type FileType string
+
+const (
+	ImageType FileType = "image" // 图片类型
+	AudioType FileType = "audio" // 音频类型
 )
 
 // 验证相关

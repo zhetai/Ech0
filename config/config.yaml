@@ -15,8 +15,9 @@ setting:
   icpnumber: ""
 
 upload:
-  maxsize: 5242880
-  savepath: "data/images/"
+  maxsize: 10485760 # 10MB
+  imagepath: "data/images/"
+  audiopath: "data/audios/"
   allowedtypes: 
     - "image/jpeg"
     - "image/png"
@@ -25,6 +26,8 @@ upload:
     - "image/jpg"
     - "image/svg+xml"
     - "image/avif"
+    - "audio/mpeg"
+    - "audio/flac"
 
 auth:
   jwt:

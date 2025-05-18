@@ -29,7 +29,8 @@ type AppConfig struct {
 	Upload struct {
 		MaxSize      int      `yaml:"maxsize"`
 		AllowedTypes []string `yaml:"allowedtypes"`
-		SavePath     string   `yaml:"savepath"`
+		ImagePath    string   `yaml:"imagepath"`
+		AudioPath    string   `yaml:"audiopath"`
 	} `yaml:"upload"`
 	Auth struct {
 		Jwt struct {
