@@ -64,7 +64,7 @@ func SetupRouter() *gin.Engine {
 
 	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
 	r.NoRoute(func(c *gin.Context) {
-		c.File("./dist/index.html")
+		c.File("./template/index.html")
 	})
 
 	return r
