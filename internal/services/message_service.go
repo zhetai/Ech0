@@ -72,5 +72,24 @@ func CreateMessage(message *models.Message) error {
 
 // DeleteMessage 根据 ID 删除留言
 func DeleteMessage(id uint) error {
+	// 检查该留言是否存在图片
+	message, err := GetMessageByID(id, true)
+	if err != nil {
+		return err
+	}
+	if message == nil {
+		return errors.New(models.MessageNotFoundMessage)
+	}
+	if message.ImageURL != "" {
+		// 构造图片 DTO
+		image := dto.ImageDto{
+			URL: message.ImageURL,
+		}
+		// 调用图片服务删除图片
+		if err := DeleteImage(image); err != nil {
+			return err
+		}
+	}
+
 	return repository.DeleteMessage(id)
 }
