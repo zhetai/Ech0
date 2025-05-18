@@ -1,8 +1,8 @@
 # Ech0 - 开源、自托管、专注思想流动的轻量级发布平台
 
-<!-- <p align="center">
-  <img alt="Ech0" src="./docs/imgs/FluentEmojiClipboard.svg" width="320">
-</p> -->
+<p align="center">
+  <img alt="Ech0" src="./docs/imgs/logo.svg" width="100">
+</p>
 
 Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快速发布与分享你的想法、文字与链接。简单直观的操作界面，轻松管理你的内容，让分享变得更加自由，确保数据完全掌控，随时随地与世界连接。
 
@@ -145,6 +145,16 @@ pnpm install
 
 pnpm dev
 ```
+
+---
+
+# 🥰 致谢
+
+- 感谢 [Gin](https://github.com/gin-gonic/gin) 提供高性能的后端框架支持  
+- 感谢 [Md-Editor-V3](https://github.com/imzbf/md-editor-v3) 提供强大易用的 Markdown 编辑器  
+- 感谢 Figma 提供便捷的 Logo 设计工具  
+- 感谢舍友的 Logo 设计  
+- 感谢所有开源社区的贡献者与支持者  
 
 ---
 
