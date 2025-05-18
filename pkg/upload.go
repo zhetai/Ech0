@@ -29,11 +29,6 @@ func UploadFile(c *gin.Context, fileType models.FileType) (string, error) {
 		return "", errors.New(models.NotSupportedFileTypeErrorMessage)
 	}
 
-	// 检查文件大小
-	if file.Size > int64(config.Config.Upload.MaxSize) {
-		return "", errors.New(models.ImageSizeLimitErrorMessage + strconv.Itoa(config.Config.Upload.MaxSize/1024/1024) + "MB")
-	}
-
 	// 获取原始文件名和扩展名
 	ext := filepath.Ext(file.Filename)
 	baseName := strings.TrimSuffix(file.Filename, ext)
@@ -44,6 +39,11 @@ func UploadFile(c *gin.Context, fileType models.FileType) (string, error) {
 		// 创建存储图片的目录（如果没有的话）
 		if err := createImageDirIfNotExist(config.Config.Upload.ImagePath); err != nil {
 			return "", err
+		}
+
+		// 检查文件大小
+		if file.Size > int64(config.Config.Upload.ImageMaxSize) {
+			return "", errors.New(models.ImageSizeLimitErrorMessage + strconv.Itoa(config.Config.Upload.ImageMaxSize/1024/1024) + "MB")
 		}
 
 		// 使用 UUID 和原始文件名生成新的文件名
@@ -62,6 +62,11 @@ func UploadFile(c *gin.Context, fileType models.FileType) (string, error) {
 		// 创建存储音频的目录（如果没有的话）
 		if err := createImageDirIfNotExist(config.Config.Upload.AudioPath); err != nil {
 			return "", err
+		}
+
+		// 检查文件大小
+		if file.Size > int64(config.Config.Upload.AudioMaxSize) {
+			return "", errors.New(models.AudioSizeLimitErrorMessage + strconv.Itoa(config.Config.Upload.AudioMaxSize/1024/1024) + "MB")
 		}
 
 		// 重名音频文件名（暂时使用固定名字 music + 扩展名）

@@ -27,7 +27,8 @@ type AppConfig struct {
 		Icpnumber     string `yaml:"icpnumber"`
 	}
 	Upload struct {
-		MaxSize      int      `yaml:"maxsize"`
+		ImageMaxSize int      `yaml:"imagemaxsize"`
+		AudioMaxSize int      `yaml:"audiomaxsize"`
 		AllowedTypes []string `yaml:"allowedtypes"`
 		ImagePath    string   `yaml:"imagepath"`
 		AudioPath    string   `yaml:"audiopath"`

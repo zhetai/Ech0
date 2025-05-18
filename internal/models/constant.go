@@ -94,6 +94,7 @@ const (
 	NotUploadFileErrorMessage              = "未上传文件"
 	NotSupportedFileTypeErrorMessage       = "不支持的文件类型"
 	AudioUploadErrorMessage                = "音频上传失败"
+	AudioSizeLimitErrorMessage             = "音频大小超过限制"
 )
 
 // 数据库相关
