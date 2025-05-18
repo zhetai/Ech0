@@ -76,7 +76,7 @@ docker pull sn0wl1n/ech0:latest
 # 启动新版本的容器
 docker run -d \
   --name ech0 \
-  -p 1314:1314 \
+  -p 6277:6277 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/config/config.yaml:/app/data/config/config.yaml \
   -e JWT_SECRET="Hello Echos!" \
