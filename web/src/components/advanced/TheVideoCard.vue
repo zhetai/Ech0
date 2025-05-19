@@ -14,6 +14,7 @@
       frameborder="no"
       framespacing="0"
       allowfullscreen="true"
+      loading="lazy"
       class="w-full aspect-video rounded"
     ></iframe>
   </div>
