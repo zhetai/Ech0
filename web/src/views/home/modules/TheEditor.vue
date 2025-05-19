@@ -313,17 +313,21 @@ const handleUploadMusic = async (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     const file = target.files[0]
-    fetchUploadMusic(file).then(() => {
-      theToast.success('音乐上传成功！')
+    fetchUploadMusic(file).then((res) => {
+      if (res.code === 1) {
+        theToast.success('音乐上传成功！')
       emit('refreshAudio')
+      }
     })
   }
 }
 const handleDeleteMusic = () => {
-  if (confirm('确定要取消播放吗？')) {
+  if (confirm('确定要删除音乐吗？')) {
     fetchDeleteMusic().then((res) => {
-      theToast.success(res.msg)
-      emit('refreshAudio')
+      if (res.code === 1) {
+        theToast.success('音乐删除成功！')
+        emit('refreshAudio')
+      }
     })
   }
 }
