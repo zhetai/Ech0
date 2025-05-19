@@ -69,10 +69,6 @@ const emit = defineEmits([
 ])
 
 const handleAddExtension = (extensiontype: ExtensionType) => {
-  if (extensiontype !== ExtensionType.GITHUBPROJ) {
-    theToast.info('该功能正在开发中，敬请期待！')
-    return
-  }
   emit('switchExtension', extensiontype)
 }
 

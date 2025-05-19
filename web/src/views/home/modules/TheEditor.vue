@@ -84,7 +84,17 @@
         <!-- Extension -->
         <div v-if="currentMode === Mode.EXTEN">
           <div v-if="currentExtensionType === ExtensionType.MUSIC"></div>
-          <div v-if="currentExtensionType === ExtensionType.VIDEO"></div>
+          <div v-if="currentExtensionType === ExtensionType.VIDEO">
+            <div class="text-gray-500 font-bold mb-1">Bilibili视频分享(粘贴自动提取BV号)</div>
+              <BaseInput
+                v-model="bilibiliURL"
+                class="rounded-lg h-auto w-full my-2"
+                placeholder="B站分享链接..."
+              />
+              <div class="text-gray-500 my-1">
+                提取的BV号为：{{ extensionToAdd.extension }}
+              </div>
+          </div>
           <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
             <div class="text-gray-500 font-bold mb-1">Github项目地址</div>
             <BaseInput
@@ -204,7 +214,7 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import TheModePanel from './TheModePanel.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
-import { onMounted, ref, defineEmits } from 'vue'
+import { onMounted, ref, defineEmits, watch } from 'vue'
 import {
   fetchUploadImage,
   fetchAddEcho,
@@ -274,6 +284,7 @@ const handleSwitchPlayMusicMode = () => {
   currentMode.value = Mode.PlayMusic
 }
 
+const bilibiliURL = ref<string>('')
 const extensionToAdd = ref({
   extension: '',
   extension_type: '',
@@ -360,6 +371,7 @@ const handleClear = () => {
   echoToAdd.value.extension_type = null
   extensionToAdd.value.extension = ''
   extensionToAdd.value.extension_type = ''
+  bilibiliURL.value = ''
 }
 
 const handleAddEcho = () => {
@@ -412,6 +424,22 @@ const handleAdd = () => {
     handleAddEcho()
   }
 }
+
+// 监听用户输入
+watch(
+  () => bilibiliURL.value,
+  (newVal) => {
+    if (newVal.length > 0) {
+      const bvRegex = /(BV[0-9A-Za-z]{10})/;
+      const match = newVal.match(bvRegex);
+      if (match) {
+        extensionToAdd.value.extension = match[0];
+      } else {
+        theToast.error('请输入正确的B站分享链接！')
+      }
+    }
+  },
+)
 
 onMounted(() => {
   Fancybox.bind('[data-fancybox]', {})

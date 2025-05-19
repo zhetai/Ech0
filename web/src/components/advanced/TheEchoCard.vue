@@ -65,7 +65,10 @@
           <!-- TODO: 暂无 -->
         </div>
         <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
-          <!-- TODO: 暂无 -->
+          <TheVideoCard
+            :bvnumber="props.echo.extension"
+            class="px-2 mx-auto hover:shadow-md"
+          />
         </div>
         <TheGithubCard
           v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ"
@@ -86,6 +89,7 @@ import { fetchDeleteEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
 import TheGithubCard from './TheGithubCard.vue'
+import TheVideoCard from './TheVideoCard.vue'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
 import Roll from '../icons/roll.vue'
