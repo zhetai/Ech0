@@ -56,8 +56,7 @@ func CreateMessage(message *models.Message) error {
 		if message.ExtensionType == models.Extension_MUSIC {
 
 		} else if message.ExtensionType == models.Extension_VIDEO {
-			// 处理视频链接
-			message.Extension = pkg.TrimURL(message.Extension)
+
 		} else if message.ExtensionType == models.Extension_GITHUBPROJ {
 			// 处理GitHub项目的链接
 			message.Extension = pkg.TrimURL(message.Extension)
