@@ -38,11 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import BaseButton from '@/components/common/BaseButton.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import Other from '@/components/icons/other.vue'
 import Panel from '@/components/icons/panel.vue'
-import Github from '@/components/icons/github.vue'
 import Rss from '@/components/icons/rss.vue'
 import { RouterLink } from 'vue-router'
 import { useEchoStore } from '@/stores/echo'
@@ -68,7 +66,7 @@ const handleSearch = () => {
   }
 }
 
-const notDeveloper = () => {
-  theToast.info('该功能正在开发中，请耐心等待！')
-}
+// const notDeveloper = () => {
+//   theToast.info('该功能正在开发中，请耐心等待！')
+// }
 </script>

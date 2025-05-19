@@ -214,7 +214,7 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import TheModePanel from './TheModePanel.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
-import { onMounted, ref, defineEmits, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import {
   fetchUploadImage,
   fetchAddEcho,

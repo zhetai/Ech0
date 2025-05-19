@@ -5,14 +5,10 @@ import { useUserStore } from '@/stores/user'
 import { watch } from 'vue'
 import { useSettingStore } from '@/stores/settting'
 import { storeToRefs } from 'pinia'
-import { fetchGetStatus } from './service/api'
-import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const settingStore = useSettingStore()
-const { setSystemReady } = settingStore
 const { SystemSetting } = storeToRefs(settingStore)
-const router = useRouter()
 
 watch(
   () => SystemSetting.value.site_title,

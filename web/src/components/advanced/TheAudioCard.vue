@@ -32,7 +32,6 @@
 import { fetchGetMusic } from '@/service/api';
 import { getApiUrl } from '@/service/request/shared';
 import { onMounted, ref } from 'vue';
-import { defineExpose } from 'vue';
 import Album from '../icons/album.vue';
 import Pause from '../icons/pause.vue';
 import Play from '../icons/play.vue';

@@ -30,7 +30,7 @@ const emit = defineEmits<{
   (e: 'click', event: MouseEvent): void
 }>()
 
-const customClass = props.class
+// const customClass = props.class
 const hasBg = computed(() => props.class?.includes('bg-') || props.class?.includes('!bg-'))
 
 function onClick(event: MouseEvent) {

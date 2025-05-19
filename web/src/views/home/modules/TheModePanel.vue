@@ -49,8 +49,6 @@ import Todo from '@/components/icons/todo.vue'
 import Video from '@/components/icons/video.vue'
 import Githubproj from '@/components/icons/githubproj.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
-import { theToast } from '@/utils/toast'
-import Music from '@/components/icons/music.vue'
 import Audio from '@/components/icons/audio.vue'
 
 const enum ExtensionType {
