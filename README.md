@@ -166,7 +166,7 @@ pnpm dev
 Ech0 完全开源且免费，持续维护和优化离不开大家的支持。如果这个项目对你有所帮助，也欢迎通过赞助支持项目的持续发展。你的每一份鼓励和支持，都是我们前进的动力！  
 你可以向微信或支付宝二维码付款，然后备注你的github名称，将在首页 `README.md` 页面向所有展示你的贡献  
 
-(爱发电)[https://afdian.com/a/l1nsn0w]
+[爱发电](https://afdian.com/a/l1nsn0w)
 
 ![Pay](./docs/imgs/pay.jpeg)  
 
