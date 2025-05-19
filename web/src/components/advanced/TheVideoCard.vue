@@ -1,11 +1,20 @@
 <template>
   <div class="max-w-sm flex justify-center items-center bg-white rounded-lg shadow-sm p-2 gap-2">
-    <iframe
+    <!-- <iframe
       class="w-full aspect-video rounded"
       :src="`https://player.bilibili.com/player.html?bvid=${props.bvnumber}`"
       loading="lazy"
       allowfullscreen
       sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+    ></iframe> -->
+    <iframe
+      :src="`https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${props.bvnumber}&as_wide=1&high_quality=1&danmaku=0`"
+      scrolling="no"
+      border="0"
+      frameborder="no"
+      framespacing="0"
+      allowfullscreen="true"
+      class="w-full aspect-video rounded"
     ></iframe>
   </div>
 </template>
