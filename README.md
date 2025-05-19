@@ -152,7 +152,7 @@ pnpm dev
 
 - 感谢 [Gin](https://github.com/gin-gonic/gin) 提供高性能的后端框架支持  
 - 感谢 [Md-Editor-V3](https://github.com/imzbf/md-editor-v3) 提供强大易用的 Markdown 编辑器  
-- 感谢 Figma 提供便捷的 Logo 设计工具  
+- 感谢 [Figma](https://www.figma.com/) 提供便捷的 Logo 设计工具  
 - 感谢舍友的 Logo 设计  
 - 感谢所有开源社区的贡献者与支持者  
 
