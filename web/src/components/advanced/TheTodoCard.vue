@@ -46,9 +46,9 @@ import Delete from '../icons/delete.vue'
 import BaseButton from '../common/BaseButton.vue'
 import { fetchUpdateTodo, fetchDeleteTodo } from '@/service/api'
 import { theToast } from '@/utils/toast'
-type todo = App.Api.Todo.Todo
+
 const props = defineProps<{
-  todo: todo
+  todo: App.Api.Todo.Todo
   index: number
   operative: boolean
 }>()
