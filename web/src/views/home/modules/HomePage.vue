@@ -4,7 +4,7 @@
   >
     <div class="sm:max-w-sm w-full">
       <TheTop class="sm:hidden" />
-      <TheEditor />
+      <TheEditor @refresh-audio="handleRefreshAudio" />
     </div>
     <div class="sm:max-w-lg w-full sm:mt-1">
       <TheTop class="hidden sm:block sm:px-4" />
@@ -16,11 +16,8 @@
       <div v-if="isLogin && todos.length > 0" class="mb-2 px-11">
         <TheTodoCard :todo="todos[0]" :index="0" :operative="false" @refresh="getTodos" />
       </div>
-      <div>
-        <TheAudioCard
-          url=""
-          class="mb-2"
-        />
+      <div class="px-11">
+        <TheAudioCard ref="theAudioCard" />
       </div>
       <TheConnects />
     </div>
@@ -35,7 +32,7 @@ import TheTodos from './TheTodos.vue'
 import TheConnects from '@/views/connect/modules/TheConnects.vue'
 import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
 import TheHeatMap from '@/components/advanced/TheHeatMap.vue'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useSettingStore } from '@/stores/settting'
 import { useUserStore } from '@/stores/user'
 import { useTodoStore } from '@/stores/todo'
@@ -48,6 +45,13 @@ const userStore = useUserStore()
 const { getTodos } = todoStore
 const { todoMode, todos } = storeToRefs(todoStore)
 const { isLogin } = storeToRefs(userStore)
+
+const theAudioCard = ref<InstanceType<typeof TheAudioCard> | null>()
+const handleRefreshAudio = () => {
+  if (theAudioCard.value) {
+    theAudioCard.value.handleGetMusic()
+  }
+}
 
 onMounted(async () => {
   // 获取数据

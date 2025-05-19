@@ -1,13 +1,18 @@
 <template>
-  <div class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md">
+  <div
+    class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
+  >
     <div class="mx-auto w-full px-3 py-4">
       <!-- Title && Nav -->
       <div class="flex justify-between items-center py-1 px-3">
         <div class="flex flex-row items-center gap-2 justify-between">
           <!-- <div class="text-xl">👾</div> -->
           <div>
-            <img :src="logo" alt="logo"
-              class="w-6 sm:w-7 h-6 sm:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover" />
+            <img
+              :src="logo"
+              alt="logo"
+              class="w-6 sm:w-7 h-6 sm:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
+            />
           </div>
           <h1 class="text-slate-600 font-bold italic sm:text-xl">
             {{ SystemSetting.server_name }}
@@ -25,38 +30,68 @@
 
       <!-- Editor -->
       <div class="rounded-lg p-2 sm:p-3 mb-1">
-        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="currentMode === Mode.ECH0" />
+        <TheMdEditor
+          v-model="echoToAdd.content"
+          class="rounded-lg"
+          v-if="currentMode === Mode.ECH0"
+        />
         <!-- todoMode -->
-        <BaseTextArea v-if="currentMode === Mode.TODO" v-model="todoToAdd.content"
-          class="rounded-lg h-auto sm:min-h-[6rem] md:min-h-[9rem]" placeholder="请输入待办事项..." :rows="3" />
+        <BaseTextArea
+          v-if="currentMode === Mode.TODO"
+          v-model="todoToAdd.content"
+          class="rounded-lg h-auto sm:min-h-[6rem] md:min-h-[9rem]"
+          placeholder="请输入待办事项..."
+          :rows="3"
+        />
         <!-- PlayMusic(上传音乐文件) -->
         <div v-if="currentMode === Mode.PlayMusic">
-          <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式</h2>
-          <div>
+          <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式（仅PC）</h2>
+          <div class="mb-1 flex items-center gap-2">
             <p class="text-gray-500">上传音乐：</p>
-            <input id="file-input" class="hidden" type="file" accept="audio/*" ref="fileInput"
-              @change="handleUploadMusic" />
-            <BaseButton :icon="Audio" @click="handTriggerUpload" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              title="上传音乐" />
+            <input
+              id="file-input"
+              class="hidden"
+              type="file"
+              accept="audio/*"
+              ref="fileInput"
+              @change="handleUploadMusic"
+            />
+            <BaseButton
+              :icon="Audio"
+              @click="handTriggerUpload"
+              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+              title="上传音乐"
+            />
           </div>
-          <div>
-            <p class="text-gray-500">取消播放: </p>
-            <BaseButton :icon="Close" @click="handleDeleteMusic" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              title="取消播放" />
+          <div class="flex items-center gap-2">
+            <p class="text-gray-500">删除音乐：</p>
+            <BaseButton
+              :icon="Delete"
+              @click="handleDeleteMusic"
+              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+              title="删除音乐"
+            />
           </div>
         </div>
 
         <!-- Panel -->
-        <TheModePanel v-if="currentMode === Mode.Panel" @switch-todo="handleSwitchTodoMode"
-          @switch-extension="handleSwitchExtensionMode" @switch-play-music="handleSwitchPlayMusicMode" />
+        <TheModePanel
+          v-if="currentMode === Mode.Panel"
+          @switch-todo="handleSwitchTodoMode"
+          @switch-extension="handleSwitchExtensionMode"
+          @switch-play-music="handleSwitchPlayMusicMode"
+        />
         <!-- Extension -->
         <div v-if="currentMode === Mode.EXTEN">
           <div v-if="currentExtensionType === ExtensionType.MUSIC"></div>
           <div v-if="currentExtensionType === ExtensionType.VIDEO"></div>
           <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
             <div class="text-gray-500 font-bold mb-1">Github项目地址</div>
-            <BaseInput v-model="extensionToAdd.extension" class="rounded-lg h-auto w-full"
-              placeholder="https://github.com/username/repo" />
+            <BaseInput
+              v-model="extensionToAdd.extension"
+              class="rounded-lg h-auto w-full"
+              placeholder="https://github.com/username/repo"
+            />
           </div>
         </div>
       </div>
@@ -66,25 +101,45 @@
         <div class="flex flex-row items-center gap-2">
           <!-- ShowMore -->
           <div>
-            <BaseButton :icon="Advance" @click="handleChangeMode" :class="[
-                'w-8 h-8 sm:w-9 sm:h-9 rounded-md',
-                todoMode
-                  ? 'bg-orange-100 shadow-[0_0_12px_-4px_rgba(255,140,0,0.6)] !ring-0 !text-white'
-                  : '',
-              ].join(' ')
-              " title="其它" />
+            <BaseButton
+              :icon="Advance"
+              @click="handleChangeMode"
+              :class="
+                [
+                  'w-8 h-8 sm:w-9 sm:h-9 rounded-md',
+                  todoMode
+                    ? 'bg-orange-100 shadow-[0_0_12px_-4px_rgba(255,140,0,0.6)] !ring-0 !text-white'
+                    : '',
+                ].join(' ')
+              "
+              title="其它"
+            />
           </div>
           <!-- Photo Upload -->
           <div v-if="currentMode === Mode.ECH0">
-            <input id="file-input" class="hidden" type="file" accept="image/*" ref="fileInput"
-              @change="handleUploadImage" />
-            <BaseButton :icon="ImageUpload" @click="handTriggerUpload" class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="上传图片" />
+            <input
+              id="file-input"
+              class="hidden"
+              type="file"
+              accept="image/*"
+              ref="fileInput"
+              @change="handleUploadImage"
+            />
+            <BaseButton
+              :icon="ImageUpload"
+              @click="handTriggerUpload"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
+              title="上传图片"
+            />
           </div>
           <!-- Privacy Set -->
           <div v-if="currentMode === Mode.ECH0">
-            <BaseButton :icon="echoToAdd.private ? Private : Public" @click="handlePrivate"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md" title="是否私密" />
+            <BaseButton
+              :icon="echoToAdd.private ? Private : Public"
+              @click="handlePrivate"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
+              title="是否私密"
+            />
           </div>
         </div>
 
@@ -100,21 +155,33 @@
           </div> -->
           <!-- Publish -->
           <div v-if="currentMode !== Mode.Panel">
-            <BaseButton :icon="Publish" @click="handleAdd" class="w-8 h-8 sm:w-9 sm:h-9 rounded-md" title="发布" />
+            <BaseButton
+              :icon="Publish"
+              @click="handleAdd"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
+              title="发布"
+            />
           </div>
         </div>
       </div>
 
       <!-- Preview Image -->
       <div v-if="echoToAdd.image_url" class="relative rounded-lg shadow-lg w-5/6 mx-auto my-7">
-        <button @click="handleRemoveImage"
+        <button
+          @click="handleRemoveImage"
           class="absolute -top-3 -right-4 bg-red-100 hover:bg-red-300 text-gray-600 rounded-lg w-7 h-7 flex items-center justify-center shadow"
-          title="移除图片">
+          title="移除图片"
+        >
           <Close class="w-4 h-4" />
         </button>
         <div class="rounded-lg overflow-hidden">
           <a :href="`${apiUrl}${echoToAdd.image_url}`" data-fancybox>
-            <img :src="`${apiUrl}${echoToAdd.image_url}`" alt="Image" class="max-w-full object-cover" loading="lazy" />
+            <img
+              :src="`${apiUrl}${echoToAdd.image_url}`"
+              alt="Image"
+              class="max-w-full object-cover"
+              loading="lazy"
+            />
           </a>
         </div>
       </div>
@@ -124,16 +191,12 @@
 
 <script setup lang="ts">
 import Github from '@/components/icons/github.vue'
-import Rss from '@/components/icons/rss.vue'
 import Advance from '@/components/icons/advance.vue'
 import Close from '@/components/icons/close.vue'
 import Audio from '@/components/icons/audio.vue'
-import Todo from '@/components/icons/todo.vue'
-import Panel from '@/components/icons/panel.vue'
 import ImageUpload from '@/components/icons/image.vue'
 import Public from '@/components/icons/public.vue'
 import Private from '@/components/icons/private.vue'
-import Clear from '@/components/icons/clear.vue'
 import Publish from '@/components/icons/publish.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
@@ -141,7 +204,7 @@ import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import TheModePanel from './TheModePanel.vue'
 import { theToast } from '@/utils/toast'
 import { Fancybox } from '@fancyapps/ui'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, defineEmits } from 'vue'
 import {
   fetchUploadImage,
   fetchAddEcho,
@@ -149,7 +212,7 @@ import {
   fetchAddTodo,
   fetchDeleteImage,
   fetchUploadMusic,
-  fetchDeleteMusic
+  fetchDeleteMusic,
 } from '@/service/api'
 import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
@@ -158,7 +221,9 @@ import { useTodoStore } from '@/stores/todo'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { storeToRefs } from 'pinia'
 import BaseTextArea from '@/components/common/BaseTextArea.vue'
-import { set } from 'mermaid/dist/diagrams/state/id-cache.js'
+import Delete from '@/components/icons/delete.vue'
+
+const emit = defineEmits(['refreshAudio'])
 
 const apiUrl = getApiUrl()
 const echoStore = useEchoStore()
@@ -248,22 +313,18 @@ const handleUploadMusic = async (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     const file = target.files[0]
-    fetchUploadMusic(file).then((res) => {
-      if (res.code === 1) {
-        echoToAdd.value.content = res.data
-        theToast.success('音乐上传成功！')
-      }
+    fetchUploadMusic(file).then(() => {
+      theToast.success('音乐上传成功！')
+      emit('refreshAudio')
     })
   }
 }
 const handleDeleteMusic = () => {
   if (confirm('确定要取消播放吗？')) {
-    fetchDeleteMusic()
-      .then((res) => {
-        if (res.code === 1) {
-          theToast.success(res.msg)
-        }
-      })
+    fetchDeleteMusic().then((res) => {
+      theToast.success(res.msg)
+      emit('refreshAudio')
+    })
   }
 }
 

@@ -2,8 +2,10 @@ package controllers
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lin-snow/ech0/config"
 	"github.com/lin-snow/ech0/internal/dto"
 	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/internal/services"
@@ -119,4 +121,41 @@ func GetPlayMusic(c *gin.Context) {
 	musicURLs := services.GetPlayMusic()
 
 	c.JSON(http.StatusOK, dto.OK(musicURLs, models.GetPlayMusicSuccessMessage))
+}
+
+// PlayMusic 控制器
+func PlayMusic(c *gin.Context) {
+	// 以文件流的形式返回音乐文件
+	musicURL := services.GetPlayMusic()
+	musicName := ""
+	if musicURL != "" {
+		// 只保留最后的文件名
+		musicName = musicURL[len("/audios/"):]
+	}
+
+	// 获取音乐文件的路径
+	musicPath := config.Config.Upload.AudioPath + musicName
+
+	// 获取 Content-Type
+	contentType := "audio/mpeg"
+	if musicName[len(musicName)-4:] == ".flac" {
+		contentType = "audio/flac"
+	} else if musicName[len(musicName)-4:] == ".m4a" {
+		contentType = "audio/mp4"
+	}
+
+	// 读取文件内容
+	data, err := os.ReadFile(musicPath)
+	if err != nil {
+		c.String(500, "读取音乐文件失败")
+		return
+	}
+
+	// 设置响应头
+	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+	c.Header("Pragma", "no-cache")
+	c.Header("Expires", "0")
+
+	// 直接写文件内容，Gin 会自动关闭连接，不会长时间占用文件
+	c.Data(http.StatusOK, contentType, data)
 }

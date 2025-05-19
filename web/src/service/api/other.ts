@@ -21,8 +21,8 @@ export function fetchDeleteMusic() {
 
 // 获取音乐
 export function fetchGetMusic() {
-  return request({
-    url: `/playmusic`,
+  return request<string>({
+    url: `/getmusic`,
     method: 'GET',
   })
 }
