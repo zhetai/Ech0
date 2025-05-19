@@ -118,7 +118,7 @@
         >
           <span class="text-gray-400">暂无连接...</span>
         </div>
-        <div v-else="connects.length > 0" class="mt-2">
+        <div v-else class="mt-2">
           <div
             v-for="(connect, index) in connects"
             :key="index"

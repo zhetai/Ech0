@@ -46,7 +46,6 @@ import { RouterLink } from 'vue-router'
 import { useEchoStore } from '@/stores/echo'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
-import { theToast } from '@/utils/toast'
 const echoStore = useEchoStore()
 const { refreshForSearch, getEchosByPage } = echoStore
 const { searchingMode } = storeToRefs(echoStore)
