@@ -92,5 +92,31 @@ func DeleteImage(c *gin.Context) {
 
 // DeleteAudio 控制器，调用 service 删除音频
 func DeleteAudio(c *gin.Context) {
+	// 检查用户是否为管理员
+	user, err := services.GetUserByID(c.MustGet("userid").(uint))
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](models.UserNotFoundMessage))
+		return
+	}
 
+	if !user.IsAdmin {
+		c.JSON(http.StatusOK, dto.Fail[string](models.NoPermissionMessage))
+		return
+	}
+
+	// 调用 Service 层删除音频
+	if err := services.DeleteAudio(); err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.OK[any](nil, models.DeleteAudioSuccessMessage))
+}
+
+// 获取可播放的音乐的URL
+func GetPlayMusic(c *gin.Context) {
+	// 调用 Service 层获取可播放的音乐的URL
+	musicURLs := services.GetPlayMusic()
+
+	c.JSON(http.StatusOK, dto.OK(musicURLs, models.GetPlayMusicSuccessMessage))
 }

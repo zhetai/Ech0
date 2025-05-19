@@ -16,6 +16,12 @@
       <div v-if="isLogin && todos.length > 0" class="mb-2 px-11">
         <TheTodoCard :todo="todos[0]" :index="0" :operative="false" @refresh="getTodos" />
       </div>
+      <div>
+        <TheAudioCard
+          url=""
+          class="mb-2"
+        />
+      </div>
       <TheConnects />
     </div>
   </div>
@@ -34,6 +40,7 @@ import { useSettingStore } from '@/stores/settting'
 import { useUserStore } from '@/stores/user'
 import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
+import TheAudioCard from '@/components/advanced/TheAudioCard.vue'
 
 const { getSystemSetting } = useSettingStore()
 const todoStore = useTodoStore()

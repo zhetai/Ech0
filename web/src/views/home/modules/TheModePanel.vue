@@ -35,12 +35,26 @@
         <BaseButton :icon="Todo" @click="emit('switchTodo')" class="w-7 h-7 rounded-md" />
       </div>
     </div>
+    <!-- 其它功能 -->
+    <div class="mb-1">
+      <h2 class="text-gray-500 font-bold mb-1">其它功能</h2>
+      <div class="flex flex-row items-center gap-2">
+        <!-- 其它功能按钮 -->
+        <BaseButton
+          :icon="Play"
+          class="w-7 h-7 rounded-md"
+          title="音乐播放"
+          @click="handlePlayMusic"
+        />
+      </div>
+      </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import Todo from '@/components/icons/todo.vue'
 import Music from '@/components/icons/music.vue'
+import Play from '@/components/icons/play.vue'
 import Video from '@/components/icons/video.vue'
 import Githubproj from '@/components/icons/githubproj.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
@@ -52,7 +66,7 @@ const enum ExtensionType {
   GITHUBPROJ = 'GITHUBPROJ',
 }
 
-const emit = defineEmits(['switchTodo', 'switchExtension', 'addMusic', 'addVideo', 'addGithubproj'])
+const emit = defineEmits(['switchTodo', 'switchExtension', 'switchPlayMusic' ,'addMusic', 'addVideo', 'addGithubproj'])
 
 const handleAddExtension = (extensiontype: ExtensionType) => {
   if (extensiontype !== ExtensionType.GITHUBPROJ) {
@@ -60,6 +74,10 @@ const handleAddExtension = (extensiontype: ExtensionType) => {
     return
   }
   emit('switchExtension', extensiontype)
+}
+
+const handlePlayMusic = () => {
+  emit('switchPlayMusic')
 }
 </script>
 

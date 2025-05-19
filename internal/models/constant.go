@@ -29,6 +29,8 @@ const (
 	DeleteUserSuccessMessage     = "删除用户成功"
 	DeleteImageSuccessMessage    = "删除图片成功"
 	PleaseSignUpFirstMessage     = "请先注册用户"
+	GetPlayMusicSuccessMessage   = "获取音乐成功"
+	DeleteAudioSuccessMessage    = "删除音频成功"
 )
 
 // 失败相关
@@ -95,6 +97,7 @@ const (
 	NotSupportedFileTypeErrorMessage       = "不支持的文件类型"
 	AudioUploadErrorMessage                = "音频上传失败"
 	AudioSizeLimitErrorMessage             = "音频大小超过限制"
+	AudioNotFoundMessage                   = "音频未找到"
 )
 
 // 数据库相关

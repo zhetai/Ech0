@@ -168,5 +168,34 @@ func DeleteImage(image dto.ImageDto) error {
 	imagePath := fmt.Sprintf("data/images/%s", imageName)
 
 	// 删除图片
-	return pkg.DeleteImage(imagePath)
+	return pkg.DeleteFile(imagePath)
+}
+
+func GetPlayMusic() string {
+	// 支持的音频格式
+	audioFiles := []string{"music.flac", "music.m4a", "music.mp3"}
+
+	for _, file := range audioFiles {
+		audioPath := fmt.Sprintf("data/audios/%s", file)
+		if pkg.FileExists(audioPath) {
+			return fmt.Sprintf("/audios/%s", file)
+		}
+	}
+
+	// 没有找到音频文件
+	return ""
+}
+
+func DeleteAudio() error {
+	// 支持的音频格式
+	audioFiles := []string{"music.flac", "music.m4a", "music.mp3"}
+
+	for _, file := range audioFiles {
+		audioPath := fmt.Sprintf("data/audios/%s", file)
+		if pkg.FileExists(audioPath) {
+			return pkg.DeleteFile(audioPath)
+		}
+	}
+
+	return errors.New(models.AudioNotFoundMessage)
 }

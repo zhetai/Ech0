@@ -13,9 +13,9 @@ func TrimURL(url string) string {
 	return url
 }
 
-// 删除图片
-func DeleteImage(imagePath string) error {
-	if err := os.Remove(imagePath); err != nil {
+// 删除文件
+func DeleteFile(filePath string) error {
+	if err := os.Remove(filePath); err != nil {
 		return err
 	}
 
