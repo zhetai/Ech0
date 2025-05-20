@@ -83,7 +83,15 @@
         />
         <!-- Extension -->
         <div v-if="currentMode === Mode.EXTEN">
-          <div v-if="currentExtensionType === ExtensionType.MUSIC"></div>
+          <div v-if="currentExtensionType === ExtensionType.MUSIC">
+            <h2 class="text-gray-500 font-bold mb-1">音乐分享（支持网易云/QQ音乐）</h2>
+            <p class="text-gray-400 text-sm mb-1">注意：不支持VIP歌曲，建议使用自建API</p>
+            <BaseInput
+              v-model="extensionToAdd.extension"
+              class="rounded-lg h-auto w-full"
+              placeholder="音乐链接..."
+            />
+          </div>
           <div v-if="currentExtensionType === ExtensionType.VIDEO">
             <div class="text-gray-500 font-bold mb-1">Bilibili视频分享(粘贴自动提取BV号)</div>
             <BaseInput

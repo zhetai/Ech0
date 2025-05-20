@@ -62,7 +62,7 @@
       <!-- 扩展内容 -->
       <div v-if="props.echo.extension" class="mt-2">
         <div v-if="props.echo.extension_type === ExtensionType.MUSIC">
-          <!-- TODO: 暂无 -->
+          <TheAPlayerCard :echo="props.echo" />
         </div>
         <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
           <TheVideoCard :bvnumber="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
@@ -81,7 +81,7 @@
 import { Fancybox } from '@fancyapps/ui'
 import { MdPreview } from 'md-editor-v3'
 import { getApiUrl } from '@/service/request/shared'
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { fetchDeleteEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
@@ -91,6 +91,7 @@ import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
 import Roll from '../icons/roll.vue'
 import Lock from '../icons/lock.vue'
+import TheAPlayerCard from './TheAPlayerCard.vue'
 
 const emit = defineEmits(['refresh'])
 
@@ -153,6 +154,7 @@ const formatDate = (dateString: string) => {
     return date.toLocaleString() // 返回完整的日期和时间
   }
 }
+
 
 onMounted(() => {
   Fancybox.bind('[data-fancybox]', {

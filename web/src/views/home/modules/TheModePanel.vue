@@ -5,12 +5,12 @@
       <h2 class="text-gray-500 font-bold mb-1">扩展附加内容</h2>
       <div class="flex flex-row items-center gap-2">
         <!-- 添加音乐 -->
-        <!-- <BaseButton
+        <BaseButton
           :icon="Music"
           class="w-7 h-7 rounded-md"
           title="添加音乐"
           @click="handleAddExtension(ExtensionType.MUSIC)"
-        /> -->
+        />
         <!-- 添加视频 -->
         <BaseButton
           :icon="Video"
@@ -45,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import Music from '@/components/icons/music.vue'
 import Todo from '@/components/icons/todo.vue'
 import Video from '@/components/icons/video.vue'
 import Githubproj from '@/components/icons/githubproj.vue'
