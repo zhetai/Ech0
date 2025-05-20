@@ -86,14 +86,12 @@
           <div v-if="currentExtensionType === ExtensionType.MUSIC"></div>
           <div v-if="currentExtensionType === ExtensionType.VIDEO">
             <div class="text-gray-500 font-bold mb-1">Bilibili视频分享(粘贴自动提取BV号)</div>
-              <BaseInput
-                v-model="bilibiliURL"
-                class="rounded-lg h-auto w-full my-2"
-                placeholder="B站分享链接..."
-              />
-              <div class="text-gray-500 my-1">
-                提取的BV号为：{{ extensionToAdd.extension }}
-              </div>
+            <BaseInput
+              v-model="bilibiliURL"
+              class="rounded-lg h-auto w-full my-2"
+              placeholder="B站分享链接..."
+            />
+            <div class="text-gray-500 my-1">提取的BV号为：{{ extensionToAdd.extension }}</div>
           </div>
           <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
             <div class="text-gray-500 font-bold mb-1">Github项目地址</div>
@@ -327,7 +325,7 @@ const handleUploadMusic = async (event: Event) => {
     fetchUploadMusic(file).then((res) => {
       if (res.code === 1) {
         theToast.success('音乐上传成功！')
-      emit('refreshAudio')
+        emit('refreshAudio')
       }
     })
   }
@@ -430,10 +428,10 @@ watch(
   () => bilibiliURL.value,
   (newVal) => {
     if (newVal.length > 0) {
-      const bvRegex = /(BV[0-9A-Za-z]{10})/;
-      const match = newVal.match(bvRegex);
+      const bvRegex = /(BV[0-9A-Za-z]{10})/
+      const match = newVal.match(bvRegex)
       if (match) {
-        extensionToAdd.value.extension = match[0];
+        extensionToAdd.value.extension = match[0]
       } else {
         theToast.error('请输入正确的B站分享链接！')
       }

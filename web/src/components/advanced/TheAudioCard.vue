@@ -24,45 +24,49 @@
       <div v-else class="text-gray-500">暂停中...</div>
     </div>
 
-    <audio ref="audioRef" :src="url" @play="isPlaying = true" @pause="isPlaying = false" preload="none" />
+    <audio
+      ref="audioRef"
+      :src="url"
+      @play="isPlaying = true"
+      @pause="isPlaying = false"
+      preload="none"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { fetchGetMusic } from '@/service/api';
-import { getApiUrl } from '@/service/request/shared';
-import { onMounted, ref } from 'vue';
-import Album from '../icons/album.vue';
-import Pause from '../icons/pause.vue';
-import Play from '../icons/play.vue';
+import { fetchGetMusic } from '@/service/api'
+import { getApiUrl } from '@/service/request/shared'
+import { onMounted, ref } from 'vue'
+import Album from '../icons/album.vue'
+import Pause from '../icons/pause.vue'
+import Play from '../icons/play.vue'
 
-const url = ref<string>('');
-const musicUrl = ref<string>('');
-const isPlaying = ref(false);
-const audioRef = ref<HTMLAudioElement | null>(null);
+const url = ref<string>('')
+const musicUrl = ref<string>('')
+const isPlaying = ref(false)
+const audioRef = ref<HTMLAudioElement | null>(null)
 
 function togglePlay() {
-  if (!audioRef.value) return;
+  if (!audioRef.value) return
   if (isPlaying.value) {
-    audioRef.value.pause();
+    audioRef.value.pause()
   } else {
-    audioRef.value.play();
+    audioRef.value.play()
   }
 }
 
 const handleGetMusic = async () => {
-  const res = await fetchGetMusic();
-  musicUrl.value = res.data;
-  url.value = `${getApiUrl()}/playmusic?t=${Date.now()}`; // 添加时间戳，绕过缓存
-};
+  const res = await fetchGetMusic()
+  musicUrl.value = res.data
+  url.value = `${getApiUrl()}/playmusic?t=${Date.now()}` // 添加时间戳，绕过缓存
+}
 
 defineExpose({
   handleGetMusic,
-});
+})
 
 onMounted(async () => {
-  handleGetMusic();
-});
-
+  handleGetMusic()
+})
 </script>
-

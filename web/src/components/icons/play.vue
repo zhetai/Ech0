@@ -1,10 +1,5 @@
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
     <!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ -->
     <path
       :fill="color"
@@ -19,8 +14,8 @@ export default {
   props: {
     color: {
       type: String,
-      default: '#888888'
-    }
-  }
+      default: '#888888',
+    },
+  },
 }
 </script>

@@ -3,8 +3,12 @@
     <a :href="props.GithubURL" target="_blank">
       <div class="flex justify-between items-center">
         <div class="shrink-0 px-6">
-          <img v-if="CardData?.owner?.avatar_url" :src="CardData?.owner?.avatar_url" alt="头像"
-            class="w-14 h-14 rounded-full shadow" />
+          <img
+            v-if="CardData?.owner?.avatar_url"
+            :src="CardData?.owner?.avatar_url"
+            alt="头像"
+            class="w-14 h-14 rounded-full shadow"
+          />
           <Githubproj v-else class="w-14 h-14" />
         </div>
 

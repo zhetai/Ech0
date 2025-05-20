@@ -1,4 +1,4 @@
-import { request } from "../request";
+import { request } from '../request'
 
 // 上传音乐
 export function fetchUploadMusic(file: File) {
