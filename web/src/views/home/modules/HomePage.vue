@@ -22,7 +22,11 @@
       <TheConnects />
     </div>
 
-    <div v-show="showBackTop" :style="backTopStyle" class="hidden xl:block fixed bottom-6 z-50">
+    <div
+      v-show="showBackTop"
+      :style="backTopStyle"
+      class="hidden xl:block fixed bottom-6 z-50 transition-all duration-500 animate-fade-in"
+    >
       <TheBackTop class="w-8 h-8 p-1" />
     </div>
   </div>
