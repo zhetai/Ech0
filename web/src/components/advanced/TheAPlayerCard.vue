@@ -39,7 +39,7 @@ const musicInfo = computed(() => {
 const parseMusicURL = (url: string) => {
   url = url.trim()
 
-  let neteaseMatch = url.match(/music\.163\.com\/#\/(song|playlist|album)\?id=(\d+)/)
+  const neteaseMatch = url.match(/music\.163\.com\/#\/(song|playlist|album)\?id=(\d+)/)
   if (neteaseMatch) {
     return {
       server: 'netease',
@@ -49,7 +49,7 @@ const parseMusicURL = (url: string) => {
   }
 
   // QQ音乐 新格式支持，songDetail 路径，id一般是字母数字混合
-  let qqNewSongMatch = url.match(/y\.qq\.com\/n\/ryqq\/songDetail\/([a-zA-Z0-9]+)/)
+  const qqNewSongMatch = url.match(/y\.qq\.com\/n\/ryqq\/songDetail\/([a-zA-Z0-9]+)/)
   if (qqNewSongMatch) {
     return {
       server: 'tencent',

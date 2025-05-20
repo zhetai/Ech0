@@ -81,7 +81,7 @@
 import { Fancybox } from '@fancyapps/ui'
 import { MdPreview } from 'md-editor-v3'
 import { getApiUrl } from '@/service/request/shared'
-import { onMounted, computed } from 'vue'
+import { onMounted } from 'vue'
 import { fetchDeleteEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
