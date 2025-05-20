@@ -38,7 +38,7 @@ const heatmapData = ref<App.Api.Ech0.HeatMap>([])
 const grid = computed(() => {
   const cells = [...heatmapData.value]
   const total = 3 * 10
-  while (cells.length < total) cells.push(null as any)
+  while (cells.length < total) cells.push({ date: '', count: 0 } as App.Api.Ech0.HeatMap[0])
   const result: (App.Api.Ech0.HeatMap[0] | null)[][] = []
   for (let row = 0; row < 3; row++) {
     result.push(cells.slice(row * 10, (row + 1) * 10))

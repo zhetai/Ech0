@@ -1,12 +1,6 @@
 <template>
   <div class="max-w-sm flex justify-center items-center bg-white rounded-lg shadow-sm p-2 gap-2">
-    <!-- <iframe
-      class="w-full aspect-video rounded"
-      :src="`https://player.bilibili.com/player.html?bvid=${props.bvnumber}`"
-      loading="lazy"
-      allowfullscreen
-      sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-    ></iframe> -->
+    <!-- 使用移动端外链播放器 -->
     <iframe
       :src="`https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${props.bvnumber}&as_wide=1&high_quality=1&danmaku=0`"
       scrolling="no"
