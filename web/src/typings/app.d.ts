@@ -115,6 +115,7 @@ declare namespace App {
         server_url: string
         allow_register: boolean
         ICP_number: string
+        meting_api: string
       }
     }
 

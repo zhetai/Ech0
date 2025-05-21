@@ -18,6 +18,7 @@ func GetSetting() (models.SystemSetting, error) {
 		setting.ServerURL = pkg.TrimURL(config.Config.Setting.Serverurl)
 		setting.AllowRegister = config.Config.Setting.AllowRegister
 		setting.ICPNumber = config.Config.Setting.Icpnumber
+		setting.MetingAPI = config.Config.Setting.MetingAPI
 		error := repository.AddKeyValue(models.SystemSettingsKey, setting)
 		if error != nil {
 			return setting, error

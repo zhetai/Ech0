@@ -1,7 +1,7 @@
 <template>
   <meting-js
-    class="!shadow-none"
     v-if="musicInfo"
+    :api="`${SystemSetting.meting_api ? SystemSetting.meting_api : 'https://meting.soopy.cn/api'}?server=:server&type=:type&id=:id&auth=:auth&r=:r`"
     :server="musicInfo.server"
     :type="musicInfo.type"
     :id="musicInfo.id"
@@ -18,13 +18,18 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import Music from '@/components/icons/music.vue'
+import { useSettingStore } from '@/stores/settting'
+import { parseMusicURL } from '@/utils/other'
 type Echo = App.Api.Ech0.Echo
 const enum ExtensionType {
   MUSIC = 'MUSIC',
   VIDEO = 'VIDEO',
   GITHUBPROJ = 'GITHUBPROJ',
 }
+const settingStore = useSettingStore()
+const { SystemSetting } = storeToRefs(settingStore)
 
 const props = defineProps<{
   echo: Echo
@@ -34,33 +39,6 @@ const musicInfo = computed(() => {
   if (props.echo.extension_type !== ExtensionType.MUSIC || !props.echo.extension) return null
   return parseMusicURL(props.echo.extension)
 })
-
-// 解析音乐链接（网易云、QQ音乐）
-const parseMusicURL = (url: string) => {
-  url = url.trim()
-
-  const neteaseMatch = url.match(/music\.163\.com\/#\/(song|playlist|album)\?id=(\d+)/)
-  if (neteaseMatch) {
-    return {
-      server: 'netease',
-      type: neteaseMatch[1], // song, playlist, album
-      id: neteaseMatch[2],
-    }
-  }
-
-  // QQ音乐 新格式支持，songDetail 路径，id一般是字母数字混合
-  const qqNewSongMatch = url.match(/y\.qq\.com\/n\/ryqq\/songDetail\/([a-zA-Z0-9]+)/)
-  if (qqNewSongMatch) {
-    return {
-      server: 'tencent',
-      type: 'song',
-      id: qqNewSongMatch[1],
-    }
-  }
-
-  // 解析失败
-  return null
-}
 </script>
 
 <style scoped></style>

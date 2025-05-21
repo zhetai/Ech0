@@ -13,6 +13,7 @@ setting:
   serverurl: "https://ech0.example.com"
   allowregister: true
   icpnumber: ""
+  metingapi: https://metingapi.soopy.cn/api
 
 upload:
   imagemaxsize: 5242880 # 5MB

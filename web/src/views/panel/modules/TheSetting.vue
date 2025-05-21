@@ -76,6 +76,25 @@
             class="w-36 !py-1"
           />
         </div>
+        <!-- Meting API -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30">Meting:</h2>
+          <span
+            v-if="!editMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="SystemSetting.meting_api"
+            style="vertical-align: middle"
+          >
+            {{ SystemSetting.meting_api.length === 0 ? '暂无' : SystemSetting.meting_api }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="SystemSetting.meting_api"
+            type="text"
+            placeholder="请输入Meting API地址,带http(s)"
+            class="w-36 !py-1"
+          />
+        </div>
         <!-- 允许注册 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30">允许注册:</h2>

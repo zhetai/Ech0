@@ -91,6 +91,19 @@
               class="rounded-lg h-auto w-full"
               placeholder="音乐链接..."
             />
+            <div
+              v-if="
+                extensionToAdd.extension.length > 0 &&
+                extensionToAdd.extension_type === ExtensionType.MUSIC
+              "
+              class="mt-1 text-gray-400 text-md"
+            >
+              解析结果：
+              <span v-if="parseMusicURL(extensionToAdd.extension)" class="text-green-400"
+                >成功</span
+              >
+              <span v-else class="text-red-100">失败</span>
+            </div>
           </div>
           <div v-if="currentExtensionType === ExtensionType.VIDEO">
             <div class="text-gray-500 font-bold mb-1">Bilibili视频分享(粘贴自动提取BV号)</div>
@@ -238,6 +251,7 @@ import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { storeToRefs } from 'pinia'
 import BaseTextArea from '@/components/common/BaseTextArea.vue'
 import Delete from '@/components/icons/delete.vue'
+import { parseMusicURL } from '@/utils/other'
 
 const emit = defineEmits(['refreshAudio'])
 
