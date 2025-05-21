@@ -160,7 +160,7 @@ const (
 )
 
 const (
-	Version = "1.2.8" // 当前版本号
+	Version = "1.2.9" // 当前版本号
 )
 
 const (
