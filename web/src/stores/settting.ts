@@ -18,6 +18,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     ICP_number: '',
     meting_api: '',
   })
+  const loading = ref<boolean>(true)
   const router = useRouter()
 
   /**
@@ -59,14 +60,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     await fetchGetSettings().then((res) => {
       if (res.code === 1) {
         SystemSetting.value = res.data
-      }
-    })
-  }
-
-  const refreshSystemSetting = async () => {
-    await fetchGetSettings().then((res) => {
-      if (res.code === 1) {
-        SystemSetting.value = res.data
+        loading.value = false
       }
     })
   }
@@ -75,5 +69,5 @@ export const useSettingStore = defineStore('settingStore', () => {
     isSystemReady.value = status
   }
 
-  return { isSystemReady, SystemSetting, getSystemSetting, setSystemReady, refreshSystemSetting }
+  return { isSystemReady, SystemSetting, loading, getSystemSetting, setSystemReady }
 })

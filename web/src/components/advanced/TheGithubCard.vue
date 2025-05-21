@@ -47,7 +47,7 @@ onMounted(async () => {
   await fetchGetGithubRepo({ owner, repo }).then((res) => {
     if (res) {
       CardData.value = res
-      console.log('CardData', CardData.value)
+      // console.log('CardData', CardData.value)
     }
   })
 })
