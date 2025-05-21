@@ -16,6 +16,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     server_url: '',
     allow_register: true,
     ICP_number: '',
+    meting_api: '',
   })
   const router = useRouter()
 
