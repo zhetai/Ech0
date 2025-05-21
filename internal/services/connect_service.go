@@ -127,6 +127,16 @@ func GetConnectsInfo() ([]models.Connect, error) {
 	var wg sync.WaitGroup
 	connectChan := make(chan models.Connect, len(connects))
 
+	// 使用map记录已添加的连接，防止重复
+	// 使用结构体存储连接和优先级信息
+	type ConnectEntry struct {
+		connect  models.Connect
+		priority int // 优先级：1=非特殊connect，2=特殊connect
+	}
+
+	seenURLs := make(map[string]ConnectEntry)
+	var seenMutex sync.Mutex // 保护map的并发访问
+
 	// 遍历连接地址，获取每个连接的状态
 	for _, conn := range connects {
 		wg.Add(1)
@@ -143,13 +153,62 @@ func GetConnectsInfo() ([]models.Connect, error) {
 			var connectInfo dto.Result[models.Connect]
 			if err := json.Unmarshal(resp, &connectInfo); err != nil {
 				// 解析失败，抛弃该实例的数据
+				// 检查是否为特殊connect,即为[]models.Connect
+				var specialConnects []models.Connect
+				if err := json.Unmarshal(resp, &specialConnects); err != nil {
+					// 解析失败，抛弃该实例的数据
+					return
+				}
+
+				// 处理特殊connect数组 - 优先级较低
+				for _, specialConnect := range specialConnects {
+					// 确保ServerURL不为空
+					if specialConnect.ServerURL == "" {
+						continue
+					}
+
+					// 检查重复并应用优先级规则
+					seenMutex.Lock()
+					entry, exists := seenURLs[specialConnect.ServerURL]
+					if exists && entry.priority <= 2 {
+						// 已存在且优先级相同或更高，跳过
+						seenMutex.Unlock()
+						continue
+					}
+					// 添加或更新，特殊connect优先级为2
+					seenURLs[specialConnect.ServerURL] = ConnectEntry{
+						connect:  specialConnect,
+						priority: 2,
+					}
+					seenMutex.Unlock()
+
+					// 发送到通道 - 后续会根据map筛选
+					connectChan <- specialConnect
+				}
 				return
 			}
 
-			if connectInfo.Code != 1 {
+			// 非特殊connect处理 - 优先级较高
+			if connectInfo.Code != 1 || connectInfo.Data.ServerURL == "" {
 				return
 			}
 
+			// 检查重复并应用优先级规则
+			seenMutex.Lock()
+			entry, exists := seenURLs[connectInfo.Data.ServerURL]
+			if exists && entry.priority <= 1 {
+				// 已存在且优先级相同或更高，跳过
+				seenMutex.Unlock()
+				return
+			}
+			// 添加或更新，非特殊connect优先级为1（更高）
+			seenURLs[connectInfo.Data.ServerURL] = ConnectEntry{
+				connect:  connectInfo.Data,
+				priority: 1,
+			}
+			seenMutex.Unlock()
+
+			// 发送到通道
 			connectChan <- connectInfo.Data
 		}(conn)
 	}
@@ -159,7 +218,28 @@ func GetConnectsInfo() ([]models.Connect, error) {
 		close(connectChan)
 	}()
 
+	// 创建最终的去重结果集
+	finalResults := make(map[string]models.Connect)
+
+	// 从通道收集所有connect
 	for connect := range connectChan {
+		// 再次检查ServerURL是否为空
+		if connect.ServerURL == "" {
+			continue
+		}
+
+		// 根据优先级处理
+		seenMutex.Lock()
+		entry, exists := seenURLs[connect.ServerURL]
+		// 只添加优先级最高的项到最终结果
+		if !exists || entry.priority == 1 && entry.connect.ServerURL == connect.ServerURL {
+			finalResults[connect.ServerURL] = connect
+		}
+		seenMutex.Unlock()
+	}
+
+	// 转换map为切片
+	for _, connect := range finalResults {
 		connectList = append(connectList, connect)
 	}
 
