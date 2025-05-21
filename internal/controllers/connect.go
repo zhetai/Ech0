@@ -90,3 +90,15 @@ func DeleteConnect(c *gin.Context) {
 
 	c.JSON(http.StatusOK, dto.OK[any](nil, models.DeleteConnectSuccessMessage))
 }
+
+// GetConnectsInfo
+func GetConnectsInfo(c *gin.Context) {
+	// 调用 Service 层获取 Connect 信息
+	connects, err := services.GetConnectsInfo()
+	if err != nil {
+		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.OK(connects, models.GetConnectsInfoSuccessMessage))
+}

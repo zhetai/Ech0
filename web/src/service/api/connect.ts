@@ -1,9 +1,9 @@
 import { request, requestWithDirectUrl } from '../request'
 
 // 获取Connect列表
-export function fetchGetConnects() {
+export function fetchGetConnectList() {
   return request<App.Api.Connect.Connected[]>({
-    url: '/connects',
+    url: '/connect/list',
     method: 'GET',
   })
 }
@@ -13,6 +13,14 @@ export function fetchGetConnect(connectUrl: string) {
   return requestWithDirectUrl<App.Api.Connect.Connect>({
     dirrectUrl: `${connectUrl}/api/connect`,
     url: '/',
+    method: 'GET',
+  })
+}
+
+// 获取所有Connect详情
+export function fetchGetAllConnectInfo() {
+  return request<App.Api.Connect.Connect[]>({
+    url: '/connects/info',
     method: 'GET',
   })
 }

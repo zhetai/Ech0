@@ -1,9 +1,11 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 
+	"github.com/lin-snow/ech0/internal/dto"
 	"github.com/lin-snow/ech0/internal/models"
 	"github.com/lin-snow/ech0/internal/repository"
 	"github.com/lin-snow/ech0/pkg"
@@ -103,4 +105,35 @@ func DeleteConnect(id uint) error {
 	}
 
 	return nil
+}
+
+func GetConnectsInfo() ([]models.Connect, error) {
+	// 获取所有连接地址
+	connects, err := repository.GetAllConnects()
+	if err != nil {
+		return nil, err
+	}
+
+	// 如果没有找到，返回空切片
+	if len(connects) == 0 {
+		return []models.Connect{}, nil
+	}
+
+	var connectList []models.Connect
+
+	// 遍历连接地址，获取每个连接的状态
+	for _, conn := range connects {
+		resp, _ := pkg.SendRequest(pkg.TrimURL(conn.ConnectURL)+"/api/connect", "GET")
+
+		// 解析出响应体数据
+		var connectInfo dto.Result[models.Connect]
+		if err := json.Unmarshal(resp, &connectInfo); err != nil {
+			// 解析失败，抛弃该实例的数据
+			continue
+		}
+		// 将连接信息转换为 Connect 结构体
+		connectList = append(connectList, connectInfo.Data)
+	}
+
+	return connectList, nil
 }

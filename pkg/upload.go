@@ -110,8 +110,5 @@ func createImageDirIfNotExist(imagePath string) error {
 // 文件是否存在
 func FileExists(filePath string) bool {
 	_, err := os.Stat(filePath)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return true
+	return !os.IsNotExist(err)
 }
