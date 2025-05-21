@@ -144,7 +144,13 @@ func GetConnectsInfo() ([]models.Connect, error) {
 			defer wg.Done()
 
 			url := pkg.TrimURL(conn.ConnectURL) + "/api/connect"
-			resp, err := pkg.SendRequest(url, "GET")
+			resp, err := pkg.SendRequest(url, "GET", struct {
+				Header  string
+				Content string
+			}{
+				Header:  "Ech0_URL",
+				Content: conn.ConnectURL,
+			})
 			if err != nil {
 				// 处理请求错误
 				return

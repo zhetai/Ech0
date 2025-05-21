@@ -25,11 +25,19 @@ func DeleteFile(filePath string) error {
 }
 
 // 请求发送函数
-func SendRequest(url, method string) ([]byte, error) {
+func SendRequest(url, method string, cutsomHeader struct {
+	Header  string
+	Content string
+}) ([]byte, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil, err
+	}
+
+	// 添加自定义请求头
+	if cutsomHeader.Header != "" && cutsomHeader.Content != "" {
+		req.Header.Set(cutsomHeader.Header, cutsomHeader.Content)
 	}
 
 	resp, err := client.Do(req)
