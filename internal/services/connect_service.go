@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/lin-snow/ech0/internal/dto"
 	"github.com/lin-snow/ech0/internal/models"
@@ -120,19 +121,46 @@ func GetConnectsInfo() ([]models.Connect, error) {
 	}
 
 	var connectList []models.Connect
+	// 预分配切片容量，减少动态扩容
+	connectList = make([]models.Connect, 0, len(connects))
+
+	var wg sync.WaitGroup
+	connectChan := make(chan models.Connect, len(connects))
 
 	// 遍历连接地址，获取每个连接的状态
 	for _, conn := range connects {
-		resp, _ := pkg.SendRequest(pkg.TrimURL(conn.ConnectURL)+"/api/connect", "GET")
+		wg.Add(1)
+		go func(conn models.Connected) {
+			defer wg.Done()
 
-		// 解析出响应体数据
-		var connectInfo dto.Result[models.Connect]
-		if err := json.Unmarshal(resp, &connectInfo); err != nil {
-			// 解析失败，抛弃该实例的数据
-			continue
-		}
-		// 将连接信息转换为 Connect 结构体
-		connectList = append(connectList, connectInfo.Data)
+			url := pkg.TrimURL(conn.ConnectURL) + "/api/connect"
+			resp, err := pkg.SendRequest(url, "GET")
+			if err != nil {
+				// 处理请求错误
+				return
+			}
+
+			var connectInfo dto.Result[models.Connect]
+			if err := json.Unmarshal(resp, &connectInfo); err != nil {
+				// 解析失败，抛弃该实例的数据
+				return
+			}
+
+			if connectInfo.Code != 1 {
+				return
+			}
+
+			connectChan <- connectInfo.Data
+		}(conn)
+	}
+
+	go func() {
+		wg.Wait()
+		close(connectChan)
+	}()
+
+	for connect := range connectChan {
+		connectList = append(connectList, connect)
 	}
 
 	return connectList, nil
