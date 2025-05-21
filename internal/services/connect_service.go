@@ -159,8 +159,8 @@ func GetConnectsInfo() ([]models.Connect, error) {
 			var connectInfo dto.Result[models.Connect]
 			if err := json.Unmarshal(resp, &connectInfo); err != nil {
 				// 解析失败，抛弃该实例的数据
-				// 检查是否为特殊connect,即为[]models.Connect
-				var specialConnects []models.Connect
+				// 检查是否为特殊connect
+				var specialConnects []dto.Result[models.Connect]
 				if err := json.Unmarshal(resp, &specialConnects); err != nil {
 					// 解析失败，抛弃该实例的数据
 					return
@@ -169,27 +169,27 @@ func GetConnectsInfo() ([]models.Connect, error) {
 				// 处理特殊connect数组 - 优先级较低
 				for _, specialConnect := range specialConnects {
 					// 确保ServerURL不为空
-					if specialConnect.ServerURL == "" {
+					if specialConnect.Data.ServerURL == "" {
 						continue
 					}
 
 					// 检查重复并应用优先级规则
 					seenMutex.Lock()
-					entry, exists := seenURLs[specialConnect.ServerURL]
+					entry, exists := seenURLs[specialConnect.Data.ServerURL]
 					if exists && entry.priority <= 2 {
 						// 已存在且优先级相同或更高，跳过
 						seenMutex.Unlock()
 						continue
 					}
 					// 添加或更新，特殊connect优先级为2
-					seenURLs[specialConnect.ServerURL] = ConnectEntry{
-						connect:  specialConnect,
+					seenURLs[specialConnect.Data.ServerURL] = ConnectEntry{
+						connect:  specialConnect.Data,
 						priority: 2,
 					}
 					seenMutex.Unlock()
 
 					// 发送到通道 - 后续会根据map筛选
-					connectChan <- specialConnect
+					connectChan <- specialConnect.Data
 				}
 				return
 			}
