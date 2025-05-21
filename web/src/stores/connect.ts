@@ -25,12 +25,11 @@ export const useConnectStore = defineStore('connectStore', () => {
   }
 
   async function getConnectInfo() {
-    await fetchGetAllConnectInfo()
-      .then((res) => {
-        if (res.code === 1) {
-          connectsInfo.value = res.data
-        }
-      })
+    await fetchGetAllConnectInfo().then((res) => {
+      if (res.code === 1) {
+        connectsInfo.value = res.data
+      }
+    })
   }
 
   return {
