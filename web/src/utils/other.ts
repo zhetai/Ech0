@@ -2,7 +2,7 @@
 export const parseMusicURL = (url: string) => {
   url = url.trim()
 
-  const neteaseMatch = url.match(/music\.163\.com\/#\/(song|playlist|album)\?id=(\d+)/)
+  const neteaseMatch = url.match(/music\.163\.com\/(#\/)?(song|playlist|album)(\?id=|\/)(\d+)/)
   if (neteaseMatch) {
     return {
       server: 'netease',

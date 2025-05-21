@@ -102,7 +102,7 @@
               <span v-if="parseMusicURL(extensionToAdd.extension)" class="text-green-400"
                 >成功</span
               >
-              <span v-else class="text-red-100">失败</span>
+              <span v-else class="text-red-300">失败</span>
             </div>
           </div>
           <div v-if="currentExtensionType === ExtensionType.VIDEO">
