@@ -1,11 +1,11 @@
 <template>
   <meting-js
-    v-if="musicInfo"
-    :api="`${SystemSetting.meting_api ? SystemSetting.meting_api : 'https://meting.soopy.cn/api'}?server=:server&type=:type&id=:id&auth=:auth&r=:r`"
+    v-if="musicInfo && metingAPI.length > 0"
+    :api="metingAPI"
     :server="musicInfo.server"
     :type="musicInfo.type"
     :id="musicInfo.id"
-    :auto="`{{ props.echo.extension }}`"
+    :auto="props.echo.extension"
   >
   </meting-js>
   <div
@@ -17,27 +17,37 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
+import { computed, ref, onMounted } from 'vue'
 import Music from '@/components/icons/music.vue'
-import { useSettingStore } from '@/stores/settting'
 import { parseMusicURL } from '@/utils/other'
+import { fetchGetSettings } from '@/service/api'
 type Echo = App.Api.Ech0.Echo
 const enum ExtensionType {
   MUSIC = 'MUSIC',
   VIDEO = 'VIDEO',
   GITHUBPROJ = 'GITHUBPROJ',
 }
-const settingStore = useSettingStore()
-const { SystemSetting } = storeToRefs(settingStore)
 
 const props = defineProps<{
   echo: Echo
 }>()
 
+const metingAPI = ref<string>('')
 const musicInfo = computed(() => {
   if (props.echo.extension_type !== ExtensionType.MUSIC || !props.echo.extension) return null
   return parseMusicURL(props.echo.extension)
+})
+
+onMounted(async () => {
+  await fetchGetSettings().then((res) => {
+    if (res.code === 1 && res.data.meting_api.length > 0) {
+      metingAPI.value = res.data.meting_api + '?server=:server&type=:type&id=:id&auth=:auth&r=:r'
+      console.log(metingAPI)
+    } else {
+      metingAPI.value =
+        'https://meting.soopy.cn/api?server=:server&type=:type&id=:id&auth=:auth&r=:r'
+    }
+  })
 })
 </script>
 
