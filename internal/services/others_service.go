@@ -161,7 +161,7 @@ func DeleteImage(image dto.ImageDto) error {
 		return errors.New(models.ImageNotFoundMessage)
 	}
 
-	if image.SOURCE == "" || image.SOURCE == models.ImageSourceLocal {
+	if image.SOURCE == models.ImageSourceLocal {
 		// 获取图片名字（去除前面的/images/)
 		imageName := image.URL[len("/images/"):]
 
@@ -176,6 +176,16 @@ func DeleteImage(image dto.ImageDto) error {
 		// TODO: S3 删除图片
 	} else if image.SOURCE == models.ImageSourceR2 {
 		// TODO: R2 删除图片
+	} else {
+		// 未知图片来源按本地图片处理
+		// 获取图片名字（去除前面的/images/)
+		imageName := image.URL[len("/images/"):]
+
+		// 构造图片路径
+		imagePath := fmt.Sprintf("data/images/%s", imageName)
+
+		// 删除图片
+		return pkg.DeleteFile(imagePath)
 	}
 
 	return nil

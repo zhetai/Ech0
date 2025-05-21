@@ -6,7 +6,8 @@ export const getImageUrl = (image: { imageUrl: string; imageSource: string }) =>
   } else if (image.imageSource === 'url') {
     return String(image.imageUrl)
   } else {
-    return ''
+    // 未知的图片来源，按照本地图片处理
+    return getApiUrl() + String(image.imageUrl)
   }
 }
 
