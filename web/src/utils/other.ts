@@ -1,3 +1,15 @@
+import { getApiUrl } from '@/service/request/shared'
+// 获取图片链接
+export const getImageUrl = (image: { imageUrl: string; imageSource: string }) => {
+  if (image.imageSource === 'local') {
+    return getApiUrl() + String(image.imageUrl)
+  } else if (image.imageSource === 'url') {
+    return String(image.imageUrl)
+  } else {
+    return ''
+  }
+}
+
 // 解析音乐链接（网易云、QQ音乐）
 export const parseMusicURL = (url: string) => {
   url = url.trim()

@@ -60,6 +60,7 @@ declare namespace App {
         content: string
         username: string
         image_url: string
+        image_source: string
         private: boolean
         user_id: number
         extension: string
@@ -70,6 +71,7 @@ declare namespace App {
       type EchoToAdd = {
         content: string
         image_url?: string | null
+        image_source?: string | null
         extension?: string | null
         extension_type?: string | null
         private: boolean
@@ -95,6 +97,7 @@ declare namespace App {
 
       type ImageToDelete = {
         url: string
+        source: string
       }
 
       type GithubCardData = {

@@ -125,6 +125,10 @@ const (
 	Extension_MUSIC      = "MUSIC"
 	Extension_VIDEO      = "VIDEO"
 	Extension_GITHUBPROJ = "GITHUBPROJ"
+	ImageSourceLocal     = "local" // 本地图片
+	ImageSourceURL       = "url"   // 直链图片
+	ImageSourceS3        = "s3"    // S3 图片
+	ImageSourceR2        = "r2"    // R2 图片
 )
 
 // User 相关

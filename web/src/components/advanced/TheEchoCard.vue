@@ -34,9 +34,16 @@
         v-if="props.echo.image_url"
         class="rounded-lg overflow-hidden shadow-lg w-5/6 mx-auto mb-2"
       >
-        <a :href="`${API_URL}${props.echo.image_url}`" data-fancybox>
+        <a
+          :href="
+            getImageUrl({ imageUrl: props.echo.image_url, imageSource: props.echo.image_source })
+          "
+          data-fancybox
+        >
           <img
-            :src="`${API_URL}${props.echo.image_url}`"
+            :src="
+              getImageUrl({ imageUrl: props.echo.image_url, imageSource: props.echo.image_source })
+            "
             alt="Image"
             class="max-w-full object-cover"
             loading="lazy"
@@ -80,7 +87,7 @@
 <script setup lang="ts">
 import { Fancybox } from '@fancyapps/ui'
 import { MdPreview } from 'md-editor-v3'
-import { getApiUrl } from '@/service/request/shared'
+import { getImageUrl } from '@/utils/other'
 import { onMounted } from 'vue'
 import { fetchDeleteEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
@@ -105,7 +112,6 @@ const enum ExtensionType {
 const props = defineProps<{
   echo: Echo
 }>()
-const API_URL = getApiUrl()
 const userStore = useUserStore()
 const previewOptions = {
   proviewId: 'preview-only',

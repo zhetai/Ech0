@@ -161,14 +161,24 @@ func DeleteImage(image dto.ImageDto) error {
 		return errors.New(models.ImageNotFoundMessage)
 	}
 
-	// 获取图片名字（去除前面的/images/)
-	imageName := image.URL[len("/images/"):]
+	if image.SOURCE == "" || image.SOURCE == models.ImageSourceLocal {
+		// 获取图片名字（去除前面的/images/)
+		imageName := image.URL[len("/images/"):]
 
-	// 构造图片路径
-	imagePath := fmt.Sprintf("data/images/%s", imageName)
+		// 构造图片路径
+		imagePath := fmt.Sprintf("data/images/%s", imageName)
 
-	// 删除图片
-	return pkg.DeleteFile(imagePath)
+		// 删除图片
+		return pkg.DeleteFile(imagePath)
+	} else if image.SOURCE == models.ImageSourceURL {
+		// 无需处理
+	} else if image.SOURCE == models.ImageSourceS3 {
+		// TODO: S3 删除图片
+	} else if image.SOURCE == models.ImageSourceR2 {
+		// TODO: R2 删除图片
+	}
+
+	return nil
 }
 
 func GetPlayMusic() string {

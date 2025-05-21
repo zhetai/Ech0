@@ -35,6 +35,56 @@
           class="rounded-lg"
           v-if="currentMode === Mode.ECH0"
         />
+
+        <!-- ImageMode -->
+        <div v-if="currentMode === Mode.Image">
+          <h2 class="text-gray-500 font-bold">插入图片（支持本地上传、直链）</h2>
+          <p class="text-gray-400 text-sm mb-2">注意：仅允许添加一张</p>
+          <div class="flex flex-start gap-2">
+            <span class="text-gray-500">选择添加方式：</span>
+            <!-- 直链 -->
+            <BaseButton
+              :icon="Url"
+              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+              @click="echoToAdd.image_source = ImageSource.URL"
+              title="插入图片链接"
+            />
+            <!-- 上传本地 -->
+            <BaseButton
+              :icon="Upload"
+              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+              @click="echoToAdd.image_source = ImageSource.LOCAL"
+              title="上传本地图片"
+            />
+          </div>
+          <div class="my-1">
+            <!-- 图片上传本地 -->
+            <input
+              id="file-input"
+              class="hidden"
+              type="file"
+              accept="image/*"
+              ref="fileInput"
+              @change="handleUploadImage"
+            />
+            <BaseButton
+              v-if="echoToAdd.image_source === ImageSource.LOCAL"
+              @click="handTriggerUpload"
+              class="rounded-md"
+              title="上传本地图片"
+            >
+              <span class="text-gray-400">点击上传</span>
+            </BaseButton>
+            <!-- 图片直链 -->
+            <BaseInput
+              v-if="echoToAdd.image_source === ImageSource.URL"
+              v-model="echoToAdd.image_url"
+              class="rounded-lg h-auto w-full"
+              placeholder="请输入图片链接..."
+            />
+          </div>
+        </div>
+
         <!-- todoMode -->
         <BaseTextArea
           v-if="currentMode === Mode.TODO"
@@ -146,19 +196,11 @@
           </div>
           <!-- Photo Upload -->
           <div v-if="currentMode === Mode.ECH0">
-            <input
-              id="file-input"
-              class="hidden"
-              type="file"
-              accept="image/*"
-              ref="fileInput"
-              @change="handleUploadImage"
-            />
             <BaseButton
               :icon="ImageUpload"
-              @click="handTriggerUpload"
+              @click="handleAddImageMode"
               class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="上传图片"
+              title="添加图片"
             />
           </div>
           <!-- Privacy Set -->
@@ -195,7 +237,10 @@
       </div>
 
       <!-- Preview Image -->
-      <div v-if="echoToAdd.image_url" class="relative rounded-lg shadow-lg w-5/6 mx-auto my-7">
+      <div
+        v-if="echoToAdd.image_url && (currentMode === Mode.ECH0 || currentMode === Mode.Image)"
+        class="relative rounded-lg shadow-lg w-5/6 mx-auto my-7"
+      >
         <button
           @click="handleRemoveImage"
           class="absolute -top-3 -right-4 bg-red-100 hover:bg-red-300 text-gray-600 rounded-lg w-7 h-7 flex items-center justify-center shadow"
@@ -204,9 +249,22 @@
           <Close class="w-4 h-4" />
         </button>
         <div class="rounded-lg overflow-hidden">
-          <a :href="`${apiUrl}${echoToAdd.image_url}`" data-fancybox>
+          <a
+            :href="
+              getImageUrl({
+                imageUrl: echoToAdd.image_url,
+                imageSource: echoToAdd.image_source ?? '',
+              })
+            "
+            data-fancybox
+          >
             <img
-              :src="`${apiUrl}${echoToAdd.image_url}`"
+              :src="
+                getImageUrl({
+                  imageUrl: echoToAdd.image_url,
+                  imageSource: echoToAdd.image_source ?? '',
+                })
+              "
               alt="Image"
               class="max-w-full object-cover"
               loading="lazy"
@@ -221,6 +279,8 @@
 <script setup lang="ts">
 import Github from '@/components/icons/github.vue'
 import Advance from '@/components/icons/advance.vue'
+import Upload from '@/components/icons/upload.vue'
+import Url from '@/components/icons/url.vue'
 import Close from '@/components/icons/close.vue'
 import Audio from '@/components/icons/audio.vue'
 import ImageUpload from '@/components/icons/image.vue'
@@ -243,7 +303,6 @@ import {
   fetchUploadMusic,
   fetchDeleteMusic,
 } from '@/service/api'
-import { getApiUrl } from '@/service/request/shared'
 import { useEchoStore } from '@/stores/echo'
 import { useSettingStore } from '@/stores/settting'
 import { useTodoStore } from '@/stores/todo'
@@ -252,10 +311,11 @@ import { storeToRefs } from 'pinia'
 import BaseTextArea from '@/components/common/BaseTextArea.vue'
 import Delete from '@/components/icons/delete.vue'
 import { parseMusicURL } from '@/utils/other'
+import { getImageUrl } from '@/utils/other'
+import { getApiUrl } from '@/service/request/shared'
 
 const emit = defineEmits(['refreshAudio'])
 
-const apiUrl = getApiUrl()
 const echoStore = useEchoStore()
 const todoStore = useTodoStore()
 const settingStore = useSettingStore()
@@ -270,23 +330,39 @@ const enum Mode {
   TODO = 2,
   EXTEN = 3,
   PlayMusic = 4,
+  Image = 5,
 }
 const enum ExtensionType {
   MUSIC = 'MUSIC',
   VIDEO = 'VIDEO',
   GITHUBPROJ = 'GITHUBPROJ',
 }
+const enum ImageSource {
+  LOCAL = 'local',
+  URL = 'url',
+  S3 = 's3',
+  R2 = 'r2',
+}
 const currentMode = ref<Mode>(Mode.ECH0)
 const currentExtensionType = ref<ExtensionType>()
 
+const apiUrl = getApiUrl()
 const logo = ref<string>('/favicon.svg')
 
 const handleChangeMode = () => {
   if (currentMode.value === Mode.ECH0) {
     currentMode.value = Mode.Panel
-  } else if (currentMode.value === Mode.TODO || currentMode.value === Mode.PlayMusic) {
+  } else if (
+    currentMode.value === Mode.TODO ||
+    currentMode.value === Mode.PlayMusic ||
+    currentMode.value === Mode.Image
+  ) {
     currentMode.value = Mode.ECH0
     setTodoMode(false)
+
+    if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
+      echoToAdd.value.image_source = null
+    }
   } else {
     currentMode.value = Mode.ECH0
   }
@@ -312,6 +388,7 @@ const extensionToAdd = ref({
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
   image_url: null,
+  image_source: null,
   private: false,
   extension: null,
   extension_type: null,
@@ -321,6 +398,9 @@ const todoToAdd = ref<App.Api.Todo.TodoToAdd>({
   content: '',
 })
 
+const handleAddImageMode = () => {
+  currentMode.value = Mode.Image
+}
 const fileInput = ref<HTMLInputElement | null>(null)
 const handTriggerUpload = () => {
   if (fileInput.value) {
@@ -335,6 +415,10 @@ const handleUploadImage = async (event: Event) => {
       if (res.code === 1) {
         echoToAdd.value.image_url = res.data
         theToast.success('图片上传成功！')
+
+        if (currentMode.value === Mode.Image) {
+          currentMode.value = Mode.ECH0
+        }
       }
     })
   }
@@ -365,17 +449,23 @@ const handleDeleteMusic = () => {
 
 const handleRemoveImage = () => {
   if (confirm('确定要移除图片吗？')) {
-    fetchDeleteImage({
-      url: echoToAdd.value.image_url ?? '',
-    })
-      .then((res) => {
-        if (res.code === 1) {
-          // theToast.success('图片已移除')
-        }
+    if (echoToAdd.value.image_source === ImageSource.LOCAL) {
+      fetchDeleteImage({
+        url: echoToAdd.value.image_url ?? '',
+        source: echoToAdd.value.image_source ?? '',
       })
-      .finally(() => {
-        echoToAdd.value.image_url = null
-      })
+        .then((res) => {
+          if (res.code === 1) {
+            // theToast.success('图片已移除')
+          }
+        })
+        .finally(() => {
+          echoToAdd.value.image_url = null
+        })
+    } else {
+      echoToAdd.value.image_url = null
+      echoToAdd.value.image_source = null
+    }
   }
 }
 
@@ -386,6 +476,7 @@ const handlePrivate = () => {
 const handleClear = () => {
   echoToAdd.value.content = ''
   echoToAdd.value.image_url = null
+  echoToAdd.value.image_source = null
   echoToAdd.value.private = false
   echoToAdd.value.extension = null
   echoToAdd.value.extension_type = null
@@ -413,11 +504,16 @@ const handleAddEcho = () => {
     return
   }
 
+  if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
+    echoToAdd.value.image_source = null
+  }
+
   fetchAddEcho(echoToAdd.value).then((res) => {
     if (res.code === 1) {
       theToast.success('发布成功！')
       handleClear()
       echoStore.refreshEchos()
+      currentMode.value = Mode.ECH0
     }
   })
 }

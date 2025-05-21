@@ -66,6 +66,10 @@ func CreateMessage(message *models.Message) error {
 		message.ExtensionType = ""
 	}
 
+	if message.ImageURL == "" {
+		message.ImageSource = ""
+	}
+
 	message.Username = user.Username // 获取用户名
 	return repository.CreateMessage(message)
 }

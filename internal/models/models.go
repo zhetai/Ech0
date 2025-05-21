@@ -11,6 +11,7 @@ type Message struct {
 	Content       string    `gorm:"type:text;not null" json:"content"`
 	Username      string    `gorm:"type:varchar(100)" json:"username,omitempty"`
 	ImageURL      string    `gorm:"type:text" json:"image_url,omitempty"`
+	ImageSource   string    `gorm:"type:varchar(20)" json:"image_source,omitempty"`
 	Private       bool      `gorm:"default:false" json:"private"`
 	UserID        uint      `gorm:"not null;index" json:"user_id"`
 	Extension     string    `gorm:"type:text" json:"extension,omitempty"`

@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue: string | number
+  modelValue: string | number | null | undefined
   id?: string
   label?: string
   placeholder?: string
