@@ -31,24 +31,39 @@
     <div class="border-l-2 border-gray-300 p-6 ml-1">
       <!-- 图片 -->
       <div
-        v-if="props.echo.image_url"
-        class="rounded-lg overflow-hidden shadow-lg w-5/6 mx-auto mb-2"
+        v-if="props.echo.images && props.echo.images.length > 0"
+        class="w-5/6 mx-auto"
       >
-        <a
+        <div class="shadow-lg rounded-lg overflow-hidden mb-2">
+          <a
           :href="
-            getImageUrl({ imageUrl: props.echo.image_url, imageSource: props.echo.image_source })
+            getImageUrl(props.echo.images[imageIndex])
           "
           data-fancybox
         >
           <img
             :src="
-              getImageUrl({ imageUrl: props.echo.image_url, imageSource: props.echo.image_source })
+              getImageUrl(props.echo.images[imageIndex])
             "
             alt="Image"
             class="max-w-full object-cover"
             loading="lazy"
           />
         </a>
+        </div>
+        <!-- 图片切换 -->
+        <div v-if="props.echo.images.length > 1" class="flex items-center justify-center">
+            <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
+              <Prev class="w-6 h-6" />
+            </button>
+            <span class="text-gray-500 text-sm mx-2">
+              {{ imageIndex + 1 }} / {{ props.echo.images.length }}
+            </span>
+            <button @click="imageIndex = Math.min(imageIndex + 1, props.echo.images.length - 1)">
+              <Next class="w-6 h-6" />
+            </button>
+        </div>
+
       </div>
       <!-- 内容 -->
       <div>
@@ -88,7 +103,7 @@
 import { Fancybox } from '@fancyapps/ui'
 import { MdPreview } from 'md-editor-v3'
 import { getImageUrl } from '@/utils/other'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { fetchDeleteEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
@@ -98,6 +113,8 @@ import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
 import Roll from '../icons/roll.vue'
 import Lock from '../icons/lock.vue'
+import Prev from '../icons/prev.vue'
+import Next from '../icons/next.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 
 const emit = defineEmits(['refresh'])
@@ -112,6 +129,7 @@ const enum ExtensionType {
 const props = defineProps<{
   echo: Echo
 }>()
+const imageIndex = ref<number>(0)
 const userStore = useUserStore()
 const previewOptions = {
   proviewId: 'preview-only',

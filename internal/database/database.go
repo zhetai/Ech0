@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -20,7 +19,7 @@ func InitDB() error {
 	dbPath := config.Config.Database.Path
 
 	// 确保数据库目录存在
-	dir := fmt.Sprintf("%s", dbPath[:len(dbPath)-len("/ech0.db")]) // 提取目录部分
+	dir := dbPath[:len(dbPath)-len("/ech0.db")] // 提取目录部分
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		log.Fatalf("Failed to create database directory: %v", err)
 		return err
@@ -41,6 +40,10 @@ func InitDB() error {
 	}
 
 	if err = models.MigrateDB(DB); err != nil {
+		log.Fatal(models.DatabaseMigrationError+":", err)
+	}
+
+	if err = models.MigrateMessageImages(DB); err != nil {
 		log.Fatal(models.DatabaseMigrationError+":", err)
 	}
 

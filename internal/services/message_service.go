@@ -71,6 +71,12 @@ func CreateMessage(message *models.Message) error {
 	}
 
 	message.Username = user.Username // 获取用户名
+	for i := range message.Images {
+		if message.Images[i].ImageURL == "" {
+			message.Images[i].ImageSource = ""
+		}
+	}
+
 	return repository.CreateMessage(message)
 }
 
@@ -84,14 +90,29 @@ func DeleteMessage(id uint) error {
 	if message == nil {
 		return errors.New(models.MessageNotFoundMessage)
 	}
+
+	// 旧的图片删除
 	if message.ImageURL != "" {
 		// 构造图片 DTO
 		image := dto.ImageDto{
-			URL: message.ImageURL,
+			URL:    message.ImageURL,
+			SOURCE: message.ImageSource,
 		}
 		// 调用图片服务删除图片
 		if err := DeleteImage(image); err != nil {
 			return err
+		}
+	}
+
+	// 删除留言中的图片
+	if len(message.Images) > 0 {
+		for _, img := range message.Images {
+			if err := DeleteImage(dto.ImageDto{
+				URL:    img.ImageURL,
+				SOURCE: img.ImageSource,
+			}); err != nil {
+				return err
+			}
 		}
 	}
 

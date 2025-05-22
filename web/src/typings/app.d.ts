@@ -61,6 +61,7 @@ declare namespace App {
         username: string
         image_url: string
         image_source: string
+        images: Image[]
         private: boolean
         user_id: number
         extension: string
@@ -68,10 +69,23 @@ declare namespace App {
         created_at: string
       }
 
+      type Image = {
+        id: number
+        message_id: number
+        image_url: string
+        image_source: string
+      }
+
+      type ImageToAdd = {
+        image_url: string
+        image_source: string
+      }
+
       type EchoToAdd = {
         content: string
         image_url?: string | null
         image_source?: string | null
+        images?: ImageToAdd[] | null
         extension?: string | null
         extension_type?: string | null
         private: boolean

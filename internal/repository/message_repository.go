@@ -15,11 +15,11 @@ func GetAllMessages(showPrivate bool) ([]models.Message, error) {
 
 	// 是否将私密内容也查询出来
 	if showPrivate {
-		if err := database.DB.Order("created_at DESC").Find(&messages).Error; err != nil {
+		if err := database.DB.Preload("Images").Order("created_at DESC").Find(&messages).Error; err != nil {
 			return nil, err
 		}
 	} else {
-		if err := database.DB.Where("private = ?", false).Find(&messages).Error; err != nil {
+		if err := database.DB.Preload("Images").Where("private = ?", false).Find(&messages).Error; err != nil {
 			return nil, err
 		}
 	}
@@ -53,7 +53,7 @@ func GetMessagesByPage(page, pageSize int, search string, showPrivate bool) ([]m
 	query.Count(&total)
 
 	// 分页查询
-	query.Limit(pageSize).Offset(offset).Order("created_at DESC").Find(&messages)
+	query.Preload("Images").Limit(pageSize).Offset(offset).Order("created_at DESC").Find(&messages)
 
 	// 返回结果
 	return messages, total
@@ -62,7 +62,7 @@ func GetMessagesByPage(page, pageSize int, search string, showPrivate bool) ([]m
 // GetMessageByID 根据 ID 获取留言
 func GetMessageByID(id uint, showPrivate bool) (*models.Message, error) {
 	var message models.Message
-	result := database.DB.First(&message, id)
+	result := database.DB.Preload("Images").First(&message, id)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			return nil, nil // 如果未找到记录，则返回 nil
@@ -86,7 +86,7 @@ func CreateMessage(message *models.Message) error {
 	message.Content = strings.TrimSpace(message.Content) // 去除内容前后的空格
 	// message.Username = strings.TrimSpace(message.Username) // 去除用户名前后的空格
 
-	if message.Content == "" && message.ImageURL == "" && (message.Extension == "" || message.ExtensionType == "") {
+	if message.Content == "" && len(message.Images) == 0 && (message.Extension == "" || message.ExtensionType == "") {
 		return errors.New(models.CannotBeEmptyMessage) // 如果内容和图片链接都为空，则返回错误
 	}
 

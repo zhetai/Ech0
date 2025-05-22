@@ -48,9 +48,14 @@ func GenerateRSS(c *gin.Context) (string, error) {
 		title := msg.Username + " - " + msg.CreatedAt.Format("2006-01-02")
 
 		// 添加图片链接到正文前(scheme://host/api/ImageURL)
-		if msg.ImageURL != "" {
-			image := fmt.Sprintf("%s://%s/api%s", schema, host, msg.ImageURL)
-			renderedContent = append([]byte(fmt.Sprintf("<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />", image)), renderedContent...)
+		if len(msg.Images) > 0 {
+			for _, image := range msg.Images {
+				// 根据图片来源生成链接
+				if image.ImageSource == models.ImageSourceLocal {
+					imageURL := fmt.Sprintf("%s://%s/api%s", schema, host, image.ImageURL)
+					renderedContent = append([]byte(fmt.Sprintf("<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />", imageURL)), renderedContent...)
+				}
+			}
 		}
 
 		item := &feeds.Item{

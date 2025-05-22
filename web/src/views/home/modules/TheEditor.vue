@@ -40,22 +40,33 @@
         <div v-if="currentMode === Mode.Image">
           <h2 class="text-gray-500 font-bold">插入图片（支持本地上传、直链）</h2>
           <p class="text-gray-400 text-sm mb-2">注意：仅允许添加一张</p>
-          <div class="flex flex-start gap-2">
-            <span class="text-gray-500">选择添加方式：</span>
-            <!-- 直链 -->
-            <BaseButton
-              :icon="Url"
-              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              @click="echoToAdd.image_source = ImageSource.URL"
-              title="插入图片链接"
-            />
-            <!-- 上传本地 -->
-            <BaseButton
-              :icon="Upload"
-              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              @click="echoToAdd.image_source = ImageSource.LOCAL"
-              title="上传本地图片"
-            />
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-gray-500">选择添加方式：</span>
+              <!-- 直链 -->
+              <BaseButton
+                :icon="Url"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.URL"
+                title="插入图片链接"
+              />
+              <!-- 上传本地 -->
+              <BaseButton
+                :icon="Upload"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.LOCAL"
+                title="上传本地图片"
+              />
+            </div>
+            <div>
+              <BaseButton
+                v-if="imageToAdd.image_url != ''"
+                :icon="Addmore"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="handleAddMoreImage"
+                title="添加更多图片"
+              />
+            </div>
           </div>
           <div class="my-1">
             <!-- 图片上传本地 -->
@@ -68,8 +79,8 @@
               @change="handleUploadImage"
             />
             <BaseButton
-              v-if="echoToAdd.image_source === ImageSource.LOCAL"
-              @click="handTriggerUpload"
+              v-if="imageToAdd.image_source === ImageSource.LOCAL"
+              @click="handleTriggerUpload"
               class="rounded-md"
               title="上传本地图片"
             >
@@ -77,8 +88,8 @@
             </BaseButton>
             <!-- 图片直链 -->
             <BaseInput
-              v-if="echoToAdd.image_source === ImageSource.URL"
-              v-model="echoToAdd.image_url"
+              v-if="imageToAdd.image_source === ImageSource.URL"
+              v-model="imageToAdd.image_url"
               class="rounded-lg h-auto w-full"
               placeholder="请输入图片链接..."
             />
@@ -108,7 +119,7 @@
             />
             <BaseButton
               :icon="Audio"
-              @click="handTriggerUpload"
+              @click="handleTriggerUpload"
               class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
               title="上传音乐"
             />
@@ -238,7 +249,7 @@
 
       <!-- Preview Image -->
       <div
-        v-if="echoToAdd.image_url && (currentMode === Mode.ECH0 || currentMode === Mode.Image)"
+        v-if="imagesToAdd && imagesToAdd.length > 0 && (currentMode === Mode.ECH0 || currentMode === Mode.Image)"
         class="relative rounded-lg shadow-lg w-5/6 mx-auto my-7"
       >
         <button
@@ -251,19 +262,13 @@
         <div class="rounded-lg overflow-hidden">
           <a
             :href="
-              getImageUrl({
-                imageUrl: echoToAdd.image_url,
-                imageSource: echoToAdd.image_source ?? '',
-              })
+              getImageToAddUrl(imagesToAdd[imageIndex])
             "
             data-fancybox
           >
             <img
               :src="
-                getImageUrl({
-                  imageUrl: echoToAdd.image_url,
-                  imageSource: echoToAdd.image_source ?? '',
-                })
+                getImageToAddUrl(imagesToAdd[imageIndex])
               "
               alt="Image"
               class="max-w-full object-cover"
@@ -272,11 +277,25 @@
           </a>
         </div>
       </div>
+      <!-- 图片切换 -->
+      <div v-if="imagesToAdd.length > 1" class="flex items-center justify-center">
+          <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
+            <Prev class="w-7 h-7" />
+          </button>
+          <span class="text-gray-500 text-sm mx-2">
+            {{ imageIndex + 1 }} / {{ imagesToAdd.length }}
+          </span>
+          <button @click="imageIndex = Math.min(imageIndex + 1, imagesToAdd.length - 1)">
+            <Next class="w-7 h-7" />
+          </button>
+        </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Next from '@/components/icons/next.vue'
+import Prev from '@/components/icons/prev.vue'
 import Github from '@/components/icons/github.vue'
 import Advance from '@/components/icons/advance.vue'
 import Upload from '@/components/icons/upload.vue'
@@ -311,8 +330,9 @@ import { storeToRefs } from 'pinia'
 import BaseTextArea from '@/components/common/BaseTextArea.vue'
 import Delete from '@/components/icons/delete.vue'
 import { parseMusicURL } from '@/utils/other'
-import { getImageUrl } from '@/utils/other'
+import { getImageToAddUrl } from '@/utils/other'
 import { getApiUrl } from '@/service/request/shared'
+import Addmore from '@/components/icons/addmore.vue'
 
 const emit = defineEmits(['refreshAudio'])
 
@@ -385,10 +405,18 @@ const extensionToAdd = ref({
   extension: '',
   extension_type: '',
 })
+const imageIndex = ref<number>(0)
+const imageSourceMemory = ref<string>()
+const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
+  image_url: '',
+  image_source: ''
+})
+const imagesToAdd = ref<App.Api.Ech0.ImageToAdd[]>([])
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
   image_url: null,
   image_source: null,
+  images: [],
   private: false,
   extension: null,
   extension_type: null,
@@ -398,11 +426,22 @@ const todoToAdd = ref<App.Api.Todo.TodoToAdd>({
   content: '',
 })
 
+const handleAddMoreImage = () => {
+  imagesToAdd.value.push({
+    image_url: String(imageToAdd.value.image_url),
+    image_source: String(imageToAdd.value.image_source)
+  })
+
+  imageToAdd.value.image_url = '';
+  imageToAdd.value.image_source = '';
+}
+
 const handleAddImageMode = () => {
   currentMode.value = Mode.Image
 }
 const fileInput = ref<HTMLInputElement | null>(null)
-const handTriggerUpload = () => {
+const handleTriggerUpload = () => {
+  imageSourceMemory.value = imageToAdd.value.image_source
   if (fileInput.value) {
     fileInput.value.click()
   }
@@ -413,12 +452,17 @@ const handleUploadImage = async (event: Event) => {
     const file = target.files[0]
     fetchUploadImage(file).then((res) => {
       if (res.code === 1) {
-        echoToAdd.value.image_url = res.data
+        // 改成新版的图片数组
+        // echoToAdd.value.image_url = res.data
+        imageToAdd.value.image_url = String(res.data)
+        imageToAdd.value.image_source = ImageSource.LOCAL
         theToast.success('图片上传成功！')
 
-        if (currentMode.value === Mode.Image) {
-          currentMode.value = Mode.ECH0
-        }
+        handleAddMoreImage()
+
+        // if (currentMode.value === Mode.Image) {
+        //   currentMode.value = Mode.ECH0
+        // }
       }
     })
   }
@@ -449,23 +493,27 @@ const handleDeleteMusic = () => {
 
 const handleRemoveImage = () => {
   if (confirm('确定要移除图片吗？')) {
-    if (echoToAdd.value.image_source === ImageSource.LOCAL) {
+    let imageToDel : App.Api.Ech0.ImageToDelete = {
+      url: String(imagesToAdd.value[imageIndex.value].image_url),
+      source: String(imagesToAdd.value[imageIndex.value].image_source),
+    }
+
+    if (imageToDel.source === ImageSource.LOCAL) {
       fetchDeleteImage({
-        url: echoToAdd.value.image_url ?? '',
-        source: echoToAdd.value.image_source ?? '',
+        url: imageToDel.url,
+        source: imageToDel.source,
       })
         .then((res) => {
           if (res.code === 1) {
-            // theToast.success('图片已移除')
+            // 从数组中删除图片
+            imagesToAdd.value.splice(imageIndex.value, 1)
           }
         })
-        .finally(() => {
-          echoToAdd.value.image_url = null
-        })
     } else {
-      echoToAdd.value.image_url = null
-      echoToAdd.value.image_source = null
+      imagesToAdd.value.splice(imageIndex.value, 1)
     }
+
+    imageIndex.value = 0
   }
 }
 
@@ -477,15 +525,21 @@ const handleClear = () => {
   echoToAdd.value.content = ''
   echoToAdd.value.image_url = null
   echoToAdd.value.image_source = null
+  echoToAdd.value.images = []
   echoToAdd.value.private = false
   echoToAdd.value.extension = null
   echoToAdd.value.extension_type = null
   extensionToAdd.value.extension = ''
   extensionToAdd.value.extension_type = ''
   bilibiliURL.value = ''
+  imagesToAdd.value = []
+  imageToAdd.value.image_url = ''
+  imageToAdd.value.image_source = ''
 }
 
 const handleAddEcho = () => {
+  echoToAdd.value.images = imagesToAdd.value
+
   if (extensionToAdd.value.extension.length > 0 && extensionToAdd.value.extension_type.length > 0) {
     echoToAdd.value.extension = extensionToAdd.value.extension
     echoToAdd.value.extension_type = extensionToAdd.value.extension_type
@@ -496,7 +550,7 @@ const handleAddEcho = () => {
 
   if (
     !echoToAdd.value.content &&
-    !echoToAdd.value.image_url &&
+    (!echoToAdd.value.images || echoToAdd.value.images.length === 0) &&
     !echoToAdd.value.extension &&
     !echoToAdd.value.extension_type
   ) {
@@ -504,9 +558,9 @@ const handleAddEcho = () => {
     return
   }
 
-  if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
-    echoToAdd.value.image_source = null
-  }
+  // if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
+  //   echoToAdd.value.image_source = null
+  // }
 
   fetchAddEcho(echoToAdd.value).then((res) => {
     if (res.code === 1) {

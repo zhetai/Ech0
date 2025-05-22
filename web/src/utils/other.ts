@@ -1,13 +1,25 @@
 import { getApiUrl } from '@/service/request/shared'
 // 获取图片链接
-export const getImageUrl = (image: { imageUrl: string; imageSource: string }) => {
-  if (image.imageSource === 'local') {
-    return getApiUrl() + String(image.imageUrl)
-  } else if (image.imageSource === 'url') {
-    return String(image.imageUrl)
+export const getImageUrl = (image: App.Api.Ech0.Image) => {
+  if (image.image_source === 'local') {
+    return getApiUrl() + String(image.image_url)
+  } else if (image.image_source === 'url') {
+    return String(image.image_url)
   } else {
     // 未知的图片来源，按照本地图片处理
-    return getApiUrl() + String(image.imageUrl)
+    return getApiUrl() + String(image.image_url)
+  }
+}
+
+// 获取待添加图片链接
+export const getImageToAddUrl = (image: App.Api.Ech0.ImageToAdd) => {
+  if (image.image_source === 'local') {
+    return getApiUrl() + String(image.image_url)
+  } else if (image.image_source === 'url') {
+    return String(image.image_url)
+  } else {
+    // 未知的图片来源，按照本地图片处理
+    return getApiUrl() + String(image.image_url)
   }
 }
 
