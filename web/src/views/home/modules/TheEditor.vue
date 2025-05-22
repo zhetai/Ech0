@@ -40,7 +40,7 @@
         <div v-if="currentMode === Mode.Image">
           <h2 class="text-gray-500 font-bold">插入图片（支持本地上传、直链）</h2>
           <p class="text-gray-400 text-sm mb-2">注意：仅允许添加一张</p>
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="text-gray-500">选择添加方式：</span>
               <!-- 直链 -->
@@ -176,11 +176,19 @@
             <div class="text-gray-500 my-1">提取的BV号为：{{ extensionToAdd.extension }}</div>
           </div>
           <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
-            <div class="text-gray-500 font-bold mb-1">Github项目地址</div>
+            <div class="text-gray-500 font-bold mb-1">Github项目分享</div>
             <BaseInput
               v-model="extensionToAdd.extension"
               class="rounded-lg h-auto w-full"
               placeholder="https://github.com/username/repo"
+            />
+          </div>
+          <div v-if="currentExtensionType === ExtensionType.WEBSITE">
+            <div class="text-gray-500 font-bold mb-1">网站链接分享</div>
+            <BaseInput
+              v-model="extensionToAdd.extension"
+              class="rounded-lg h-auto w-full"
+              placeholder="https://example.com"
             />
           </div>
         </div>
@@ -353,6 +361,7 @@ const enum ExtensionType {
   MUSIC = 'MUSIC',
   VIDEO = 'VIDEO',
   GITHUBPROJ = 'GITHUBPROJ',
+  WEBSITE = 'WEBSITE',
 }
 const enum ImageSource {
   LOCAL = 'local',

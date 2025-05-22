@@ -25,6 +25,13 @@
           title="添加Github项目"
           @click="handleAddExtension(ExtensionType.GITHUBPROJ)"
         />
+        <!-- 添加网站链接 -->
+        <BaseButton
+          :icon="Weblink"
+          class="w-7 h-7 rounded-md"
+          title="添加网站链接"
+          @click="handleAddExtension(ExtensionType.WEBSITE)"
+        />
       </div>
     </div>
     <!-- 模式切换 -->
@@ -45,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+import Weblink from '@/components/icons/weblink.vue'
 import Music from '@/components/icons/music.vue'
 import Todo from '@/components/icons/todo.vue'
 import Video from '@/components/icons/video.vue'
@@ -56,6 +64,7 @@ const enum ExtensionType {
   MUSIC = 'MUSIC',
   VIDEO = 'VIDEO',
   GITHUBPROJ = 'GITHUBPROJ',
+  WEBSITE = 'WEBSITE',
 }
 
 const emit = defineEmits([
@@ -65,6 +74,7 @@ const emit = defineEmits([
   'addMusic',
   'addVideo',
   'addGithubproj',
+  'addWeblink',
 ])
 
 const handleAddExtension = (extensiontype: ExtensionType) => {

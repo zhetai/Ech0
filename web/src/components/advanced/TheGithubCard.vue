@@ -1,5 +1,7 @@
 <template>
-  <div class="max-w-sm flex justify-center items-center bg-white rounded-lg shadow-sm p-2 gap-2">
+  <div
+    class="max-w-sm flex justify-center items-center bg-white rounded-lg shadow-sm ring-1 ring-inset ring-gray-100 p-2 gap-2"
+  >
     <a :href="props.GithubURL" target="_blank">
       <div class="flex justify-between items-center">
         <div class="shrink-0 px-6">
@@ -14,7 +16,7 @@
 
         <div v-if="CardData" class="py-1">
           <span class="text-lg font-bold text-gray-600">{{ CardData?.name || repo }}</span>
-          <p class="text-sm text-gray-400 font-mono" :title="CardData?.description">
+          <p class="text-sm text-gray-400 font-mono line-clamp-2" :title="CardData?.description">
             {{ CardData?.description }}
           </p>
           <div class="flex justify-start items-center h-auto text-gray-500">

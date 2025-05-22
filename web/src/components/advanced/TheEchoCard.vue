@@ -83,6 +83,11 @@
           :GithubURL="props.echo.extension"
           class="px-2 mx-auto hover:shadow-md"
         />
+        <TheWebsiteCard
+          v-if="props.echo.extension_type === ExtensionType.WEBSITE"
+          :websiteURL="props.echo.extension"
+          class="px-2 mx-auto hover:shadow-md"
+        />
       </div>
     </div>
   </div>
@@ -105,6 +110,7 @@ import Lock from '../icons/lock.vue'
 import Prev from '../icons/prev.vue'
 import Next from '../icons/next.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
+import TheWebsiteCard from './TheWebsiteCard.vue'
 
 const emit = defineEmits(['refresh'])
 
@@ -113,6 +119,7 @@ const enum ExtensionType {
   MUSIC = 'MUSIC',
   VIDEO = 'VIDEO',
   GITHUBPROJ = 'GITHUBPROJ',
+  WEBSITE = 'WEBSITE',
 }
 
 const props = defineProps<{
