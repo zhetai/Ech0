@@ -28,7 +28,7 @@
     </div>
 
     <!-- 图片 && 内容 -->
-    <div class="border-l-2 border-gray-300 p-6 ml-1">
+    <div class="border-l-2 border-gray-300 p-6 ml-1 mb-1">
       <!-- 图片 -->
       <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
         <div class="shadow-lg rounded-lg overflow-hidden mb-2">
