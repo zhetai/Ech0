@@ -32,7 +32,7 @@
     </div>
     <!-- 具体内容 -->
     <div>
-      <p class="text-gray-500 text-sm">
+      <p class="text-gray-500 text-sm whitespace-pre-wrap">
         {{ props.todo.content }}
       </p>
     </div>

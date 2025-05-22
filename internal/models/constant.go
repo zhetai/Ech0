@@ -164,7 +164,7 @@ const (
 )
 
 const (
-	Version = "1.3.5" // 当前版本号
+	Version = "1.3.6" // 当前版本号
 )
 
 const (
