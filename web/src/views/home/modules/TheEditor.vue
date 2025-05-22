@@ -249,7 +249,11 @@
 
       <!-- Preview Image -->
       <div
-        v-if="imagesToAdd && imagesToAdd.length > 0 && (currentMode === Mode.ECH0 || currentMode === Mode.Image)"
+        v-if="
+          imagesToAdd &&
+          imagesToAdd.length > 0 &&
+          (currentMode === Mode.ECH0 || currentMode === Mode.Image)
+        "
         class="relative rounded-lg shadow-lg w-5/6 mx-auto my-7"
       >
         <button
@@ -260,16 +264,9 @@
           <Close class="w-4 h-4" />
         </button>
         <div class="rounded-lg overflow-hidden">
-          <a
-            :href="
-              getImageToAddUrl(imagesToAdd[imageIndex])
-            "
-            data-fancybox
-          >
+          <a :href="getImageToAddUrl(imagesToAdd[imageIndex])" data-fancybox>
             <img
-              :src="
-                getImageToAddUrl(imagesToAdd[imageIndex])
-              "
+              :src="getImageToAddUrl(imagesToAdd[imageIndex])"
               alt="Image"
               class="max-w-full object-cover"
               loading="lazy"
@@ -279,16 +276,16 @@
       </div>
       <!-- 图片切换 -->
       <div v-if="imagesToAdd.length > 1" class="flex items-center justify-center">
-          <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
-            <Prev class="w-7 h-7" />
-          </button>
-          <span class="text-gray-500 text-sm mx-2">
-            {{ imageIndex + 1 }} / {{ imagesToAdd.length }}
-          </span>
-          <button @click="imageIndex = Math.min(imageIndex + 1, imagesToAdd.length - 1)">
-            <Next class="w-7 h-7" />
-          </button>
-        </div>
+        <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
+          <Prev class="w-7 h-7" />
+        </button>
+        <span class="text-gray-500 text-sm mx-2">
+          {{ imageIndex + 1 }} / {{ imagesToAdd.length }}
+        </span>
+        <button @click="imageIndex = Math.min(imageIndex + 1, imagesToAdd.length - 1)">
+          <Next class="w-7 h-7" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -409,7 +406,7 @@ const imageIndex = ref<number>(0)
 const imageSourceMemory = ref<string>()
 const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
   image_url: '',
-  image_source: ''
+  image_source: '',
 })
 const imagesToAdd = ref<App.Api.Ech0.ImageToAdd[]>([])
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
@@ -429,11 +426,11 @@ const todoToAdd = ref<App.Api.Todo.TodoToAdd>({
 const handleAddMoreImage = () => {
   imagesToAdd.value.push({
     image_url: String(imageToAdd.value.image_url),
-    image_source: String(imageToAdd.value.image_source)
+    image_source: String(imageToAdd.value.image_source),
   })
 
-  imageToAdd.value.image_url = '';
-  imageToAdd.value.image_source = '';
+  imageToAdd.value.image_url = ''
+  imageToAdd.value.image_source = ''
 }
 
 const handleAddImageMode = () => {
@@ -493,7 +490,7 @@ const handleDeleteMusic = () => {
 
 const handleRemoveImage = () => {
   if (confirm('确定要移除图片吗？')) {
-    let imageToDel : App.Api.Ech0.ImageToDelete = {
+    const imageToDel: App.Api.Ech0.ImageToDelete = {
       url: String(imagesToAdd.value[imageIndex.value].image_url),
       source: String(imagesToAdd.value[imageIndex.value].image_source),
     }
@@ -502,13 +499,12 @@ const handleRemoveImage = () => {
       fetchDeleteImage({
         url: imageToDel.url,
         source: imageToDel.source,
+      }).then((res) => {
+        if (res.code === 1) {
+          // 从数组中删除图片
+          imagesToAdd.value.splice(imageIndex.value, 1)
+        }
       })
-        .then((res) => {
-          if (res.code === 1) {
-            // 从数组中删除图片
-            imagesToAdd.value.splice(imageIndex.value, 1)
-          }
-        })
     } else {
       imagesToAdd.value.splice(imageIndex.value, 1)
     }

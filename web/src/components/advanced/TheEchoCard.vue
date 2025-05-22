@@ -30,40 +30,29 @@
     <!-- 图片 && 内容 -->
     <div class="border-l-2 border-gray-300 p-6 ml-1">
       <!-- 图片 -->
-      <div
-        v-if="props.echo.images && props.echo.images.length > 0"
-        class="w-5/6 mx-auto"
-      >
+      <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
         <div class="shadow-lg rounded-lg overflow-hidden mb-2">
-          <a
-          :href="
-            getImageUrl(props.echo.images[imageIndex])
-          "
-          data-fancybox
-        >
-          <img
-            :src="
-              getImageUrl(props.echo.images[imageIndex])
-            "
-            alt="Image"
-            class="max-w-full object-cover"
-            loading="lazy"
-          />
-        </a>
+          <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
+            <img
+              :src="getImageUrl(props.echo.images[imageIndex])"
+              alt="Image"
+              class="max-w-full object-cover"
+              loading="lazy"
+            />
+          </a>
         </div>
         <!-- 图片切换 -->
         <div v-if="props.echo.images.length > 1" class="flex items-center justify-center">
-            <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
-              <Prev class="w-6 h-6" />
-            </button>
-            <span class="text-gray-500 text-sm mx-2">
-              {{ imageIndex + 1 }} / {{ props.echo.images.length }}
-            </span>
-            <button @click="imageIndex = Math.min(imageIndex + 1, props.echo.images.length - 1)">
-              <Next class="w-6 h-6" />
-            </button>
+          <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
+            <Prev class="w-6 h-6" />
+          </button>
+          <span class="text-gray-500 text-sm mx-2">
+            {{ imageIndex + 1 }} / {{ props.echo.images.length }}
+          </span>
+          <button @click="imageIndex = Math.min(imageIndex + 1, props.echo.images.length - 1)">
+            <Next class="w-6 h-6" />
+          </button>
         </div>
-
       </div>
       <!-- 内容 -->
       <div>
