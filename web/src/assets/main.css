@@ -1,6 +1,7 @@
 @import './base.css';
 @import './fonts/result.css';
 
+html,
 body {
   font-family: 'LXGW WenKai Screen';
   scrollbar-width: thin;
