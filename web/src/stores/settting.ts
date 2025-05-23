@@ -57,17 +57,15 @@ export const useSettingStore = defineStore('settingStore', () => {
           localStg.setItem('systemStatus', isSystemReady.value)
         })
     }
-
   }
 
   const getSystemSetting = async () => {
-    await fetchGetSettings()
-      .then((res) => {
-        if (res.code === 1) {
-          SystemSetting.value = res.data
-          loading.value = false
-        }
-      })
+    await fetchGetSettings().then((res) => {
+      if (res.code === 1) {
+        SystemSetting.value = res.data
+        loading.value = false
+      }
+    })
   }
 
   if (!isSystemReady.value) {

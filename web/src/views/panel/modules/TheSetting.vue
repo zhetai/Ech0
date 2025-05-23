@@ -98,13 +98,13 @@
         <!-- 自定义 CSS -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">自定义 CSS:</h2>
-          <span v-if="!editMode"
+          <span
+            v-if="!editMode"
             class="truncate max-w-full inline-block align-middle"
             :title="SystemSetting.custom_css"
             style="vertical-align: middle"
-          >{{
-            SystemSetting?.custom_css?.length === 0 ? '暂无' : "******"
-          }}</span>
+            >{{ SystemSetting?.custom_css?.length === 0 ? '暂无' : '******' }}</span
+          >
           <BaseInput
             v-else
             v-model="SystemSetting.custom_css"
@@ -116,13 +116,13 @@
         <!-- 自定义 Script -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">自定义 JS:</h2>
-          <span v-if="!editMode"
+          <span
+            v-if="!editMode"
             class="truncate max-w-full inline-block align-middle"
             :title="SystemSetting.custom_js"
             style="vertical-align: middle"
-          >{{
-            SystemSetting?.custom_js?.length === 0 ? '暂无' : "******"
-          }}</span>
+            >{{ SystemSetting?.custom_js?.length === 0 ? '暂无' : '******' }}</span
+          >
           <BaseInput
             v-else
             v-model="SystemSetting.custom_js"
@@ -132,7 +132,7 @@
           />
         </div>
         <!-- 允许注册 -->
-        <div class="flex flex-row items-center justify-start text-gray-500  h-10">
+        <div class="flex flex-row items-center justify-start text-gray-500 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">允许注册:</h2>
           <BaseSwitch v-model="SystemSetting.allow_register" :disabled="!editMode" />
         </div>
