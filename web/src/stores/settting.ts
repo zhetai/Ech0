@@ -17,6 +17,8 @@ export const useSettingStore = defineStore('settingStore', () => {
     allow_register: true,
     ICP_number: '',
     meting_api: '',
+    custom_css: '',
+    custom_js: '',
   })
   const loading = ref<boolean>(true)
   const router = useRouter()
@@ -24,7 +26,7 @@ export const useSettingStore = defineStore('settingStore', () => {
   /**
    * Actions
    */
-  const getSystemSetting = async () => {
+  const getSystemReady = async () => {
     // 检查localStorage中是否有系统状态
     const systemStatus = localStg.getItem<boolean>('systemStatus')
     if (systemStatus !== null) {
@@ -56,18 +58,25 @@ export const useSettingStore = defineStore('settingStore', () => {
         })
     }
 
-    // 获取系统设置
-    await fetchGetSettings().then((res) => {
-      if (res.code === 1) {
-        SystemSetting.value = res.data
-        loading.value = false
-      }
-    })
+  }
+
+  const getSystemSetting = async () => {
+    await fetchGetSettings()
+      .then((res) => {
+        if (res.code === 1) {
+          SystemSetting.value = res.data
+          loading.value = false
+        }
+      })
+  }
+
+  if (!isSystemReady.value) {
+    getSystemSetting()
   }
 
   const setSystemReady = (status: boolean) => {
     isSystemReady.value = status
   }
 
-  return { isSystemReady, SystemSetting, loading, getSystemSetting, setSystemReady }
+  return { isSystemReady, SystemSetting, loading, getSystemReady, getSystemSetting, setSystemReady }
 })

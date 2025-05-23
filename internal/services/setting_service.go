@@ -19,6 +19,8 @@ func GetSetting() (models.SystemSetting, error) {
 		setting.AllowRegister = config.Config.Setting.AllowRegister
 		setting.ICPNumber = config.Config.Setting.Icpnumber
 		setting.MetingAPI = config.Config.Setting.MetingAPI
+		setting.CustomCSS = config.Config.Setting.CustomCSS
+		setting.CustomJS = config.Config.Setting.CustomJS
 		error := repository.AddKeyValue(models.SystemSettingsKey, setting)
 		if error != nil {
 			return setting, error

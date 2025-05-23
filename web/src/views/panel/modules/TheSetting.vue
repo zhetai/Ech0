@@ -17,7 +17,7 @@
         </div>
         <!-- 站点标题 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-          <h2 class="font-semibold w-30">站点标题:</h2>
+          <h2 class="font-semibold w-30 flex-shrink-0">站点标题:</h2>
           <span v-if="!editMode">{{
             SystemSetting?.site_title.length === 0 ? '暂无' : SystemSetting.site_title
           }}</span>
@@ -26,12 +26,12 @@
             v-model="SystemSetting.site_title"
             type="text"
             placeholder="请输入站点标题"
-            class="w-36 !py-1"
+            class="w-full !py-1"
           />
         </div>
         <!-- 服务名称 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-          <h2 class="font-semibold w-30">服务名称:</h2>
+          <h2 class="font-semibold w-30 flex-shrink-0">服务名称:</h2>
           <span v-if="!editMode">{{
             SystemSetting?.server_name.length === 0 ? '暂无' : SystemSetting.server_name
           }}</span>
@@ -40,12 +40,12 @@
             v-model="SystemSetting.server_name"
             type="text"
             placeholder="请输入服务名称"
-            class="w-36 !py-1"
+            class="w-full !py-1"
           />
         </div>
         <!-- 服务地址 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-          <h2 class="font-semibold w-30">服务地址:</h2>
+          <h2 class="font-semibold w-30 flex-shrink-0">服务地址:</h2>
           <span v-if="!editMode">{{
             SystemSetting?.server_name.length === 0 ? '暂无' : SystemSetting.server_url
           }}</span>
@@ -54,12 +54,12 @@
             v-model="SystemSetting.server_url"
             type="text"
             placeholder="请输入服务地址,带http(s)"
-            class="w-36 !py-1"
+            class="w-full !py-1"
           />
         </div>
         <!-- ICP备案号 -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-          <h2 class="font-semibold w-30">ICP备案:</h2>
+          <h2 class="font-semibold w-30 flex-shrink-0">ICP备案:</h2>
           <span
             v-if="!editMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -73,12 +73,12 @@
             v-model="SystemSetting.ICP_number"
             type="text"
             placeholder="请输入ICP备案号"
-            class="w-36 !py-1"
+            class="w-full !py-1"
           />
         </div>
         <!-- Meting API -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-          <h2 class="font-semibold w-30">Meting:</h2>
+          <h2 class="font-semibold w-30 flex-shrink-0">MetingAPI:</h2>
           <span
             v-if="!editMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -92,13 +92,49 @@
             v-model="SystemSetting.meting_api"
             type="text"
             placeholder="请输入Meting API地址,带http(s)"
-            class="w-36 !py-1"
+            class="w-full !py-1"
+          />
+        </div>
+        <!-- 自定义 CSS -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">自定义 CSS:</h2>
+          <span v-if="!editMode"
+            class="truncate max-w-full inline-block align-middle"
+            :title="SystemSetting.custom_css"
+            style="vertical-align: middle"
+          >{{
+            SystemSetting?.custom_css?.length === 0 ? '暂无' : "******"
+          }}</span>
+          <BaseInput
+            v-else
+            v-model="SystemSetting.custom_css"
+            type="text"
+            placeholder="请输入自定义 CSS"
+            class="w-full !py-1"
+          />
+        </div>
+        <!-- 自定义 Script -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">自定义 JS:</h2>
+          <span v-if="!editMode"
+            class="truncate max-w-full inline-block align-middle"
+            :title="SystemSetting.custom_js"
+            style="vertical-align: middle"
+          >{{
+            SystemSetting?.custom_js?.length === 0 ? '暂无' : "******"
+          }}</span>
+          <BaseInput
+            v-else
+            v-model="SystemSetting.custom_js"
+            type="text"
+            placeholder="请输入自定义 Script"
+            class="w-full !py-1"
           />
         </div>
         <!-- 允许注册 -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-          <h2 class="font-semibold w-30">允许注册:</h2>
-          <BaseSwitch v-model="SystemSetting.allow_register" :disabled="!editMode" class="w-14" />
+        <div class="flex flex-row items-center justify-start text-gray-500  h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">允许注册:</h2>
+          <BaseSwitch v-model="SystemSetting.allow_register" :disabled="!editMode" />
         </div>
       </div>
     </div>
@@ -143,10 +179,10 @@
             :key="index"
             class="flex flex-row items-center justify-between text-gray-500 gap-3 h-10"
           >
-            <div class="flex justify-start max-w-70">
-              <h2 class="font-semibold w-30">Connect {{ index + 1 }}:</h2>
+            <div class="flex items-center gap-2 flex-1 min-w-0">
+              <h2 class="font-semibold w-22 flex-shrink-0">Connect {{ index + 1 }}:</h2>
               <span
-                class="truncate max-w-40"
+                class="truncate max-w-full"
                 :title="connect.connect_url"
                 style="display: inline-block"
                 >{{ connect.connect_url }}</span
@@ -156,7 +192,7 @@
               :icon="Disconnect"
               :disabled="!connectsEdit"
               @click="handleDisconnect(connect.id)"
-              class="w-7 h-7 rounded-md"
+              class="w-7 h-7 rounded-md flex-shrink-0"
               title="断开连接"
             />
           </div>

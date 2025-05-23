@@ -48,7 +48,7 @@ import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
 import TheAudioCard from '@/components/advanced/TheAudioCard.vue'
 
-const { getSystemSetting } = useSettingStore()
+const settingStore = useSettingStore()
 const todoStore = useTodoStore()
 const userStore = useUserStore()
 const { getTodos } = todoStore
@@ -82,7 +82,7 @@ const updatePosition = () => {
 
 onMounted(async () => {
   // 获取数据
-  await getSystemSetting()
+  await settingStore.getSystemSetting()
   if (isLogin.value) {
     await getTodos()
   }

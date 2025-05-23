@@ -26,6 +26,8 @@ type AppConfig struct {
 		AllowRegister bool   `yaml:"allowregister"`
 		Icpnumber     string `yaml:"icpnumber"`
 		MetingAPI     string `yaml:"metingapi"`
+		CustomCSS     string `yaml:"customcss"`
+		CustomJS      string `yaml:"customjs"`
 	}
 	Upload struct {
 		ImageMaxSize int      `yaml:"imagemaxsize"`

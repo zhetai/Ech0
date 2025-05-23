@@ -61,8 +61,7 @@ func CreateMessage(message *models.Message) error {
 			// 处理GitHub项目的链接
 			message.Extension = pkg.TrimURL(message.Extension)
 		} else if message.ExtensionType == models.Extension_WEBSITE {
-			// 处理网站链接
-			message.Extension = pkg.TrimURL(message.Extension)
+
 		}
 	} else {
 		message.Extension = ""

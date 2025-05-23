@@ -21,6 +21,24 @@ watch(
 onMounted(async () => {
   // 自动登录
   await userStore.autoLogin()
+
+  // 获取系统设置
+  settingStore.getSystemReady()
+  await settingStore.getSystemSetting()
+
+  // 注入自定义 CSS
+  if (SystemSetting.value.custom_css) {
+    const styleTag = document.createElement('style')
+    styleTag.textContent = SystemSetting.value.custom_css
+    document.head.appendChild(styleTag)
+  }
+
+  // 注入自定义 JS
+  if (SystemSetting.value.custom_js) {
+    const scriptTag = document.createElement('script')
+    scriptTag.textContent = SystemSetting.value.custom_js
+    document.body.appendChild(scriptTag)
+  }
 })
 </script>
 

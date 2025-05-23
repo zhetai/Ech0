@@ -14,6 +14,8 @@ setting:
   allowregister: true
   icpnumber: ""
   metingapi: https://metingapi.soopy.cn/api
+  customcss: ""
+  customjs: ""
 
 upload:
   imagemaxsize: 5242880 # 5MB

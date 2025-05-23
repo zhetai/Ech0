@@ -52,6 +52,8 @@ func UpdateSettings(c *gin.Context) {
 	newSettings.AllowRegister = settings.AllowRegister
 	newSettings.ICPNumber = settings.ICPNumber
 	newSettings.MetingAPI = settings.MetingAPI
+	newSettings.CustomCSS = settings.CustomCSS
+	newSettings.CustomJS = settings.CustomJS
 	if err := services.UpdateSetting(newSettings); err != nil {
 		c.JSON(http.StatusOK, dto.Fail[string](err.Error()))
 		return
