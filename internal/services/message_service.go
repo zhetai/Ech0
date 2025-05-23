@@ -93,18 +93,18 @@ func DeleteMessage(id uint) error {
 		return errors.New(models.MessageNotFoundMessage)
 	}
 
-	// 旧的图片删除
-	if message.ImageURL != "" {
-		// 构造图片 DTO
-		image := dto.ImageDto{
-			URL:    message.ImageURL,
-			SOURCE: message.ImageSource,
-		}
-		// 调用图片服务删除图片
-		if err := DeleteImage(image); err != nil {
-			return err
-		}
-	}
+	// 旧版本的图片删除
+	// if message.ImageURL != "" {
+	// 	// 构造图片 DTO
+	// 	image := dto.ImageDto{
+	// 		URL:    message.ImageURL,
+	// 		SOURCE: message.ImageSource,
+	// 	}
+	// 	// 调用图片服务删除图片
+	// 	if err := DeleteImage(image); err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	// 删除留言中的图片
 	if len(message.Images) > 0 {

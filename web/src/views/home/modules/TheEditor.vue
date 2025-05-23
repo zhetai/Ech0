@@ -185,8 +185,14 @@
           </div>
           <div v-if="currentExtensionType === ExtensionType.WEBSITE">
             <div class="text-gray-500 font-bold mb-1">网站链接分享</div>
+            <!-- 网站标题 -->
             <BaseInput
-              v-model="extensionToAdd.extension"
+              v-model="websiteToAdd.title"
+              class="rounded-lg h-auto w-full mb-2"
+              placeholder="网站标题..."
+            />
+            <BaseInput
+              v-model="websiteToAdd.site"
               class="rounded-lg h-auto w-full"
               placeholder="https://example.com"
             />
@@ -406,6 +412,13 @@ const handleSwitchPlayMusicMode = () => {
   currentMode.value = Mode.PlayMusic
 }
 
+const websiteToAdd = ref<{
+  title: string
+  site: string
+}>({
+  title: '',
+  site: '',
+})
 const bilibiliURL = ref<string>('')
 const extensionToAdd = ref({
   extension: '',
@@ -544,6 +557,40 @@ const handleClear = () => {
 
 const handleAddEcho = () => {
   echoToAdd.value.images = imagesToAdd.value
+
+  // 检查是否有外部链接分享
+  if (extensionToAdd.value.extension_type === ExtensionType.WEBSITE) {
+    // 检查是否存在网站链接
+    if (
+      websiteToAdd.value.title.length > 0 &&
+      websiteToAdd.value.site.length === 0
+    ) {
+      theToast.error('网站链接不能为空！')
+      return
+    }
+
+    // 检查是否存在网站标题
+    if (
+      websiteToAdd.value.title.length === 0 &&
+      websiteToAdd.value.site.length > 0
+    ) {
+      websiteToAdd.value.title = "外部链接"
+    }
+
+    if (
+      websiteToAdd.value.title.length > 0 &&
+      websiteToAdd.value.site.length > 0
+    ) {
+      // 将网站标题和链接添加到扩展中 (序列化为json)
+      extensionToAdd.value.extension = JSON.stringify({
+        title: websiteToAdd.value.title,
+        site: websiteToAdd.value.site,
+      })
+    } else {
+      extensionToAdd.value.extension = ""
+      extensionToAdd.value.extension_type = ""
+    }
+  }
 
   if (extensionToAdd.value.extension.length > 0 && extensionToAdd.value.extension_type.length > 0) {
     echoToAdd.value.extension = extensionToAdd.value.extension

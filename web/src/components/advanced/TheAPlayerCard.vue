@@ -6,7 +6,7 @@
       :type="musicInfo.type"
       :id="musicInfo.id"
       :auto="props.echo.extension"
-    >
+      >
     </meting-js>
   </div>
   <div
@@ -48,4 +48,5 @@ const metingAPI = computed(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

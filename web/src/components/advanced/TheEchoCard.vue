@@ -85,7 +85,7 @@
         />
         <TheWebsiteCard
           v-if="props.echo.extension_type === ExtensionType.WEBSITE"
-          :websiteURL="props.echo.extension"
+          :website="props.echo.extension"
           class="px-2 mx-auto hover:shadow-md"
         />
       </div>
