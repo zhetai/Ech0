@@ -1,10 +1,14 @@
 package pkg
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 func TrimURL(url string) string {
@@ -25,31 +29,48 @@ func DeleteFile(filePath string) error {
 	return nil
 }
 
-// 请求发送函数
-func SendRequest(url, method string, cutsomHeader struct {
+type Header struct {
 	Header  string
 	Content string
-}) ([]byte, error) {
-	client := &http.Client{}
+}
+
+// 请求发送函数
+func SendRequest(url, method string, customHeader Header) ([]byte, error) {
+	// 加载系统根证书池
+	rootCAs, err := x509.SystemCertPool()
+	if err != nil {
+		return nil, fmt.Errorf("加载系统证书失败: %w", err)
+	}
+
+	// 自定义 HTTP 客户端
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				RootCAs: rootCAs,
+			},
+		},
+	}
+
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	// 添加自定义请求头
-	if cutsomHeader.Header != "" && cutsomHeader.Content != "" {
-		req.Header.Set(cutsomHeader.Header, cutsomHeader.Content)
+	if customHeader.Header != "" && customHeader.Content != "" {
+		req.Header.Set(customHeader.Header, customHeader.Content)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("请求发送失败: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("读取响应失败: %w", err)
 	}
 
 	return body, nil
