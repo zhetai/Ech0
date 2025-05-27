@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"crypto/tls"
-	"crypto/x509"
 	"fmt"
 	"io"
 	"net/http"
@@ -36,18 +35,12 @@ type Header struct {
 
 // 请求发送函数
 func SendRequest(url, method string, customHeader Header) ([]byte, error) {
-	// 加载系统根证书池
-	rootCAs, err := x509.SystemCertPool()
-	if err != nil {
-		return nil, fmt.Errorf("加载系统证书失败: %w", err)
-	}
-
-	// 自定义 HTTP 客户端
+	// 自定义 HTTP 客户端，忽略 TLS 证书验证
 	client := &http.Client{
 		Timeout: 10 * time.Second,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
-				RootCAs: rootCAs,
+				InsecureSkipVerify: true, // 忽略证书验证
 			},
 		},
 	}

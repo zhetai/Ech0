@@ -54,7 +54,7 @@ FROM alpine:latest AS final
 WORKDIR /app
 
 # ✅ 安装系统根证书，避免 HTTPS 请求失败
-RUN apk add --no-cache ca-certificates
+# RUN apk add --no-cache ca-certificates
 
 # 复制构建阶段的文件
 COPY --from=backend-build /app/config /app/config
