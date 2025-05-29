@@ -37,7 +37,7 @@ type Header struct {
 func SendRequest(url, method string, customHeader Header) ([]byte, error) {
 	// 自定义 HTTP 客户端，忽略 TLS 证书验证
 	client := &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 2 * time.Second,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true, // 忽略证书验证

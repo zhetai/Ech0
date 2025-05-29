@@ -15,7 +15,7 @@ interface RequestOptions {
 
 const ofetchInstance = ofetch.create({
   baseURL: import.meta.env.VITE_SERVICE_BASE_URL,
-  timeout: 10000,
+  timeout: 20000,
 
   // 请求拦截器
   onRequest({ options }) {

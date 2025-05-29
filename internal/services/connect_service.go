@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -110,6 +111,9 @@ func DeleteConnect(id uint) error {
 }
 
 func GetConnectsInfo() ([]models.Connect, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second) // 8秒超时
+	defer cancel()
+
 	// 获取所有连接地址
 	connects, err := repository.GetAllConnects()
 	if err != nil {
@@ -130,20 +134,20 @@ func GetConnectsInfo() ([]models.Connect, error) {
 	var seenMutex sync.Mutex
 
 	// 重试配置
-	const maxRetries = 3
+	const maxRetries = 2
 	const retryDelay = 500 * time.Millisecond
 
 	for _, conn := range connects {
 		wg.Add(1)
 		go func(conn models.Connected) {
 			defer wg.Done()
-
 			url := pkg.TrimURL(conn.ConnectURL) + "/api/connect"
-
-			var lastErr error
-
-			// 重试循环
 			for attempt := 0; attempt < maxRetries; attempt++ {
+				select {
+				case <-ctx.Done():
+					return // 超时直接退出
+				default:
+				}
 				resp, err := pkg.SendRequest(url, "GET", struct {
 					Header  string
 					Content string
@@ -153,33 +157,31 @@ func GetConnectsInfo() ([]models.Connect, error) {
 				})
 
 				if err != nil {
-					lastErr = err
 					// 如果不是最后一次重试，等待后继续
 					if attempt < maxRetries-1 {
 						time.Sleep(retryDelay * time.Duration(attempt+1))
 						continue
 					}
 					// 最后一次重试也失败，放弃该连接
-					fmt.Printf("[连接信息获取失败] 地址: %s，阶段: 发送请求，错误: %v\n", conn.ConnectURL, lastErr)
+					fmt.Printf("[连接信息获取失败] 地址: %s，阶段: 发送请求，错误: %v\n", conn.ConnectURL, err)
 					return
 				}
 
 				var connectInfo dto.Result[models.Connect]
 				if err := json.Unmarshal(resp, &connectInfo); err != nil {
-					lastErr = err
 					// JSON 解析失败，如果不是最后一次重试，等待后继续
 					if attempt < maxRetries-1 {
 						time.Sleep(retryDelay * time.Duration(attempt+1))
 						continue
 					}
 					// 最后一次重试也失败，放弃该连接
-					fmt.Printf("[连接信息获取失败] 地址: %s，阶段: 解析响应，错误: %v\n", conn.ConnectURL, lastErr)
+					fmt.Printf("[连接信息获取失败] 地址: %s，阶段: 解析响应，错误: %v\n", conn.ConnectURL, err)
 					return
 				}
 
 				// 验证响应数据
 				if connectInfo.Code != 1 || connectInfo.Data.ServerURL == "" {
-					lastErr = fmt.Errorf("无效响应: code=%d, serverURL=%s", connectInfo.Code, connectInfo.Data.ServerURL)
+					lastErr := fmt.Errorf("无效响应: code=%d, serverURL=%s", connectInfo.Code, connectInfo.Data.ServerURL)
 					// 数据无效，如果不是最后一次重试，等待后继续
 					if attempt < maxRetries-1 {
 						time.Sleep(retryDelay * time.Duration(attempt+1))
@@ -205,10 +207,20 @@ func GetConnectsInfo() ([]models.Connect, error) {
 		}(conn)
 	}
 
+	// 收集结果时也要支持超时
+	done := make(chan struct{})
 	go func() {
 		wg.Wait()
 		close(connectChan)
+		close(done)
 	}()
+
+	select {
+	case <-done:
+		// 正常收集完毕
+	case <-ctx.Done():
+		// 超时，提前返回
+	}
 
 	for connect := range connectChan {
 		if connect.ServerURL == "" {
