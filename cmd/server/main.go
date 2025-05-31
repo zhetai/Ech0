@@ -43,7 +43,8 @@ func main() {
 	}
 
 	// 设置路由
-	r := routers.SetupRouter()
+	r := gin.Default()
+	routers.SetupRouter(r)
 
 	// 启动服务器
 	address := config.Config.Server.Host + ":" + config.Config.Server.Port

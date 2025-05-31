@@ -3,6 +3,7 @@ package pkg
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"log"
 	"time"
 
@@ -43,16 +44,16 @@ func ParseToken(tokenString string) (*models.MyCliams, error) {
 		return config.JWT_SECRET, nil
 	})
 
-	// 验证签名错误
 	if err != nil {
 		return nil, err
-	} else if claims, ok := token.Claims.(*models.MyCliams); ok {
-		return claims, nil
-	} else {
-		log.Println("unknown claims type, cannot proceed")
 	}
 
-	return nil, nil
+	if claims, ok := token.Claims.(*models.MyCliams); ok {
+		return claims, nil
+	}
+
+	log.Println("unknown claims type, cannot proceed")
+	return nil, errors.New("unknown claims type, cannot proceed")
 }
 
 // MD5 加密

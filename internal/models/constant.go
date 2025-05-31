@@ -134,7 +134,7 @@ const (
 
 // User 相关
 const (
-	MaxUserCount = 4 // 最多注册用户数
+	MaxUserCount = 6 // 最多注册用户数
 )
 
 // Todo 相关
@@ -165,7 +165,7 @@ const (
 )
 
 const (
-	Version = "1.4.6" // 当前版本号
+	Version = "1.4.7" // 当前版本号
 )
 
 const (
