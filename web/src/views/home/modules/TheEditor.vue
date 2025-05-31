@@ -561,34 +561,25 @@ const handleAddEcho = () => {
   // 检查是否有外部链接分享
   if (extensionToAdd.value.extension_type === ExtensionType.WEBSITE) {
     // 检查是否存在网站链接
-    if (
-      websiteToAdd.value.title.length > 0 &&
-      websiteToAdd.value.site.length === 0
-    ) {
+    if (websiteToAdd.value.title.length > 0 && websiteToAdd.value.site.length === 0) {
       theToast.error('网站链接不能为空！')
       return
     }
 
     // 检查是否存在网站标题
-    if (
-      websiteToAdd.value.title.length === 0 &&
-      websiteToAdd.value.site.length > 0
-    ) {
-      websiteToAdd.value.title = "外部链接"
+    if (websiteToAdd.value.title.length === 0 && websiteToAdd.value.site.length > 0) {
+      websiteToAdd.value.title = '外部链接'
     }
 
-    if (
-      websiteToAdd.value.title.length > 0 &&
-      websiteToAdd.value.site.length > 0
-    ) {
+    if (websiteToAdd.value.title.length > 0 && websiteToAdd.value.site.length > 0) {
       // 将网站标题和链接添加到扩展中 (序列化为json)
       extensionToAdd.value.extension = JSON.stringify({
         title: websiteToAdd.value.title,
         site: websiteToAdd.value.site,
       })
     } else {
-      extensionToAdd.value.extension = ""
-      extensionToAdd.value.extension_type = ""
+      extensionToAdd.value.extension = ''
+      extensionToAdd.value.extension_type = ''
     }
   }
 

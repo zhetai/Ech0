@@ -1,5 +1,5 @@
 # 使用 Node.js Alpine 镜像作为前端构建阶段
-FROM node:22.14.0-alpine AS frontend-build
+FROM node:22.16.0-alpine AS frontend-build
 
 # 设置时区为上海
 ENV TZ=Asia/Shanghai
