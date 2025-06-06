@@ -1,0 +1,40 @@
+server:
+  port: 6277
+  host: "0.0.0.0"
+  mode: "debug" # "release" or "debug"
+
+database:
+  type: "sqlite"
+  path: "data/ech0.db"
+
+auth:
+  jwt:
+    expires: 2592000 # 30天（单位秒）
+    issuer: "ech0s"
+    audience: "ech0s"
+
+upload:
+  imagemaxsize: 5242880 # 5MB
+  audiomaxsize: 20971520 # 20MB
+  imagepath: "data/images/"
+  audiopath: "data/audios/"
+  allowedtypes:
+    - "image/jpeg"
+    - "image/png"
+    - "image/gif"
+    - "image/webp"
+    - "image/jpg"
+    - "image/svg+xml"
+    - "image/avif"
+    - "audio/mpeg"
+    - "audio/flac"
+
+setting:
+  sitetitle: "Ech0s~"
+  servername: "Ech0s~"
+  serverurl: "https://ech0.example.com"
+  allowregister: true
+  icpnumber: ""
+  metingapi: ""
+  customcss: ""
+  customjs: ""
