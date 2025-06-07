@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"github.com/lin-snow/ech0/internal/database"
 	model "github.com/lin-snow/ech0/internal/model/echo"
 	"gorm.io/gorm"
 	"strings"
@@ -34,7 +33,7 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 	var messages []model.Echo
 	var total int64
 
-	query := database.DB.Model(&model.Echo{})
+	query := echoRepository.db.Model(&model.Echo{})
 
 	// 如果 search 不为空，添加模糊查询条件
 	if search != "" {
@@ -61,7 +60,7 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 
 func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error) {
 	var echo model.Echo
-	result := database.DB.Preload("Images").First(&echo, id)
+	result := echoRepository.db.Preload("Images").First(&echo, id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil // 如果未找到记录，则返回 nil
@@ -74,7 +73,7 @@ func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error)
 
 func (echoRepository *EchoRepository) DeleteEchoById(id uint) error {
 	var echo model.Echo
-	result := database.DB.Delete(&echo, id)
+	result := echoRepository.db.Delete(&echo, id)
 	if result.Error != nil {
 		return result.Error
 	}

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/lin-snow/ech0/internal/database"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
@@ -29,7 +28,7 @@ func (commonRepository *CommonRepository) GetUserByUserId(userId uint) (userMode
 func (commonRepository *CommonRepository) GetSysAdmin() (userModel.User, error) {
 	// 获取系统管理员（首个注册的用户）
 	user := userModel.User{}
-	err := database.DB.Where("is_admin = ?", true).First(&user).Error
+	err := commonRepository.db.Where("is_admin = ?", true).First(&user).Error
 	if err != nil {
 		return userModel.User{}, err
 	}
@@ -39,7 +38,7 @@ func (commonRepository *CommonRepository) GetSysAdmin() (userModel.User, error) 
 
 func (commonRepository *CommonRepository) GetAllUsers() ([]userModel.User, error) {
 	var users []userModel.User
-	err := database.DB.Find(&users).Error
+	err := commonRepository.db.Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -51,11 +50,11 @@ func (commonRepository *CommonRepository) GetAllEchos(showPrivate bool) ([]echoM
 
 	// 是否将私密内容也查询出来
 	if showPrivate {
-		if err := database.DB.Preload("Images").Order("created_at DESC").Find(&echos).Error; err != nil {
+		if err := commonRepository.db.Preload("Images").Order("created_at DESC").Find(&echos).Error; err != nil {
 			return nil, err
 		}
 	} else {
-		if err := database.DB.Preload("Images").Where("private = ?", false).Find(&echos).Error; err != nil {
+		if err := commonRepository.db.Preload("Images").Where("private = ?", false).Find(&echos).Error; err != nil {
 			return nil, err
 		}
 	}
@@ -63,7 +62,21 @@ func (commonRepository *CommonRepository) GetAllEchos(showPrivate bool) ([]echoM
 	return echos, nil
 }
 
-func (commonRepository *CommonRepository) GetStatus() (commonModel.Status, error) {
-	//TODO implement me
-	panic("implement me")
+func (commonRepository *CommonRepository) GetHeatMap(startDate, endDate string) ([]commonModel.Heapmap, error) {
+	var results []commonModel.Heapmap
+
+	// 查询数据
+	// 执行查询
+	err := commonRepository.db.Table("echos").
+		Select("DATE(created_at) as date, COUNT(*) as count").
+		Where("DATE(created_at) >= ? AND DATE(created_at) <= ?", startDate, endDate).
+		Group("DATE(created_at)").
+		Order("date ASC").
+		Scan(&results).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }

@@ -13,6 +13,11 @@ type Status struct {
 	TotalMessages int          `json:"total_messages"`
 }
 
+type Heapmap struct {
+	Date  string `json:"date"`  // 日期
+	Count int    `json:"count"` // 留言数量
+}
+
 // File 相关
 type UploadFileType string
 type FileStorageType string
@@ -36,8 +41,7 @@ type KeyValue struct {
 
 // 键值对相关
 const (
-	SystemSettingsKey = "system_settings" // 系统设置的键
-	ConnectKey        = "connect"         // Connect 信息的键
+	SystemSettingsKey = "system_settings" // 系统设置的键 	// Connect 信息的键
 )
 
 type PageQueryResult[T any] struct {

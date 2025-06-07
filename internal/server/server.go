@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/internal/config"
 	"github.com/lin-snow/ech0/internal/database"
@@ -54,10 +55,20 @@ func (s *Server) Init() {
 
 func (s *Server) Start() {
 	port := config.Config.Server.Port
+	printGreetings(port)
 	if err := s.GinEngine.Run(":" + port); err != nil {
 		errUtil.HandlePanicError(&commonModel.ServerError{
 			Msg: commonModel.GIN_RUN_FAILED,
 			Err: err,
 		})
 	}
+}
+
+func printGreetings(port string) {
+	fmt.Print(commonModel.GreetingBanner)
+	fmt.Printf("---\n📦 Version: %s\n", commonModel.Version)
+	fmt.Printf("🎈 Port: %s\n", port)
+	fmt.Printf("🧙 Author: L1nSn0w\n")
+	fmt.Printf("👉 Website: https://echo.soopy.cn/\n")
+	fmt.Printf("👉 GitHub: https://github.com/lin-snow/Ech0\n---\n")
 }

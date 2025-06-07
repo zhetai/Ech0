@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/lin-snow/ech0/internal/database"
 	model "github.com/lin-snow/ech0/internal/model/connect"
 	"gorm.io/gorm"
 )
@@ -16,10 +15,10 @@ func NewConnectRepository(db *gorm.DB) ConnectRepositoryInterface {
 	}
 }
 
-func (c ConnectRepository) GetAllConnects() ([]model.Connected, error) {
+func (connectRepository *ConnectRepository) GetAllConnects() ([]model.Connected, error) {
 	var connects []model.Connected
 	// 查询数据库
-	if err := database.DB.Find(&connects).Error; err != nil {
+	if err := connectRepository.db.Find(&connects).Error; err != nil {
 		return nil, err
 	}
 	// 如果没有找到，返回空切片
@@ -30,16 +29,16 @@ func (c ConnectRepository) GetAllConnects() ([]model.Connected, error) {
 	return connects, nil
 }
 
-func (c ConnectRepository) CreateConnect(connect *model.Connected) error {
-	if err := database.DB.Create(connect).Error; err != nil {
+func (connectRepository *ConnectRepository) CreateConnect(connect *model.Connected) error {
+	if err := connectRepository.db.Create(connect).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c ConnectRepository) DeleteConnect(id uint) error {
+func (connectRepository *ConnectRepository) DeleteConnect(id uint) error {
 	// 根据 ID 删除 Connect
-	if err := database.DB.Delete(&model.Connected{}, id).Error; err != nil {
+	if err := connectRepository.db.Delete(&model.Connected{}, id).Error; err != nil {
 		return err
 	}
 

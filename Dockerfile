@@ -39,14 +39,13 @@ RUN go mod download
 
 COPY ./cmd ./cmd
 COPY ./internal ./internal
-COPY ./pkg ./pkg
 COPY ./config ./config
 
 # 创建并设置权限
 RUN mkdir -p /app/data && chmod -R 777 /app/data
 
 # 构建 Go 后端应用
-RUN go build -o /app/ech0 ./cmd/server/main.go
+RUN go build -o /app/ech0 ./cmd/ech0/main.go
 
 # 使用更轻量的 Alpine 镜像作为运行时阶段
 FROM alpine:latest AS final

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/lin-snow/ech0/internal/config"
@@ -13,6 +14,16 @@ import (
 )
 
 func UploadFileToLocal(file *multipart.FileHeader, fileType commonModel.UploadFileType) (string, error) {
+	if fileType == commonModel.ImageType {
+		return UploadImageToLocal(file)
+	} else if fileType == commonModel.AudioType {
+		return UploadAudioToLocal(file)
+	} else {
+		return "", errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
+	}
+}
+
+func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 	// 创建图片存储目录
 	if err := createImageDirIfNotExist(config.Config.Upload.ImagePath); err != nil {
 		return "", err
@@ -48,6 +59,43 @@ func UploadFileToLocal(file *multipart.FileHeader, fileType commonModel.UploadFi
 
 	imageURL := fmt.Sprintf("/images/%s", newFileName)
 	return imageURL, nil
+}
+
+func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
+	// 创建图片存储目录
+	if err := createImageDirIfNotExist(config.Config.Upload.AudioPath); err != nil {
+		return "", err
+	}
+
+	// 获取扩展名
+	ext := filepath.Ext(file.Filename)
+
+	// 重名音频文件名（暂时使用固定名字 music + 扩展名）
+	newFileName := fmt.Sprintf("music%s", ext)
+	savePath := filepath.Join(config.Config.Upload.AudioPath, newFileName)
+	src, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+
+	if err = os.MkdirAll(filepath.Dir(savePath), 0750); err != nil {
+		return "", err
+	}
+
+	out, err := os.Create(savePath)
+	if err != nil {
+		return "", err
+	}
+	defer out.Close()
+
+	if _, err = io.Copy(out, src); err != nil {
+		return "", err
+	}
+
+	// 返回音频的 URL
+	audioURL := fmt.Sprintf("/audios/%s", newFileName)
+	return audioURL, nil
 }
 
 func DeleteFileFromLocal(filePath string) error {

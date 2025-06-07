@@ -1,13 +1,13 @@
 package router
 
 import (
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/internal/di"
 	"github.com/lin-snow/ech0/internal/middleware"
 )
 
 type AppRouterGroup struct {
+	ResourceGroup     *gin.RouterGroup
 	PublicRouterGroup *gin.RouterGroup
 	AuthRouterGroup   *gin.RouterGroup
 }
@@ -16,11 +16,11 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 	// Setup Middleware
 	setupMiddleware(r)
 
-	// Setup Resource Routes
-	setupResourceRoutes(r)
-
 	// Setup Router Groups
 	appRouterGroup := setupRouterGroup(r)
+
+	// Setup Resource Routes
+	setupResourceRoutes(appRouterGroup, h)
 
 	// Setup User Routes
 	setupUserRoutes(appRouterGroup, h)
@@ -45,16 +45,13 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 }
 
 func setupRouterGroup(r *gin.Engine) *AppRouterGroup {
+	resource := r.Group("/")
 	public := r.Group("/api")
 	auth := r.Group("/api")
 	auth.Use(middleware.JWTAuthMiddleware())
 	return &AppRouterGroup{
+		ResourceGroup:     resource,
 		PublicRouterGroup: public,
 		AuthRouterGroup:   auth,
 	}
-}
-
-func setupResourceRoutes(r *gin.Engine) {
-	r.Use(static.Serve("/", static.LocalFile("./template", true)))
-	r.Static("/api/images", "./data/images")
 }

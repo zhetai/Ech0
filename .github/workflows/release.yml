@@ -83,7 +83,7 @@ jobs:
         run: |
           mkdir -p dist
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
-          go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/server/main.go
+          go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
 
       # ✅ 打包后端二进制
       - name: 📦 Package backend binary

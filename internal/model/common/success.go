@@ -20,9 +20,11 @@ const (
 
 // Common 成功相关常量
 const (
-	UPLOAD_SUCCESS     = "上传成功"
-	DELETE_SUCCESS     = "删除成功"
-	GET_STATUS_SUCCESS = "获取状态成功"
+	UPLOAD_SUCCESS        = "上传成功"
+	DELETE_SUCCESS        = "删除成功"
+	GET_STATUS_SUCCESS    = "获取状态成功"
+	GET_HEATMAP_SUCCESS   = "获取热力图成功"
+	GET_MUSIC_URL_SUCCESS = "获取音乐播放链接成功"
 )
 
 // Setting 成功相关常量

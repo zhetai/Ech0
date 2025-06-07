@@ -9,7 +9,7 @@ import (
 type CommonRepositoryInterface interface {
 	GetUserByUserId(userid uint) (userModel.User, error)
 	GetSysAdmin() (userModel.User, error)
-	GetStatus() (model.Status, error)
 	GetAllUsers() ([]userModel.User, error)
 	GetAllEchos(showPrivate bool) ([]echoModel.Echo, error)
+	GetHeatMap(startDate, endDate string) ([]model.Heapmap, error)
 }
