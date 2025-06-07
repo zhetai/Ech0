@@ -8,7 +8,7 @@ Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快
 
 ![界面预览](./docs/imgs/screenshot.png)
 
-[预览地址](https://soopy.cn/)
+[预览地址](https://memo.vaaat.com/)
 [官网地址](https://echo.soopy.cn/)
 
 ---
