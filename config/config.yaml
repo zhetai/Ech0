@@ -1,7 +1,7 @@
 server:
   port: 6277
   host: "0.0.0.0"
-  mode: "debug" # "release" or "debug"
+  mode: "release" # "release" or "debug"
 
 database:
   type: "sqlite"
