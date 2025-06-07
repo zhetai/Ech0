@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/internal/di"
 	"github.com/lin-snow/ech0/internal/middleware"
@@ -13,6 +14,10 @@ type AppRouterGroup struct {
 }
 
 func SetupRouter(r *gin.Engine, h *di.Handlers) {
+	// Setup Frontend
+	r.Use(static.Serve("/", static.LocalFile("./template", true)))
+	r.Static("api/images", "./data/images")
+
 	// Setup Middleware
 	setupMiddleware(r)
 
@@ -39,6 +44,11 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 
 	// Setup Connect Routes
 	setupConnectRoutes(appRouterGroup, h)
+
+	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./template/index.html")
+	})
 
 	// Setup No Routes
 	setupNoRoutes(r)
