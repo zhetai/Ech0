@@ -47,6 +47,9 @@ func InitDatabase() {
 			Err: err,
 		})
 	}
+
+	// 从 1.x 迁移到 2.x
+	UpdateMigration()
 }
 
 func MigrateDB() error {
