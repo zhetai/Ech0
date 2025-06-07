@@ -42,6 +42,7 @@ type KeyValue struct {
 // 键值对相关
 const (
 	SystemSettingsKey = "system_settings" // 系统设置的键 	// Connect 信息的键
+	MigrationKey      = "db_migration:message_to_echo:v1"
 )
 
 type PageQueryResult[T any] struct {
