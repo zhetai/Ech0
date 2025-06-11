@@ -49,7 +49,7 @@ docker run -d \
   sn0wl1n/ech0:latest
 ```
 
-> 💡 部署完成后访问 ip:1314 即可使用  
+> 💡 部署完成后访问 ip:6277 即可使用  
 > 🚷 建议把`-e JWT_SECRET="Hello Echos!"`里的`Hello Echos!`改成别的内容以提高安全性  
 > 📍 首次使用注册的账号会被设置为管理员（目前仅管理员支持发布内容）  
 > 🎈 数据存储在/opt/ech0/data下  
