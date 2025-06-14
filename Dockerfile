@@ -1,5 +1,5 @@
 # =================== 构建阶段 ===================
-FROM alpine:latest as builder
+FROM alpine:latest AS builder
 
 WORKDIR /app
 ENV TZ=Asia/Shanghai
