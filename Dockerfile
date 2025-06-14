@@ -36,7 +36,7 @@ RUN mkdir -p /app/template && \
     rm -rf /tmp/*
 
 # =================== 最终镜像 ===================
-FROM alpine:latest
+FROM debian:bookworm-slim
 
 WORKDIR /app
 ENV TZ=Asia/Shanghai
