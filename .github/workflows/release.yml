@@ -125,7 +125,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./dist/*
+            ./dist/ech0-*.tar.gz
+            ./dist/config/config.yaml
             ./frontend.tar.gz
           draft: false
           prerelease: false
