@@ -11,8 +11,9 @@ import (
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 
 	util "github.com/lin-snow/ech0/internal/util/err"
-	// "gorm.io/driver/sqlite" // 取消掉CGO的依赖
-	"github.com/glebarez/sqlite"
+	"gorm.io/driver/sqlite"
+
+	// "github.com/glebarez/sqlite" // 使用 glebarez/sqlite 作为 SQLite 驱动
 	"gorm.io/gorm"
 )
 
@@ -33,10 +34,10 @@ func InitDatabase() {
 
 	if dbType == "sqlite" {
 		// 添加 PRAGMA 参数，例如 WAL 模式和外键支持
-		pragma := config.Config.Database.Pragma // 从配置读取
-		dsn := dbPath + "?" + pragma
+		// pragma := config.Config.Database.Pragma // 从配置读取
+		// dsn := dbPath + "?" + pragma
 		var err error
-		DB, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+		DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 		if err != nil {
 			util.HandlePanicError(&commonModel.ServerError{
 				Msg: commonModel.INIT_DATABASE_PANIC,

@@ -20,9 +20,9 @@ type AppConfig struct {
 		Mode string `yaml:"mode"`
 	} `yaml:"server"`
 	Database struct {
-		Type   string `yaml:"type"`
-		Path   string `yaml:"path"`
-		Pragma string `yaml:"pragma"` // 用于SQLite的PRAGMA设置
+		Type string `yaml:"type"`
+		Path string `yaml:"path"`
+		// Pragma string `yaml:"pragma"`
 	} `yaml:"database"`
 	Auth struct {
 		Jwt struct {
