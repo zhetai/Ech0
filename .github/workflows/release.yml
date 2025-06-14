@@ -36,7 +36,7 @@ jobs:
         with:
           name: frontend-asset
           path: frontend.tar.gz
-          retention-days: 2
+          retention-days: 1
 
   build-binaries:
     name: Build Binaries
@@ -52,46 +52,19 @@ jobs:
           - goos: linux
             goarch: arm
             goarm: 7
-          # - goos: linux
-          #   goarch: loong64
-          # - goos: linux
-          #   goarch: riscv64
-          # - goos: linux
-          #   goarch: s390x
+            
     steps:
-      - name: 🔄 Checkout source code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 📦 Download frontend artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-asset
-          path: ./
-
-      # ✅ 清理 Go 缓存目录
-      - name: 🧹 Clean Go cache directory
-        run: rm -rf ~/.cache/go-build ~/go/pkg/mod
-
-      # - name: Cache Go modules
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ~/.cache/go-build
-      #       ~/go/pkg/mod
-      #     key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-go-
-      #     fail-on-cache-miss: false
-
-      - name: 🧰 Setup Go
+      - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.24.3'
-      
-      - name: 🧙 Set Go proxy
+
+      - name: Set Go proxy
         run: go env -w GOPROXY=https://proxy.golang.org,direct
 
-      - name: 🛠️ Build Go backend (${{ matrix.goos }}/${{ matrix.goarch }})
+      - name: Build backend binary
         run: |
           mkdir -p dist
           if [ "${{ matrix.goarch }}" = "arm" ]; then
@@ -102,7 +75,7 @@ jobs:
             go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
           fi
 
-      - name: 📦 Package backend binary
+      - name: Package backend binary
         run: |
           cd dist
           if [ "${{ matrix.goarch }}" = "arm" ]; then
@@ -111,40 +84,49 @@ jobs:
             tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
           fi
 
-      - name: 📦 Package config.yaml only
-        if: matrix.goarch == 'amd64' && matrix.goos == 'linux'
-        run: tar -czvf dist/ech0-config.tar.gz -C config config.yaml
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ech0-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goarch == 'arm' && 'v7' || '' }}-asset
+          path: dist/*.tar.gz
+          retention-days: 1
 
-      - name: 📦 Package final release bundle
+  prepare-release:
+    name: Prepare Release Package
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-binaries]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-asset
+          path: ./
+
+      - name: Download backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ech0-*
+          path: ./backend-artifacts
+          merge-multiple: true
+
+      - name: Extract backend binaries
         run: |
-          mkdir -p dist/ech0-release/config
-          mkdir -p dist/ech0-release/template
-          mkdir -p dist/ech0-release/data
+          find ./backend-artifacts -name "*.tar.gz" -exec tar -xzvf {} -C dist/ \;
 
-          # 解压前端构建产物
-          tar -xzvf frontend.tar.gz -C dist/ech0-release/template
+      - name: Copy config files
+        run: |
+          mkdir -p dist/config
+          cp -r config/config.yaml dist/config/
 
-          if [ "${{ matrix.goarch }}" = "arm" ]; then
-            cp dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }} dist/ech0-release/ech0
-          else
-            cp dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} dist/ech0-release/ech0
-          fi
-
-          cp -r config/* dist/ech0-release/config/
-
-          cd dist
-          if [ "${{ matrix.goarch }}" = "arm" ]; then
-            tar -czvf ech0-release-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }}.tar.gz ech0-release
-          else
-            tar -czvf ech0-release-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-release
-          fi
-          rm -rf ech0-release
-              
-      - name: 🚀 Upload release assets
+      # ✅ 创建 GitHub Release
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/*.tar.gz
+            ./dist/*
+            ./frontend.tar.gz
           draft: false
           prerelease: false
         env:
@@ -153,7 +135,7 @@ jobs:
   build-docker:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    needs: [build-frontend, build-binaries]  # 依赖前两个 job
+    needs: [build-frontend, build-binaries, prepare-release] 
     steps:
       - name: 🔄 Checkout source code
         uses: actions/checkout@v4
@@ -161,9 +143,15 @@ jobs:
       - name: 📦 Download frontend artifact
         uses: actions/download-artifact@v4
         with:
-          name: frontend-asset
-          path: ./
-          
+          name: frontend-asset # 下载前端构建产物得到fontend.tar.gz
+          path: ./frontend-asset
+
+      - name: 📦 Download backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ech0-* # 下载后端构建产物得到 ech0-*.tar.gz
+          path: ./backend-artifacts
+
       - name: 🐳 Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
