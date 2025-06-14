@@ -62,7 +62,7 @@ jobs:
       - name: 🔄 Checkout source code
         uses: actions/checkout@v4
 
-      - name: Download frontend artifact
+      - name: 📦 Download frontend artifact
         uses: actions/download-artifact@v4
         with:
           name: frontend-asset
@@ -154,7 +154,7 @@ jobs:
       - name: 🔄 Checkout source code
         uses: actions/checkout@v4
         
-      - name: Download frontend artifact
+      - name: 📦 Download frontend artifact
         uses: actions/download-artifact@v4
         with:
           name: frontend-asset
@@ -173,13 +173,13 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           
-      - name: Set up QEMU
+      - name: 📦 Set up QEMU
         uses: docker/setup-qemu-action@v3
         
-      - name: Set up Docker Buildx
+      - name: 📦 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      - name: Build and push
+      - name: 📦 Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
