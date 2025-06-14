@@ -22,11 +22,11 @@ COPY /config/config.yaml /app/config/config.yaml
 # 解压对应平台的 ech0 二进制
 RUN mkdir -p /app/template && \
     if [ "$TARGETOS" = "linux" ] && [ "$TARGETARCH" = "amd64" ]; then \
-       tar -xzf /tmp/ech0-linux-amd64.tar.gz -C /app; \
+       tar -xzf /tmp/ech0-linux-amd64.tar.gz -C /tmp && mv /tmp/ech0-linux-amd64 /app/ech0; \
     elif [ "$TARGETOS" = "linux" ] && [ "$TARGETARCH" = "arm64" ]; then \
-       tar -xzf /tmp/ech0-linux-arm64.tar.gz -C /app; \
+       tar -xzf /tmp/ech0-linux-arm64.tar.gz -C /tmp && mv /tmp/ech0-linux-arm64 /app/ech0; \
     elif [ "$TARGETOS" = "linux" ] && [ "$TARGETARCH" = "arm" ] && [ "$TARGETVARIANT" = "v7" ]; then \
-       tar -xzf /tmp/ech0-linux-armv7.tar.gz -C /app; \
+       tar -xzf /tmp/ech0-linux-armv7.tar.gz -C /tmp && mv /tmp/ech0-linux-armv7 /app/ech0; \
     else \
        echo "Unsupported platform: $TARGETOS/$TARGETARCH$TARGETVARIANT" && exit 1; \
     fi && \
