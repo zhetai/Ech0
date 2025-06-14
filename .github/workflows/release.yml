@@ -53,12 +53,12 @@ jobs:
           goarm: 7        
         - goos: linux
           goarch: arm64
-        - goos: linux
-          goarch: loong64
-        - goos: linux
-          goarch: riscv64
-        - goos: linux
-          goarch: s390x
+        # - goos: linux
+        #   goarch: loong64
+        # - goos: linux
+        #   goarch: riscv64
+        # - goos: linux
+        #   goarch: s390x
 
     steps:
       - name: 🔄 Checkout source code
