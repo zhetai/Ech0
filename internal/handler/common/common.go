@@ -49,7 +49,7 @@ func (commonHandler *CommonHandler) DeleteImage(ctx *gin.Context) {
 	userId := ctx.MustGet("userid").(uint)
 
 	var imageDto commonModel.ImageDto
-	if err := ctx.ShouldBindQuery(&imageDto); err != nil {
+	if err := ctx.ShouldBindJSON(&imageDto); err != nil {
 		ctx.JSON(http.StatusOK, commonModel.Fail[string](errorUtil.HandleError(&commonModel.ServerError{
 			Msg: commonModel.INVALID_REQUEST_BODY,
 			Err: err,

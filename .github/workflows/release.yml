@@ -68,22 +68,29 @@ jobs:
       - name: Build backend binary
         run: |
           mkdir -p dist
-          if [ "${{ matrix.goarch }}" = "arm" ]; then
-            GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} GOARM=${{ matrix.goarm }} CGO_ENABLED=0 \
-            go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }} ./cmd/ech0/main.go
-          else
-            GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 \
-            go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
-          fi
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
+          go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
+
+          # 如果需要支持 ARM 架构，可以取消下面的注释
+          # if [ "${{ matrix.goarch }}" = "arm" ]; then
+          #   GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} GOARM=${{ matrix.goarm }} CGO_ENABLED=0 \
+          #   go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }} ./cmd/ech0/main.go
+          # else
+          #   GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 \
+          #   go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
+          # fi
 
       - name: Package backend binary
         run: |
           cd dist
-          if [ "${{ matrix.goarch }}" = "arm" ]; then
-            tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }}
-          else
-            tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
-          fi
+          tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
+          
+          # 如果需要支持 ARM 架构，可以取消下面的注释
+          # if [ "${{ matrix.goarch }}" = "arm" ]; then
+          #   tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }}
+          # else
+          #   tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
+          # fi
 
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
