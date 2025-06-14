@@ -89,14 +89,14 @@ RUN mkdir -p /app/data
 
 # 解压对应平台的 ech0 二进制
 RUN mkdir -p /app/template && \
-    if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+    if [ "$TARGETOS" = "linux" ] && [ "$TARGETARCH" = "amd64" ]; then \
        tar -xzf /tmp/ech0-linux-amd64.tar.gz -C /app; \
-    elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    elif [ "$TARGETOS" = "linux" ] && [ "$TARGETARCH" = "arm64" ]; then \
        tar -xzf /tmp/ech0-linux-arm64.tar.gz -C /app; \
-    elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then \
+    elif [ "$TARGETOS" = "linux" ] && [ "$TARGETARCH" = "arm" ] && [ "$TARGETVARIANT" = "v7" ]; then \
        tar -xzf /tmp/ech0-linux-armv7.tar.gz -C /app; \
     else \
-       echo "Unsupported platform: $TARGETPLATFORM" && exit 1; \
+       echo "Unsupported platform: $TARGETOS/$TARGETARCH$TARGETVARIANT" && exit 1; \
     fi && \
     # 解压前端静态资源到 /app/template
     tar -xzf /tmp/frontend.tar.gz -C /app/template && \
