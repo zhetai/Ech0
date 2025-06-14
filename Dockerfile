@@ -43,6 +43,11 @@ ENV TZ=Asia/Shanghai
 
 COPY --from=builder /app /app
 
+RUN ls -lh /app
+
+# 设置 ech0 二进制文件的权限
+RUN chmod +x /app/ech0
+
 EXPOSE 6277
 
 CMD ["/app/ech0"]
