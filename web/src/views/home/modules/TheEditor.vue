@@ -483,6 +483,11 @@ const handleUploadImage = async (event: Event) => {
         //   currentMode.value = Mode.ECH0
         // }
       }
+    }).finally(() => {
+      // 重置文件输入
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
     })
   }
 }
