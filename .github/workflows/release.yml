@@ -43,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-frontend
     strategy:
+      max-parallel: 3
       matrix:
         include:
           - goos: linux
@@ -136,7 +137,7 @@ jobs:
   build-docker:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    needs: [build-frontend, build-binaries, prepare-release] 
+    needs: [build-frontend, build-binaries] 
     steps:
       - name: 🔄 Checkout source code
         uses: actions/checkout@v4
