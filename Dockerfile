@@ -28,10 +28,10 @@ FROM golang:1.24.3-alpine AS backend-build
 WORKDIR /app
 
 # 安装构建时所需的工具（仅限构建阶段）
-RUN apk add --no-cache gcc musl-dev
+# RUN apk add --no-cache gcc musl-dev
 
 # 设置环境变量启用 cgo
-ENV CGO_ENABLED=1
+ENV CGO_ENABLED=0
 
 # 复制后端代码和必要文件
 COPY ./go.mod ./go.sum ./
@@ -49,6 +49,9 @@ RUN go build -o /app/ech0 ./cmd/ech0/main.go
 
 # 使用更轻量的 Alpine 镜像作为运行时阶段
 FROM alpine:latest AS final
+
+# 设置时区为上海
+ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 

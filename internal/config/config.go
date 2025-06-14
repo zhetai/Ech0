@@ -3,10 +3,11 @@ package config
 import (
 	"crypto/rand"
 	"encoding/hex"
-	model "github.com/lin-snow/ech0/internal/model/common"
-	"github.com/spf13/viper"
 	"log"
 	"os"
+
+	model "github.com/lin-snow/ech0/internal/model/common"
+	"github.com/spf13/viper"
 )
 
 var Config AppConfig
@@ -19,8 +20,9 @@ type AppConfig struct {
 		Mode string `yaml:"mode"`
 	} `yaml:"server"`
 	Database struct {
-		Type string `yaml:"type"`
-		Path string `yaml:"path"`
+		Type   string `yaml:"type"`
+		Path   string `yaml:"path"`
+		Pragma string `yaml:"pragma"` // 用于SQLite的PRAGMA设置
 	} `yaml:"database"`
 	Auth struct {
 		Jwt struct {

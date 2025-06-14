@@ -33,10 +33,10 @@ Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快
 
 ## 3秒极速部署
 
-### 🧙 脚本一键部署（推荐）
+<!-- ### 🧙 脚本一键部署（推荐）
 ```shell
 curl -fsSL "http://echo.soopy.cn/install.sh" -o install_ech0.sh && bash install_ech0.sh
-```
+``` -->
 
 ### 🐳 docker部署（推荐）
 

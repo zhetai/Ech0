@@ -33,7 +33,7 @@ func (userService *UserService) Login(loginDto *authModel.LoginDto) (string, err
 
 	user, err := userService.userRepository.GetUserByUsername(loginDto.Username)
 	if err != nil {
-		return "", err
+		return "", errors.New(commonModel.USER_NOTFOUND)
 	}
 
 	if user.Password != loginDto.Password {

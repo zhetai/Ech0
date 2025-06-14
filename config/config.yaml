@@ -6,6 +6,7 @@ server:
 database:
   type: "sqlite"
   path: "data/ech0.db"
+  pragma: "_pragma=foreign_keys(1)"
 
 auth:
   jwt:
