@@ -101,7 +101,7 @@ RUN mkdir -p /app/template && \
     # 解压前端静态资源到 /app/template
     tar -xzf /tmp/frontend.tar.gz -C /app/template && \
     # 清理临时文件
-    rm -rf /tmp/*.tar.gz
+    rm -rf /tmp/*
 
 EXPOSE 6277
 
