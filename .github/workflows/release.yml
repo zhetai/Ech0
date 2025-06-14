@@ -113,24 +113,25 @@ jobs:
 
       - name: Extract backend binaries
         run: |
+          mkdir -p dist
           find ./backend-artifacts -name "*.tar.gz" -exec tar -xzvf {} -C dist/ \;
 
       - name: Copy config files
         run: |
           mkdir -p dist/config
           cp -r config/config.yaml dist/config/
-
       # ✅ 创建 GitHub Release
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./dist/ech0-*.tar.gz
+            ./backend-artifacts/*.tar.gz
             ./dist/config/config.yaml
             ./frontend.tar.gz
           draft: false
           prerelease: false
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-docker:
