@@ -2,9 +2,10 @@ package repository
 
 import (
 	"errors"
+	"strings"
+
 	model "github.com/lin-snow/ech0/internal/model/echo"
 	"gorm.io/gorm"
-	"strings"
 )
 
 type EchoRepository struct {
@@ -73,6 +74,9 @@ func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error)
 
 func (echoRepository *EchoRepository) DeleteEchoById(id uint) error {
 	var echo model.Echo
+	// 删除外键images
+	echoRepository.db.Where("message_id = ?", id).Delete(&model.Image{})
+
 	result := echoRepository.db.Delete(&echo, id)
 	if result.Error != nil {
 		return result.Error

@@ -6,7 +6,7 @@ type Echo struct {
 	ID            uint      `gorm:"primaryKey" json:"id"`
 	Content       string    `gorm:"type:text;not null" json:"content"`
 	Username      string    `gorm:"type:varchar(100)" json:"username,omitempty"`
-	Images        []Image   `gorm:"foreignKey:MessageID" json:"images,omitempty"`
+	Images        []Image   `gorm:"foreignKey:MessageID;constraint:OnDelete:CASCADE" json:"images,omitempty"`
 	Private       bool      `gorm:"default:false" json:"private"`
 	UserID        uint      `gorm:"not null;index" json:"user_id"`
 	Extension     string    `gorm:"type:text" json:"extension,omitempty"`
