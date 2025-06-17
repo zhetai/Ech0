@@ -1,4 +1,4 @@
-package md
+package util
 
 import (
 	"github.com/gomarkdown/markdown"

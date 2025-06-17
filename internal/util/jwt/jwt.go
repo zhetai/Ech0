@@ -1,13 +1,14 @@
-package jwt
+package util
 
 import (
 	"errors"
+	"log"
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/lin-snow/ech0/internal/config"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
-	"log"
-	"time"
 )
 
 // CreateClaims 创建Claims

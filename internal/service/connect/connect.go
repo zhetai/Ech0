@@ -5,16 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
+	"time"
+
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/connect"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
-	"github.com/lin-snow/ech0/internal/repository/connect"
+	repository "github.com/lin-snow/ech0/internal/repository/connect"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
-	"github.com/lin-snow/ech0/internal/util/http"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
-	"sync"
-	"time"
 )
 
 type ConnectService struct {
@@ -47,7 +47,7 @@ func (connectService *ConnectService) AddConnect(userid uint, connected model.Co
 	}
 
 	// 去除连接地址前后的空格和斜杠
-	connected.ConnectURL = http.TrimURL(connected.ConnectURL)
+	connected.ConnectURL = httpUtil.TrimURL(connected.ConnectURL)
 
 	// 检查连接地址是否已存在
 	connectedList, err := connectService.connectRepository.GetAllConnects()
