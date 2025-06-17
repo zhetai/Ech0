@@ -50,17 +50,6 @@ type AppConfig struct {
 	}
 }
 
-type ServerConfig struct {
-	Host string `yaml:"host"`
-	Port string `yaml:"port"`
-	Mode string `yaml:"mode"`
-}
-
-type DatabaseConfig struct {
-	DBType string `yaml:"type"`
-	DBPath string `yaml:"path"`
-}
-
 func LoadAppConfig() {
 	viper.SetConfigFile("config/config.yaml")
 	viper.SetConfigType("yaml")
