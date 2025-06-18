@@ -147,7 +147,7 @@ docker image prune -f
 
 # 📢 反馈与改进
 
-若程序出现bug可在issue里进行反馈，对于新增或改进功能需求可在discussion中进行讨论  
+若程序出现bug可在[issue](https://github.com/lin-snow/Ech0/issues)里进行反馈，对于新增或改进功能需求可在[discussion](https://github.com/lin-snow/Ech0/discussions)中进行讨论  
 
 ---
 
