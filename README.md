@@ -154,7 +154,16 @@ docker image prune -f
 gcc --version
 ```
 
-### 前端要求📌  `NodeJS v22.15.0, PNPM`
+📌 **Google Wire**
+用于依赖注入文件生成  
+安装[wire](https://github.com/google/wire)命令如下  
+```shell
+go install github.com/google/wire/cmd/wire@latest
+```  
+
+### 前端要求  
+📌  **NodeJS v22.15.0+, PNPM**
+注：如需要多个nodejs版本共存可使用[fnm](https://github.com/Schniz/fnm)进行管理  
 
 ## 🏗️ 启动
 在Ech0根目录下：
@@ -163,6 +172,7 @@ gcc --version
 ```shell
 go run cmd/ech0/main.go
 ```
+> 如果依赖注入关系发生了变化先需要在`ech0/internal/di/`下执行`wire`命令生成新的`wire_gen.go`文件
 
 前端（新终端）：
 ```shell
@@ -180,6 +190,7 @@ pnpm dev
 - 感谢 [Gin](https://github.com/gin-gonic/gin) 提供高性能的后端框架支持
 - 感谢 [Md-Editor-V3](https://github.com/imzbf/md-editor-v3) 提供强大易用的 Markdown 编辑器
 - 感谢 [Figma](https://www.figma.com/) 提供便捷的 Logo 设计工具
+- 感谢异家人群友提供的各种改进建议和问题反馈
 - 感谢舍友的 Logo 设计
 - 感谢所有开源社区的贡献者与支持者
 
