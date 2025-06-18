@@ -145,6 +145,12 @@ docker image prune -f
 
 ---
 
+# 📢 反馈与改进
+
+若程序出现bug可在issue里进行反馈，对于新增或改进功能需求可在discussion中进行讨论  
+
+---
+
 # 🛠️ 开发
 
 ## 🔧 依赖环境
