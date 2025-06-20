@@ -48,8 +48,8 @@ jobs:
         include:
           - goos: linux
             goarch: amd64
-          # - goos: linux
-          #   goarch: arm64
+          - goos: linux
+            goarch: arm64
           # - goos: linux
           #   goarch: arm
           #   goarm: 7
@@ -65,32 +65,40 @@ jobs:
       - name: Set Go proxy
         run: go env -w GOPROXY=https://proxy.golang.org,direct
 
+      # 新增步骤：为 arm64 架构安装 musl.cc 交叉编译工具链
+      - name: Setup musl.cc for ARM64
+        if: matrix.goarch == 'arm64'
+        run: |
+          wget https://musl.cc/aarch64-linux-musl-cross.tgz
+          tar -xvf aarch64-linux-musl-cross.tgz
+          echo "$(pwd)/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
+
+      # 修改步骤：根据不同架构使用不同的编译方式
       - name: Build backend binary
         run: |
           mkdir -p dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
-          go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
-
-          # 如果需要支持 ARM 架构，可以取消下面的注释
-          # if [ "${{ matrix.goarch }}" = "arm" ]; then
-          #   GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} GOARM=${{ matrix.goarm }} CGO_ENABLED=0 \
-          #   go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }} ./cmd/ech0/main.go
-          # else
-          #   GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 \
-          #   go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
-          # fi
+          
+          if [ "${{ matrix.goarch }}" = "arm64" ]; then
+            echo "Building for linux/arm64 with musl-gcc..."
+            CC=aarch64-linux-musl-gcc GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
+            go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
+          else
+            echo "Building for linux/amd64 with default gcc..."
+            GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
+            go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
+          fi
 
       - name: Package backend binary
         run: |
           cd dist
           tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
-          
-          # 如果需要支持 ARM 架构，可以取消下面的注释
-          # if [ "${{ matrix.goarch }}" = "arm" ]; then
-          #   tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}v${{ matrix.goarm }}
-          # else
-          #   tar -czvf ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ech0-${{ matrix.goos }}-${{ matrix.goarch }}
-          # fi
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ech0-${{ matrix.goos }}-${{ matrix.goarch }}-asset
+          path: dist/*.tar.gz
+          retention-days: 1
 
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
