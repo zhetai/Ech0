@@ -73,19 +73,23 @@ jobs:
           tar -xvf aarch64-linux-musl-cross.tgz
           echo "$(pwd)/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
 
-      # 修改步骤：根据不同架构使用不同的编译方式
       - name: Build backend binary
         run: |
+          # 定义强制静态链接所需的链接器参数，方便复用
+          STATIC_LDFLAGS="-linkmode external -extldflags '-static'"
+          
           mkdir -p dist
           
           if [ "${{ matrix.goarch }}" = "arm64" ]; then
             echo "Building for linux/arm64 with musl-gcc..."
             CC=aarch64-linux-musl-gcc GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
-            go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
+            go build -tags netgo -ldflags "$STATIC_LDFLAGS" -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
+          
           else
             echo "Building for linux/amd64 with default gcc..."
+            # 对于 amd64 也加入相同的构建标签和链接器参数
             GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=1 \
-            go build -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
+            go build -tags netgo -ldflags "$STATIC_LDFLAGS" -o dist/ech0-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/ech0/main.go
           fi
 
       - name: Package backend binary
