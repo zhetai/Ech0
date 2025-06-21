@@ -469,26 +469,28 @@ const handleUploadImage = async (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     const file = target.files[0]
-    fetchUploadImage(file).then((res) => {
-      if (res.code === 1) {
-        // 改成新版的图片数组
-        // echoToAdd.value.image_url = res.data
-        imageToAdd.value.image_url = String(res.data)
-        imageToAdd.value.image_source = ImageSource.LOCAL
-        theToast.success('图片上传成功！')
+    fetchUploadImage(file)
+      .then((res) => {
+        if (res.code === 1) {
+          // 改成新版的图片数组
+          // echoToAdd.value.image_url = res.data
+          imageToAdd.value.image_url = String(res.data)
+          imageToAdd.value.image_source = ImageSource.LOCAL
+          theToast.success('图片上传成功！')
 
-        handleAddMoreImage()
+          handleAddMoreImage()
 
-        // if (currentMode.value === Mode.Image) {
-        //   currentMode.value = Mode.ECH0
-        // }
-      }
-    }).finally(() => {
-      // 重置文件输入
-      if (fileInput.value) {
-        fileInput.value.value = ''
-      }
-    })
+          // if (currentMode.value === Mode.Image) {
+          //   currentMode.value = Mode.ECH0
+          // }
+        }
+      })
+      .finally(() => {
+        // 重置文件输入
+        if (fileInput.value) {
+          fileInput.value.value = ''
+        }
+      })
   }
 }
 

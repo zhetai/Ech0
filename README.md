@@ -146,7 +146,7 @@ docker image prune -f
    这是用于解析获取音乐流媒体直链的服务api,用于分享的音乐卡片功能，如果不设置则默认使用ech0提供的api（部署于vercel）。
 
 10. **为什么添加后的Connect只显示了一部分？**  
-   因为后端会尝试获取所有connect的实例信息，如果某个实例挂了或者无法访问则会被抛弃，只返回获取到的有效connect实例的信息给前端。
+      因为后端会尝试获取所有connect的实例信息，如果某个实例挂了或者无法访问则会被抛弃，只返回获取到的有效connect实例的信息给前端。
 
 ---
 
@@ -179,10 +179,10 @@ gcc --version
 安装[wire](https://github.com/google/wire)命令如下  
 ```shell
 go install github.com/google/wire/cmd/wire@latest
-```  
+```
 
 ### 前端要求  
-📌  **NodeJS v22.15.0+, PNPM**
+📌  **NodeJS v22.15.0+, PNPM v10**
 注：如需要多个nodejs版本共存可使用[fnm](https://github.com/Schniz/fnm)进行管理  
 
 ## 🏗️ 启动
