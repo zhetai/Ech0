@@ -1,15 +1,13 @@
 package handler
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gin-gonic/gin"
 
 type UserHandlerInterface interface {
-	Login(ctx *gin.Context)
-	Register(ctx *gin.Context)
-	UpdateUser(ctx *gin.Context)
-	UpdateUserAdmin(ctx *gin.Context)
-	GetAllUsers(ctx *gin.Context)
-	DeleteUser(ctx *gin.Context)
-	GetUserInfo(ctx *gin.Context)
+	Login() gin.HandlerFunc
+	Register() gin.HandlerFunc
+	UpdateUser() gin.HandlerFunc
+	UpdateUserAdmin() gin.HandlerFunc
+	GetAllUsers() gin.HandlerFunc
+	DeleteUser() gin.HandlerFunc
+	GetUserInfo() gin.HandlerFunc
 }
