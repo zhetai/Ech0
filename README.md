@@ -166,16 +166,16 @@ docker image prune -f
 📌 **Go 1.24.3+**
 
 📌 **C 编译器**  
-> 使用 `go-sqlite3` 等需要 CGO 的库时，需安装：  
-> - Windows：
->     - [MinGW-w64](https://winlibs.com/)
->     - 解压后将bin目录添加到PATH
-> - macOS： `brew install gcc`
-> - Linux： `sudo apt install build-essential`
+使用 `go-sqlite3` 等需要 CGO 的库时，需安装：  
+- Windows：
+    - [MinGW-w64](https://winlibs.com/)
+    - 解压后将bin目录添加到PATH
+- macOS： `brew install gcc`
+- Linux： `sudo apt install build-essential`
 
 📌 **Google Wire**  
-> 安装[wire](https://github.com/google/wire)用于依赖注入文件生成:  
-> - `go install github.com/google/wire/cmd/wire@latest`
+安装[wire](https://github.com/google/wire)用于依赖注入文件生成:  
+- `go install github.com/google/wire/cmd/wire@latest`
 
 ## **前端要求:**  
 📌  **NodeJS v23.11.1+, PNPM v10**
