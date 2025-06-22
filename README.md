@@ -162,7 +162,7 @@ docker image prune -f
 ---
 
 # 🛠️ 开发依赖环境  
-## 后端要求  
+## 后端要求:  
 📌 **Go 1.24.3+**
 
 📌 **C 编译器（如需 CGO)**
@@ -173,12 +173,12 @@ docker image prune -f
 - macOS： `brew install gcc`
 - Linux： `sudo apt install build-essential`
 
-📌 **Google Wire**
+📌 **Google Wire**  
 安装[wire](https://github.com/google/wire)用于依赖注入文件生成:  
 - `go install github.com/google/wire/cmd/wire@latest`
 
 
-## 前端要求  
+## 前端要求:  
 📌  **NodeJS v23.11.1+, PNPM v10**
 > 注：如需要多个nodejs版本共存可使用[fnm](https://github.com/Schniz/fnm)进行管理  
 
