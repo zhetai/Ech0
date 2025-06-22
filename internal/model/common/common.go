@@ -57,7 +57,7 @@ const (
 )
 
 const (
-	Version = "2.1.2" // 当前版本号
+	Version = "2.1.3" // 当前版本号
 )
 
 const (
