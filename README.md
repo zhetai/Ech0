@@ -110,7 +110,7 @@ docker image prune -f
 - [x] 修复一个安全性的问题
 - [x] 重构后端，使其更加优雅高效
 - [x] 解决跨平台问题
-- [ ] 拥有一个来自设计师专门设计的Logo（许愿）
+- [x] 使用Figma重新设计Logo
 - [ ] 优化各项画面细节 && 增加更多实用功能
 - [ ] 性能优化 && 美化界面
 
@@ -156,52 +156,48 @@ docker image prune -f
 
 ---
 
-# 🛠️ 开发
-
-## 🔧 依赖环境
-
-### 后端要求
+# 🛠️ 开发依赖环境  
+## 后端要求  
 📌 **Go 1.24.3+**
 
 📌 **C 编译器（如需 CGO)**
-- 使用 `go-sqlite3` 等需要 CGO 的库时，需安装：
+使用 `go-sqlite3` 等需要 CGO 的库时，需安装：  
 - Windows：
     - [MinGW-w64](https://winlibs.com/)
     - 解压后将bin目录添加到PATH
 - macOS： `brew install gcc`
 - Linux： `sudo apt install build-essential`
-```shell
-gcc --version
-```
 
 📌 **Google Wire**
-用于依赖注入文件生成  
-安装[wire](https://github.com/google/wire)命令如下  
-```shell
-go install github.com/google/wire/cmd/wire@latest
-```
+安装[wire](https://github.com/google/wire)用于依赖注入文件生成:  
+- `go install github.com/google/wire/cmd/wire@latest`
 
-### 前端要求  
+
+## 前端要求  
 📌  **NodeJS v23.11.1+, PNPM v10**
-注：如需要多个nodejs版本共存可使用[fnm](https://github.com/Schniz/fnm)进行管理  
+> 注：如需要多个nodejs版本共存可使用[fnm](https://github.com/Schniz/fnm)进行管理  
 
-## 🏗️ 启动
-在Ech0根目录下：
+---
 
-后端：
+## 🏗️ 启动前后端联调  
+**后端(在Ech0根目录下)：**
 ```shell
-go run cmd/ech0/main.go
+go run cmd/ech0/main.go # 编译并启动后端
 ```
 > 如果依赖注入关系发生了变化先需要在`ech0/internal/di/`下执行`wire`命令生成新的`wire_gen.go`文件
 
-前端（新终端）：
+**前端（新终端）：**  
 ```shell
 cd web # 进入前端目录
 
-pnpm install
+pnpm install # 如果没有安装依赖则执行
 
-pnpm dev
+pnpm dev # 启动前端预览
 ```
+
+**前后端启动后:**  
+前端预览： http://localhost:5173 （端口在启动后可在控制台查看）  
+后端预览： http://localhost:6273 （默认后端端口为6273）  
 
 ---
 
@@ -210,8 +206,9 @@ pnpm dev
 - 感谢 [Gin](https://github.com/gin-gonic/gin) 提供高性能的后端框架支持
 - 感谢 [Md-Editor-V3](https://github.com/imzbf/md-editor-v3) 提供强大易用的 Markdown 编辑器
 - 感谢 [Figma](https://www.figma.com/) 提供便捷的 Logo 设计工具
+- 感觉[VSCode](https://code.visualstudio.com/)和[Jetbrain Goland](https://www.jetbrains.com/)提供强大易用的开发工具
 - 感谢异家人群友提供的各种改进建议和问题反馈
-- 感谢舍友的 Logo 设计
+- 感谢舍友提供了初版 Logo 设计
 - 感谢所有开源社区的贡献者与支持者
 
 ---
