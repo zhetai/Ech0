@@ -159,7 +159,7 @@ docker image prune -f
 # 🪅 项目架构
 
 ![技术架构图](./docs/imgs/Ech0技术架构图.svg)
-
+> by ExcaliDraw
 ---
 
 # 🛠️ 开发
