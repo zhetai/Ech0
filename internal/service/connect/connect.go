@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	"sync"
 	"time"
 
@@ -19,13 +20,20 @@ import (
 
 type ConnectService struct {
 	connectRepository repository.ConnectRepositoryInterface
+	echoRepository    echoRepository.EchoRepositoryInterface
 	commonService     commonService.CommonServiceInterface
 	settingService    settingService.SettingServiceInterface
 }
 
-func NewConnectService(connectRepository repository.ConnectRepositoryInterface, commonService commonService.CommonServiceInterface, settingService settingService.SettingServiceInterface) ConnectServiceInterface {
+func NewConnectService(
+	connectRepository repository.ConnectRepositoryInterface,
+	echoRepository echoRepository.EchoRepositoryInterface,
+	commonService commonService.CommonServiceInterface,
+	settingService settingService.SettingServiceInterface,
+) ConnectServiceInterface {
 	return &ConnectService{
 		connectRepository: connectRepository,
+		echoRepository:    echoRepository,
 		commonService:     commonService,
 		settingService:    settingService,
 	}
@@ -103,10 +111,14 @@ func (connectService *ConnectService) GetConnect() (model.Connect, error) {
 		return connect, err
 	}
 
+	// 统计当天发布的数量
+	todayEchos := connectService.echoRepository.GetTodayEchos(true)
+
 	// 设置 Connect 信息
 	connect.ServerName = setting.ServerName
 	connect.ServerURL = setting.ServerURL
-	connect.Ech0s = status.TotalMessages
+	connect.TotalEchos = status.TotalEchos
+	connect.TodayEchos = len(todayEchos)
 	connect.SysUsername = status.Username
 
 	// 处理 Logo URL，避免出现重复的斜杠

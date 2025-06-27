@@ -49,7 +49,7 @@ func BuildHandlers(db *gorm.DB) (*Handlers, error) {
 	todoServiceInterface := service5.NewTodoService(todoRepositoryInterface, commonServiceInterface)
 	todoHandler := handler5.NewTodoHandler(todoServiceInterface)
 	connectRepositoryInterface := repository5.NewConnectRepository(db)
-	connectServiceInterface := service6.NewConnectService(connectRepositoryInterface, commonServiceInterface, settingServiceInterface)
+	connectServiceInterface := service6.NewConnectService(connectRepositoryInterface, echoRepositoryInterface, commonServiceInterface, settingServiceInterface)
 	connectHandler := handler6.NewConnectHandler(connectServiceInterface)
 	handlers := NewHandlers(userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler)
 	return handlers, nil

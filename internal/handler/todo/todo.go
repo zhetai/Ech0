@@ -96,7 +96,7 @@ func (todoHandler *TodoHandler) DeleteTodo() gin.HandlerFunc {
 		}
 
 		return res.Response{
-			Msg: commonModel.DELETE_ECHO_SUCCESS,
+			Msg: commonModel.DELETE_TODO_SUCCESS,
 		}
 	})
 

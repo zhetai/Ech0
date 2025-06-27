@@ -99,3 +99,22 @@ func (echoHandler *EchoHandler) DeleteEcho() gin.HandlerFunc {
 		}
 	})
 }
+
+func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+		result, err := echoHandler.echoService.GetTodayEchos(userid)
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: result,
+			Msg:  commonModel.GET_TODAY_ECHOS_SUCCESS,
+		}
+	})
+}

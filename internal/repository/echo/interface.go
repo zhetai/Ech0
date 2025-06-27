@@ -7,4 +7,5 @@ type EchoRepositoryInterface interface {
 	GetEchosByPage(page, pageSize int, search string, showPrivate bool) ([]model.Echo, int64)
 	GetEchosById(id uint) (*model.Echo, error)
 	DeleteEchoById(id uint) error
+	GetTodayEchos(showPrivate bool) []model.Echo
 }

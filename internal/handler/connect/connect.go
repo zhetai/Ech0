@@ -86,7 +86,6 @@ func (connectHandler *ConnectHandler) GetConnectsInfo() gin.HandlerFunc {
 			Msg:  commonModel.GET_CONNECT_INFO_SUCCESS,
 		}
 	})
-
 }
 
 func (connectHandler *ConnectHandler) GetConnect() gin.HandlerFunc {
@@ -104,7 +103,6 @@ func (connectHandler *ConnectHandler) GetConnect() gin.HandlerFunc {
 			Msg:  commonModel.CONNECT_SUCCESS,
 		}
 	})
-
 }
 
 func (connectHandler *ConnectHandler) GetConnects() gin.HandlerFunc {

@@ -9,4 +9,5 @@ type EchoServiceInterface interface {
 	PostEcho(userid uint, newEcho *model.Echo) error
 	GetEchosByPage(userid uint, pageQueryDto commonModel.PageQueryDto) (commonModel.PageQueryResult[[]model.Echo], error)
 	DeleteEchoById(userid, id uint) error
+	GetTodayEchos(userid uint) ([]model.Echo, error)
 }

@@ -17,10 +17,13 @@
           >
             <a :href="connect.server_url" target="_blank">
               <img :src="connect.logo" alt="avatar" class="w-8 h-8 rounded-full object-cover" />
-              <!-- 小绿点 -->
+              <!-- 热力圆点 -->
               <span
-                class="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"
-                style="transform: translate(35%, -35%)"
+                class="absolute top-0 right-0 w-2.5 h-2.5 border-2 border-white rounded-full"
+                :style="{
+                  transform: 'translate(35%, -35%)',
+                  backgroundColor: getColor(connect.total_echos || 0),
+                }"
               ></span>
             </a>
             <!-- Tooltip -->
@@ -29,7 +32,8 @@
             >
               <div class="font-bold mb-1">{{ connect.server_name }}</div>
               <div v-if="connect.sys_username">管理员: {{ connect.sys_username }}</div>
-              <div v-if="connect.ech0s">共有: {{ connect.ech0s }}</div>
+              <div v-if="connect.total_echos">共有: {{ connect.total_echos }}</div>
+              <div v-if="connect.today_echos">今日: {{ connect.today_echos }}</div>
             </div>
           </div>
         </div>
@@ -47,6 +51,14 @@ import { onMounted } from 'vue'
 const connectStore = useConnectStore()
 const { getConnectInfo } = connectStore
 const { connectsInfo } = storeToRefs(connectStore)
+
+const getColor = (count: number): string => {
+  if (count >= 4) return '#196127'
+  if (count >= 3) return '#239a3b'
+  if (count >= 2) return '#7bc96f'
+  if (count >= 1) return '#c6e48b'
+  return '#b7bbb7' // 默认颜色
+}
 
 onMounted(async () => {
   await getConnectInfo()

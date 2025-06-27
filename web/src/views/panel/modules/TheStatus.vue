@@ -27,7 +27,7 @@
         <div>
           <h1>
             当前Ech0总共有：
-            <span class="ml-2">{{ status?.total_messages }}</span>
+            <span class="ml-2">{{ status?.total_echos }}</span>
             <span class="ml-2">条</span>
           </h1>
         </div>

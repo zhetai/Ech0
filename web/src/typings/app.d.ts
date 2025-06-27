@@ -101,7 +101,7 @@ declare namespace App {
         username: string
         logo: string
         users: App.Api.User.UserStatus[]
-        total_messages: number
+        total_echos: number
       }
 
       type HeatMap = {
@@ -143,7 +143,8 @@ declare namespace App {
         server_name: string
         server_url: string
         logo: string
-        ech0s: number
+        total_echos: number
+        today_echos: number
         sys_username: string
       }
 

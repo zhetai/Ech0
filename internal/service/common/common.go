@@ -176,7 +176,7 @@ func (commonService *CommonService) GetStatus() (commonModel.Status, error) {
 	status.Username = sysuser.Username
 	status.Logo = sysuser.Avatar
 	status.Users = users
-	status.TotalMessages = len(echos)
+	status.TotalEchos = len(echos)
 
 	return status, nil
 }

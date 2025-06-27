@@ -6,11 +6,11 @@ type UserStatus struct {
 	IsAdmin  bool   `json:"is_admin"` // 是否是管理员
 }
 type Status struct {
-	SysAdminID    uint         `json:"sys_admin_id"` // 系统管理员ID
-	Username      string       `json:"username"`     // 系统管理员用户名
-	Users         []UserStatus `json:"users"`        // 所有用户
-	Logo          string       `json:"logo"`         // 站点logo
-	TotalMessages int          `json:"total_messages"`
+	SysAdminID uint         `json:"sys_admin_id"` // 系统管理员ID
+	Username   string       `json:"username"`     // 系统管理员用户名
+	Users      []UserStatus `json:"users"`        // 所有用户
+	Logo       string       `json:"logo"`         // 站点logo
+	TotalEchos int          `json:"total_echos"`  // 总共发布数量
 }
 
 type Heapmap struct {

@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"strings"
+	"time"
 
 	model "github.com/lin-snow/ech0/internal/model/echo"
 	"gorm.io/gorm"
@@ -31,7 +32,7 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 	offset := (page - 1) * pageSize
 
 	// 查询数据库
-	var messages []model.Echo
+	var echos []model.Echo
 	var total int64
 
 	query := echoRepository.db.Model(&model.Echo{})
@@ -53,10 +54,10 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 		Limit(pageSize).
 		Offset(offset).
 		Order("created_at DESC").
-		Find(&messages)
+		Find(&echos)
 
 	// 返回结果
-	return messages, total
+	return echos, total
 }
 
 func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error) {
@@ -85,4 +86,32 @@ func (echoRepository *EchoRepository) DeleteEchoById(id uint) error {
 		return gorm.ErrRecordNotFound // 如果没有找到记录
 	}
 	return nil
+}
+
+func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Echo {
+	// 查询数据库
+	var echos []model.Echo
+
+	// 获取当天开始和结束时间
+	today := time.Now()
+	startOfDay := time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
+	endOfDay := startOfDay.Add(24 * time.Hour)
+
+	query := echoRepository.db.Model(&model.Echo{})
+	// 如果不是管理员，过滤私密留言
+	if !showPrivate {
+		query = query.Where("private = ?", false)
+	}
+
+	// 添加当天的时间过滤
+	query = query.Where("created_at >= ? AND created_at < ?", startOfDay, endOfDay)
+
+	// 获取总数并进行分页查询
+	query.
+		Preload("Images").
+		Order("created_at DESC").
+		Find(&echos)
+
+	// 返回结果
+	return echos
 }

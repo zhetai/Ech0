@@ -25,6 +25,13 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 				return
 			}
 
+			// 获取当日留言
+			if strings.HasPrefix(ctx.Request.URL.Path, "/api/echo/today") {
+				ctx.Set("userid", authModel.NO_USER_LOGINED)
+				ctx.Next()
+				return
+			}
+
 			// 查看留言详情也不需要鉴权
 			//if strings.HasPrefix(ctx.Request.URL.Path, "/api/messages/") {
 			//	ctx.Set("userid", uint(0))

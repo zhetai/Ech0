@@ -4,7 +4,8 @@ type Connect struct {
 	ServerName  string `json:"server_name"`  // 服务器名称
 	ServerURL   string `json:"server_url"`   // 服务器地址
 	Logo        string `json:"logo"`         // 站点logo
-	Ech0s       int    `json:"ech0s"`        // 留言数量
+	TotalEchos  int    `json:"total_echos"`  // 总共发布数量
+	TodayEchos  int    `json:"today_echos"`  // 今日发布数量
 	SysUsername string `json:"sys_username"` // 系统管理员用户名
 }
 

@@ -128,3 +128,25 @@ func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
 
 	return echoService.echoRepository.DeleteEchoById(id)
 }
+
+func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error) {
+	//管理员登陆则支持查看隐私数据，否则不允许
+	showPrivate := false
+	if userid == authModel.NO_USER_LOGINED {
+		showPrivate = false
+	} else {
+		user, err := echoService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return nil, err
+		}
+		if !user.IsAdmin {
+			showPrivate = false
+		}
+		showPrivate = true
+	}
+
+	// 获取当日发布的Echos
+	todayEchos := echoService.echoRepository.GetTodayEchos(showPrivate)
+
+	return todayEchos, nil
+}
