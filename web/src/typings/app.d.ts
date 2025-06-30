@@ -91,6 +91,17 @@ declare namespace App {
         private: boolean
       }
 
+      type EchoToUpdate = {
+        id: number
+        content: string
+        image_url?: string | null
+        image_source?: string | null
+        images?: ImageToAdd[] | null
+        extension?: string | null
+        extension_type?: string | null
+        private: boolean
+      }
+
       type PaginationResult = {
         items: Echo[]
         total: number

@@ -37,6 +37,11 @@ export function fetchDeleteEcho(echoId: number) {
   })
 }
 
+// 更新Echo
+export function fetchUpdateEcho(echo: App.Api.Ech0.EchoToUpdate) {
+
+}
+
 // 获取status
 export function fetchGetStatus() {
   return request<App.Api.Ech0.Status>({
