@@ -7,4 +7,5 @@ type EchoHandlerInterface interface {
 	GetEchosByPage() gin.HandlerFunc
 	DeleteEcho() gin.HandlerFunc
 	GetTodayEchos() gin.HandlerFunc
+	UpdateEcho() gin.HandlerFunc
 }

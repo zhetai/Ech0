@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
 	service "github.com/lin-snow/ech0/internal/service/echo"
-	"strconv"
 )
 
 type EchoHandler struct {
@@ -115,6 +116,30 @@ func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
 		return res.Response{
 			Data: result,
 			Msg:  commonModel.GET_TODAY_ECHOS_SUCCESS,
+		}
+	})
+}
+
+func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		var updateEcho model.Echo
+		if err := ctx.ShouldBindJSON(&updateEcho); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		userId := ctx.MustGet("userid").(uint)
+		if err := echoHandler.echoService.UpdateEcho(userId, &updateEcho); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.UPDATE_ECHO_SUCCESS,
 		}
 	})
 }

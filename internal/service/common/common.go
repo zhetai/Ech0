@@ -3,6 +3,11 @@ package service
 import (
 	"errors"
 	"fmt"
+	"mime/multipart"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 	"github.com/lin-snow/ech0/internal/config"
@@ -12,10 +17,6 @@ import (
 	repository "github.com/lin-snow/ech0/internal/repository/common"
 	mdUtil "github.com/lin-snow/ech0/internal/util/md"
 	storageUtil "github.com/lin-snow/ech0/internal/util/storage"
-	"mime/multipart"
-	"net/http"
-	"os"
-	"time"
 )
 
 type CommonService struct {
@@ -74,7 +75,8 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source string)
 		return errors.New(commonModel.IMAGE_NOT_FOUND)
 	}
 
-	if source == echoModel.ImageSourceLocal {
+	switch source {
+	case echoModel.ImageSourceLocal:
 		// 获取图片名字（去除前面的/images/)
 		imageName := url[len("/images/"):]
 
@@ -83,13 +85,13 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source string)
 
 		// 删除图片
 		return storageUtil.DeleteFileFromLocal(imagePath)
-	} else if source == echoModel.ImageSourceURL {
+	case echoModel.ImageSourceURL:
 		// 无需处理
-	} else if source == echoModel.ImageSourceS3 {
-
-	} else if source == echoModel.ImageSourceR2 {
-
-	} else {
+	case echoModel.ImageSourceS3:
+		// TODO: 实现S3图片删除
+	case echoModel.ImageSourceR2:
+		// TODO: 实现R2图片删除
+	default:
 		// 未知图片来源按本地图片处理
 		// 获取图片名字（去除前面的/images/)
 		imageName := url[len("/images/"):]
@@ -110,7 +112,8 @@ func (commonService *CommonService) DirectDeleteImage(url, source string) error 
 		return errors.New(commonModel.IMAGE_NOT_FOUND)
 	}
 
-	if source == echoModel.ImageSourceLocal {
+	switch source {
+	case echoModel.ImageSourceLocal:
 		// 获取图片名字（去除前面的/images/)
 		imageName := url[len("/images/"):]
 
@@ -119,13 +122,13 @@ func (commonService *CommonService) DirectDeleteImage(url, source string) error 
 
 		// 删除图片
 		return storageUtil.DeleteFileFromLocal(imagePath)
-	} else if source == echoModel.ImageSourceURL {
+	case echoModel.ImageSourceURL:
 		// 无需处理
-	} else if source == echoModel.ImageSourceS3 {
-
-	} else if source == echoModel.ImageSourceR2 {
-
-	} else {
+	case echoModel.ImageSourceS3:
+		// TODO: 实现S3图片删除
+	case echoModel.ImageSourceR2:
+		// TODO: 实现R2图片删除
+	default:
 		// 未知图片来源按本地图片处理
 		// 获取图片名字（去除前面的/images/)
 		imageName := url[len("/images/"):]

@@ -8,4 +8,5 @@ type EchoRepositoryInterface interface {
 	GetEchosById(id uint) (*model.Echo, error)
 	DeleteEchoById(id uint) error
 	GetTodayEchos(showPrivate bool) []model.Echo
+	UpdateEcho(echo *model.Echo) error
 }

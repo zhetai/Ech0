@@ -17,6 +17,7 @@ const (
 	GET_ECHOS_BY_PAGE_SUCCESS = "获取Echos成功！"
 	DELETE_ECHO_SUCCESS       = "删除Echo成功"
 	GET_TODAY_ECHOS_SUCCESS   = "获取当日Echos成功"
+	UPDATE_ECHO_SUCCESS       = "更新Echo成功"
 )
 
 // Common 成功相关常量

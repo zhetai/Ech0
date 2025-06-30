@@ -115,3 +115,31 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 	// 返回结果
 	return echos
 }
+
+func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
+	// 开启事务确保数据一致性
+	tx := echoRepository.db.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// 1. 先删除该 Echo 关联的所有旧图片
+	if err := tx.Where("message_id = ?", echo.ID).Delete(&model.Image{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// 2. 更新 Echo 内容（包括关联的新图片）
+	if err := tx.Save(echo).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// 提交事务
+	return tx.Commit().Error
+}

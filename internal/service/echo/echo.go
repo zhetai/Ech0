@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
@@ -36,15 +37,16 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 
 	// 检查Extension内容
 	if newEcho.Extension != "" && newEcho.ExtensionType != "" {
-		if newEcho.ExtensionType == model.Extension_MUSIC {
-
-		} else if newEcho.ExtensionType == model.Extension_VIDEO {
-
-		} else if newEcho.ExtensionType == model.Extension_GITHUBPROJ {
+		switch newEcho.ExtensionType {
+		case model.Extension_MUSIC:
+			// 处理音乐链接 (暂无)
+		case model.Extension_VIDEO:
+			// 处理视频链接 (暂无)
+		case model.Extension_GITHUBPROJ:
 			// 处理GitHub项目的链接
 			newEcho.Extension = httpUtil.TrimURL(newEcho.Extension)
-		} else if newEcho.ExtensionType == model.Extension_WEBSITE {
-
+		case model.Extension_WEBSITE:
+			// 处理网站链接 (暂无)
 		}
 	} else {
 		newEcho.Extension = ""
@@ -149,4 +151,48 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 	todayEchos := echoService.echoRepository.GetTodayEchos(showPrivate)
 
 	return todayEchos, nil
+}
+
+func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error {
+	user, err := echoService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	// 检查Extension内容
+	if echo.Extension != "" && echo.ExtensionType != "" {
+		switch echo.ExtensionType {
+		case model.Extension_MUSIC:
+			// 处理音乐链接 (暂无)
+		case model.Extension_VIDEO:
+			// 处理视频链接 (暂无)
+		case model.Extension_GITHUBPROJ:
+			echo.Extension = httpUtil.TrimURL(echo.Extension)
+		case model.Extension_WEBSITE:
+			// 处理网站链接 (暂无)
+		}
+	} else {
+		echo.Extension = ""
+		echo.ExtensionType = ""
+	}
+
+	// 处理无效图片
+	for i := range echo.Images {
+		if echo.Images[i].ImageURL == "" {
+			echo.Images[i].ImageSource = ""
+			echo.Images[i].ImageURL = ""
+		}
+		// 确保外键正确设置
+		echo.Images[i].MessageID = echo.ID
+	}
+
+	// 检查是否为空
+	if echo.Content == "" && len(echo.Images) == 0 && (echo.Extension == "" || echo.ExtensionType == "") {
+		return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
+	}
+
+	return echoService.echoRepository.UpdateEcho(echo)
 }
