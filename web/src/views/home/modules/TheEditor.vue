@@ -382,12 +382,12 @@ const { todoMode } = storeToRefs(todoStore)
 const { echoToUpdate, isUpdateMode } = storeToRefs(echoStore)
 
 const enum Mode {
-  ECH0 = 0,
-  Panel = 1,
-  TODO = 2,
-  EXTEN = 3,
-  PlayMusic = 4,
-  Image = 5,
+  ECH0 = 0, // 默认编辑状态
+  Panel = 1, // 显示面板状态
+  TODO = 2, // 待办事项状态
+  EXTEN = 3, // 处理扩展状态
+  PlayMusic = 4, // 音乐播放器状态
+  Image = 5, // 图片上传状态
 }
 const enum ExtensionType {
   MUSIC = 'MUSIC',
