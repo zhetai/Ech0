@@ -2,17 +2,18 @@ package database
 
 import (
 	"errors"
+	"log"
+	"time"
+
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 func UpdateMigration() {
 	// 确认旧表存在，否则无需迁移
 	if !DB.Migrator().HasTable(&echoModel.Message{}) {
-		log.Println("未发现旧版 Message 表，无需迁移。")
+		// log.Println("未发现旧版 Message 表，无需迁移。")
 		return
 	}
 
