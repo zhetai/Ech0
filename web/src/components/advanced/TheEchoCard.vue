@@ -24,6 +24,9 @@
         <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)" title="删除">
           <Roll />
         </button>
+        <button v-if="userStore.isLogin" @click="handleUpdateEcho()" title="更新">
+          <EditEcho />
+        </button>
       </div>
     </div>
 
@@ -109,8 +112,10 @@ import Roll from '../icons/roll.vue'
 import Lock from '../icons/lock.vue'
 import Prev from '../icons/prev.vue'
 import Next from '../icons/next.vue'
+import EditEcho from '../icons/editecho.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
+import { useEchoStore } from '@/stores/echo'
 
 const emit = defineEmits(['refresh'])
 
@@ -139,6 +144,8 @@ const previewOptions = {
   autoFoldThreshold: 15,
 }
 
+const echoStore = useEchoStore()
+
 const handleDeleteEcho = (echoId: number) => {
   // 浏览器alert弹窗确认删除
   if (confirm('确定要删除吗？')) {
@@ -148,6 +155,18 @@ const handleDeleteEcho = (echoId: number) => {
       emit('refresh')
     })
   }
+}
+
+const handleUpdateEcho = () => {
+  if (echoStore.isUpdateMode) {
+    // 如果已经在更新模式，返回顶部并提示用户先退出更新模式
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    theToast.warning('请先退出更新模式！')
+    return
+  }
+
+  echoStore.echoToUpdate = props.echo
+  echoStore.isUpdateMode = true
 }
 
 const formatDate = (dateString: string) => {

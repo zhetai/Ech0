@@ -6,19 +6,21 @@ export const useEchoStore = defineStore('echoStore', () => {
   /**
    * state
    */
-  const echoList = ref<App.Api.Ech0.Echo[]>([])
-  const isLoading = ref<boolean>(true)
-  const total = ref<number>(0)
-  const pageSize = ref<number>(5)
-  const page = ref<number>(0)
-  const current = ref<number>(1)
-  const searchValue = ref<string>('')
+  const echoList = ref<App.Api.Ech0.Echo[]>([]) // 存储Echo列表
+  const isLoading = ref<boolean>(true) // 是否正在加载数据
+  const total = ref<number>(0) // 总数据量
+  const pageSize = ref<number>(5) // 每页显示的数量
+  const page = ref<number>(0) // 当前页码，从0开始计数
+  const current = ref<number>(1) // 当前页码，从1开始计数
+  const searchValue = ref<string>('') // 搜索关键词
   const hasMore = computed(() => {
     return total.value > echoList.value.length
-  })
+  }) // 是否还有更多数据可加载
   const searchingMode = computed(() => {
     return searchValue.value.length > 0
-  })
+  }) // 是否处于搜索模式
+  const echoToUpdate = ref<App.Api.Ech0.EchoToUpdate | null>(null) // 用于更新Echo的临时存储
+  const isUpdateMode = ref<boolean>(false) // 是否处于更新模式
 
   // 监听 searchingMode 的变化
   watch(searchingMode, (newValue, oldValue) => {
@@ -76,6 +78,8 @@ export const useEchoStore = defineStore('echoStore', () => {
     searchValue,
     searchingMode,
     hasMore,
+    echoToUpdate,
+    isUpdateMode,
     getEchosByPage,
     refreshEchos,
     refreshForSearch,

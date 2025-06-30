@@ -94,12 +94,15 @@ declare namespace App {
       type EchoToUpdate = {
         id: number
         content: string
-        image_url?: string | null
-        image_source?: string | null
+        username: string
+        image_url: string
+        image_source: string
         images?: ImageToAdd[] | null
+        private: boolean
+        user_id: number
         extension?: string | null
         extension_type?: string | null
-        private: boolean
+        created_at: string
       }
 
       type PaginationResult = {

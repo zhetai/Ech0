@@ -39,7 +39,11 @@ export function fetchDeleteEcho(echoId: number) {
 
 // 更新Echo
 export function fetchUpdateEcho(echo: App.Api.Ech0.EchoToUpdate) {
-
+  return request({
+    url: `/echo`,
+    method: 'PUT',
+    data: echo,
+  })
 }
 
 // 获取status

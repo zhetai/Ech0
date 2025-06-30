@@ -144,6 +144,7 @@
         />
         <!-- Extension -->
         <div v-if="currentMode === Mode.EXTEN">
+          <!-- 音乐分享 -->
           <div v-if="currentExtensionType === ExtensionType.MUSIC">
             <h2 class="text-gray-500 font-bold mb-1">音乐分享（支持网易云/QQ音乐）</h2>
             <p class="text-gray-400 text-sm mb-1">注意：不支持VIP歌曲，建议使用自建API</p>
@@ -166,6 +167,7 @@
               <span v-else class="text-red-300">失败</span>
             </div>
           </div>
+          <!-- Bilibili视频分享 -->
           <div v-if="currentExtensionType === ExtensionType.VIDEO">
             <div class="text-gray-500 font-bold mb-1">Bilibili视频分享(粘贴自动提取BV号)</div>
             <BaseInput
@@ -175,6 +177,7 @@
             />
             <div class="text-gray-500 my-1">提取的BV号为：{{ extensionToAdd.extension }}</div>
           </div>
+          <!-- Github项目分享 -->
           <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
             <div class="text-gray-500 font-bold mb-1">Github项目分享</div>
             <BaseInput
@@ -183,6 +186,7 @@
               placeholder="https://github.com/username/repo"
             />
           </div>
+          <!-- 网站链接分享 -->
           <div v-if="currentExtensionType === ExtensionType.WEBSITE">
             <div class="text-gray-500 font-bold mb-1">网站链接分享</div>
             <!-- 网站标题 -->
@@ -250,12 +254,30 @@
             />
           </div> -->
           <!-- Publish -->
-          <div v-if="currentMode !== Mode.Panel">
+          <div v-if="currentMode !== Mode.Panel && isUpdateMode === false">
             <BaseButton
               :icon="Publish"
-              @click="handleAdd"
+              @click="handleAddorUpdate"
               class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="发布"
+              title="发布Echo"
+            />
+          </div>
+          <!-- Exit Update -->
+          <div v-if="currentMode !== Mode.Panel && isUpdateMode === true">
+            <BaseButton
+              :icon="ExitUpdate"
+              @click="handleExitUpdateMode"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
+              title="退出更新模式"
+            />
+          </div>
+          <!-- Update -->
+          <div v-if="currentMode !== Mode.Panel && isUpdateMode === true">
+            <BaseButton
+              :icon="Update"
+              @click="handleAddorUpdate"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
+              title="更新Echo"
             />
           </div>
         </div>
@@ -332,6 +354,7 @@ import {
   fetchDeleteImage,
   fetchUploadMusic,
   fetchDeleteMusic,
+  fetchUpdateEcho,
 } from '@/service/api'
 import { useEchoStore } from '@/stores/echo'
 import { useSettingStore } from '@/stores/settting'
@@ -344,6 +367,8 @@ import { parseMusicURL } from '@/utils/other'
 import { getImageToAddUrl } from '@/utils/other'
 import { getApiUrl } from '@/service/request/shared'
 import Addmore from '@/components/icons/addmore.vue'
+import Update from '@/components/icons/update.vue'
+import ExitUpdate from '@/components/icons/exitupdate.vue'
 
 const emit = defineEmits(['refreshAudio'])
 
@@ -354,6 +379,7 @@ const settingStore = useSettingStore()
 const { setTodoMode, getTodos } = todoStore
 const { SystemSetting } = storeToRefs(settingStore)
 const { todoMode } = storeToRefs(todoStore)
+const { echoToUpdate, isUpdateMode } = storeToRefs(echoStore)
 
 const enum Mode {
   ECH0 = 0,
@@ -418,18 +444,18 @@ const websiteToAdd = ref<{
 }>({
   title: '',
   site: '',
-})
-const bilibiliURL = ref<string>('')
+}) // 临时网站链接变量
+const bilibiliURL = ref<string>('') // 临时Bilibili链接变量
 const extensionToAdd = ref({
   extension: '',
   extension_type: '',
-})
-const imageIndex = ref<number>(0)
-const imageSourceMemory = ref<string>()
+}) // 临时扩展变量
+const imageIndex = ref<number>(0) // 临时图片索引变量
+const imageSourceMemory = ref<string>() // 临时图片来源变量
 const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
   image_url: '',
   image_source: '',
-})
+}) // 临时图片添加变量
 const imagesToAdd = ref<App.Api.Ech0.ImageToAdd[]>([])
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
@@ -480,6 +506,11 @@ const handleUploadImage = async (event: Event) => {
 
           handleAddMoreImage()
 
+          // 如果当前处于Echo更新模式，则需要立马执行更新（图片上传操作不可逆，需要立马更新确保后端数据同步）
+          if (isUpdateMode.value && echoToUpdate.value) {
+            handleAddorUpdateEcho(true)
+          }
+
           // if (currentMode.value === Mode.Image) {
           //   currentMode.value = Mode.ECH0
           // }
@@ -518,10 +549,21 @@ const handleDeleteMusic = () => {
 }
 
 const handleRemoveImage = () => {
+  if (
+    imageIndex.value < 0 ||
+    imageIndex.value >= imagesToAdd.value.length ||
+    imagesToAdd.value.length === 0
+  ) {
+    theToast.error('当前图片索引无效，无法删除！')
+    return
+  }
+
+  const index = imageIndex.value
+
   if (confirm('确定要移除图片吗？')) {
     const imageToDel: App.Api.Ech0.ImageToDelete = {
-      url: String(imagesToAdd.value[imageIndex.value].image_url),
-      source: String(imagesToAdd.value[imageIndex.value].image_source),
+      url: String(imagesToAdd.value[index].image_url),
+      source: String(imagesToAdd.value[index].image_source),
     }
 
     if (imageToDel.source === ImageSource.LOCAL) {
@@ -531,11 +573,16 @@ const handleRemoveImage = () => {
       }).then((res) => {
         if (res.code === 1) {
           // 从数组中删除图片
-          imagesToAdd.value.splice(imageIndex.value, 1)
+          imagesToAdd.value.splice(index, 1)
+
+          // 如果删除成功且当前处于Echo更新模式，则需要立马执行更新（图片删除操作不可逆，需要立马更新确保后端数据同步）
+          if (isUpdateMode.value && echoToUpdate.value) {
+            handleAddorUpdateEcho(true)
+          }
         }
       })
     } else {
-      imagesToAdd.value.splice(imageIndex.value, 1)
+      imagesToAdd.value.splice(index, 1)
     }
 
     imageIndex.value = 0
@@ -560,10 +607,11 @@ const handleClear = () => {
   imagesToAdd.value = []
   imageToAdd.value.image_url = ''
   imageToAdd.value.image_source = ''
+  imageIndex.value = 0
 }
 
-const handleAddEcho = () => {
-  echoToAdd.value.images = imagesToAdd.value
+const handleAddorUpdateEcho = (justSyncImages: boolean) => {
+  echoToAdd.value.images = imagesToAdd.value // 将图片数组添加到Echo中
 
   // 检查是否有外部链接分享
   if (extensionToAdd.value.extension_type === ExtensionType.WEBSITE) {
@@ -578,6 +626,7 @@ const handleAddEcho = () => {
       websiteToAdd.value.title = '外部链接'
     }
 
+    // 检查网站标题和链接是否都存在
     if (websiteToAdd.value.title.length > 0 && websiteToAdd.value.site.length > 0) {
       // 将网站标题和链接添加到扩展中 (序列化为json)
       extensionToAdd.value.extension = JSON.stringify({
@@ -590,6 +639,7 @@ const handleAddEcho = () => {
     }
   }
 
+  // 检查最终的Extension模块是否有内容
   if (extensionToAdd.value.extension.length > 0 && extensionToAdd.value.extension_type.length > 0) {
     echoToAdd.value.extension = extensionToAdd.value.extension
     echoToAdd.value.extension_type = extensionToAdd.value.extension_type
@@ -598,20 +648,60 @@ const handleAddEcho = () => {
     echoToAdd.value.extension_type = null
   }
 
+  // 检查Echo是否为空
   if (
     !echoToAdd.value.content &&
     (!echoToAdd.value.images || echoToAdd.value.images.length === 0) &&
     !echoToAdd.value.extension &&
     !echoToAdd.value.extension_type
   ) {
-    theToast.error('内容不能为空！')
-    return
+    if (isUpdateMode.value) {
+      theToast.error('待更新的Echo不能为空！')
+      return
+    } else {
+      theToast.error('待添加的Echo不能为空！')
+      return
+    }
   }
 
   // if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
   //   echoToAdd.value.image_source = null
   // }
 
+  // 检查是否处于更新模式
+  if (isUpdateMode.value) {
+    // 处于更新模式，执行更新操作
+    if (!echoToUpdate.value) {
+      theToast.error('没有待更新的Echo！')
+      return
+    }
+
+    // 回填 echoToUpdate
+    echoToUpdate.value.content = echoToAdd.value.content
+    echoToUpdate.value.private = echoToAdd.value.private
+    echoToUpdate.value.images = echoToAdd.value.images
+    echoToUpdate.value.extension = echoToAdd.value.extension
+    echoToUpdate.value.extension_type = echoToAdd.value.extension_type
+
+    // 更新Echo
+    fetchUpdateEcho(echoToUpdate.value).then((res) => {
+      if (res.code === 1 && !justSyncImages) {
+        theToast.success('更新成功！')
+        handleClear()
+        echoStore.refreshEchos()
+        isUpdateMode.value = false
+        echoToUpdate.value = null
+        currentMode.value = Mode.ECH0
+      } else if (res.code === 1 && justSyncImages) {
+        theToast.success('发现图片更改，已自动更新同步Echo！')
+      } else {
+        theToast.error('更新失败，请稍后再试！')
+      }
+    })
+    return
+  }
+
+  // 不是Echo更新模式，执行添加操作
   fetchAddEcho(echoToAdd.value).then((res) => {
     if (res.code === 1) {
       theToast.success('发布成功！')
@@ -637,12 +727,19 @@ const handleAddTodo = () => {
   })
 }
 
-const handleAdd = () => {
+const handleAddorUpdate = () => {
   if (todoMode.value) {
     handleAddTodo()
   } else {
-    handleAddEcho()
+    handleAddorUpdateEcho(false)
   }
+}
+
+const handleExitUpdateMode = () => {
+  isUpdateMode.value = false
+  echoToUpdate.value = null
+  handleClear()
+  theToast.info('已退出更新模式！')
 }
 
 // 监听用户输入
@@ -657,6 +754,70 @@ watch(
       } else {
         theToast.error('请输入正确的B站分享链接！')
       }
+    }
+  },
+)
+
+// 监听是否处于更新模式
+watch(
+  () => isUpdateMode.value,
+  (newVal) => {
+    if (newVal) {
+      // 处于更新模式（将待更新的数据填充到编辑器）
+      // 0. 清空编辑器
+      handleClear()
+
+      // 1. 填充本文
+      echoToAdd.value.content = echoToUpdate.value?.content || ''
+      echoToAdd.value.private = echoToUpdate.value?.private || false
+
+      // 2. 填充图片
+      if (echoToUpdate.value?.images && echoToUpdate.value.images.length > 0) {
+        imagesToAdd.value = echoToUpdate.value.images.map((img) => ({
+          image_url: img.image_url || '',
+          image_source: img.image_source || '',
+        }))
+      } else {
+        imagesToAdd.value = []
+      }
+
+      // 3. 填充扩展
+      if (echoToUpdate.value?.extension && echoToUpdate.value.extension_type) {
+        currentExtensionType.value = echoToUpdate.value.extension_type as ExtensionType
+        extensionToAdd.value.extension = echoToUpdate.value.extension
+        extensionToAdd.value.extension_type = echoToUpdate.value.extension_type
+        // 根据扩展类型填充
+        switch (echoToUpdate.value.extension_type) {
+          case ExtensionType.MUSIC:
+            break
+
+          case ExtensionType.VIDEO:
+            bilibiliURL.value = echoToUpdate.value.extension // 直接使用extension填充B站链接
+            break
+
+          case ExtensionType.GITHUBPROJ:
+            break
+
+          case ExtensionType.WEBSITE:
+            // 反序列化网站链接
+            const websiteData = JSON.parse(echoToUpdate.value.extension) as {
+              title?: string
+              site?: string
+            }
+            websiteToAdd.value.title = websiteData.title || ''
+            websiteToAdd.value.site = websiteData.site || ''
+            break
+        }
+      }
+
+      // 4. 回到页面顶部（触发BackToTop）
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+
+      // 5. 弹出通知，提示可以编辑了
+      theToast.info('已进入更新模式，请编辑内容后点击更新按钮！')
+    } else {
+      // 退出更新模式
+      echoToUpdate.value = null
     }
   },
 )
