@@ -210,16 +210,9 @@
           <!-- ShowMore -->
           <div>
             <BaseButton
-              :icon="Advance"
+              :icon="currentMode === Mode.ECH0 ? Advance : Back"
               @click="handleChangeMode"
-              :class="
-                [
-                  'w-8 h-8 sm:w-9 sm:h-9 rounded-md',
-                  todoMode
-                    ? 'bg-orange-100 shadow-[0_0_12px_-4px_rgba(255,140,0,0.6)] !ring-0 !text-white'
-                    : '',
-                ].join(' ')
-              "
+              :class="['w-8 h-8 sm:w-9 sm:h-9 rounded-md'].join(' ')"
               title="其它"
             />
           </div>
@@ -263,7 +256,14 @@
             />
           </div>
           <!-- Exit Update -->
-          <div v-if="currentMode !== Mode.Panel && isUpdateMode === true">
+          <div
+            v-if="
+              currentMode !== Mode.Panel &&
+              currentMode !== Mode.TODO &&
+              currentMode !== Mode.PlayMusic &&
+              isUpdateMode === true
+            "
+          >
             <BaseButton
               :icon="ExitUpdate"
               @click="handleExitUpdateMode"
@@ -272,7 +272,14 @@
             />
           </div>
           <!-- Update -->
-          <div v-if="currentMode !== Mode.Panel && isUpdateMode === true">
+          <div
+            v-if="
+              currentMode !== Mode.Panel &&
+              currentMode !== Mode.TODO &&
+              currentMode !== Mode.PlayMusic &&
+              isUpdateMode === true
+            "
+          >
             <BaseButton
               :icon="Update"
               @click="handleAddorUpdate"
@@ -369,6 +376,7 @@ import { getApiUrl } from '@/service/request/shared'
 import Addmore from '@/components/icons/addmore.vue'
 import Update from '@/components/icons/update.vue'
 import ExitUpdate from '@/components/icons/exitupdate.vue'
+import Back from '@/components/icons/back.vue'
 
 const emit = defineEmits(['refreshAudio'])
 
@@ -413,9 +421,9 @@ const handleChangeMode = () => {
   } else if (
     currentMode.value === Mode.TODO ||
     currentMode.value === Mode.PlayMusic ||
-    currentMode.value === Mode.Image
+    currentMode.value === Mode.EXTEN
   ) {
-    currentMode.value = Mode.ECH0
+    currentMode.value = Mode.Panel
     setTodoMode(false)
 
     if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
