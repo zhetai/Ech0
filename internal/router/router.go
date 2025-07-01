@@ -13,6 +13,7 @@ type AppRouterGroup struct {
 	AuthRouterGroup   *gin.RouterGroup
 }
 
+// SetupRouter 配置路由
 func SetupRouter(r *gin.Engine, h *di.Handlers) {
 	// Setup Frontend
 	r.Use(static.Serve("/", static.LocalFile("./template", true)))
@@ -54,6 +55,7 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 	setupNoRoutes(r)
 }
 
+// setupRouterGroup 初始化路由组
 func setupRouterGroup(r *gin.Engine) *AppRouterGroup {
 	resource := r.Group("/")
 	public := r.Group("/api")

@@ -2,6 +2,7 @@ package router
 
 import "github.com/lin-snow/ech0/internal/di"
 
+// setupConnectRoutes 设置连接路由
 func setupConnectRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Public
 	appRouterGroup.PublicRouterGroup.GET("/connect", h.ConnectHandler.GetConnect())

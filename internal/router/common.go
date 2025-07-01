@@ -2,6 +2,7 @@ package router
 
 import "github.com/lin-snow/ech0/internal/di"
 
+// setupCommonRoutes 设置普通路由
 func setupCommonRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Public
 	appRouterGroup.PublicRouterGroup.GET("/status", h.CommonHandler.GetStatus())

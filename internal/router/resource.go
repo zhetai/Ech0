@@ -4,6 +4,7 @@ import (
 	"github.com/lin-snow/ech0/internal/di"
 )
 
+// setupResourceRoutes 设置资源路由
 func setupResourceRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// TODO: 不知道为什么放在这里会失效，无法使用
 	//appRouterGroup.ResourceGroup.Use(static.Serve("/", static.LocalFile("./template", true)))

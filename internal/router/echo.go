@@ -2,6 +2,7 @@ package router
 
 import "github.com/lin-snow/ech0/internal/di"
 
+// setupEchoRoutes 设置Echo路由
 func setupEchoRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Public
 

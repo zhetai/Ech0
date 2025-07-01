@@ -2,6 +2,7 @@ package router
 
 import "github.com/lin-snow/ech0/internal/di"
 
+// setupUserRoutes 设置用户路由
 func setupUserRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Public
 	appRouterGroup.PublicRouterGroup.POST("/login", h.UserHandler.Login())
