@@ -73,7 +73,7 @@ const (
 )
 
 const (
-	// GreetingBanner 是站点的欢迎横幅
+	// GreetingBanner 是控制台横幅
 	GreetingBanner = `
 ███████╗     ██████╗    ██╗  ██╗     ██████╗ 
 ██╔════╝    ██╔════╝    ██║  ██║    ██╔═████╗
