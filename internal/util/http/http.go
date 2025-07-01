@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// TrimURL 去除 URL 前后的空格和斜杠
 func TrimURL(url string) string {
 	// 去除连接地址前后的空格和斜杠
 	url = strings.TrimSpace(url)
@@ -17,12 +18,13 @@ func TrimURL(url string) string {
 	return url
 }
 
+// Header 自定义请求头结构体
 type Header struct {
 	Header  string
 	Content string
 }
 
-// 请求发送函数
+// SendRequest 发送 HTTP 请求
 func SendRequest(url, method string, customHeader Header) ([]byte, error) {
 	// 自定义 HTTP 客户端，忽略 TLS 证书验证
 	client := &http.Client{

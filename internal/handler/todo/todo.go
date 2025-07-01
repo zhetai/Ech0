@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/todo"
 	service "github.com/lin-snow/ech0/internal/service/todo"
-	"strconv"
 )
 
 type TodoHandler struct {
@@ -17,6 +18,7 @@ func NewTodoHandler(todoService service.TodoServiceInterface) *TodoHandler {
 	return &TodoHandler{todoService: todoService}
 }
 
+// AddTodo 添加新的待办事项
 func (todoHandler *TodoHandler) AddTodo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -44,6 +46,7 @@ func (todoHandler *TodoHandler) AddTodo() gin.HandlerFunc {
 
 }
 
+// UpdateTodo 更新待办事项
 func (todoHandler *TodoHandler) UpdateTodo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -73,6 +76,7 @@ func (todoHandler *TodoHandler) UpdateTodo() gin.HandlerFunc {
 
 }
 
+// DeleteTodo 删除待办事项
 func (todoHandler *TodoHandler) DeleteTodo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -102,6 +106,7 @@ func (todoHandler *TodoHandler) DeleteTodo() gin.HandlerFunc {
 
 }
 
+// GetTodoList 获取待办事项列表
 func (todoHandler *TodoHandler) GetTodoList() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID

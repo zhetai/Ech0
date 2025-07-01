@@ -20,6 +20,7 @@ func NewEchoHandler(echoService service.EchoServiceInterface) *EchoHandler {
 	}
 }
 
+// PostEcho 创建新的留言
 func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		var newEcho model.Echo
@@ -45,6 +46,7 @@ func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 
 }
 
+// GetEchosByPage 获取留言列表，支持分页
 func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取分页参数
@@ -74,6 +76,7 @@ func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 
 }
 
+// DeleteEcho 删除留言
 func (echoHandler *EchoHandler) DeleteEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -101,6 +104,7 @@ func (echoHandler *EchoHandler) DeleteEcho() gin.HandlerFunc {
 	})
 }
 
+// GetTodayEchos 获取今天的留言
 func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -120,6 +124,7 @@ func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
 	})
 }
 
+// UpdateEcho 更新留言
 func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		var updateEcho model.Echo

@@ -2,9 +2,10 @@ package service
 
 import (
 	"errors"
+
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
-	"github.com/lin-snow/ech0/internal/model/todo"
-	"github.com/lin-snow/ech0/internal/repository/todo"
+	model "github.com/lin-snow/ech0/internal/model/todo"
+	repository "github.com/lin-snow/ech0/internal/repository/todo"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 )
 
@@ -20,6 +21,7 @@ func NewTodoService(todoRepository repository.TodoRepositoryInterface, commonSer
 	}
 }
 
+// GetTodoList 获取当前用户的Todo列表
 func (todoService *TodoService) GetTodoList(userid uint) ([]model.Todo, error) {
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
@@ -43,6 +45,7 @@ func (todoService *TodoService) GetTodoList(userid uint) ([]model.Todo, error) {
 	return todos, nil
 }
 
+// AddTodo 创建新的Todo
 func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
@@ -77,6 +80,7 @@ func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
 	return nil
 }
 
+// UpdateTodo 更新指定ID的Todo
 func (todoService *TodoService) UpdateTodo(userid uint, id int64) error {
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
@@ -111,6 +115,7 @@ func (todoService *TodoService) UpdateTodo(userid uint, id int64) error {
 	return nil
 }
 
+// DeleteTodo 删除指定ID的Todo
 func (todoService *TodoService) DeleteTodo(userid uint, id int64) error {
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {

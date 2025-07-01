@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// Echo 定义Echo实体
 type Echo struct {
 	ID            uint      `gorm:"primaryKey" json:"id"`
 	Content       string    `gorm:"type:text;not null" json:"content"`
@@ -14,6 +15,7 @@ type Echo struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
+// Message 定义Message实体
 type Message struct {
 	ID            uint      `gorm:"primaryKey" json:"id"`
 	Content       string    `gorm:"type:text;not null" json:"content"`
@@ -28,6 +30,7 @@ type Message struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
+// Image 定义Image实体
 type Image struct {
 	ID          uint   `gorm:"primaryKey" json:"id"`
 	MessageID   uint   `gorm:"index;not null" json:"message_id"`

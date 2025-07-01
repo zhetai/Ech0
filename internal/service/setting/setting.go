@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/setting"
@@ -23,6 +24,7 @@ func NewSettingService(commonService commonService.CommonServiceInterface, keyva
 	}
 }
 
+// GetSetting 获取设置
 func (settingService *SettingService) GetSetting(setting *model.SystemSetting) error {
 	settingValue, err := settingService.keyvalueRepository.GetKeyValue(commonModel.SystemSettingsKey)
 	if err != nil {
@@ -53,6 +55,7 @@ func (settingService *SettingService) GetSetting(setting *model.SystemSetting) e
 	return nil
 }
 
+// UpdateSetting 更新设置
 func (settingService *SettingService) UpdateSetting(userid uint, newSetting *model.SystemSettingDto) error {
 	user, err := settingService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {

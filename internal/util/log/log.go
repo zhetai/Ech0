@@ -5,8 +5,10 @@ import (
 	"go.uber.org/zap"
 )
 
+// Logger 全局日志记录器
 var Logger *zap.Logger
 
+// InitLogger 初始化日志记录器
 func InitLogger() {
 	var err error
 	Logger, err = zap.NewProduction()

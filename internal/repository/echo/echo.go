@@ -27,6 +27,7 @@ func (echoRepository *EchoRepository) CreateEcho(echo *model.Echo) error {
 	return nil
 }
 
+// GetEchosByPage 获取分页的 Echo 列表
 func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search string, showPrivate bool) ([]model.Echo, int64) {
 	// 计算偏移量
 	offset := (page - 1) * pageSize
@@ -60,6 +61,7 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 	return echos, total
 }
 
+// GetEchosById 根据 ID 获取 Echo
 func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error) {
 	var echo model.Echo
 	result := echoRepository.db.Preload("Images").First(&echo, id)
@@ -73,6 +75,7 @@ func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error)
 	return &echo, nil
 }
 
+// DeleteEchoById 删除 Echo
 func (echoRepository *EchoRepository) DeleteEchoById(id uint) error {
 	var echo model.Echo
 	// 删除外键images
@@ -88,6 +91,7 @@ func (echoRepository *EchoRepository) DeleteEchoById(id uint) error {
 	return nil
 }
 
+// GetTodayEchos 获取今天的 Echo 列表
 func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Echo {
 	// 查询数据库
 	var echos []model.Echo
@@ -116,6 +120,7 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 	return echos
 }
 
+// UpdateEcho 更新 Echo
 func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 	// 开启事务确保数据一致性
 	tx := echoRepository.db.Begin()

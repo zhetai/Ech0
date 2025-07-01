@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/user"
 	service "github.com/lin-snow/ech0/internal/service/user"
-	"strconv"
 )
 
 type UserHandler struct {
@@ -76,6 +77,7 @@ func (userHandler *UserHandler) Register() gin.HandlerFunc {
 
 }
 
+// UpdateUser 更新用户信息
 func (userHandler *UserHandler) UpdateUser() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 解析用户请求体中的参数
@@ -142,6 +144,7 @@ func (userHandler *UserHandler) GetAllUsers() gin.HandlerFunc {
 
 }
 
+// DeleteUser 删除用户
 func (userHandler *UserHandler) DeleteUser() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -170,6 +173,7 @@ func (userHandler *UserHandler) DeleteUser() gin.HandlerFunc {
 
 }
 
+// GetUserInfo 获取当前用户信息
 func (userHandler *UserHandler) GetUserInfo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID

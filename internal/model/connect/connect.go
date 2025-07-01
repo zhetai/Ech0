@@ -1,5 +1,6 @@
 package model
 
+// Connect 定义可读取的连接信息
 type Connect struct {
 	ServerName  string `json:"server_name"`  // 服务器名称
 	ServerURL   string `json:"server_url"`   // 服务器地址
@@ -9,6 +10,7 @@ type Connect struct {
 	SysUsername string `json:"sys_username"` // 系统管理员用户名
 }
 
+// Connected 定义添加的连接信息
 type Connected struct {
 	ID         uint   `gorm:"primaryKey" json:"id"`
 	ConnectURL string `json:"connect_url"` // 连接地址

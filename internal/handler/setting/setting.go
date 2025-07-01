@@ -18,6 +18,7 @@ func NewSettingHandler(settingService service.SettingServiceInterface) *SettingH
 	}
 }
 
+// GetSettings 获取设置
 func (settingHandler *SettingHandler) GetSettings() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		var settings model.SystemSetting
@@ -36,6 +37,7 @@ func (settingHandler *SettingHandler) GetSettings() gin.HandlerFunc {
 
 }
 
+// UpdateSettings 更新设置
 func (settingHandler *SettingHandler) UpdateSettings() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID

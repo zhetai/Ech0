@@ -10,9 +10,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config 全局配置变量
 var Config AppConfig
+
+// JWT_SECRET 用于JWT签名的密钥
 var JWT_SECRET []byte
 
+// AppConfig 应用程序配置结构体
 type AppConfig struct {
 	Server struct {
 		Port string `yaml:"port"`
@@ -50,6 +54,7 @@ type AppConfig struct {
 	}
 }
 
+// LoadAppConfig 加载应用程序配置
 func LoadAppConfig() {
 	viper.SetConfigFile("config/config.yaml")
 	viper.SetConfigType("yaml")

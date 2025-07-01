@@ -23,6 +23,7 @@ func NewEchoService(commonService commonService.CommonServiceInterface, echoRepo
 	}
 }
 
+// PostEcho 创建新的Echo
 func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error {
 	newEcho.UserID = userid
 
@@ -68,6 +69,7 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 	return echoService.echoRepository.CreateEcho(newEcho)
 }
 
+// GetEchosByPage 获取Echo列表，支持分页
 func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonModel.PageQueryDto) (commonModel.PageQueryResult[[]model.Echo], error) {
 	// 参数校验
 	if pageQueryDto.Page < 1 {
@@ -101,6 +103,7 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 	return result, nil
 }
 
+// DeleteEchoById 删除指定ID的Echo
 func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
 	user, err := echoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
@@ -131,6 +134,7 @@ func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
 	return echoService.echoRepository.DeleteEchoById(id)
 }
 
+// GetTodayEchos 获取今天的Echo列表
 func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error) {
 	//管理员登陆则支持查看隐私数据，否则不允许
 	showPrivate := false
@@ -153,6 +157,7 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 	return todayEchos, nil
 }
 
+// UpdateEcho 更新指定ID的Echo
 func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error {
 	user, err := echoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {

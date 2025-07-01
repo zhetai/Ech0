@@ -17,8 +17,10 @@ import (
 	"gorm.io/gorm"
 )
 
+// DB 全局数据库连接变量
 var DB *gorm.DB
 
+// InitDatabase 初始化数据库连接
 func InitDatabase() {
 	// 读取数据库类型和保存路径
 	dbType := config.Config.Database.Type
@@ -57,6 +59,7 @@ func InitDatabase() {
 	UpdateMigration()
 }
 
+// MigrateDB 执行数据库迁移
 func MigrateDB() error {
 	models := []interface{}{
 		&userModel.User{},

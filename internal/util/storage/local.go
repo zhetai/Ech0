@@ -3,29 +3,33 @@ package util
 import (
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/lin-snow/ech0/internal/config"
-	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/uuid"
+	"github.com/lin-snow/ech0/internal/config"
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
 )
 
+// UploadFileToLocal 根据文件类型上传文件到本地存储
 func UploadFileToLocal(file *multipart.FileHeader, fileType commonModel.UploadFileType) (string, error) {
-	if fileType == commonModel.ImageType {
+	switch fileType {
+	case commonModel.ImageType:
 		return UploadImageToLocal(file)
-	} else if fileType == commonModel.AudioType {
+	case commonModel.AudioType:
 		return UploadAudioToLocal(file)
-	} else {
+	default:
 		return "", errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
 	}
 }
 
+// UploadImageToLocal 将图片上传到本地存储
 func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 	// 创建图片存储目录
-	if err := createImageDirIfNotExist(config.Config.Upload.ImagePath); err != nil {
+	if err := createDirIfNotExist(config.Config.Upload.ImagePath); err != nil {
 		return "", err
 	}
 
@@ -61,9 +65,10 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 	return imageURL, nil
 }
 
+// UploadAudioToLocal 将音频上传到本地存储
 func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
-	// 创建图片存储目录
-	if err := createImageDirIfNotExist(config.Config.Upload.AudioPath); err != nil {
+	// 创建音频存储目录
+	if err := createDirIfNotExist(config.Config.Upload.AudioPath); err != nil {
 		return "", err
 	}
 
@@ -98,6 +103,7 @@ func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
 	return audioURL, nil
 }
 
+// DeleteFileFromLocal 删除本地文件
 func DeleteFileFromLocal(filePath string) error {
 	err := os.Remove(filePath)
 	if err != nil && !os.IsNotExist(err) {

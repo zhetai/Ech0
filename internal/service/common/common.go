@@ -184,7 +184,7 @@ func (commonService *CommonService) GetStatus() (commonModel.Status, error) {
 	return status, nil
 }
 
-func (commonService *CommonService) GetHeatMap() ([]commonModel.Heapmap, error) {
+func (commonService *CommonService) GetHeatMap() ([]commonModel.Heatmap, error) {
 	// 获取当前日期
 	today := time.Now()
 
@@ -203,12 +203,12 @@ func (commonService *CommonService) GetHeatMap() ([]commonModel.Heapmap, error) 
 
 	// 如果不足30天，补齐数据（date为缺的日期，count为0）
 	// Create a map for quick lookup of existing heatmap data
-	heatmapMap := make(map[string]commonModel.Heapmap)
+	heatmapMap := make(map[string]commonModel.Heatmap)
 	for _, item := range heatmapData {
 		heatmapMap[item.Date] = item
 	}
 
-	var results [30]commonModel.Heapmap
+	var results [30]commonModel.Heatmap
 	for i := 0; i < 30; i++ {
 		// 计算日期 (from today back to 29 days ago)
 		date := today.AddDate(0, 0, -i).Format("2006-01-02")
@@ -219,7 +219,7 @@ func (commonService *CommonService) GetHeatMap() ([]commonModel.Heapmap, error) 
 			results[resultIndex] = item
 		} else {
 			// 未找到数据，填充默认值
-			results[resultIndex] = commonModel.Heapmap{
+			results[resultIndex] = commonModel.Heatmap{
 				Date:  date,
 				Count: 0,
 			}

@@ -6,9 +6,18 @@ import (
 )
 
 type EchoServiceInterface interface {
+	// PostEcho 创建新的Echo
 	PostEcho(userid uint, newEcho *model.Echo) error
+
+	// GetEchosByPage 获取Echo列表，支持分页
 	GetEchosByPage(userid uint, pageQueryDto commonModel.PageQueryDto) (commonModel.PageQueryResult[[]model.Echo], error)
+
+	// DeleteEchoById 删除指定ID的Echo
 	DeleteEchoById(userid, id uint) error
+
+	// GetTodayEchos 获取今天的Echo列表
 	GetTodayEchos(userid uint) ([]model.Echo, error)
+
+	// UpdateEcho 更新指定ID的Echo
 	UpdateEcho(userid uint, echo *model.Echo) error
 }

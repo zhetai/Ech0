@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/connect"
-	"github.com/lin-snow/ech0/internal/service/connect"
-	"strconv"
+	service "github.com/lin-snow/ech0/internal/service/connect"
 )
 
 type ConnectHandler struct {
@@ -19,6 +20,7 @@ func NewConnectHandler(connectService service.ConnectServiceInterface) *ConnectH
 	}
 }
 
+// AddConnect 添加连接
 func (connectHandler *ConnectHandler) AddConnect() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		userId := ctx.MustGet("userid").(uint)
@@ -44,6 +46,7 @@ func (connectHandler *ConnectHandler) AddConnect() gin.HandlerFunc {
 
 }
 
+// DeleteConnect 删除连接
 func (connectHandler *ConnectHandler) DeleteConnect() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		userId := ctx.MustGet("userid").(uint)
@@ -70,6 +73,7 @@ func (connectHandler *ConnectHandler) DeleteConnect() gin.HandlerFunc {
 	})
 }
 
+// GetConnectsInfo 获取所有添加的连接的信息
 func (connectHandler *ConnectHandler) GetConnectsInfo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 调用 Service 层获取 Connect 信息
@@ -88,6 +92,7 @@ func (connectHandler *ConnectHandler) GetConnectsInfo() gin.HandlerFunc {
 	})
 }
 
+// GetConnect 提供当前实例的连接信息
 func (connectHandler *ConnectHandler) GetConnect() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		connect, err := connectHandler.connectService.GetConnect()
@@ -105,6 +110,7 @@ func (connectHandler *ConnectHandler) GetConnect() gin.HandlerFunc {
 	})
 }
 
+// GetConnects 获取当前实例添加的所有连接
 func (connectHandler *ConnectHandler) GetConnects() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 调用 Service 层获取 Connect 列表

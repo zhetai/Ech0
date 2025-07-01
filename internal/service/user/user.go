@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
@@ -24,6 +25,7 @@ func NewUserService(userRepository repository.UserRepositoryInterface, settingSe
 	}
 }
 
+// Login 用户登录
 func (userService *UserService) Login(loginDto *authModel.LoginDto) (string, error) {
 	if loginDto.Username == "" || loginDto.Password == "" {
 		return "", errors.New(commonModel.USERNAME_OR_PASSWORD_NOT_BE_EMPTY)
@@ -49,6 +51,7 @@ func (userService *UserService) Login(loginDto *authModel.LoginDto) (string, err
 	return token, nil
 }
 
+// Register 用户注册
 func (userService *UserService) Register(registerDto *authModel.RegisterDto) error {
 	// 检查用户数量是否超过限制
 	users, err := userService.userRepository.GetAllUsers()
@@ -96,6 +99,7 @@ func (userService *UserService) Register(registerDto *authModel.RegisterDto) err
 	return nil
 }
 
+// UpdateUser 更新用户信息
 func (userService *UserService) UpdateUser(userid uint, userdto model.UserInfoDto) error {
 	user, err := userService.userRepository.GetUserByID(int(userid))
 	if err != nil {
@@ -138,6 +142,7 @@ func (userService *UserService) UpdateUser(userid uint, userdto model.UserInfoDt
 	return nil
 }
 
+// UpdateUserAdmin 更新用户的管理员权限
 func (userService *UserService) UpdateUserAdmin(userid uint) error {
 	user, err := userService.userRepository.GetUserByID(int(userid))
 	if err != nil {
@@ -154,6 +159,7 @@ func (userService *UserService) UpdateUserAdmin(userid uint) error {
 	return nil
 }
 
+// GetAllUsers 获取所有用户
 func (userService *UserService) GetAllUsers() ([]model.User, error) {
 	allures, err := userService.userRepository.GetAllUsers()
 	if err != nil {
@@ -181,6 +187,7 @@ func (userService *UserService) GetAllUsers() ([]model.User, error) {
 	return allures, nil
 }
 
+// GetSysAdmin 获取系统管理员
 func (userService *UserService) GetSysAdmin() (model.User, error) {
 	sysadmin, err := userService.userRepository.GetSysAdmin()
 	if err != nil {
@@ -190,6 +197,7 @@ func (userService *UserService) GetSysAdmin() (model.User, error) {
 	return sysadmin, nil
 }
 
+// DeleteUser 删除用户
 func (userService *UserService) DeleteUser(userid, id uint) error {
 	user, err := userService.userRepository.GetUserByID(int(userid))
 	if err != nil {
@@ -212,6 +220,7 @@ func (userService *UserService) DeleteUser(userid, id uint) error {
 	return nil
 }
 
+// GetUserByID 根据用户ID获取用户
 func (userService *UserService) GetUserByID(userId int) (model.User, error) {
 	return userService.userRepository.GetUserByID(userId)
 }

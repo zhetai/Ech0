@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/internal/config"
 	"github.com/lin-snow/ech0/internal/database"
@@ -12,10 +13,12 @@ import (
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
+// Server 服务器结构体，包含Gin引擎
 type Server struct {
 	GinEngine *gin.Engine
 }
 
+// New 创建一个新的服务器实例
 func New() *Server {
 	engine := gin.Default()
 	return &Server{
@@ -23,6 +26,7 @@ func New() *Server {
 	}
 }
 
+// Init 初始化服务器
 func (s *Server) Init() {
 	// Logger
 	logUtil.InitLogger()
@@ -53,6 +57,7 @@ func (s *Server) Init() {
 	router.SetupRouter(s.GinEngine, handlers)
 }
 
+// Start 启动服务器
 func (s *Server) Start() {
 	port := config.Config.Server.Port
 	printGreetings(port)
@@ -64,6 +69,7 @@ func (s *Server) Start() {
 	}
 }
 
+// printGreetings 打印欢迎信息
 func printGreetings(port string) {
 	fmt.Print(commonModel.GreetingBanner)
 	fmt.Printf("---\n📦 Version: %s\n", commonModel.Version)

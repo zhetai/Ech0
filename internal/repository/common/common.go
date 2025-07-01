@@ -17,6 +17,7 @@ func NewCommonRepository(db *gorm.DB) CommonRepositoryInterface {
 	}
 }
 
+// GetUserByUserId 根据用户ID获取用户信息
 func (commonRepository *CommonRepository) GetUserByUserId(userId uint) (userModel.User, error) {
 	var user userModel.User
 	if err := commonRepository.db.First(&user, userId).Error; err != nil {
@@ -25,6 +26,7 @@ func (commonRepository *CommonRepository) GetUserByUserId(userId uint) (userMode
 	return user, nil
 }
 
+// GetSysAdmin 获取系统管理员信息
 func (commonRepository *CommonRepository) GetSysAdmin() (userModel.User, error) {
 	// 获取系统管理员（首个注册的用户）
 	user := userModel.User{}
@@ -36,6 +38,7 @@ func (commonRepository *CommonRepository) GetSysAdmin() (userModel.User, error) 
 	return user, nil
 }
 
+// GetAllUsers 获取所有用户信息
 func (commonRepository *CommonRepository) GetAllUsers() ([]userModel.User, error) {
 	var users []userModel.User
 	err := commonRepository.db.Find(&users).Error
@@ -45,6 +48,7 @@ func (commonRepository *CommonRepository) GetAllUsers() ([]userModel.User, error
 	return users, nil
 }
 
+// GetAllEchos 获取所有Echo
 func (commonRepository *CommonRepository) GetAllEchos(showPrivate bool) ([]echoModel.Echo, error) {
 	var echos []echoModel.Echo
 
@@ -62,8 +66,9 @@ func (commonRepository *CommonRepository) GetAllEchos(showPrivate bool) ([]echoM
 	return echos, nil
 }
 
-func (commonRepository *CommonRepository) GetHeatMap(startDate, endDate string) ([]commonModel.Heapmap, error) {
-	var results []commonModel.Heapmap
+// GetHeatMap 获取热力图数据
+func (commonRepository *CommonRepository) GetHeatMap(startDate, endDate string) ([]commonModel.Heatmap, error) {
+	var results []commonModel.Heatmap
 
 	// 查询数据
 	// 执行查询

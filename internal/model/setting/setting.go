@@ -1,5 +1,6 @@
 package model
 
+// SystemSetting 定义系统设置实体
 type SystemSetting struct {
 	SiteTitle     string `json:"site_title"`     // 站点标题
 	ServerName    string `json:"server_name"`    // 服务器名称

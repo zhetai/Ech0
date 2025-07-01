@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	"sync"
 	"time"
+
+	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/connect"
@@ -39,6 +40,7 @@ func NewConnectService(
 	}
 }
 
+// AddConnect 添加连接
 func (connectService *ConnectService) AddConnect(userid uint, connected model.Connected) error {
 	user, err := connectService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
@@ -78,6 +80,7 @@ func (connectService *ConnectService) AddConnect(userid uint, connected model.Co
 	return nil
 }
 
+// DeleteConnect 删除连接
 func (connectService *ConnectService) DeleteConnect(userid, id uint) error {
 	user, err := connectService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
@@ -96,6 +99,7 @@ func (connectService *ConnectService) DeleteConnect(userid, id uint) error {
 	return nil
 }
 
+// GetConnect 提供当前实例的连接信息
 func (connectService *ConnectService) GetConnect() (model.Connect, error) {
 	var connect model.Connect
 
@@ -141,6 +145,7 @@ func (connectService *ConnectService) GetConnect() (model.Connect, error) {
 	return connect, nil
 }
 
+// GetConnectsInfo 获取实例获取到的其它实例的连接信息
 func (connectService *ConnectService) GetConnectsInfo() ([]model.Connect, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second) // 8秒超时
 	defer cancel()
@@ -263,6 +268,7 @@ func (connectService *ConnectService) GetConnectsInfo() ([]model.Connect, error)
 	return connectList, nil
 }
 
+// GetConnects 获取当前实例添加的所有连接
 func (connectService *ConnectService) GetConnects() ([]model.Connected, error) {
 	// 获取所有连接地址
 	connects, err := connectService.connectRepository.GetAllConnects()

@@ -15,6 +15,7 @@ func NewConnectRepository(db *gorm.DB) ConnectRepositoryInterface {
 	}
 }
 
+// GetAllConnects 获取所有连接
 func (connectRepository *ConnectRepository) GetAllConnects() ([]model.Connected, error) {
 	var connects []model.Connected
 	// 查询数据库
@@ -29,6 +30,7 @@ func (connectRepository *ConnectRepository) GetAllConnects() ([]model.Connected,
 	return connects, nil
 }
 
+// CreateConnect 创建一个新的连接
 func (connectRepository *ConnectRepository) CreateConnect(connect *model.Connected) error {
 	if err := connectRepository.db.Create(connect).Error; err != nil {
 		return err
@@ -36,6 +38,7 @@ func (connectRepository *ConnectRepository) CreateConnect(connect *model.Connect
 	return nil
 }
 
+// DeleteConnect 删除连接
 func (connectRepository *ConnectRepository) DeleteConnect(id uint) error {
 	// 根据 ID 删除 Connect
 	if err := connectRepository.db.Delete(&model.Connected{}, id).Error; err != nil {

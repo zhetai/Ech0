@@ -15,6 +15,7 @@ func NewTodoRepository(db *gorm.DB) TodoRepositoryInterface {
 	}
 }
 
+// GetTodosByUserID 根据用户ID获取待办事项
 func (todoRepository *TodoRepository) GetTodosByUserID(userid uint) ([]model.Todo, error) {
 	var todos []model.Todo
 	// 查询数据库(按创建时间，最新的在前)
@@ -29,6 +30,7 @@ func (todoRepository *TodoRepository) GetTodosByUserID(userid uint) ([]model.Tod
 	return todos, nil
 }
 
+// CreateTodo 创建一个新的待办事项
 func (todoRepository *TodoRepository) CreateTodo(todo *model.Todo) error {
 	if err := todoRepository.db.Create(todo).Error; err != nil {
 		return err
@@ -36,6 +38,7 @@ func (todoRepository *TodoRepository) CreateTodo(todo *model.Todo) error {
 	return nil
 }
 
+// GetTodoByID 根据ID获取待办事项
 func (todoRepository *TodoRepository) GetTodoByID(todoID int64) (*model.Todo, error) {
 	var todo model.Todo
 	// 根据 ID 查找 To do
@@ -45,6 +48,7 @@ func (todoRepository *TodoRepository) GetTodoByID(todoID int64) (*model.Todo, er
 	return &todo, nil
 }
 
+// UpdateTodo 更新待办事项
 func (todoRepository *TodoRepository) UpdateTodo(todo *model.Todo) error {
 	// 根据 ID 查找 To do 并更新
 	if err := todoRepository.db.Model(&model.Todo{}).Where("id = ?", todo.ID).Updates(todo).Error; err != nil {
@@ -54,6 +58,7 @@ func (todoRepository *TodoRepository) UpdateTodo(todo *model.Todo) error {
 	return nil
 }
 
+// DeleteTodo 删除待办事项
 func (todoRepository *TodoRepository) DeleteTodo(id int64) error {
 	// 根据 ID 删除 To do
 	if err := todoRepository.db.Delete(&model.Todo{}, id).Error; err != nil {

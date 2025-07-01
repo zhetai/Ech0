@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// Todo 定义待办事项实体
 type Todo struct {
 	ID        uint      `gorm:"primaryKey" json:"id"`
 	Content   string    `gorm:"type:text;not null" json:"content"`
@@ -11,9 +12,9 @@ type Todo struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// Todo 相关
+// Todo 相关状态常量
 const (
 	Done         = 1 // 待办事项已完成状态
-	NotDone      = 0 // 待办事项状态
+	NotDone      = 0 // 待办事项未完成状态
 	MaxTodoCount = 3 // 最大待办事项数量
 )
