@@ -1,15 +1,21 @@
-# Ech0 - 开源、自托管、专注思想流动的轻量级发布平台
+<div align="right">
+  <a title="en" href="README.md"><img src="https://img.shields.io/badge/-English-545759?style=for-the-badge" alt="english"></a>
+  <img src="https://img.shields.io/badge/-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-F54A00?style=for-the-badge" alt="简体中文">
+</div>
 
-<p align="center">
-  <img alt="Ech0" src="./docs/imgs/logo.svg" width="100">
-</p>
+<div align="center">
+  <img alt="Ech0" src="./docs/imgs/logo.svg" width="150">
+
+  [预览地址](https://memo.vaaat.com/) | [官网地址](https://echo.soopy.cn/)
+
+  # Ech0
+</div>
+
+> 开源、自托管、专注思想流动的轻量级发布平台
 
 Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快速发布与分享你的想法、文字与链接。简单直观的操作界面，轻松管理你的内容，让分享变得更加自由，确保数据完全掌控，随时随地与世界连接。
 
 ![界面预览](./docs/imgs/screenshot.png)
-
-[预览地址](https://memo.vaaat.com/)
-[官网地址](https://echo.soopy.cn/)
 
 ---
 
