@@ -46,6 +46,14 @@ export function fetchUpdateEcho(echo: App.Api.Ech0.EchoToUpdate) {
   })
 }
 
+// 点赞Echo
+export function fetchLikeEcho(echoId: number) {
+  return request({
+    url: `/echo/like/${echoId}`,
+    method: 'PUT',
+  })
+}
+
 // 获取status
 export function fetchGetStatus() {
   return request<App.Api.Ech0.Status>({

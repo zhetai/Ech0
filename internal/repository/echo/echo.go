@@ -174,19 +174,26 @@ func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 
 // LikeEcho 点赞 Echo
 func (echoRepository *EchoRepository) LikeEcho(id uint) error {
-	var echo model.Echo
-	// 先查询 Echo 是否存在
-	if err := echoRepository.db.First(&echo, id).Error; err != nil {
-		return errors.New(commonModel.ECHO_NOT_FOUND) // 如果未找到记录，返回错误
+	// 检查是否存在（可选，防止无效点赞）
+	var exists bool
+	if err := echoRepository.db.
+		Model(&model.Echo{}).
+		Select("count(*) > 0").
+		Where("id = ?", id).
+		Find(&exists).Error; err != nil {
+		return err
+	}
+	if !exists {
+		return errors.New(commonModel.ECHO_NOT_FOUND)
 	}
 
-	// 增加点赞数
-	echo.FavCount++
-
-	// 更新 Echo 的点赞数
-	if err := echoRepository.db.Model(&model.Echo{}).Where("id = ?", id).Update("favcount", echo.FavCount).Error; err != nil {
-		return err // 返回更新错误
+	// 原子自增点赞数
+	if err := echoRepository.db.
+		Model(&model.Echo{}).
+		Where("id = ?", id).
+		UpdateColumn("fav_count", gorm.Expr("fav_count + ?", 1)).Error; err != nil {
+		return err
 	}
 
-	return nil // 成功返回 nil
+	return nil
 }

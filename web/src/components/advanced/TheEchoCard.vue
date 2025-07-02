@@ -21,77 +21,101 @@
         <!-- 是否隐私 -->
         <span v-if="props.echo.private" title="私密状态"><Lock /></span>
         <!-- 删除 -->
-        <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)" title="删除">
+        <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)" title="删除" class="transform transition-transform duration-200 hover:scale-140 active:scale-125 active:animate-pulse">
           <Roll />
         </button>
-        <button v-if="userStore.isLogin" @click="handleUpdateEcho()" title="更新">
+        <button v-if="userStore.isLogin" @click="handleUpdateEcho()" title="更新" class="transform transition-transform duration-200 hover:scale-140 active:scale-125 active:animate-pulse">
           <EditEcho />
         </button>
+
+        <!-- 点赞 -->
+        <div class="flex items-center justify-end" title="点赞">
+          <div class="flex items-center gap-1">
+            <!-- 点赞按钮   -->
+            <button  @click="handleLikeEcho(props.echo.id)" title="点赞" class="transform transition-transform duration-200 hover:scale-140 active:scale-125 active:animate-pulse">
+              <GrayLike class="w-4 h-4 transition-colors duration-200 hover:text-red-500" />
+            </button>
+
+            <!-- 点赞数量   -->
+            <span class="text-sm text-gray-400">
+              <!-- 如果点赞数不超过99，则显示数字，否则显示99+ -->
+              {{ props.echo.fav_count > 99 ? '99+' : props.echo.fav_count }}
+            </span>
+          </div>
+        </div>
       </div>
+
+
     </div>
 
     <!-- 图片 && 内容 -->
-    <div class="border-l-2 border-gray-300 p-6 ml-1 mb-1">
-      <!-- 图片 -->
-      <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
-        <div class="shadow-lg rounded-lg overflow-hidden mb-2">
-          <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
-            <img
-              :src="getImageUrl(props.echo.images[imageIndex])"
-              alt="Image"
-              class="max-w-full object-cover"
-              loading="lazy"
-            />
-          </a>
+    <div class="border-l-2 border-gray-300 ml-1 mb-1">
+      <div class="p-6">
+          <!-- 图片 -->
+        <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
+          <div class="shadow-lg rounded-lg overflow-hidden mb-2">
+            <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
+              <img
+                :src="getImageUrl(props.echo.images[imageIndex])"
+                alt="Image"
+                class="max-w-full object-cover"
+                loading="lazy"
+              />
+            </a>
+          </div>
+          <!-- 图片切换 -->
+          <div v-if="props.echo.images.length > 1" class="flex items-center justify-center">
+            <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
+              <Prev class="w-6 h-6" />
+            </button>
+            <span class="text-gray-500 text-sm mx-2">
+              {{ imageIndex + 1 }} / {{ props.echo.images.length }}
+            </span>
+            <button @click="imageIndex = Math.min(imageIndex + 1, props.echo.images.length - 1)">
+              <Next class="w-6 h-6" />
+            </button>
+          </div>
         </div>
-        <!-- 图片切换 -->
-        <div v-if="props.echo.images.length > 1" class="flex items-center justify-center">
-          <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
-            <Prev class="w-6 h-6" />
-          </button>
-          <span class="text-gray-500 text-sm mx-2">
-            {{ imageIndex + 1 }} / {{ props.echo.images.length }}
-          </span>
-          <button @click="imageIndex = Math.min(imageIndex + 1, props.echo.images.length - 1)">
-            <Next class="w-6 h-6" />
-          </button>
+
+        <!-- 内容 -->
+        <div>
+          <MdPreview
+            :id="previewOptions.proviewId"
+            :modelValue="props.echo.content"
+            :theme="previewOptions.theme"
+            :show-code-row-number="previewOptions.showCodeRowNumber"
+            :preview-theme="previewOptions.previewTheme"
+            :code-theme="previewOptions.codeTheme"
+            :code-style-reverse="previewOptions.codeStyleReverse"
+            :no-img-zoom-in="previewOptions.noImgZoomIn"
+            :code-foldable="previewOptions.codeFoldable"
+            :auto-fold-threshold="previewOptions.autoFoldThreshold"
+          />
         </div>
-      </div>
-      <!-- 内容 -->
-      <div>
-        <MdPreview
-          :id="previewOptions.proviewId"
-          :modelValue="props.echo.content"
-          :theme="previewOptions.theme"
-          :show-code-row-number="previewOptions.showCodeRowNumber"
-          :preview-theme="previewOptions.previewTheme"
-          :code-theme="previewOptions.codeTheme"
-          :code-style-reverse="previewOptions.codeStyleReverse"
-          :no-img-zoom-in="previewOptions.noImgZoomIn"
-          :code-foldable="previewOptions.codeFoldable"
-          :auto-fold-threshold="previewOptions.autoFoldThreshold"
-        />
+
+        <!-- 扩展内容 -->
+        <div v-if="props.echo.extension" class="my-2">
+          <div v-if="props.echo.extension_type === ExtensionType.MUSIC">
+            <TheAPlayerCard :echo="props.echo" />
+          </div>
+          <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
+            <TheVideoCard :bvnumber="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
+          </div>
+          <TheGithubCard
+            v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ"
+            :GithubURL="props.echo.extension"
+            class="px-2 mx-auto hover:shadow-md"
+          />
+          <TheWebsiteCard
+            v-if="props.echo.extension_type === ExtensionType.WEBSITE"
+            :website="props.echo.extension"
+            class="px-2 mx-auto hover:shadow-md"
+          />
+        </div>
       </div>
 
-      <!-- 扩展内容 -->
-      <div v-if="props.echo.extension" class="mt-2">
-        <div v-if="props.echo.extension_type === ExtensionType.MUSIC">
-          <TheAPlayerCard :echo="props.echo" />
-        </div>
-        <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
-          <TheVideoCard :bvnumber="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
-        </div>
-        <TheGithubCard
-          v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ"
-          :GithubURL="props.echo.extension"
-          class="px-2 mx-auto hover:shadow-md"
-        />
-        <TheWebsiteCard
-          v-if="props.echo.extension_type === ExtensionType.WEBSITE"
-          :website="props.echo.extension"
-          class="px-2 mx-auto hover:shadow-md"
-        />
-      </div>
+
+
     </div>
   </div>
 </template>
@@ -101,7 +125,7 @@ import { Fancybox } from '@fancyapps/ui'
 import { MdPreview } from 'md-editor-v3'
 import { getImageUrl } from '@/utils/other'
 import { onMounted, ref } from 'vue'
-import { fetchDeleteEcho } from '@/service/api'
+import { fetchDeleteEcho, fetchLikeEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
 import TheGithubCard from './TheGithubCard.vue'
@@ -112,10 +136,14 @@ import Roll from '../icons/roll.vue'
 import Lock from '../icons/lock.vue'
 import Prev from '../icons/prev.vue'
 import Next from '../icons/next.vue'
+import GrayLike from '../icons/graylike.vue'
+import RedLike from '../icons/redlike.vue'
 import EditEcho from '../icons/editecho.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
 import { useEchoStore } from '@/stores/echo'
+import { localStg } from '@/utils/storage'
+import Like from '../icons/like.vue'
 
 const emit = defineEmits(['refresh'])
 
@@ -167,6 +195,29 @@ const handleUpdateEcho = () => {
 
   echoStore.echoToUpdate = props.echo
   echoStore.isUpdateMode = true
+}
+
+const LIKE_LIST_KEY = 'likedEchoIds'
+const likedEchoIds : number[] = localStg.getItem(LIKE_LIST_KEY) || []
+const hasLikedEcho = (echoId: number): boolean => {
+  return likedEchoIds.includes(echoId)
+}
+const handleLikeEcho = (echoId: number) => {
+  // 检查LocalStorage中是否已经点赞过
+  if (hasLikedEcho(echoId)) {
+    theToast.success('你已经点赞过了,感谢你的喜欢！')
+    return
+  }
+
+  fetchLikeEcho(echoId).then((res) => {
+    if (res.code === 1) {
+      likedEchoIds.push(echoId)
+      localStg.setItem(LIKE_LIST_KEY, likedEchoIds)
+      // 更新Echo的点赞数量
+      props.echo.fav_count += 1
+      theToast.success('点赞成功！')
+    }
+  })
 }
 
 const formatDate = (dateString: string) => {

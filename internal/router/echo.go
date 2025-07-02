@@ -5,6 +5,7 @@ import "github.com/lin-snow/ech0/internal/di"
 // setupEchoRoutes 设置Echo路由
 func setupEchoRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Public
+	appRouterGroup.PublicRouterGroup.PUT("/echo/like/:id", h.EchoHandler.LikeEcho())
 
 	// Auth
 	appRouterGroup.AuthRouterGroup.POST("/echo", h.EchoHandler.PostEcho())
