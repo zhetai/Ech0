@@ -20,4 +20,7 @@ type EchoRepositoryInterface interface {
 
 	// UpdateEcho 更新 Echo
 	UpdateEcho(echo *model.Echo) error
+
+	// LikeEcho 点赞 Echo
+	LikeEcho(id uint) error
 }

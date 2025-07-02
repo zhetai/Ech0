@@ -20,7 +20,7 @@ func NewEchoHandler(echoService service.EchoServiceInterface) *EchoHandler {
 	}
 }
 
-// PostEcho 创建新的留言
+// PostEcho 创建新的Echo
 func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		var newEcho model.Echo
@@ -46,7 +46,7 @@ func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 
 }
 
-// GetEchosByPage 获取留言列表，支持分页
+// GetEchosByPage 获取Echo列表，支持分页
 func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取分页参数
@@ -76,13 +76,13 @@ func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 
 }
 
-// DeleteEcho 删除留言
+// DeleteEcho 删除Echo
 func (echoHandler *EchoHandler) DeleteEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
 		userid := ctx.MustGet("userid").(uint)
 
-		// 从 URL 参数获取留言 ID
+		// 从 URL 参数获取Echo ID
 		idStr := ctx.Param("id")
 		id, err := strconv.ParseUint(idStr, 10, 64)
 		if err != nil {
@@ -104,7 +104,7 @@ func (echoHandler *EchoHandler) DeleteEcho() gin.HandlerFunc {
 	})
 }
 
-// GetTodayEchos 获取今天的留言
+// GetTodayEchos 获取今天的Echo列表
 func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -124,7 +124,7 @@ func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
 	})
 }
 
-// UpdateEcho 更新留言
+// UpdateEcho 更新Echo
 func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		var updateEcho model.Echo
@@ -145,6 +145,31 @@ func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
 
 		return res.Response{
 			Msg: commonModel.UPDATE_ECHO_SUCCESS,
+		}
+	})
+}
+
+// LikeEcho 点赞Echo
+func (echoHandler *EchoHandler) LikeEcho() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 从 URL 参数获取Echo ID
+		idStr := ctx.Param("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+			}
+		}
+
+		if err := echoHandler.echoService.LikeEcho(uint(id)); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.LIKE_ECHO_SUCCESS,
 		}
 	})
 }

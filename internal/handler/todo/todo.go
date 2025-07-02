@@ -52,7 +52,7 @@ func (todoHandler *TodoHandler) UpdateTodo() gin.HandlerFunc {
 		// 获取当前用户 ID
 		userid := ctx.MustGet("userid").(uint)
 
-		// 从 URL 参数获取留言 ID
+		// 从 URL 参数获取Echo ID
 		idStr := ctx.Param("id")
 		id, err := strconv.ParseUint(idStr, 10, 64)
 		if err != nil {
@@ -82,7 +82,7 @@ func (todoHandler *TodoHandler) DeleteTodo() gin.HandlerFunc {
 		// 获取当前用户 ID
 		userid := ctx.MustGet("userid").(uint)
 
-		// 从 URL 参数获取留言 ID
+		// 从 URL 参数获取Echo ID
 		idStr := ctx.Param("id")
 		id, err := strconv.ParseUint(idStr, 10, 64)
 		if err != nil {

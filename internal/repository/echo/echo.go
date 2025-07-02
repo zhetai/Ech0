@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
 	"gorm.io/gorm"
 )
@@ -44,7 +45,7 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 		query = query.Where("content LIKE ?", searchPattern)
 	}
 
-	// 如果不是管理员，过滤私密留言
+	// 如果不是管理员，过滤私密Echo
 	if !showPrivate {
 		query = query.Where("private = ?", false)
 	}
@@ -102,7 +103,7 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 	endOfDay := startOfDay.Add(24 * time.Hour)
 
 	query := echoRepository.db.Model(&model.Echo{})
-	// 如果不是管理员，过滤私密留言
+	// 如果不是管理员，过滤私密Echo
 	if !showPrivate {
 		query = query.Where("private = ?", false)
 	}
@@ -169,4 +170,23 @@ func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 
 	// 提交事务
 	return tx.Commit().Error
+}
+
+// LikeEcho 点赞 Echo
+func (echoRepository *EchoRepository) LikeEcho(id uint) error {
+	var echo model.Echo
+	// 先查询 Echo 是否存在
+	if err := echoRepository.db.First(&echo, id).Error; err != nil {
+		return errors.New(commonModel.ECHO_NOT_FOUND) // 如果未找到记录，返回错误
+	}
+
+	// 增加点赞数
+	echo.FavCount++
+
+	// 更新 Echo 的点赞数
+	if err := echoRepository.db.Model(&model.Echo{}).Where("id = ?", id).Update("favcount", echo.FavCount).Error; err != nil {
+		return err // 返回更新错误
+	}
+
+	return nil // 成功返回 nil
 }

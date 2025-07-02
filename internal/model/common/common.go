@@ -19,7 +19,7 @@ type Status struct {
 // Heatmap 用于存储热力图数据
 type Heatmap struct {
 	Date  string `json:"date"`  // 日期
-	Count int    `json:"count"` // 留言数量
+	Count int    `json:"count"` // Echo数量
 }
 
 // File 相关

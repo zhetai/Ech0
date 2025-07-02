@@ -66,6 +66,7 @@ declare namespace App {
         user_id: number
         extension: string
         extension_type: string
+        favcount: number
         created_at: string
       }
 

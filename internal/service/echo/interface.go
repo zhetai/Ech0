@@ -20,4 +20,7 @@ type EchoServiceInterface interface {
 
 	// UpdateEcho 更新指定ID的Echo
 	UpdateEcho(userid uint, echo *model.Echo) error
+
+	// LikeEcho 点赞指定ID的Echo
+	LikeEcho(id uint) error
 }

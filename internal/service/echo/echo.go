@@ -113,7 +113,7 @@ func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
 		return errors.New(commonModel.NO_PERMISSION_DENIED)
 	}
 
-	// 检查该留言是否存在图片
+	// 检查该Echo是否存在图片
 	echo, err := echoService.echoRepository.GetEchosById(id)
 	if err != nil {
 		return err
@@ -200,4 +200,9 @@ func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error 
 	}
 
 	return echoService.echoRepository.UpdateEcho(echo)
+}
+
+// LikeEcho 点赞指定ID的Echo
+func (echoService *EchoService) LikeEcho(id uint) error {
+	return echoService.echoRepository.LikeEcho(id)
 }

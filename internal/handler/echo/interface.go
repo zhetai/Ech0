@@ -17,4 +17,7 @@ type EchoHandlerInterface interface {
 
 	// UpdateEcho 更新 Echo
 	UpdateEcho() gin.HandlerFunc
+
+	// LikeEcho 点赞 Echo
+	LikeEcho() gin.HandlerFunc
 }

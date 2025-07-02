@@ -230,7 +230,7 @@ func (commonService *CommonService) GetHeatMap() ([]commonModel.Heatmap, error) 
 }
 
 func (commonService *CommonService) GenerateRSS(ctx *gin.Context) (string, error) {
-	// 获取所有留言
+	// 获取所有Echo
 	echos, err := commonService.commonRepository.GetAllEchos(false)
 	if err != nil {
 		return "", err
