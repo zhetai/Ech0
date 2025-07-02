@@ -26,7 +26,7 @@
         <!-- 当前共有Ech0 -->
         <div>
           <h1>
-            当前Ech0总共有：
+            当前Echo总共有：
             <span class="ml-2">{{ status?.total_echos }}</span>
             <span class="ml-2">条</span>
           </h1>

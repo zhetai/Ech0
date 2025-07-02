@@ -4,29 +4,7 @@
   >
     <div class="mx-auto w-full px-3 py-4">
       <!-- Title && Nav -->
-      <div class="flex justify-between items-center py-1 px-3">
-        <div class="flex flex-row items-center gap-2 justify-between">
-          <!-- <div class="text-xl">👾</div> -->
-          <div>
-            <img
-              :src="logo"
-              alt="logo"
-              class="w-6 sm:w-7 h-6 sm:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
-            />
-          </div>
-          <h1 class="text-slate-600 font-bold italic sm:text-xl">
-            {{ SystemSetting.server_name }}
-          </h1>
-        </div>
-        <div class="flex flex-row items-center gap-2">
-          <!-- Github -->
-          <div>
-            <a href="https://github.com/lin-snow/Ech0" target="_blank" title="Github">
-              <Github class="w-6 sm:w-7 h-6 sm:h-7 text-gray-400" />
-            </a>
-          </div>
-        </div>
-      </div>
+      <TheTitleAndNav />
 
       <!-- Editor -->
       <div class="rounded-lg p-2 sm:p-3 mb-1">
@@ -204,216 +182,72 @@
         </div>
       </div>
 
-      <!-- Buttons -->
-      <div class="flex flex-row items-center justify-between px-2">
-        <div class="flex flex-row items-center gap-2">
-          <!-- ShowMore -->
-          <div>
-            <BaseButton
-              :icon="currentMode === Mode.ECH0 ? Advance : Back"
-              @click="handleChangeMode"
-              :class="['w-8 h-8 sm:w-9 sm:h-9 rounded-md'].join(' ')"
-              title="其它"
-            />
-          </div>
-          <!-- Photo Upload -->
-          <div v-if="currentMode === Mode.ECH0">
-            <BaseButton
-              :icon="ImageUpload"
-              @click="handleAddImageMode"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="添加图片"
-            />
-          </div>
-          <!-- Privacy Set -->
-          <div v-if="currentMode === Mode.ECH0">
-            <BaseButton
-              :icon="echoToAdd.private ? Private : Public"
-              @click="handlePrivate"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="是否私密"
-            />
-          </div>
-        </div>
+      <!-- Editor Buttons -->
+      <TheEditorButtons
+        :echo-to-add="echoToAdd"
+        :current-mode="currentMode"
+        @handle-addor-update="handleAddorUpdate"
+        @handle-change-mode="handleChangeMode"
+        @handle-add-image-mode="handleAddImageMode"
+        @handle-exit-update-mode="handleExitUpdateMode"
+        @handle-private="handlePrivate"
+        />
 
-        <div class="flex flex-row items-center gap-2">
-          <!-- Clear -->
-          <!-- <div>
-            <BaseButton
-              :icon="Clear"
-              @click="handleClear"
-              class="w-8 h-8 rounded-md"
-              title="清空输入和图片"
-            />
-          </div> -->
-          <!-- Publish -->
-          <div v-if="currentMode !== Mode.Panel && isUpdateMode === false">
-            <BaseButton
-              :icon="Publish"
-              @click="handleAddorUpdate"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="发布Echo"
-            />
-          </div>
-          <!-- Exit Update -->
-          <div
-            v-if="
-              currentMode !== Mode.Panel &&
-              currentMode !== Mode.TODO &&
-              currentMode !== Mode.PlayMusic &&
-              isUpdateMode === true
-            "
-          >
-            <BaseButton
-              :icon="ExitUpdate"
-              @click="handleExitUpdateMode"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="退出更新模式"
-            />
-          </div>
-          <!-- Update -->
-          <div
-            v-if="
-              currentMode !== Mode.Panel &&
-              currentMode !== Mode.TODO &&
-              currentMode !== Mode.PlayMusic &&
-              isUpdateMode === true
-            "
-          >
-            <BaseButton
-              :icon="Update"
-              @click="handleAddorUpdate"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-              title="更新Echo"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Preview Image -->
-      <div
-        v-if="
-          imagesToAdd &&
-          imagesToAdd.length > 0 &&
-          (currentMode === Mode.ECH0 || currentMode === Mode.Image)
-        "
-        class="relative rounded-lg shadow-lg w-5/6 mx-auto my-7"
-      >
-        <button
-          @click="handleRemoveImage"
-          class="absolute -top-3 -right-4 bg-red-100 hover:bg-red-300 text-gray-600 rounded-lg w-7 h-7 flex items-center justify-center shadow"
-          title="移除图片"
-        >
-          <Close class="w-4 h-4" />
-        </button>
-        <div class="rounded-lg overflow-hidden">
-          <a :href="getImageToAddUrl(imagesToAdd[imageIndex])" data-fancybox>
-            <img
-              :src="getImageToAddUrl(imagesToAdd[imageIndex])"
-              alt="Image"
-              class="max-w-full object-cover"
-              loading="lazy"
-            />
-          </a>
-        </div>
-      </div>
-      <!-- 图片切换 -->
-      <div v-if="imagesToAdd.length > 1" class="flex items-center justify-center">
-        <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
-          <Prev class="w-7 h-7" />
-        </button>
-        <span class="text-gray-500 text-sm mx-2">
-          {{ imageIndex + 1 }} / {{ imagesToAdd.length }}
-        </span>
-        <button @click="imageIndex = Math.min(imageIndex + 1, imagesToAdd.length - 1)">
-          <Next class="w-7 h-7" />
-        </button>
-      </div>
+      <!-- Editor Image -->
+      <TheEditorImage
+        :imagesToAdd="imagesToAdd"
+        :current-mode="currentMode"
+        @handleAddorUpdateEcho="handleAddorUpdateEcho"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Next from '@/components/icons/next.vue'
-import Prev from '@/components/icons/prev.vue'
-import Github from '@/components/icons/github.vue'
-import Advance from '@/components/icons/advance.vue'
 import Upload from '@/components/icons/upload.vue'
 import Url from '@/components/icons/url.vue'
-import Close from '@/components/icons/close.vue'
 import Audio from '@/components/icons/audio.vue'
-import ImageUpload from '@/components/icons/image.vue'
-import Public from '@/components/icons/public.vue'
-import Private from '@/components/icons/private.vue'
-import Publish from '@/components/icons/publish.vue'
+import Delete from '@/components/icons/delete.vue'
+import Addmore from '@/components/icons/addmore.vue'
+
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
+import BaseTextArea from '@/components/common/BaseTextArea.vue'
+
 import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import TheModePanel from './TheModePanel.vue'
+import TheTitleAndNav from './TheEditor/TheTitleAndNav.vue'
+import TheEditorImage from './TheEditor/TheEditorImage.vue'
+import TheEditorButtons from './TheEditor/TheEditorButtons.vue'
+
 import { theToast } from '@/utils/toast'
-import { Fancybox } from '@fancyapps/ui'
-import { onMounted, ref, watch } from 'vue'
+import {  ref, watch } from 'vue'
 import {
   fetchUploadImage,
   fetchAddEcho,
-  fetchGetStatus,
   fetchAddTodo,
-  fetchDeleteImage,
   fetchUploadMusic,
   fetchDeleteMusic,
   fetchUpdateEcho,
 } from '@/service/api'
 import { useEchoStore } from '@/stores/echo'
-import { useSettingStore } from '@/stores/settting'
 import { useTodoStore } from '@/stores/todo'
-import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { storeToRefs } from 'pinia'
-import BaseTextArea from '@/components/common/BaseTextArea.vue'
-import Delete from '@/components/icons/delete.vue'
 import { parseMusicURL } from '@/utils/other'
-import { getImageToAddUrl } from '@/utils/other'
-import { getApiUrl } from '@/service/request/shared'
-import Addmore from '@/components/icons/addmore.vue'
-import Update from '@/components/icons/update.vue'
-import ExitUpdate from '@/components/icons/exitupdate.vue'
-import Back from '@/components/icons/back.vue'
+import { Mode, ExtensionType, ImageSource } from '@/enums/enums'
 
 const emit = defineEmits(['refreshAudio'])
 
 const echoStore = useEchoStore()
 const todoStore = useTodoStore()
-const settingStore = useSettingStore()
 
 const { setTodoMode, getTodos } = todoStore
-const { SystemSetting } = storeToRefs(settingStore)
+
 const { todoMode } = storeToRefs(todoStore)
 const { echoToUpdate, isUpdateMode } = storeToRefs(echoStore)
 
-const enum Mode {
-  ECH0 = 0, // 默认编辑状态
-  Panel = 1, // 显示面板状态
-  TODO = 2, // 待办事项状态
-  EXTEN = 3, // 处理扩展状态
-  PlayMusic = 4, // 音乐播放器状态
-  Image = 5, // 图片上传状态
-}
-const enum ExtensionType {
-  MUSIC = 'MUSIC',
-  VIDEO = 'VIDEO',
-  GITHUBPROJ = 'GITHUBPROJ',
-  WEBSITE = 'WEBSITE',
-}
-const enum ImageSource {
-  LOCAL = 'local',
-  URL = 'url',
-  S3 = 's3',
-  R2 = 'r2',
-}
 const currentMode = ref<Mode>(Mode.ECH0)
 const currentExtensionType = ref<ExtensionType>()
-
-const apiUrl = getApiUrl()
-const logo = ref<string>('/favicon.svg')
 
 const handleChangeMode = () => {
   if (currentMode.value === Mode.ECH0) {
@@ -553,47 +387,6 @@ const handleDeleteMusic = () => {
         emit('refreshAudio')
       }
     })
-  }
-}
-
-const handleRemoveImage = () => {
-  if (
-    imageIndex.value < 0 ||
-    imageIndex.value >= imagesToAdd.value.length ||
-    imagesToAdd.value.length === 0
-  ) {
-    theToast.error('当前图片索引无效，无法删除！')
-    return
-  }
-
-  const index = imageIndex.value
-
-  if (confirm('确定要移除图片吗？')) {
-    const imageToDel: App.Api.Ech0.ImageToDelete = {
-      url: String(imagesToAdd.value[index].image_url),
-      source: String(imagesToAdd.value[index].image_source),
-    }
-
-    if (imageToDel.source === ImageSource.LOCAL) {
-      fetchDeleteImage({
-        url: imageToDel.url,
-        source: imageToDel.source,
-      }).then((res) => {
-        if (res.code === 1) {
-          // 从数组中删除图片
-          imagesToAdd.value.splice(index, 1)
-
-          // 如果删除成功且当前处于Echo更新模式，则需要立马执行更新（图片删除操作不可逆，需要立马更新确保后端数据同步）
-          if (isUpdateMode.value && echoToUpdate.value) {
-            handleAddorUpdateEcho(true)
-          }
-        }
-      })
-    } else {
-      imagesToAdd.value.splice(index, 1)
-    }
-
-    imageIndex.value = 0
   }
 }
 
@@ -829,16 +622,4 @@ watch(
     }
   },
 )
-
-onMounted(() => {
-  Fancybox.bind('[data-fancybox]', {})
-  fetchGetStatus().then((res) => {
-    if (res.code === 1) {
-      const theLogo = res.data.logo
-      if (theLogo && theLogo !== '') {
-        logo.value = `${apiUrl}${theLogo}`
-      }
-    }
-  })
-})
 </script>
