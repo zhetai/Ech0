@@ -215,7 +215,7 @@ import BaseInput from '@/components/common/BaseInput.vue'
 import BaseTextArea from '@/components/common/BaseTextArea.vue'
 
 import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
-import TheModePanel from './TheModePanel.vue'
+import TheModePanel from './TheEditor/TheModePanel.vue'
 import TheTitleAndNav from './TheEditor/TheTitleAndNav.vue'
 import TheEditorImage from './TheEditor/TheEditorImage.vue'
 import TheEditorButtons from './TheEditor/TheEditorButtons.vue'
