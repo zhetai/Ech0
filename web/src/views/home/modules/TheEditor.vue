@@ -191,7 +191,7 @@
         @handle-add-image-mode="handleAddImageMode"
         @handle-exit-update-mode="handleExitUpdateMode"
         @handle-private="handlePrivate"
-        />
+      />
 
       <!-- Editor Image -->
       <TheEditorImage
@@ -221,7 +221,7 @@ import TheEditorImage from './TheEditor/TheEditorImage.vue'
 import TheEditorButtons from './TheEditor/TheEditorButtons.vue'
 
 import { theToast } from '@/utils/toast'
-import {  ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import {
   fetchUploadImage,
   fetchAddEcho,
