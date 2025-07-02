@@ -173,3 +173,30 @@ func (echoHandler *EchoHandler) LikeEcho() gin.HandlerFunc {
 		}
 	})
 }
+
+// GetEchoById 获取指定 ID 的 Echo
+func (echoHandler *EchoHandler) GetEchoById() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 从 URL 参数获取Echo ID
+		idStr := ctx.Param("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+			}
+		}
+
+		echo, err := echoHandler.echoService.GetEchoById(uint(id))
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: echo,
+			Msg:  commonModel.GET_ECHO_BY_ID_SUCCESS,
+		}
+	})
+}

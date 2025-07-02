@@ -19,6 +19,7 @@ const (
 	GET_TODAY_ECHOS_SUCCESS   = "获取当日Echos成功"
 	UPDATE_ECHO_SUCCESS       = "更新Echo成功"
 	LIKE_ECHO_SUCCESS         = "点赞Echo成功"
+	GET_ECHO_BY_ID_SUCCESS    = "获取Echo成功"
 )
 
 // Common 成功相关常量

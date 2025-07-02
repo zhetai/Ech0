@@ -206,3 +206,20 @@ func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error 
 func (echoService *EchoService) LikeEcho(id uint) error {
 	return echoService.echoRepository.LikeEcho(id)
 }
+
+// GetEchoById 获取指定 ID 的 Echo
+func (echoService *EchoService) GetEchoById(id uint) (*model.Echo, error) {
+	var echo *model.Echo
+
+	echo, err := echoService.echoRepository.GetEchosById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if echo != nil && echo.Private == true {
+		// 不允许通过ID获取私密Echo
+		return nil, errors.New(commonModel.ECHO_NOT_FOUND)
+	}
+
+	return echo, nil
+}

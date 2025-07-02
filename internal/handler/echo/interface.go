@@ -20,4 +20,7 @@ type EchoHandlerInterface interface {
 
 	// LikeEcho 点赞 Echo
 	LikeEcho() gin.HandlerFunc
+
+	// GetEchoById 获取指定 ID 的 Echo
+	GetEchoById() gin.HandlerFunc
 }
