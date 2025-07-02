@@ -21,10 +21,20 @@
         <!-- 是否隐私 -->
         <span v-if="props.echo.private" title="私密状态"><Lock /></span>
         <!-- 删除 -->
-        <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)" title="删除" class="transform transition-transform duration-200 hover:scale-140 active:scale-125 active:animate-pulse">
+        <button
+          v-if="userStore.isLogin"
+          @click="handleDeleteEcho(props.echo.id)"
+          title="删除"
+          class="transform transition-transform duration-200 active:scale-160 active:animate-pulse"
+        >
           <Roll />
         </button>
-        <button v-if="userStore.isLogin" @click="handleUpdateEcho()" title="更新" class="transform transition-transform duration-200 hover:scale-140 active:scale-125 active:animate-pulse">
+        <button
+          v-if="userStore.isLogin"
+          @click="handleUpdateEcho()"
+          title="更新"
+          class="transform transition-transform duration-200 active:scale-160 active:animate-pulse"
+        >
           <EditEcho />
         </button>
 
@@ -32,7 +42,11 @@
         <div class="flex items-center justify-end" title="点赞">
           <div class="flex items-center gap-1">
             <!-- 点赞按钮   -->
-            <button  @click="handleLikeEcho(props.echo.id)" title="点赞" class="transform transition-transform duration-200 hover:scale-140 active:scale-125 active:animate-pulse">
+            <button
+              @click="handleLikeEcho(props.echo.id)"
+              title="点赞"
+              class="transform transition-transform duration-200 active:scale-160 active:animate-pulse"
+            >
               <GrayLike class="w-4 h-4 transition-colors duration-200 hover:text-red-500" />
             </button>
 
@@ -44,14 +58,12 @@
           </div>
         </div>
       </div>
-
-
     </div>
 
     <!-- 图片 && 内容 -->
     <div class="border-l-2 border-gray-300 ml-1 mb-1">
       <div class="p-6">
-          <!-- 图片 -->
+        <!-- 图片 -->
         <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
           <div class="shadow-lg rounded-lg overflow-hidden mb-2">
             <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
@@ -113,9 +125,6 @@
           />
         </div>
       </div>
-
-
-
     </div>
   </div>
 </template>
@@ -137,15 +146,13 @@ import Lock from '../icons/lock.vue'
 import Prev from '../icons/prev.vue'
 import Next from '../icons/next.vue'
 import GrayLike from '../icons/graylike.vue'
-import RedLike from '../icons/redlike.vue'
 import EditEcho from '../icons/editecho.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
 import { useEchoStore } from '@/stores/echo'
 import { localStg } from '@/utils/storage'
-import Like from '../icons/like.vue'
 
-const emit = defineEmits(['refresh'])
+const emit = defineEmits(['refresh', 'updateLikeCount'])
 
 type Echo = App.Api.Ech0.Echo
 const enum ExtensionType {
@@ -198,7 +205,7 @@ const handleUpdateEcho = () => {
 }
 
 const LIKE_LIST_KEY = 'likedEchoIds'
-const likedEchoIds : number[] = localStg.getItem(LIKE_LIST_KEY) || []
+const likedEchoIds: number[] = localStg.getItem(LIKE_LIST_KEY) || []
 const hasLikedEcho = (echoId: number): boolean => {
   return likedEchoIds.includes(echoId)
 }
@@ -213,8 +220,8 @@ const handleLikeEcho = (echoId: number) => {
     if (res.code === 1) {
       likedEchoIds.push(echoId)
       localStg.setItem(LIKE_LIST_KEY, likedEchoIds)
-      // 更新Echo的点赞数量
-      props.echo.fav_count += 1
+      // 发送更新事件
+      emit('updateLikeCount', echoId)
       theToast.success('点赞成功！')
     }
   })

@@ -7,6 +7,7 @@ export const useEchoStore = defineStore('echoStore', () => {
    * state
    */
   const echoList = ref<App.Api.Ech0.Echo[]>([]) // 存储Echo列表
+  const echoMap = ref(new Map<number, App.Api.Ech0.Echo>()) // 存储Echo的Map，便于快速查找
   const isLoading = ref<boolean>(true) // 是否正在加载数据
   const total = ref<number>(0) // 总数据量
   const pageSize = ref<number>(5) // 每页显示的数量
@@ -47,6 +48,12 @@ export const useEchoStore = defineStore('echoStore', () => {
         if (res.code === 1) {
           total.value = res.data.total
           echoList.value = [...echoList.value, ...res.data.items]
+
+          // 同步更新 echoMap
+          res.data.items.forEach((item: App.Api.Ech0.Echo) => {
+            echoMap.value.set(item.id, item)
+          })
+
           page.value += 1
         }
       })
@@ -59,6 +66,7 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
+    echoMap.value.clear()
     getEchosByPage()
   }
 
@@ -66,10 +74,12 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
+    echoMap.value.clear()
   }
 
   return {
     echoList,
+    echoMap,
     isLoading,
     total,
     pageSize,
