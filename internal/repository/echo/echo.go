@@ -140,9 +140,31 @@ func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 	}
 
 	// 2. 更新 Echo 内容（包括关联的新图片）
-	if err := tx.Save(echo).Error; err != nil {
+	if err := tx.Model(&model.Echo{}).
+		Where("id = ?", echo.ID).
+		Updates(map[string]interface{}{
+			"content":        echo.Content,
+			"private":        echo.Private,
+			"extension":      echo.Extension,
+			"extension_type": echo.ExtensionType,
+		}).Error; err != nil {
 		tx.Rollback()
 		return err
+	}
+
+	// 3. 重新添加Images
+	if len(echo.Images) > 0 {
+		var images []model.Image
+		for _, img := range echo.Images {
+			// 确保每个图片都关联到正确的 Echo ID
+			img.MessageID = echo.ID
+			images = append(images, img)
+		}
+		// 批量插入新图片
+		if err := tx.Create(&images).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
 	}
 
 	// 提交事务

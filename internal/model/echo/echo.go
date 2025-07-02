@@ -12,6 +12,7 @@ type Echo struct {
 	UserID        uint      `gorm:"not null;index" json:"user_id"`
 	Extension     string    `gorm:"type:text" json:"extension,omitempty"`
 	ExtensionType string    `gorm:"type:varchar(100)" json:"extension_type,omitempty"`
+	FavCount      int       `gorm:"default:0" json:"fav_count,omitempty"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
