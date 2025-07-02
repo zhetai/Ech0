@@ -60,12 +60,7 @@ import Githubproj from '@/components/icons/githubproj.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import Audio from '@/components/icons/audio.vue'
 
-const enum ExtensionType {
-  MUSIC = 'MUSIC',
-  VIDEO = 'VIDEO',
-  GITHUBPROJ = 'GITHUBPROJ',
-  WEBSITE = 'WEBSITE',
-}
+import { ExtensionType } from '@/enums/enums'
 
 const emit = defineEmits([
   'switchTodo',
