@@ -72,13 +72,23 @@ const emit = defineEmits([
 const mode = defineModel<Mode>('mode', {
   required: true,
 })
+const theExtensionType = defineModel<ExtensionType | undefined>('extensionType', {
+  required: true,
+})
+const theExtensionToAdd = defineModel<{
+  extension_type: string
+}>('extensionToAdd', {
+  required: true,
+})
 
 const todoStore = useTodoStore()
 const { setTodoMode } = todoStore
 
 
 const handleAddExtension = (extensiontype: ExtensionType) => {
-  emit('switchExtension', extensiontype)
+  mode.value = Mode.EXTEN
+  theExtensionType.value = extensiontype
+  theExtensionToAdd.value.extension_type = extensiontype
 }
 
 const handleTodo = () => {

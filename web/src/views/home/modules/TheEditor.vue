@@ -83,7 +83,8 @@
         <TheModePanel
           v-if="currentMode === Mode.Panel"
           v-model:mode="currentMode"
-          @switch-extension="handleSwitchExtensionMode"
+          v-model:extension-type="currentExtensionType"
+          v-model:extension-to-add="extensionToAdd"
         />
 
         <!-- Extension -->
@@ -225,18 +226,6 @@ const handleChangeMode = () => {
   } else {
     currentMode.value = Mode.ECH0
   }
-}
-const handleSwitchExtensionMode = (extensiontype: ExtensionType) => {
-  currentMode.value = Mode.EXTEN
-  currentExtensionType.value = extensiontype
-  extensionToAdd.value.extension_type = extensiontype
-}
-const handleSwitchTodoMode = () => {
-  setTodoMode(true)
-  currentMode.value = Mode.TODO
-}
-const handleSwitchPlayMusicMode = () => {
-  currentMode.value = Mode.PlayMusic
 }
 
 const websiteToAdd = ref<{
