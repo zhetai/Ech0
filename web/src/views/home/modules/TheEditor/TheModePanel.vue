@@ -64,11 +64,6 @@ import Audio from '@/components/icons/audio.vue'
 import { Mode, ExtensionType } from '@/enums/enums'
 import { useTodoStore } from '@/stores/todo'
 
-const emit = defineEmits([
-  'switchExtension',
-])
-
-
 const mode = defineModel<Mode>('mode', {
   required: true,
 })
@@ -83,7 +78,6 @@ const theExtensionToAdd = defineModel<{
 
 const todoStore = useTodoStore()
 const { setTodoMode } = todoStore
-
 
 const handleAddExtension = (extensiontype: ExtensionType) => {
   mode.value = Mode.EXTEN
