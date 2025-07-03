@@ -29,4 +29,7 @@ type CommonHandlerInterface interface {
 
 	// PlayMusic 播放音乐
 	PlayMusic(ctx *gin.Context)
+
+	// HelloEch0
+	HelloEch0(ctx *gin.Context)
 }

@@ -4,6 +4,9 @@ import "github.com/lin-snow/ech0/internal/di"
 
 // setupCommonRoutes 设置普通路由
 func setupCommonRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
+	// NoAPIPrefix
+	appRouterGroup.ResourceGroup.GET("/hello", h.CommonHandler.HelloEch0)
+
 	// Public
 	appRouterGroup.PublicRouterGroup.GET("/status", h.CommonHandler.GetStatus())
 	appRouterGroup.PublicRouterGroup.GET("/heatmap", h.CommonHandler.GetHeatMap())
