@@ -54,6 +54,14 @@ export function fetchLikeEcho(echoId: number) {
   })
 }
 
+// 获取Echo详情
+export function fetchGetEchoById(echoId: string) {
+  return request<App.Api.Ech0.Echo>({
+    url: `/echo/${echoId}`,
+    method: 'GET',
+  })
+}
+
 // 获取status
 export function fetchGetStatus() {
   return request<App.Api.Ech0.Status>({

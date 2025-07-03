@@ -16,9 +16,6 @@ const router = createRouter({
     {
       path: '/panel',
       name: 'panel',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/panel/PanelView.vue'),
     },
     {
@@ -30,6 +27,11 @@ const router = createRouter({
       path: '/connect',
       name: 'connect',
       component: () => import('../views/connect/ConnectView.vue'),
+    },
+    {
+      path: '/echo/:echoId',
+      name: 'echo',
+      component: () => import('../views/echo/EchoView.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
