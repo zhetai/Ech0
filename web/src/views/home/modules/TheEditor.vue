@@ -143,8 +143,14 @@ import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
 import { Mode, ExtensionType, ImageSource } from '@/enums/enums'
 
+/* --------------- 与音乐播放相关 ---------------- */
 const emit = defineEmits(['refreshAudio'])
+const handleRefreshAudio = () => {
+  emit('refreshAudio')
+}
+/* ----------------------------------------------- */
 
+/* --------------- 与Pinia相关 ---------------- */
 const echoStore = useEchoStore()
 const todoStore = useTodoStore()
 
@@ -152,7 +158,9 @@ const { setTodoMode, getTodos } = todoStore
 
 const { todoMode } = storeToRefs(todoStore)
 const { echoToUpdate, isUpdateMode } = storeToRefs(echoStore)
+/* -------------------------------------------- */
 
+/* --------------- 与模式和扩展类型相关 ---------------- */
 const currentMode = ref<Mode>(Mode.ECH0)
 const currentExtensionType = ref<ExtensionType>()
 
@@ -174,26 +182,36 @@ const handleChangeMode = () => {
     currentMode.value = Mode.ECH0
   }
 }
+/* ----------------------------------------------------- */
 
+/* --------------- 与各种编辑器输入相关的变量 ---------------- */
+// 临时网站链接变量
 const websiteToAdd = ref<{
   title: string
   site: string
 }>({
   title: '',
   site: '',
-}) // 临时网站链接变量
-const videoURL = ref<string>('') // 临时Bilibili链接变量
+})
+// 临时的视频分享链接变量
+const videoURL = ref<string>('')
+// 临时扩展变量
 const extensionToAdd = ref({
   extension: '',
   extension_type: '',
-}) // 临时扩展变量
-const imageIndex = ref<number>(0) // 临时图片索引变量
-const imageSourceMemory = ref<string>() // 临时图片来源变量
+})
+// 临时图片索引变量
+const imageIndex = ref<number>(0)
+// 临时图片来源变量
+const imageSourceMemory = ref<string>()
+// 临时图片添加变量
 const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
   image_url: '',
   image_source: '',
-}) // 临时图片添加变量
+})
+// 临时的多张图片数组变量
 const imagesToAdd = ref<App.Api.Ech0.ImageToAdd[]>([])
+// 最终的Echo添加变量
 const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   content: '',
   image_url: null,
@@ -203,11 +221,13 @@ const echoToAdd = ref<App.Api.Ech0.EchoToAdd>({
   extension: null,
   extension_type: null,
 })
-
+// 临时的Todo添加变量
 const todoToAdd = ref<App.Api.Todo.TodoToAdd>({
   content: '',
 })
+/* ----------------------------------------------------------- */
 
+/* --------------- 与图片相关的各种函数 ---------------- */
 const handleAddMoreImage = () => {
   imagesToAdd.value.push({
     image_url: String(imageToAdd.value.image_url),
@@ -261,15 +281,15 @@ const handleUploadImage = async (event: Event) => {
       })
   }
 }
+/* ----------------------------------------------------- */
 
-const handleRefreshAudio = () => {
-  emit('refreshAudio')
-}
-
+/* ------------------ 与Echo/Todo相关的各种函数 -------------- */
+// 处理Echo的私密性切换
 const handlePrivate = () => {
   echoToAdd.value.private = !echoToAdd.value.private
 }
 
+// 执行编辑器清空操作
 const handleClear = () => {
   echoToAdd.value.content = ''
   echoToAdd.value.image_url = null
@@ -287,6 +307,7 @@ const handleClear = () => {
   imageIndex.value = 0
 }
 
+// 处理Echo的添加或更新
 const handleAddorUpdateEcho = (justSyncImages: boolean) => {
   echoToAdd.value.images = imagesToAdd.value // 将图片数组添加到Echo中
 
@@ -389,6 +410,7 @@ const handleAddorUpdateEcho = (justSyncImages: boolean) => {
   })
 }
 
+// 处理Todo的添加
 const handleAddTodo = () => {
   if (todoToAdd.value.content === '') {
     theToast.error('内容不能为空！')
@@ -404,6 +426,7 @@ const handleAddTodo = () => {
   })
 }
 
+// 处理不同模式下Echo或Todo的添加和更新操作
 const handleAddorUpdate = () => {
   if (todoMode.value) {
     handleAddTodo()
@@ -412,13 +435,16 @@ const handleAddorUpdate = () => {
   }
 }
 
+// 退出Echo更新模式
 const handleExitUpdateMode = () => {
   isUpdateMode.value = false
   echoToUpdate.value = null
   handleClear()
   theToast.info('已退出更新模式！')
 }
+/* ----------------------------------------------------------- */
 
+/* ------------------ 与Watch相关的各种函数 -------------- */
 // 监听用户输入
 watch(
   () => videoURL.value,
@@ -505,4 +531,5 @@ watch(
     }
   },
 )
+/* ------------------------------------------------------- */
 </script>
