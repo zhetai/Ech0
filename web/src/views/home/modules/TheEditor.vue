@@ -16,8 +16,7 @@
 
         <!-- ImageMode -->
         <div v-if="currentMode === Mode.Image">
-          <h2 class="text-gray-500 font-bold">插入图片（支持本地上传、直链）</h2>
-          <p class="text-gray-400 text-sm mb-2">注意：仅允许添加一张</p>
+          <h2 class="text-gray-500 font-bold my-2">插入图片（支持直链、本地上传）</h2>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="text-gray-500">选择添加方式：</span>
@@ -147,12 +146,12 @@
           </div>
           <!-- Bilibili/YouTube视频分享 -->
           <div v-if="currentExtensionType === ExtensionType.VIDEO">
-            <div class="text-gray-500 font-bold mb-1">Bilibili/YouTube</div>
+            <div class="text-gray-500 font-bold mb-1">视频分享（支持Bilibili、YouTube）</div>
             <div class="text-gray-400 mb-1">粘贴自动提取ID</div>
             <BaseInput
               v-model="videoURL"
               class="rounded-lg h-auto w-full my-2"
-              placeholder="B站/YT链接..."
+              placeholder="B站/YouTube链接..."
             />
             <div class="text-gray-500 my-1">Video ID：{{ extensionToAdd.extension }}</div>
           </div>
