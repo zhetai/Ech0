@@ -31,7 +31,7 @@ Ech0 is a lightweight, self-hosted platform designed for quick sharing of your i
 📝 **Built-in Todo Manager**: Easily manage daily tasks and track progress efficiently  
 🔗 **Ech0 Connect**: Brand-new content aggregation and interconnection system; supports federation, content subscription and sync across multiple instances  
 🎵 **Seamless Music Integration**: Lightweight music player with local audio parsing, immersive background playback and focus mode  
-🎥 **Instant Video Sharing**: Native Bilibili/YouTube video parsing
+🎥 **Instant Video Sharing**: Native Bilibili/YouTube video parsing   
 🃏 **Rich Shortcut Cards**: One-click sharing of rich media like website links, GitHub repos, etc. for vivid display  
 ⚙️ **Advanced Customization**: Power users can customize styles and scripts for expressive sharing
 
@@ -240,6 +240,8 @@ Backend: [http://localhost:6273](http://localhost:6273) (default)
 # ☕ Support
 
 🌟 If you like **Ech0**, feel free to star the project! 🚀
+
+![star history](https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Date "star history")
 
 Ech0 is fully open-source and free. Maintaining and improving it requires community support. If this project helped you, consider donating to support its development. Every bit of encouragement fuels our progress!
 Donate via the QR code and leave your GitHub name as a note—you'll be acknowledged in the main `README.md`.
