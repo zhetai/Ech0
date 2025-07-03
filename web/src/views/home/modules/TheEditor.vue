@@ -152,7 +152,7 @@
             <BaseInput
               v-model="videoURL"
               class="rounded-lg h-auto w-full my-2"
-              placeholder="B站分享链接..."
+              placeholder="B站/YT链接..."
             />
             <div class="text-gray-500 my-1">Video ID：{{ extensionToAdd.extension }}</div>
           </div>
