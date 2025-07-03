@@ -145,15 +145,16 @@
               <span v-else class="text-red-300">失败</span>
             </div>
           </div>
-          <!-- Bilibili视频分享 -->
+          <!-- Bilibili/YouTube视频分享 -->
           <div v-if="currentExtensionType === ExtensionType.VIDEO">
-            <div class="text-gray-500 font-bold mb-1">Bilibili视频分享(粘贴自动提取BV号)</div>
+            <div class="text-gray-500 font-bold mb-1">Bilibili/YouTube</div>
+            <div class="text-gray-400 mb-1">粘贴自动提取ID</div>
             <BaseInput
-              v-model="bilibiliURL"
+              v-model="videoURL"
               class="rounded-lg h-auto w-full my-2"
               placeholder="B站分享链接..."
             />
-            <div class="text-gray-500 my-1">提取的BV号为：{{ extensionToAdd.extension }}</div>
+            <div class="text-gray-500 my-1">Video ID：{{ extensionToAdd.extension }}</div>
           </div>
           <!-- Github项目分享 -->
           <div v-if="currentExtensionType === ExtensionType.GITHUBPROJ">
@@ -287,7 +288,7 @@ const websiteToAdd = ref<{
   title: '',
   site: '',
 }) // 临时网站链接变量
-const bilibiliURL = ref<string>('') // 临时Bilibili链接变量
+const videoURL = ref<string>('') // 临时Bilibili链接变量
 const extensionToAdd = ref({
   extension: '',
   extension_type: '',
@@ -404,7 +405,7 @@ const handleClear = () => {
   echoToAdd.value.extension_type = null
   extensionToAdd.value.extension = ''
   extensionToAdd.value.extension_type = ''
-  bilibiliURL.value = ''
+  videoURL.value = ''
   imagesToAdd.value = []
   imageToAdd.value.image_url = ''
   imageToAdd.value.image_source = ''
@@ -545,15 +546,21 @@ const handleExitUpdateMode = () => {
 
 // 监听用户输入
 watch(
-  () => bilibiliURL.value,
+  () => videoURL.value,
   (newVal) => {
     if (newVal.length > 0) {
       const bvRegex = /(BV[0-9A-Za-z]{10})/
-      const match = newVal.match(bvRegex)
+      const ytRegex = /(?:https?:\/\/(?:www\.)?)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed)\/))([\w-]+)/
+      let match = newVal.match(bvRegex)
       if (match) {
-        extensionToAdd.value.extension = match[0]
+        extensionToAdd.value.extension = match[0] //bilibili
       } else {
-        theToast.error('请输入正确的B站分享链接！')
+        match = newVal.match(ytRegex)
+        if (match) {
+          extensionToAdd.value.extension = match[1] //youtube
+        } else {
+          theToast.error('请输入正确的B站/YT分享链接！')
+        }
       }
     }
   },
@@ -593,7 +600,7 @@ watch(
             break
 
           case ExtensionType.VIDEO:
-            bilibiliURL.value = echoToUpdate.value.extension // 直接使用extension填充B站链接
+            videoURL.value = echoToUpdate.value.extension // 直接使用extension填充B站链接
             break
 
           case ExtensionType.GITHUBPROJ:
