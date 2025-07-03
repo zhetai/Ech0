@@ -82,9 +82,8 @@
         <!-- The Mode Panel -->
         <TheModePanel
           v-if="currentMode === Mode.Panel"
-          @switch-todo="handleSwitchTodoMode"
+          v-model:mode="currentMode"
           @switch-extension="handleSwitchExtensionMode"
-          @switch-play-music="handleSwitchPlayMusicMode"
         />
 
         <!-- Extension -->

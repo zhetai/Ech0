@@ -34,12 +34,13 @@
         />
       </div>
     </div>
+
     <!-- 模式切换 -->
     <div class="mb-1">
       <h2 class="text-gray-500 font-bold mb-1">模式切换</h2>
       <div class="flex flex-row items-center gap-2">
         <!-- 打开Todo模式 -->
-        <BaseButton :icon="Todo" @click="emit('switchTodo')" class="w-7 h-7 rounded-md" />
+        <BaseButton :icon="Todo" @click="handleTodo" class="w-7 h-7 rounded-md" />
         <BaseButton
           :icon="Audio"
           class="w-7 h-7 rounded-md"
@@ -60,24 +61,33 @@ import Githubproj from '@/components/icons/githubproj.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import Audio from '@/components/icons/audio.vue'
 
-import { ExtensionType } from '@/enums/enums'
+import { Mode, ExtensionType } from '@/enums/enums'
+import { useTodoStore } from '@/stores/todo'
 
 const emit = defineEmits([
-  'switchTodo',
   'switchExtension',
-  'switchPlayMusic',
-  'addMusic',
-  'addVideo',
-  'addGithubproj',
-  'addWeblink',
 ])
+
+
+const mode = defineModel<Mode>('mode', {
+  required: true,
+})
+
+const todoStore = useTodoStore()
+const { setTodoMode } = todoStore
+
 
 const handleAddExtension = (extensiontype: ExtensionType) => {
   emit('switchExtension', extensiontype)
 }
 
+const handleTodo = () => {
+  setTodoMode(true)
+  mode.value = Mode.TODO
+}
+
 const handlePlayMusic = () => {
-  emit('switchPlayMusic')
+  mode.value = Mode.PlayMusic
 }
 </script>
 
