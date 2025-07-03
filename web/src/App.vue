@@ -5,6 +5,8 @@ import { useUserStore } from '@/stores/user'
 import { watch } from 'vue'
 import { useSettingStore } from '@/stores/settting'
 import { storeToRefs } from 'pinia'
+import { Toaster } from 'vue-sonner'
+import 'vue-sonner/style.css'
 
 const userStore = useUserStore()
 const settingStore = useSettingStore()
@@ -44,6 +46,7 @@ onMounted(async () => {
 
 <template>
   <RouterView />
+  <Toaster theme="light" position="top-right" :expand="false" richColors />
 </template>
 
 <style scoped></style>

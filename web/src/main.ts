@@ -1,6 +1,5 @@
 import './assets/main.css'
 import 'virtual:uno.css'
-import 'vue-toastification/dist/index.css'
 
 // Md-Editor Start
 import { config } from 'md-editor-v3'
@@ -54,7 +53,6 @@ config({
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import Toast from 'vue-toastification'
 
 import App from './App.vue'
 import router from './router'
@@ -63,10 +61,5 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(Toast, {
-  transition: 'Vue-Toastification__fade',
-  maxToasts: 10,
-  newestOnTop: true,
-})
 
 app.mount('#app')
