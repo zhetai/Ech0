@@ -25,5 +25,5 @@ type EchoServiceInterface interface {
 	LikeEcho(id uint) error
 
 	// GetEchoById 获取指定 ID 的 Echo
-	GetEchoById(id uint) (*model.Echo, error)
+	GetEchoById(userId, id uint) (*model.Echo, error)
 }

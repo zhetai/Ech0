@@ -208,7 +208,7 @@ func (echoService *EchoService) LikeEcho(id uint) error {
 }
 
 // GetEchoById 获取指定 ID 的 Echo
-func (echoService *EchoService) GetEchoById(id uint) (*model.Echo, error) {
+func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error) {
 	var echo *model.Echo
 
 	echo, err := echoService.echoRepository.GetEchosById(id)
@@ -216,9 +216,32 @@ func (echoService *EchoService) GetEchoById(id uint) (*model.Echo, error) {
 		return nil, err
 	}
 
-	if echo != nil && echo.Private == true {
-		// 不允许通过ID获取私密Echo
+	// 如果不存在Echo，则返回错误
+	if echo == nil {
 		return nil, errors.New(commonModel.ECHO_NOT_FOUND)
+	}
+
+	// 如果没有登录用户，则不允许获取私密Echo
+	if userId == authModel.NO_USER_LOGINED {
+		// 如果Echo是私密的，则不允许获取
+		if echo.Private == true {
+			// 不允许通过ID获取私密Echo
+			return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
+		}
+	} else {
+		// 如果用户已经登录,获取当前登录用户
+		user, err := echoService.commonService.CommonGetUserByUserId(userId)
+		if err != nil {
+			return nil, err
+		}
+
+		if echo.Private == true {
+			if !user.IsAdmin {
+				return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
+			}
+
+			return echo, nil
+		}
 	}
 
 	return echo, nil

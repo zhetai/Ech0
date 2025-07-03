@@ -186,7 +186,9 @@ func (echoHandler *EchoHandler) GetEchoById() gin.HandlerFunc {
 			}
 		}
 
-		echo, err := echoHandler.echoService.GetEchoById(uint(id))
+		userId := ctx.MustGet("userid").(uint)
+
+		echo, err := echoHandler.echoService.GetEchoById(userId, uint(id))
 		if err != nil {
 			return res.Response{
 				Msg: "",

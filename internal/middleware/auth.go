@@ -33,12 +33,12 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 				return
 			}
 
-			// 查看Echo详情也不需要鉴权
-			//if strings.HasPrefix(ctx.Request.URL.Path, "/api/messages/") {
-			//	ctx.Set("userid", uint(0))
-			//	ctx.Next()
-			//	return
-			//}
+			// 查看Echo详情
+			if strings.HasPrefix(ctx.Request.URL.Path, "/api/echo") && ctx.Request.Method == http.MethodGet {
+				ctx.Set("userid", authModel.NO_USER_LOGINED)
+				ctx.Next()
+				return
+			}
 
 			ctx.JSON(http.StatusOK, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
 				Msg: commonModel.TOKEN_NOT_FOUND,
@@ -59,10 +59,10 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 
 		mc, err := jwtUtil.ParseToken(parts[1])
 		if err != nil {
-			ctx.JSON(http.StatusOK, errUtil.HandleError(&commonModel.ServerError{
+			ctx.JSON(http.StatusOK, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
 				Msg: commonModel.TOKEN_PARSE_ERROR,
 				Err: err,
-			}))
+			})))
 			ctx.Abort()
 			return
 		}
