@@ -111,7 +111,7 @@
             <TheAPlayerCard :echo="props.echo" />
           </div>
           <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
-            <TheVideoCard :bvnumber="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
+            <TheVideoCard :videoId="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
           </div>
           <TheGithubCard
             v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ"

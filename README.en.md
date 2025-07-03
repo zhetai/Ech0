@@ -31,7 +31,7 @@ Ech0 is a lightweight, self-hosted platform designed for quick sharing of your i
 📝 **Built-in Todo Manager**: Easily manage daily tasks and track progress efficiently  
 🔗 **Ech0 Connect**: Brand-new content aggregation and interconnection system; supports federation, content subscription and sync across multiple instances  
 🎵 **Seamless Music Integration**: Lightweight music player with local audio parsing, immersive background playback and focus mode  
-🎥 **Instant Video Sharing**: Native Bilibili video parsing, auto-embed with BV code or link  
+🎥 **Instant Video Sharing**: Native Bilibili/YouTube video parsing
 🃏 **Rich Shortcut Cards**: One-click sharing of rich media like website links, GitHub repos, etc. for vivid display  
 ⚙️ **Advanced Customization**: Power users can customize styles and scripts for expressive sharing
 
