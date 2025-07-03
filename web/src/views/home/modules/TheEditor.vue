@@ -3,10 +3,10 @@
     class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
   >
     <div class="mx-auto w-full px-3 py-4">
-      <!-- Title && Nav -->
+      <!-- The Title && Nav -->
       <TheTitleAndNav />
 
-      <!-- Editor -->
+      <!-- The Editor -->
       <div class="rounded-lg p-2 sm:p-3 mb-1">
         <TheMdEditor
           v-model="echoToAdd.content"
@@ -14,7 +14,7 @@
           v-if="currentMode === Mode.ECH0"
         />
 
-        <!-- ImageMode -->
+        <!-- ImageMode : TheImageEditor -->
         <div v-if="currentMode === Mode.Image">
           <h2 class="text-gray-500 font-bold my-2">插入图片（支持直链、本地上传）</h2>
           <div class="flex items-center justify-between mb-3">
@@ -73,52 +73,26 @@
           </div>
         </div>
 
-        <!-- todoMode -->
-        <BaseTextArea
-          v-if="currentMode === Mode.TODO"
-          v-model="todoToAdd.content"
-          class="rounded-lg h-auto sm:min-h-[6rem] md:min-h-[9rem]"
-          placeholder="请输入待办事项..."
-          :rows="3"
-        />
-        <!-- PlayMusic(上传音乐文件) -->
-        <div v-if="currentMode === Mode.PlayMusic">
-          <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式（仅PC）</h2>
-          <div class="mb-1 flex items-center gap-2">
-            <p class="text-gray-500">上传音乐：</p>
-            <input
-              id="file-input"
-              class="hidden"
-              type="file"
-              accept="audio/*"
-              ref="fileInput"
-              @change="handleUploadMusic"
-            />
-            <BaseButton
-              :icon="Audio"
-              @click="handleTriggerUpload"
-              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              title="上传音乐"
-            />
-          </div>
-          <div class="flex items-center gap-2">
-            <p class="text-gray-500">删除音乐：</p>
-            <BaseButton
-              :icon="Delete"
-              @click="handleDeleteMusic"
-              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              title="删除音乐"
-            />
-          </div>
-        </div>
+        <!-- TodoMode : TheTodoModeEditor -->
+        <TheTodoModeEditor
+          :current-mode="currentMode"
+          :todo-to-add="todoToAdd"
+          />
 
-        <!-- Panel -->
+        <!-- MusicMode : TheMusicModeEditor -->
+        <TheMusicModeEditor
+          @refresh-audio="handleRefreshAudio"
+          :current-mode="currentMode"
+          />
+
+        <!-- The Mode Panel -->
         <TheModePanel
           v-if="currentMode === Mode.Panel"
           @switch-todo="handleSwitchTodoMode"
           @switch-extension="handleSwitchExtensionMode"
           @switch-play-music="handleSwitchPlayMusicMode"
         />
+
         <!-- Extension -->
         <div v-if="currentMode === Mode.EXTEN">
           <!-- 音乐分享 -->
@@ -212,13 +186,14 @@ import Addmore from '@/components/icons/addmore.vue'
 
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
-import BaseTextArea from '@/components/common/BaseTextArea.vue'
 
 import TheMdEditor from '@/components/advanced/TheMdEditor.vue'
 import TheModePanel from './TheEditor/TheModePanel.vue'
 import TheTitleAndNav from './TheEditor/TheTitleAndNav.vue'
 import TheEditorImage from './TheEditor/TheEditorImage.vue'
 import TheEditorButtons from './TheEditor/TheEditorButtons.vue'
+import TheTodoModeEditor from './TheEditor/TheTodoModeEditor.vue'
+import TheMusicModeEditor from './TheEditor/TheMusicModeEditor.vue'
 
 import { theToast } from '@/utils/toast'
 import { ref, watch } from 'vue'
@@ -367,27 +342,8 @@ const handleUploadImage = async (event: Event) => {
   }
 }
 
-const handleUploadMusic = async (event: Event) => {
-  const target = event.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    const file = target.files[0]
-    fetchUploadMusic(file).then((res) => {
-      if (res.code === 1) {
-        theToast.success('音乐上传成功！')
-        emit('refreshAudio')
-      }
-    })
-  }
-}
-const handleDeleteMusic = () => {
-  if (confirm('确定要删除音乐吗？')) {
-    fetchDeleteMusic().then((res) => {
-      if (res.code === 1) {
-        theToast.success('音乐删除成功！')
-        emit('refreshAudio')
-      }
-    })
-  }
+const handleRefreshAudio = () => {
+  emit('refreshAudio')
 }
 
 const handlePrivate = () => {
