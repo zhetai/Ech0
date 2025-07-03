@@ -1,70 +1,19 @@
 <template>
-  <div class="w-full">
-    <!-- 日期时间 && 操作按钮 -->
-    <div class="flex justify-between items-center">
-      <!-- 日期时间 -->
-      <div class="flex justify-start items-center h-auto">
-        <!-- 小点 -->
-        <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
-        <!-- 具体日期时间 -->
-        <div class="flex justify-start text-sm text-orange-500">
-          {{ formatDate(props.echo.created_at) }}
+  <div class="w-full bg-white h-auto p-1 shadow-md rounded-lg p-1">
+    <div class="w-full">
+      <!-- 日期时间 && 操作按钮 -->
+      <div class="flex justify-between items-center">
+        <!-- 日期时间 -->
+        <!--
+        <div class="flex justify-start items-center h-auto">
+          <div class="flex justify-start text-sm text-orange-500">
+            {{ formatDate(props.echo.created_at) }}
+          </div>
         </div>
-      </div>
+-->
 
-      <!-- 操作按钮 -->
-      <div ref="menuRef" class="relative flex items-center justify-center gap-1 h-auto">
-        <!-- 更多操作 -->
-        <div
-          v-if="!showMenu"
-          @click.stop="toggleMenu"
-          class="w-7 h-7 flex items-center justify-center bg-white ring-1 ring-gray-200 ring-inset rounded-full shadow-sm hover:shadow-md transition"
-        >
-          <!-- 默认图标，展开后隐藏 -->
-          <More />
-        </div>
-
-        <!-- 展开后的按钮组 -->
-        <div
-          v-if="showMenu"
-          class="flex items-center gap-4 bg-white rounded-full px-2 py-1 shadow-sm hover:shadow-md ring-1 ring-gray-200 ring-inset"
-        >
-          <!-- 是否隐私 -->
-          <span v-if="props.echo.private" title="私密状态">
-            <Lock />
-          </span>
-
-          <!-- 删除 -->
-          <button
-            v-if="userStore.isLogin"
-            @click="handleDeleteEcho(props.echo.id)"
-            title="删除"
-            class="transform transition-transform duration-200 hover:scale-160 hover:animate-pulse"
-          >
-            <Roll />
-          </button>
-
-          <!-- 更新 -->
-          <button
-            v-if="userStore.isLogin"
-            @click="handleUpdateEcho()"
-            title="更新"
-            class="transform transition-transform duration-200 hover:scale-160 hover:animate-pulse"
-          >
-            <EditEcho />
-          </button>
-
-          <!-- 展开内容 -->
-          <!--
-          <button
-            @click="handleExpandEcho(echo.id)"
-            title="更新"
-            class="transform transition-transform duration-200 hover:scale-160 hover:animate-pulse"
-          >
-            <Expand />
-          </button>
-          -->
-
+        <!-- 操作按钮 -->
+        <div ref="menuRef" class="relative flex items-center justify-center gap-1 h-auto">
           <!-- 点赞 -->
           <div class="flex items-center justify-end" title="点赞">
             <div class="flex items-center gap-1">
@@ -89,10 +38,10 @@
     </div>
 
     <!-- 图片 && 内容 -->
-    <div class="border-l-2 border-gray-300 ml-1 mb-1">
-      <div class="p-6">
+    <div class="p-1">
+      <div>
         <!-- 图片 -->
-        <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
+        <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto mb-4">
           <div class="shadow-lg rounded-lg overflow-hidden mb-2">
             <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
               <img
@@ -161,24 +110,18 @@
 import { Fancybox } from '@fancyapps/ui'
 import { MdPreview } from 'md-editor-v3'
 import { getImageUrl } from '@/utils/other'
-import { onMounted, ref, onBeforeUnmount } from 'vue'
-import { fetchDeleteEcho, fetchLikeEcho } from '@/service/api'
+import { onMounted, ref } from 'vue'
+import { fetchLikeEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
-import { useUserStore } from '@/stores/user'
 import TheGithubCard from './TheGithubCard.vue'
 import TheVideoCard from './TheVideoCard.vue'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
-import Roll from '../icons/roll.vue'
-import Lock from '../icons/lock.vue'
 import Prev from '../icons/prev.vue'
 import Next from '../icons/next.vue'
-import More from '../icons/more.vue'
 import GrayLike from '../icons/graylike.vue'
-import EditEcho from '../icons/editecho.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
-import { useEchoStore } from '@/stores/echo'
 import { localStg } from '@/utils/storage'
 
 const emit = defineEmits(['refresh', 'updateLikeCount'])
@@ -195,7 +138,6 @@ const props = defineProps<{
   echo: Echo
 }>()
 const imageIndex = ref<number>(0)
-const userStore = useUserStore()
 const previewOptions = {
   proviewId: 'preview-only',
   theme: 'light' as 'light' | 'dark',
@@ -206,31 +148,6 @@ const previewOptions = {
   noImgZoomIn: false,
   codeFoldable: true,
   autoFoldThreshold: 15,
-}
-
-const echoStore = useEchoStore()
-
-const handleDeleteEcho = (echoId: number) => {
-  // 浏览器alert弹窗确认删除
-  if (confirm('确定要删除吗？')) {
-    fetchDeleteEcho(echoId).then(() => {
-      theToast.success('删除成功！')
-      // 触发父组件的刷新事件emit
-      emit('refresh')
-    })
-  }
-}
-
-const handleUpdateEcho = () => {
-  if (echoStore.isUpdateMode) {
-    // 如果已经在更新模式，返回顶部并提示用户先退出更新模式
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    theToast.warning('请先退出更新模式！')
-    return
-  }
-
-  echoStore.echoToUpdate = props.echo
-  echoStore.isUpdateMode = true
 }
 
 const LIKE_LIST_KEY = 'likedEchoIds'
@@ -256,54 +173,35 @@ const handleLikeEcho = (echoId: number) => {
   })
 }
 
-const formatDate = (dateString: string) => {
-  // 当天则显示（时：分）
-  // 非当天但是三内天则显示几天前
-  // 超过三天则显示（时：分 年月日）
-  const date = new Date(dateString)
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24))
-  const diffInHours = Math.floor(diff / (1000 * 60 * 60))
-  const diffInMinutes = Math.floor(diff / (1000 * 60))
+// const formatDate = (dateString: string) => {
+//   // 当天则显示（时：分）
+//   // 非当天但是三内天则显示几天前
+//   // 超过三天则显示（时：分 年月日）
+//   const date = new Date(dateString)
+//   const now = new Date()
+//   const diff = now.getTime() - date.getTime()
+//   const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24))
+//   const diffInHours = Math.floor(diff / (1000 * 60 * 60))
+//   const diffInMinutes = Math.floor(diff / (1000 * 60))
 
-  const diffInSeconds = Math.floor(diff / 1000)
-  if (diffInSeconds < 60) {
-    return '刚刚'
-  } else if (diffInMinutes < 60) {
-    return `${diffInMinutes}分钟前`
-  } else if (diffInHours < 24) {
-    return `${diffInHours}小时前`
-  } else if (diffInDays < 3) {
-    return `${diffInDays}天前`
-  } else {
-    return date.toLocaleString() // 返回完整的日期和时间
-  }
-}
-
-const showMenu = ref(false)
-const menuRef = ref<HTMLElement | null>(null)
-
-const toggleMenu = () => {
-  showMenu.value = !showMenu.value
-}
-
-const handleClickOutside = (event: MouseEvent) => {
-  if (menuRef.value && !menuRef.value.contains(event.target as Node)) {
-    showMenu.value = false
-  }
-}
+//   const diffInSeconds = Math.floor(diff / 1000)
+//   if (diffInSeconds < 60) {
+//     return '刚刚'
+//   } else if (diffInMinutes < 60) {
+//     return `${diffInMinutes}分钟前`
+//   } else if (diffInHours < 24) {
+//     return `${diffInHours}小时前`
+//   } else if (diffInDays < 3) {
+//     return `${diffInDays}天前`
+//   } else {
+//     return date.toLocaleString() // 返回完整的日期和时间
+//   }
+// }
 
 onMounted(() => {
   Fancybox.bind('[data-fancybox]', {
     // Your custom options
   })
-
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 
