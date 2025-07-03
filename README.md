@@ -224,11 +224,21 @@ pnpm dev # 启动前端预览
 
 ---
 
+# ✨ Star增长曲线
+
+<a href="https://www.star-history.com/#lin-snow/Ech0&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
+ </picture>
+</a>
+
+---
+
 # ☕ 支持
 
 🌟 如果你觉得 **Ech0** 不错，欢迎为项目点个 Star！🚀
-
-![star history](https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Date "star history")
 
 Ech0 完全开源且免费，持续维护和优化离不开大家的支持。如果这个项目对你有所帮助，也欢迎通过赞助支持项目的持续发展。你的每一份鼓励和支持，都是我们前进的动力！  
 你可以向打赏二维码付款，然后备注你的github名称，将在首页 `README.md` 页面向所有展示你的贡献
