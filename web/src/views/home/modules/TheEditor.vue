@@ -74,16 +74,10 @@
         </div>
 
         <!-- TodoMode : TheTodoModeEditor -->
-        <TheTodoModeEditor
-          :current-mode="currentMode"
-          :todo-to-add="todoToAdd"
-          />
+        <TheTodoModeEditor :current-mode="currentMode" v-model:content="todoToAdd.content" />
 
         <!-- MusicMode : TheMusicModeEditor -->
-        <TheMusicModeEditor
-          @refresh-audio="handleRefreshAudio"
-          :current-mode="currentMode"
-          />
+        <TheMusicModeEditor @refresh-audio="handleRefreshAudio" :current-mode="currentMode" />
 
         <!-- The Mode Panel -->
         <TheModePanel
@@ -180,8 +174,6 @@
 <script setup lang="ts">
 import Upload from '@/components/icons/upload.vue'
 import Url from '@/components/icons/url.vue'
-import Audio from '@/components/icons/audio.vue'
-import Delete from '@/components/icons/delete.vue'
 import Addmore from '@/components/icons/addmore.vue'
 
 import BaseButton from '@/components/common/BaseButton.vue'
@@ -197,14 +189,7 @@ import TheMusicModeEditor from './TheEditor/TheMusicModeEditor.vue'
 
 import { theToast } from '@/utils/toast'
 import { ref, watch } from 'vue'
-import {
-  fetchUploadImage,
-  fetchAddEcho,
-  fetchAddTodo,
-  fetchUploadMusic,
-  fetchDeleteMusic,
-  fetchUpdateEcho,
-} from '@/service/api'
+import { fetchUploadImage, fetchAddEcho, fetchAddTodo, fetchUpdateEcho } from '@/service/api'
 import { useEchoStore } from '@/stores/echo'
 import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
@@ -505,7 +490,8 @@ watch(
   (newVal) => {
     if (newVal.length > 0) {
       const bvRegex = /(BV[0-9A-Za-z]{10})/
-      const ytRegex = /(?:https?:\/\/(?:www\.)?)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed)\/))([\w-]+)/
+      const ytRegex =
+        /(?:https?:\/\/(?:www\.)?)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed)\/))([\w-]+)/
       let match = newVal.match(bvRegex)
       if (match) {
         extensionToAdd.value.extension = match[0] //bilibili

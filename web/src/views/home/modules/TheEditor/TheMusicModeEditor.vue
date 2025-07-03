@@ -1,33 +1,33 @@
 <template>
   <div v-if="currentMode === Mode.PlayMusic">
-          <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式（仅PC）</h2>
-          <div class="mb-1 flex items-center gap-2">
-            <p class="text-gray-500">上传音乐：</p>
-            <input
-              id="file-input"
-              class="hidden"
-              type="file"
-              accept="audio/*"
-              ref="fileInput"
-              @change="handleUploadMusic"
-            />
-            <BaseButton
-              :icon="Audio"
-              @click="handleTriggerUpload"
-              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              title="上传音乐"
-            />
-          </div>
-          <div class="flex items-center gap-2">
-            <p class="text-gray-500">删除音乐：</p>
-            <BaseButton
-              :icon="Delete"
-              @click="handleDeleteMusic"
-              class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-              title="删除音乐"
-            />
-          </div>
-        </div>
+    <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式（仅PC）</h2>
+    <div class="mb-1 flex items-center gap-2">
+      <p class="text-gray-500">上传音乐：</p>
+      <input
+        id="file-input"
+        class="hidden"
+        type="file"
+        accept="audio/*"
+        ref="fileInput"
+        @change="handleUploadMusic"
+      />
+      <BaseButton
+        :icon="Audio"
+        @click="handleTriggerUpload"
+        class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+        title="上传音乐"
+      />
+    </div>
+    <div class="flex items-center gap-2">
+      <p class="text-gray-500">删除音乐：</p>
+      <BaseButton
+        :icon="Delete"
+        @click="handleDeleteMusic"
+        class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+        title="删除音乐"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -76,6 +76,4 @@ const handleDeleteMusic = () => {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
