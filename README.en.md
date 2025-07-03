@@ -31,7 +31,7 @@ Ech0 is a lightweight, self-hosted platform designed for quick sharing of your i
 📝 **Built-in Todo Manager**: Easily manage daily tasks and track progress efficiently  
 🔗 **Ech0 Connect**: Brand-new content aggregation and interconnection system; supports federation, content subscription and sync across multiple instances  
 🎵 **Seamless Music Integration**: Lightweight music player with local audio parsing, immersive background playback and focus mode  
-🎥 **Instant Video Sharing**: Native Bilibili/YouTube video parsing
+🎥 **Instant Video Sharing**: Native Bilibili/YouTube video parsing  
 🃏 **Rich Shortcut Cards**: One-click sharing of rich media like website links, GitHub repos, etc. for vivid display  
 ⚙️ **Advanced Customization**: Power users can customize styles and scripts for expressive sharing
 
@@ -234,6 +234,18 @@ Backend: [http://localhost:6273](http://localhost:6273) (default)
 * Thanks to community users for valuable feedback and improvements
 * Thanks to my roommate for designing the initial logo
 * Thanks to all contributors and supporters from the open-source community
+
+---
+
+# ✨ growth of Star
+
+<a href="https://www.star-history.com/#lin-snow/Ech0&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
+ </picture>
+</a>
 
 ---
 
