@@ -69,7 +69,7 @@ const (
 
 const (
 	// Version 是当前版本号
-	Version = "2.2.2"
+	Version = "2.2.3"
 )
 
 const (
