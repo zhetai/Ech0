@@ -26,3 +26,11 @@ export function fetchGetMusic() {
     method: 'GET',
   })
 }
+
+// Hello Ech0
+export function fetchHelloEch0() {
+  return request<App.Api.Ech0.HelloEch0>({
+    url: '/hello',
+    method: 'GET',
+  })
+}

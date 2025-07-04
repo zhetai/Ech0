@@ -210,16 +210,21 @@ func (commonHandler *CommonHandler) PlayMusic(ctx *gin.Context) {
 }
 
 // HelloEch0 处理HelloEch0请求
-func (commonHandler *CommonHandler) HelloEch0(ctx *gin.Context) {
-	Response := struct {
-		Hello   string `json:"hello"`
-		Version string `json:"version"`
-		Github  string `json:"github"`
-	}{
-		Hello:   "Hello, Ech0! 👋",
-		Version: commonModel.Version,
-		Github:  "https://github.com/lin-snow/Ech0",
-	}
+func (commonHandler *CommonHandler) HelloEch0() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		hello := struct {
+			Hello   string `json:"hello"`
+			Version string `json:"version"`
+			Github  string `json:"github"`
+		}{
+			Hello:   "Hello, Ech0! 👋",
+			Version: commonModel.Version,
+			Github:  "https://github.com/lin-snow/Ech0",
+		}
 
-	ctx.JSON(http.StatusOK, Response)
+		return res.Response{
+			Msg:  commonModel.GET_HELLO_SUCCESS,
+			Data: hello,
+		}
+	})
 }

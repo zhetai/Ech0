@@ -138,6 +138,12 @@ declare namespace App {
           avatar_url: string
         }
       }
+
+      type HelloEch0 = {
+        hello: string
+        version: string
+        github: string
+      }
     }
 
     namespace Setting {

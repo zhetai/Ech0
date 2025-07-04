@@ -4,14 +4,12 @@ import "github.com/lin-snow/ech0/internal/di"
 
 // setupCommonRoutes 设置普通路由
 func setupCommonRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
-	// NoAPIPrefix
-	appRouterGroup.ResourceGroup.GET("/hello", h.CommonHandler.HelloEch0)
-
 	// Public
 	appRouterGroup.PublicRouterGroup.GET("/status", h.CommonHandler.GetStatus())
 	appRouterGroup.PublicRouterGroup.GET("/heatmap", h.CommonHandler.GetHeatMap())
 	appRouterGroup.PublicRouterGroup.GET("/getmusic", h.CommonHandler.GetPlayMusic())
 	appRouterGroup.PublicRouterGroup.GET("/playmusic", h.CommonHandler.PlayMusic)
+	appRouterGroup.PublicRouterGroup.GET("/hello", h.CommonHandler.HelloEch0())
 
 	// Auth
 	appRouterGroup.AuthRouterGroup.POST("/images/upload", h.CommonHandler.UploadImage())

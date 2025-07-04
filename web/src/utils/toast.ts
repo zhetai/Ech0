@@ -4,11 +4,23 @@ import { toast } from 'vue-sonner'
 // 定义自定义通知选项接口
 interface customToastOptions {
   duration?: number
+  description?: string
+  action?: {
+    label?: string
+    onClick?: () => void
+  }
+  classes?: {
+    actionButton?: string
+  }
 }
 
 // 默认通知选项
 const defaultToastOptions: customToastOptions = {
   duration: 1500, // 默认持续时间为1500毫秒
+  description: '', // 默认描述为空
+  classes: {
+    actionButton: 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500',
+  },
 }
 
 function show(
@@ -18,6 +30,15 @@ function show(
 ) {
   toast[type](content, {
     duration: options?.duration ?? defaultToastOptions.duration,
+    description: options?.description ?? defaultToastOptions.description,
+    ...(options?.action?.label
+      ? {
+          action: {
+            label: options.action.label,
+            onClick: options.action.onClick ?? (() => toast.dismiss()),
+          },
+        }
+      : {}),
   })
 }
 

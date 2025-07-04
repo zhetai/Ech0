@@ -29,6 +29,7 @@ const (
 	GET_STATUS_SUCCESS    = "获取状态成功"
 	GET_HEATMAP_SUCCESS   = "获取热力图成功"
 	GET_MUSIC_URL_SUCCESS = "获取音乐播放链接成功"
+	GET_HELLO_SUCCESS     = "获取Hello成功"
 )
 
 // Setting 成功相关常量

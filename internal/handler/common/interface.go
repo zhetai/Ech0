@@ -24,12 +24,12 @@ type CommonHandlerInterface interface {
 	// GetPlayMusic 获取可播放的音乐
 	GetPlayMusic() gin.HandlerFunc
 
+	// HelloEch0
+	HelloEch0() gin.HandlerFunc
+
 	// GetRss 获取RSS
 	GetRss(ctx *gin.Context)
 
 	// PlayMusic 播放音乐
 	PlayMusic(ctx *gin.Context)
-
-	// HelloEch0
-	HelloEch0(ctx *gin.Context)
 }
