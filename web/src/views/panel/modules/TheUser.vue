@@ -200,15 +200,26 @@ const handTriggerUpload = () => {
 }
 const handleUploadImage = async (event: Event) => {
   const target = event.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    const file = target.files[0]
-    fetchUploadImage(file).then((res) => {
-      if (res.code === 1) {
-        userInfo.value.avatar = res.data
-        if (user.value) user.value.avatar = res.data
-        theToast.success('头像上传成功！')
-      }
+  const file = target.files?.[0]
+  if (!file) return
+
+  try {
+    const res = await theToast.promise(fetchUploadImage(file), {
+      loading: '头像上传中...',
+      success: '头像上传成功！',
+      error: '上传失败，请稍后再试',
     })
+
+    // 只需处理成功结果即可，失败的 toast 已由 request() 自动处理
+    if (res.code === 1) {
+      userInfo.value.avatar = res.data
+      if (user.value) user.value.avatar = res.data
+    }
+  } catch (err) {
+    console.error('上传异常', err)
+    // 注意：这里只有抛出异常时才会进入，正常 res.code ≠ 1 是不会进来的
+  } finally {
+    target.value = ''
   }
 }
 

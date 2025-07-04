@@ -1,15 +1,15 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-    <!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE -->
-    <path
-      fill="#888888"
-      d="M20 2H4c-1.1 0-2 .9-2 2v16a2 2 0 0 0 2 2h16c1.11 0 2-.89 2-2V4a2 2 0 0 0-2-2M4 6l2-2h4.9L4 10.9zm0 7.7L13.7 4h4.9L4 18.6zM20 18l-2 2h-4.9l6.9-6.9zm0-7.7L10.3 20H5.4L20 5.4z"
-    />
+    <!-- Icon from Lucide by Lucide Contributors - https://github.com/lucide-icons/lucide/blob/main/LICENSE -->
+    <g fill="none" stroke="#888888" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M9 8h7m-8 4h6m-3 4h5" />
+    </g>
   </svg>
 </template>
 
 <script lang="ts">
 export default {
-  name: 'MdiTextureBox',
+  name: 'LucideSquareChartGantt',
 }
 </script>

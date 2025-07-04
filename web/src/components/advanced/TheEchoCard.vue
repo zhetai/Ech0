@@ -55,15 +55,14 @@
           </button>
 
           <!-- 展开内容 -->
-          <!--
+
           <button
             @click="handleExpandEcho(echo.id)"
-            title="更新"
+            title="展开Echo"
             class="transform transition-transform duration-200 hover:scale-160 hover:animate-pulse"
           >
             <Expand />
           </button>
-          -->
 
           <!-- 点赞 -->
           <div class="flex items-center justify-end" title="点赞">
@@ -174,12 +173,14 @@ import Lock from '../icons/lock.vue'
 import Prev from '../icons/prev.vue'
 import Next from '../icons/next.vue'
 import More from '../icons/more.vue'
+import Expand from '../icons/expand.vue'
 import GrayLike from '../icons/graylike.vue'
 import EditEcho from '../icons/editecho.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
 import { useEchoStore } from '@/stores/echo'
 import { localStg } from '@/utils/storage'
+import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['refresh', 'updateLikeCount'])
 
@@ -209,6 +210,7 @@ const previewOptions = {
 }
 
 const echoStore = useEchoStore()
+const router = useRouter()
 
 const handleDeleteEcho = (echoId: number) => {
   // 浏览器alert弹窗确认删除
@@ -253,6 +255,14 @@ const handleLikeEcho = (echoId: number) => {
       emit('updateLikeCount', echoId)
       theToast.success('点赞成功！')
     }
+  })
+}
+
+const handleExpandEcho = (echoId: number) => {
+  // 跳转到Echo详情
+  router.push({
+    name: 'echo',
+    params: { echoId: echoId },
   })
 }
 

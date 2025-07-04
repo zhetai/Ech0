@@ -248,37 +248,33 @@ const handleTriggerUpload = () => {
     fileInput.value.click()
   }
 }
+
 const handleUploadImage = async (event: Event) => {
   const target = event.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    const file = target.files[0]
-    fetchUploadImage(file)
-      .then((res) => {
-        if (res.code === 1) {
-          // 改成新版的图片数组
-          // echoToAdd.value.image_url = res.data
-          imageToAdd.value.image_url = String(res.data)
-          imageToAdd.value.image_source = ImageSource.LOCAL
-          theToast.success('图片上传成功！')
+  const file = target.files?.[0]
+  if (!file) return
 
-          handleAddMoreImage()
+  try {
+    const res = await theToast.promise(fetchUploadImage(file), {
+      loading: '图片上传中...',
+      success: '图片上传成功！',
+      error: '图片上传失败，请重试',
+    })
 
-          // 如果当前处于Echo更新模式，则需要立马执行更新（图片上传操作不可逆，需要立马更新确保后端数据同步）
-          if (isUpdateMode.value && echoToUpdate.value) {
-            handleAddorUpdateEcho(true)
-          }
+    if (res.code === 1) {
+      imageToAdd.value.image_url = String(res.data)
+      imageToAdd.value.image_source = ImageSource.LOCAL
+      handleAddMoreImage()
 
-          // if (currentMode.value === Mode.Image) {
-          //   currentMode.value = Mode.ECH0
-          // }
-        }
-      })
-      .finally(() => {
-        // 重置文件输入
-        if (fileInput.value) {
-          fileInput.value.value = ''
-        }
-      })
+      if (isUpdateMode.value && echoToUpdate.value) {
+        handleAddorUpdateEcho(true)
+      }
+    }
+  } catch (err) {
+    console.error('上传图片出错:', err)
+  } finally {
+    // 重置 input，防止同图重复上传失效
+    target.value = ''
   }
 }
 /* ----------------------------------------------------- */

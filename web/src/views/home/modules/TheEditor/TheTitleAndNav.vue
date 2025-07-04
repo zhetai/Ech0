@@ -13,6 +13,7 @@
         {{ SystemSetting.server_name }}
       </h1>
     </div>
+
     <div class="flex flex-row items-center gap-2">
       <!-- Github -->
       <div>
@@ -25,8 +26,8 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import Github from '@/components/icons/github.vue'
+import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { fetchGetStatus } from '@/service/api'
 import { useSettingStore } from '@/stores/settting'

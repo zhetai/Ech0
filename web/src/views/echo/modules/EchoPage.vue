@@ -1,26 +1,48 @@
 <template>
-  <div class="px-4 pb-4 py-2 mt-4 mb-10 mx-auto flex justify-center items-center">
-    <div class="h-auto max-w-sm sm:max-w-md md:max-w-lg">
-      <div v-if="echo">
-        <!-- TODO: 该页面暂时处于开发中，后续会展示Echo的详细信息 -->
-        <TheEchoDetail :echo="echo" />
+  <div class="px-3 pb-4 py-2 mt-4 sm:mt-6 mb-10 mx-auto flex justify-center items-center">
+    <div class="w-full sm:max-w-lg mx-auto">
+      <div>
+        <!-- 返回上一页 -->
+        <BaseButton
+          @click="router.back()"
+          class="text-gray-600 rounded-md !shadow-none !border-none !ring-0 !bg-transparent group"
+          title="返回首页"
+        >
+          <Arrow
+            class="w-9 h-9 rotate-180 transition-transform duration-200 group-hover:-translate-x-1"
+          />
+        </BaseButton>
       </div>
-      <div v-else class="text-gray-500">当前暂无Echo详情可展示</div>
+
+      <div v-if="echo" class="w-full sm:mt-1 mx-auto">
+        <TheEchoDetail :echo="echo" @update-like-count="handleUpdateLikeCount" />
+      </div>
+      <div v-else class="w-full sm:mt-1 text-gray-300">当前暂无Echo详情可展示</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { fetchGetEchoById } from '@/service/api'
 import { ref } from 'vue'
 import TheEchoDetail from '@/components/advanced/TheEchoDetail.vue'
+import BaseButton from '@/components/common/BaseButton.vue'
+import Arrow from '@/components/icons/arrow.vue'
 
+const router = useRouter()
 const route = useRoute()
 const echoId = route.params.echoId as string
-
 const echo = ref<App.Api.Ech0.Echo | null>(null)
+
+// 刷新点赞数据
+const handleUpdateLikeCount = () => {
+  if (echo.value) {
+    // 更新 Echo 的点赞数量
+    echo.value.fav_count += 1
+  }
+}
 
 onMounted(async () => {
   // 在这里可以添加获取Echo详情的逻辑

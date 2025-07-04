@@ -16,11 +16,28 @@ function show(
   content: string,
   options?: customToastOptions,
 ) {
-  const config = {
+  toast[type](content, {
     duration: options?.duration ?? defaultToastOptions.duration,
-  }
+  })
+}
 
-  toast[type](content, config)
+// 简化后的 promise toast
+function showPromise<T>(
+  promise: Promise<T>,
+  messages: {
+    loading: string
+    success: string | ((data: T) => string)
+    error: string | ((error: string) => string)
+  },
+  options?: customToastOptions,
+): Promise<T> {
+  toast.promise(promise, {
+    loading: messages.loading,
+    success: messages.success,
+    error: messages.error,
+    duration: options?.duration ?? defaultToastOptions.duration,
+  })
+  return promise
 }
 
 export const theToast = {
@@ -28,4 +45,5 @@ export const theToast = {
   error: (content: string, options?: customToastOptions) => show('error', content, options),
   info: (content: string, options?: customToastOptions) => show('info', content, options),
   warning: (content: string, options?: customToastOptions) => show('warning', content, options),
+  promise: showPromise,
 }
