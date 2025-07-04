@@ -25,7 +25,7 @@
     </div>
 
     <!-- 图片 && 内容 -->
-    <div class="">
+    <div>
       <div>
         <!-- 内容 -->
         <div>
@@ -109,9 +109,9 @@
             <button
               @click="handleLikeEcho(props.echo.id)"
               title="点赞"
-              class="transform transition-transform duration-200 hover:scale-160 hover:animate-pulse"
+              class="transform transition-transform duration-200 hover:scale-160"
             >
-              <GrayLike class="w-4 h-4 transition-colors duration-200 hover:text-red-500" />
+              <GrayLike class="w-4 h-4" />
             </button>
 
             <!-- 点赞数量   -->
@@ -127,23 +127,27 @@
 </template>
 
 <script setup lang="ts">
-import { Fancybox } from '@fancyapps/ui'
-import { MdPreview } from 'md-editor-v3'
-import { getImageUrl } from '@/utils/other'
-import { onMounted, ref } from 'vue'
-import { fetchLikeEcho } from '@/service/api'
-import { theToast } from '@/utils/toast'
 import TheGithubCard from './TheGithubCard.vue'
 import TheVideoCard from './TheVideoCard.vue'
-import '@fancyapps/ui/dist/fancybox/fancybox.css'
-import 'md-editor-v3/lib/preview.css'
 import Prev from '../icons/prev.vue'
 import Next from '../icons/next.vue'
 import Verified from '../icons/verified.vue'
 import GrayLike from '../icons/graylike.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
+import '@fancyapps/ui/dist/fancybox/fancybox.css'
+import 'md-editor-v3/lib/preview.css'
+import { Fancybox } from '@fancyapps/ui'
+import { MdPreview } from 'md-editor-v3'
+import { getImageUrl } from '@/utils/other'
+import { onMounted, ref } from 'vue'
+import { fetchLikeEcho } from '@/service/api'
+import { theToast } from '@/utils/toast'
 import { localStg } from '@/utils/storage'
+import { storeToRefs } from 'pinia'
+import { fetchGetStatus } from '@/service/api'
+import { useSettingStore } from '@/stores/settting'
+import { getApiUrl } from '@/service/request/shared'
 
 const emit = defineEmits(['updateLikeCount'])
 
@@ -218,11 +222,6 @@ const formatDate = (dateString: string) => {
     return date.toLocaleString() // 返回完整的日期和时间
   }
 }
-
-import { storeToRefs } from 'pinia'
-import { fetchGetStatus } from '@/service/api'
-import { useSettingStore } from '@/stores/settting'
-import { getApiUrl } from '@/service/request/shared'
 
 const settingStore = useSettingStore()
 
