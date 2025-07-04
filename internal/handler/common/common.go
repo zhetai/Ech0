@@ -39,7 +39,7 @@ func (commonHandler *CommonHandler) UploadImage() gin.HandlerFunc {
 		imageUrl, err := commonHandler.commonService.UploadImage(userId, file)
 		if err != nil {
 			return res.Response{
-				Msg: commonModel.INVALID_REQUEST_BODY,
+				Msg: "",
 				Err: err,
 			}
 		}
