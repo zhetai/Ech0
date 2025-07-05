@@ -4,7 +4,7 @@
       <div>
         <!-- 返回上一页 -->
         <BaseButton
-          @click="router.back()"
+          @click="router.push({ name: 'home' })"
           class="text-gray-600 rounded-md !shadow-none !border-none !ring-0 !bg-transparent group"
           title="返回首页"
         >
