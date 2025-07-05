@@ -275,7 +275,7 @@ func (commonService *CommonService) GenerateRSS(ctx *gin.Context) (string, error
 
 		item := &feeds.Item{
 			Title:       title,
-			Link:        &feeds.Link{Href: fmt.Sprintf("%s://%s/api/echo/%d", schema, host, msg.ID)},
+			Link:        &feeds.Link{Href: fmt.Sprintf("%s://%s/echo/%d", schema, host, msg.ID)},
 			Description: string(renderedContent),
 			Author: &feeds.Author{
 				Name: msg.Username,
