@@ -17,7 +17,9 @@
       <div v-if="echo" class="w-full sm:mt-1 mx-auto">
         <TheEchoDetail :echo="echo" @update-like-count="handleUpdateLikeCount" />
       </div>
-      <div v-else class="w-full sm:mt-1 text-gray-300">当前暂无Echo详情可展示</div>
+      <div v-else class="w-full sm:mt-1 text-gray-300">
+        <p class="text-center">正在加载 Echo 详情...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -35,6 +37,7 @@ const router = useRouter()
 const route = useRoute()
 const echoId = route.params.echoId as string
 const echo = ref<App.Api.Ech0.Echo | null>(null)
+const isLoading = ref(true)
 
 // 刷新点赞数据
 const handleUpdateLikeCount = () => {
@@ -44,11 +47,12 @@ const handleUpdateLikeCount = () => {
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   // 在这里可以添加获取Echo详情的逻辑
-  await fetchGetEchoById(echoId).then((res) => {
+  fetchGetEchoById(echoId).then((res) => {
     if (res.code === 1) {
       echo.value = res.data
+      isLoading.value = false
     }
   })
 })
