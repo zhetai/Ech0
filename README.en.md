@@ -156,6 +156,9 @@ docker image prune -f
 10. **Why do some Connect entries not show?**
     The backend fetches data from all connected instances. If one is down or unreachable, it will be excluded from results.
 
+11. **What content is not recommended for Ech0?**
+   Ech0 published content consists of three parts: text, images, and extended content (such as music, video player cards). Ech0 does not recommend publishing dense content that simultaneously includes `text + images + extended content`, as this violates some of Ech0's design principles. Additionally, publishing extended content or lengthy articles is not recommended at any time.
+
 ---
 
 # 📢 Feedback & Contributions
