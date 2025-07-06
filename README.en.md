@@ -53,7 +53,7 @@ docker run -d \
   -v /opt/ech0/data:/app/data \
   -e JWT_SECRET="Hello Echos!" \
   sn0wl1n/ech0:latest
-````
+```
 
 > 💡 After deployment, visit `ip:6277` to use
 > 🚷 It is recommended to change `"Hello Echos!"` in `JWT_SECRET` for better security
@@ -69,6 +69,8 @@ Then run the following command in that directory:
 ```shell
 docker-compose up -d
 ```
+
+---
 
 ## How to Update
 
