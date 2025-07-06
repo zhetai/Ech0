@@ -25,7 +25,7 @@ Ech0 is a lightweight, self-hosted platform designed for quick sharing of your i
 🚀 **Fast Deployment**: No configuration needed, just one command from install to use  
 ✍️ **Distraction-Free Writing**: Clean online Markdown editor, **supports rich Markdown plugins and preview**  
 📦 **Data Sovereignty**: All content stored locally in SQLite, supports RSS subscription  
-🎉 **Free Forever**: Open-sourced under the MIT license, no tracking / subscription / service dependency  
+🎉 **Free Forever**: Open-sourced under the AGPL-3.0 license, no tracking / subscription / service dependency  
 🌍 **Cross-Platform**: Fully responsive across mobile, tablet, and desktop browsers  
 👾 **PWA Support**: Can be installed as a web app  
 📝 **Built-in Todo Manager**: Easily manage daily tasks and track progress efficiently  
@@ -131,7 +131,7 @@ docker image prune -f
    Ech0 is not a traditional note-taking tool (like Obsidian or Notion). It functions more like a personal feed or “status update” platform.
 
 3. **Is Ech0 free?**
-   Yes, Ech0 is completely free and open-source under the MIT License. No ads, no tracking, no subscriptions, and no service dependencies.
+   Yes, Ech0 is completely free and open-source under the AGPL-3.0 License. No ads, no tracking, no subscriptions, and no service dependencies.
 
 4. **How to back up and restore data?**
    All content is stored in a local SQLite file. Simply back up the `/opt/ech0/data` directory. To restore, just copy the backup files back.
