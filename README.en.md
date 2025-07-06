@@ -15,7 +15,7 @@
 
 Ech0 is a lightweight, self-hosted platform designed for quick sharing of your ideas, texts, and links. With an intuitive interface, you can easily manage your content, ensuring complete data control and seamless connection with the world anytime, anywhere.
 
-![Screenshot](./docs/imgs/screenshot.png)
+![Screenshot](./docs/imgs/screenshot_mockup.png)
 
 ---
 
