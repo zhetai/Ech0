@@ -22,7 +22,7 @@
                 class="absolute top-0 right-0 w-2.5 h-2.5 border-2 border-white rounded-full"
                 :style="{
                   transform: 'translate(35%, -35%)',
-                  backgroundColor: getColor(connect.total_echos || 0),
+                  backgroundColor: getColor(connect.today_echos || 0),
                 }"
               ></span>
             </a>
