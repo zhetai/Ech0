@@ -46,15 +46,24 @@ func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 
 }
 
-// GetEchosByPage 获取Echo列表，支持分页
+// GetEchosByPage 获取Echo列表，支持分页, 兼容 GET Query 和 POST JSON 请求
 func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取分页参数
 		var pageRequest commonModel.PageQueryDto
-		if err := ctx.ShouldBindJSON(&pageRequest); err != nil {
-			return res.Response{
-				Msg: commonModel.INVALID_REQUEST_BODY,
-				Err: err,
+
+		// 尝试从 query 中获取
+		if err := ctx.ShouldBindQuery(&pageRequest); err != nil {
+			// 不做处理，因为 query 可能没带
+		}
+
+		// 如果 query 中没有传值，再尝试从 JSON 中解析
+		if pageRequest.Page == 0 && pageRequest.PageSize == 0 {
+			if err := ctx.ShouldBindJSON(&pageRequest); err != nil {
+				return res.Response{
+					Msg: commonModel.INVALID_REQUEST_BODY,
+					Err: err,
+				}
 			}
 		}
 
@@ -73,7 +82,6 @@ func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 			Msg:  commonModel.GET_ECHOS_BY_PAGE_SUCCESS,
 		}
 	})
-
 }
 
 // DeleteEcho 删除Echo
