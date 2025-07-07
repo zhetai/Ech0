@@ -148,16 +148,11 @@ import { storeToRefs } from 'pinia'
 import { fetchGetStatus } from '@/service/api'
 import { useSettingStore } from '@/stores/settting'
 import { getApiUrl } from '@/service/request/shared'
+import { ExtensionType } from '@/enums/enums'
 
 const emit = defineEmits(['updateLikeCount'])
 
 type Echo = App.Api.Ech0.Echo
-const enum ExtensionType {
-  MUSIC = 'MUSIC',
-  VIDEO = 'VIDEO',
-  GITHUBPROJ = 'GITHUBPROJ',
-  WEBSITE = 'WEBSITE',
-}
 
 const props = defineProps<{
   echo: Echo

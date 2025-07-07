@@ -23,13 +23,10 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { parseMusicURL } from '@/utils/other'
 import { useSettingStore } from '@/stores/settting'
+import { ExtensionType } from '@/enums/enums'
+
 const { SystemSetting, loading } = storeToRefs(useSettingStore())
 type Echo = App.Api.Ech0.Echo
-const enum ExtensionType {
-  MUSIC = 'MUSIC',
-  VIDEO = 'VIDEO',
-  GITHUBPROJ = 'GITHUBPROJ',
-}
 
 const props = defineProps<{
   echo: Echo

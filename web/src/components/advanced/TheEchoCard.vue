@@ -181,16 +181,11 @@ import TheWebsiteCard from './TheWebsiteCard.vue'
 import { useEchoStore } from '@/stores/echo'
 import { localStg } from '@/utils/storage'
 import { useRouter } from 'vue-router'
+import { ExtensionType } from '@/enums/enums'
 
 const emit = defineEmits(['refresh', 'updateLikeCount'])
 
 type Echo = App.Api.Ech0.Echo
-const enum ExtensionType {
-  MUSIC = 'MUSIC',
-  VIDEO = 'VIDEO',
-  GITHUBPROJ = 'GITHUBPROJ',
-  WEBSITE = 'WEBSITE',
-}
 
 const props = defineProps<{
   echo: Echo
