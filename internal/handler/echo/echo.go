@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -52,17 +53,31 @@ func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 		// 获取分页参数
 		var pageRequest commonModel.PageQueryDto
 
-		// 尝试从 query 中获取
-		if err := ctx.ShouldBindQuery(&pageRequest); err != nil {
-			// 不做处理，因为 query 可能没带
-		}
+		switch ctx.Request.Method {
+		case "GET":
+			// 尝试从 query 中获取分页参数
+			if err := ctx.ShouldBindQuery(&pageRequest); err != nil {
+				return res.Response{
+					Msg: commonModel.INVALID_QUERY_PARAMS,
+					Err: err,
+				}
+			}
 
-		// 如果 query 中没有传值，再尝试从 JSON 中解析
-		if pageRequest.Page == 0 && pageRequest.PageSize == 0 {
+		case "POST":
+			// 尝试从 JSON 中获取分页参数
 			if err := ctx.ShouldBindJSON(&pageRequest); err != nil {
 				return res.Response{
 					Msg: commonModel.INVALID_REQUEST_BODY,
 					Err: err,
+				}
+			}
+
+		default:
+			// 如果不是 GET 或 POST 请求，返回错误
+			{
+				return res.Response{
+					Msg: commonModel.INVALID_REQUEST_METHOD,
+					Err: errors.New(commonModel.INVALID_REQUEST_METHOD),
 				}
 			}
 		}

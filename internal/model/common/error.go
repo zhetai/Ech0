@@ -8,8 +8,10 @@ type ServerError struct {
 
 // 失败相关的常量
 const (
-	INVALID_REQUEST_BODY = "无效的请求体"
-	INVALID_PARAMS_BODY  = "无效参数"
+	INVALID_REQUEST_BODY   = "无效的请求体"
+	INVALID_PARAMS_BODY    = "无效参数"
+	INVALID_QUERY_PARAMS   = "无效的查询参数"
+	INVALID_REQUEST_METHOD = "无效的请求方法"
 )
 
 // Auth 错误相关常量
