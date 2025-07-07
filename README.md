@@ -6,7 +6,7 @@
 <div align="center">
   <img alt="Ech0" src="./docs/imgs/logo.svg" width="150">
 
-  [预览地址](https://memo.vaaat.com/) | [官网地址](https://echo.soopy.cn/) | [官方文档](https://echodoc.soopy.cn/)
+  [预览地址](https://memo.vaaat.com/) | [官网地址](https://echo.soopy.cn/) | [官方文档](https://echodoc.soopy.cn/) | [Ech0 Hub](https://echohub.soopy.cn/)
 
   # Ech0
 </div>
