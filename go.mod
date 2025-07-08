@@ -13,9 +13,6 @@ require (
 	github.com/spf13/viper v1.20.1
 	go.uber.org/zap v1.27.0
 	gorm.io/gorm v1.30.0
-)
-
-require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	gorm.io/driver/sqlite v1.6.0
 )
