@@ -20,10 +20,7 @@ type Server struct {
 
 // New 创建一个新的服务器实例
 func New() *Server {
-	engine := gin.Default()
-	return &Server{
-		GinEngine: engine,
-	}
+	return &Server{}
 }
 
 // Init 初始化服务器
@@ -40,6 +37,9 @@ func (s *Server) Init() {
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
+	// Gin Engine
+	s.GinEngine = gin.New()
 
 	// Database
 	database.InitDatabase()
