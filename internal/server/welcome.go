@@ -12,12 +12,6 @@ import (
 var (
 	isDarkBg = lipgloss.HasDarkBackground()
 
-	// 主标题样式
-	titleStyle = lipgloss.NewStyle().
-			Bold(true).
-			Foreground(lipgloss.Color("#FFA500")).
-			Padding(0, 2)
-
 	// 信息样式（每行）
 	infoStyle = lipgloss.NewStyle().
 			PaddingLeft(2).
@@ -35,7 +29,7 @@ var (
 	// 外框
 	boxStyle = lipgloss.NewStyle().
 			BorderStyle(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("#7D56F4")).
+			BorderForeground(lipgloss.Color("#ff7675")).
 			Padding(1, 4).
 			Margin(1, 2)
 )
@@ -50,12 +44,11 @@ func PrintGreetings(port string) {
 		infoStyle.Render("📦 Version: "+highlight.Render(commonModel.Version)),
 		infoStyle.Render("🎈 Port: "+highlight.Render(port)),
 		infoStyle.Render("🧙 Author: "+highlight.Render("L1nSn0w")),
-		infoStyle.Render("👉 Website: https://echo.soopy.cn/"),
-		infoStyle.Render("👉 GitHub: https://github.com/lin-snow/Ech0"),
+		infoStyle.Render("👉 Website: "+highlight.Render("https://echo.soopy.cn/")),
+		infoStyle.Render("👉 GitHub: "+highlight.Render("https://github.com/lin-snow/Ech0")),
 	)
 
 	full := lipgloss.JoinVertical(lipgloss.Left,
-		titleStyle.Render("🚀 Ech0 Blog Backend Started"),
 		banner,
 		boxStyle.Render(content),
 	)
