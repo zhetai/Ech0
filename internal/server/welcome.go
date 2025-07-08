@@ -69,13 +69,3 @@ func gradientBanner(banner string) string {
 	}
 	return lipgloss.JoinVertical(lipgloss.Left, rendered...)
 }
-
-// PrintGreetings 打印欢迎信息
-// func PrintGreetings(port string) {
-// 	fmt.Print(commonModel.GreetingBanner)
-// 	fmt.Printf("---\n📦 Version: %s\n", commonModel.Version)
-// 	fmt.Printf("🎈 Port: %s\n", port)
-// 	fmt.Printf("🧙 Author: L1nSn0w\n")
-// 	fmt.Printf("👉 Website: https://echo.soopy.cn/\n")
-// 	fmt.Printf("👉 GitHub: https://github.com/lin-snow/Ech0\n---\n")
-// }
