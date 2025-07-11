@@ -143,10 +143,24 @@ func (userService *UserService) UpdateUser(userid uint, userdto model.UserInfoDt
 }
 
 // UpdateUserAdmin 更新用户的管理员权限
-func (userService *UserService) UpdateUserAdmin(userid uint) error {
+func (userService *UserService) UpdateUserAdmin(userid uint, id uint) error {
 	user, err := userService.userRepository.GetUserByID(int(userid))
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	user, err = userService.userRepository.GetUserByID(int(id))
 	if err != nil {
 		return err
+	}
+
+	sysadmin, err := userService.GetSysAdmin()
+	if err != nil {
+		return err
+	}
+
+	if userid == user.ID || id == sysadmin.ID {
+		return errors.New(commonModel.INVALID_PARAMS_BODY)
 	}
 
 	user.IsAdmin = !user.IsAdmin
@@ -200,6 +214,12 @@ func (userService *UserService) GetSysAdmin() (model.User, error) {
 // DeleteUser 删除用户
 func (userService *UserService) DeleteUser(userid, id uint) error {
 	user, err := userService.userRepository.GetUserByID(int(userid))
+
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	user, err = userService.userRepository.GetUserByID(int(id))
 	if err != nil {
 		return err
 	}
@@ -209,7 +229,7 @@ func (userService *UserService) DeleteUser(userid, id uint) error {
 		return err
 	}
 
-	if id == user.ID || id == sysadmin.ID {
+	if userid == user.ID || id == sysadmin.ID {
 		return errors.New(commonModel.INVALID_PARAMS_BODY)
 	}
 
