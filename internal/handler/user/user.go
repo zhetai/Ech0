@@ -111,7 +111,16 @@ func (userHandler *UserHandler) UpdateUserAdmin() gin.HandlerFunc {
 		// 获取当前用户 ID
 		userid := ctx.MustGet("userid").(uint)
 
-		if err := userHandler.userService.UpdateUserAdmin(userid); err != nil {
+		idStr := ctx.Param("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+				Err: err,
+			}
+		}
+
+		if err := userHandler.userService.UpdateUserAdmin(userid, uint(id)); err != nil {
 			return res.Response{
 				Msg: "",
 				Err: err,

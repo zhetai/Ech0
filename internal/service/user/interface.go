@@ -19,7 +19,7 @@ type UserServiceInterface interface {
 	UpdateUser(userid uint, userdto model.UserInfoDto) error
 
 	// UpdateUserAdmin 更新用户的管理员权限
-	UpdateUserAdmin(userid uint) error
+	UpdateUserAdmin(userid uint, id uint) error
 
 	// GetAllUsers 获取所有用户
 	GetAllUsers() ([]model.User, error)
