@@ -226,7 +226,7 @@ pnpm dev # Start frontend preview
 
 **Step 3: Access:**
 Frontend: [http://localhost:5173](http://localhost:5173)
-Backend: [http://localhost:6273](http://localhost:6273) (default)
+Backend: [http://localhost:6277](http://localhost:6277) (default)
 
 ---
 
