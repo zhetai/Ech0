@@ -1,9 +1,17 @@
 @import './base.css';
 @import './fonts/result.css';
 
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+
 html,
 body {
   font-family: 'LXGW WenKai Screen';
+  /* font-family: var(--font-sans); */
   scrollbar-width: thin;
   scrollbar-arrow-color: transparent;
   scrollbar-base-color: transparent;
