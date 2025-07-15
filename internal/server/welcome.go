@@ -9,6 +9,19 @@ import (
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 )
 
+const (
+	// GreetingBanner 是控制台横幅
+	GreetingBanner = `
+███████╗     ██████╗    ██╗  ██╗     ██████╗ 
+██╔════╝    ██╔════╝    ██║  ██║    ██╔═████╗
+█████╗      ██║         ███████║    ██║██╔██║
+██╔══╝      ██║         ██╔══██║    ████╔╝██║
+███████╗    ╚██████╗    ██║  ██║    ╚██████╔╝
+╚══════╝     ╚═════╝    ╚═╝  ╚═╝     ╚═════╝ 
+                                             
+`
+)
+
 var (
 	isDarkBg = lipgloss.HasDarkBackground()
 
@@ -37,7 +50,7 @@ var (
 // PrintGreetings 使用 lipgloss 输出欢迎信息
 func PrintGreetings(port string) {
 	// 渐变 Banner 渲染（每行变色）
-	banner := gradientBanner(commonModel.GreetingBanner)
+	banner := gradientBanner(GreetingBanner)
 
 	// 构建正文内容
 	content := lipgloss.JoinVertical(lipgloss.Left,

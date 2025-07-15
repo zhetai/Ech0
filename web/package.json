@@ -15,6 +15,7 @@
   "dependencies": {
     "@fancyapps/ui": "^5.0.36",
     "aplayer": "^1.10.1",
+    "chalk": "^5.4.1",
     "cropperjs": "^1.6.2",
     "highlight.js": "^11.11.1",
     "katex": "^0.16.22",
@@ -41,6 +42,7 @@
     "jiti": "^2.4.2",
     "npm-run-all2": "^7.0.2",
     "prettier": "3.5.3",
+    "tsx": "^4.20.3",
     "typescript": "~5.8.3",
     "unocss": "66.1.0-beta.11",
     "vite": "^6.3.5",
