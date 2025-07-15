@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk from 'chalk'
 
 // ASCII Art Banner
 const banner = `
@@ -9,7 +9,7 @@ const banner = `
 ███████╗    ╚██████╗    ██║  ██║    ╚██████╔╝
 ╚══════╝     ╚═════╝    ╚═╝  ╚═╝     ╚═════╝
 
-` as const;
+` as const
 
 const gradientColors = [
   chalk.hex('#f38ba8'), // Catppuccin Pink
@@ -20,26 +20,26 @@ const gradientColors = [
   chalk.hex('#89b4fa'), // Catppuccin Blue
   chalk.hex('#cba6f7'), // Catppuccin Mauve
   chalk.hex('#f5c2e7'), // Catppuccin Flamingo
-  chalk.hex('#eba0ac')  // Catppuccin Maroon
-] as const;
+  chalk.hex('#eba0ac'), // Catppuccin Maroon
+] as const
 
 function printGradientBanner(text: string): string {
-  const lines = text.trim().split('\n');
+  const lines = text.trim().split('\n')
   return lines
     .map((line, index) => {
-      const colorFn = gradientColors[index % gradientColors.length];
-      return colorFn(line);
+      const colorFn = gradientColors[index % gradientColors.length]
+      return colorFn(line)
     })
-    .join('\n');
+    .join('\n')
 }
 
 function printWelcome(): void {
   // 只打印渐变 Banner
-  console.log(); // 添加一个空行
-  console.log(printGradientBanner(banner));
-  console.log(); // 添加一个空行
+  console.log() // 添加一个空行
+  console.log(printGradientBanner(banner))
+  console.log() // 添加一个空行
 }
 
-printWelcome();
+printWelcome()
 
-export { printWelcome };
+export { printWelcome }

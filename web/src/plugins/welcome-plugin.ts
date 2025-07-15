@@ -1,8 +1,8 @@
-import type { Plugin } from 'vite';
-import { printWelcome } from '../scripts/welcome.ts';
+import type { Plugin } from 'vite'
+import { printWelcome } from '../scripts/welcome.js'
 
 export function welcomePlugin(): Plugin {
-  let hasShown = false;
+  let hasShown = false
 
   return {
     name: 'welcome-banner',
@@ -12,13 +12,13 @@ export function welcomePlugin(): Plugin {
         if (!hasShown) {
           // 延迟显示，确保 Vite 的启动信息已经输出完成
           setTimeout(() => {
-            console.log('\n'); // 添加一些间距
-            printWelcome();
-          }, 1500); // 1.5秒延迟，确保 Vite 完全启动
-          hasShown = true;
+            console.log('\n') // 添加一些间距
+            printWelcome()
+          }, 0) // 1.5秒延迟，确保 Vite 完全启动
+          hasShown = true
         }
-        next();
-      });
-    }
-  };
+        next()
+      })
+    },
+  }
 }
