@@ -32,9 +32,16 @@ var (
 			Light: "236", Dark: "252",
 		})
 
+	// 标题样式
+	titleStyle = lipgloss.NewStyle().
+			Bold(true).
+			Foreground(lipgloss.AdaptiveColor{
+			Light: "#0000FF", Dark: "#F6C177",
+		})
+
 	// 高亮样式
 	highlight = lipgloss.NewStyle().
-			Bold(true).
+			Bold(false).
 			Foreground(lipgloss.AdaptiveColor{
 			Light: "#0000FF", Dark: "#87CEFA",
 		})
@@ -54,11 +61,11 @@ func PrintGreetings(port string) {
 
 	// 构建正文内容
 	content := lipgloss.JoinVertical(lipgloss.Left,
-		infoStyle.Render("📦 Version: "+highlight.Render(commonModel.Version)),
-		infoStyle.Render("🎈 Port: "+highlight.Render(port)),
-		infoStyle.Render("🧙 Author: "+highlight.Render("L1nSn0w")),
-		infoStyle.Render("👉 Website: "+highlight.Render("https://echo.soopy.cn/")),
-		infoStyle.Render("👉 GitHub: "+highlight.Render("https://github.com/lin-snow/Ech0")),
+		infoStyle.Render("📦 "+titleStyle.Render("Version")+": "+highlight.Render(commonModel.Version)),
+		infoStyle.Render("🎈 "+titleStyle.Render("Port")+": "+highlight.Render(port)),
+		infoStyle.Render("🧙 "+titleStyle.Render("Author")+": "+highlight.Render("L1nSn0w")),
+		infoStyle.Render("👉 "+titleStyle.Render("Website")+": "+highlight.Render("https://echo.soopy.cn/")),
+		infoStyle.Render("👉 "+titleStyle.Render("GitHub")+": "+highlight.Render("https://github.com/lin-snow/Ech0")),
 	)
 
 	full := lipgloss.JoinVertical(lipgloss.Left,
@@ -73,7 +80,16 @@ func gradientBanner(banner string) string {
 	lines := strings.Split(banner, "\n")
 	var rendered []string
 
-	colors := []string{"#00BFFF", "#7B68EE", "#DA70D6", "#FF69B4", "#FF8C00", "#FFD700", "#00FA9A"}
+	// Rose Pine Moon 渐变色调：由暗到亮，典雅梦幻
+	colors := []string{
+		"#232136", // Base
+		"#393552", // Surface
+		"#6E6A86", // Overlay
+		"#EA9A97", // Love
+		"#C4A7E7", // Iris
+		"#9CCFD8", // Foam
+		"#F6C177", // Gold
+	}
 
 	for i, line := range lines {
 		color := lipgloss.Color(colors[i%len(colors)])
