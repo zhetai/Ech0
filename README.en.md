@@ -198,7 +198,7 @@ Install [wire](https://github.com/google/wire) for dependency injection code gen
 
 ## **Frontend Requirements:**
 
-📌  **NodeJS v23.11.1+, PNPM v10**
+📌  **NodeJS v23.11.1, PNPM v10.13.1**
 
 > Tip: Use [fnm](https://github.com/Schniz/fnm) for managing multiple Node versions.
 
