@@ -48,6 +48,7 @@ var (
 
 	// 外框
 	boxStyle = lipgloss.NewStyle().
+			Bold(true).
 			BorderStyle(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color("#ff7675")).
 			Padding(1, 4).
