@@ -18,8 +18,8 @@
     "cropperjs": "^1.6.2",
     "highlight.js": "^11.11.1",
     "katex": "^0.16.22",
-    "md-editor-v3": "^5.7.1",
-    "mermaid": "^11.7.0",
+    "md-editor-v3": "^5.8.0",
+    "mermaid": "^11.8.1",
     "ofetch": "^1.4.1",
     "pinia": "^3.0.3",
     "screenfull": "^6.0.2",
@@ -30,13 +30,13 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
-    "@types/node": "^22.15.34",
+    "@types/node": "^22.16.3",
     "@unocss/preset-wind4": "66.1.0-beta.11",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/eslint-config-typescript": "^14.5.1",
+    "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.30.0",
+    "eslint": "^9.31.0",
     "eslint-plugin-vue": "~10.0.1",
     "jiti": "^2.4.2",
     "npm-run-all2": "^7.0.2",
@@ -45,7 +45,7 @@
     "unocss": "66.1.0-beta.11",
     "vite": "^6.3.5",
     "vite-plugin-vue-devtools": "^7.7.7",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^2.2.12"
   },
-  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
+  "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }
