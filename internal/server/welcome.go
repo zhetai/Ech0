@@ -36,23 +36,24 @@ var (
 	titleStyle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.AdaptiveColor{
-			Light: "#0000FF", Dark: "#F6C177",
+			Light: "#0000FF", Dark: "#f7b457ff",
 		})
 
 	// 高亮样式
 	highlight = lipgloss.NewStyle().
 			Bold(false).
+			Italic(true).
 			Foreground(lipgloss.AdaptiveColor{
-			Light: "#0000FF", Dark: "#87CEFA",
+			Light: "#0000FF", Dark: "#53b7f5ff",
 		})
 
 	// 外框
 	boxStyle = lipgloss.NewStyle().
 			Bold(true).
 			BorderStyle(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("#ff7675")).
-			Padding(1, 4).
-			Margin(1, 2)
+			BorderForeground(lipgloss.Color("#fb5151ff")).
+			Padding(1, 1).
+			Margin(1, 1)
 )
 
 // PrintGreetings 使用 lipgloss 输出欢迎信息
