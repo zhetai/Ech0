@@ -17,6 +17,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     allow_register: true,
     ICP_number: '',
     meting_api: '',
+    comment_api: '',
     custom_css: '',
     custom_js: '',
   })

@@ -1,7 +1,7 @@
 <template>
   <div class="px-3 pb-4 py-2 mt-4 sm:mt-6 mb-10 mx-auto flex justify-center items-center">
     <div class="w-full sm:max-w-lg mx-auto">
-      <div>
+      <div class="mx-auto max-w-sm">
         <!-- 返回上一页 -->
         <BaseButton
           @click="router.push({ name: 'home' })"
@@ -16,6 +16,7 @@
 
       <div v-if="echo" class="w-full sm:mt-1 mx-auto">
         <TheEchoDetail :echo="echo" @update-like-count="handleUpdateLikeCount" />
+        <TheComment class="my-2" />
       </div>
       <div v-else class="w-full sm:mt-1 text-gray-300">
         <p class="text-center">正在加载 Echo 详情...</p>
@@ -30,6 +31,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { fetchGetEchoById } from '@/service/api'
 import { ref } from 'vue'
 import TheEchoDetail from '@/components/advanced/TheEchoDetail.vue'
+import TheComment from '@/components/advanced/TheComment.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import Arrow from '@/components/icons/arrow.vue'
 

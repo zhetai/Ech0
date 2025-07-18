@@ -95,6 +95,25 @@
             class="w-full !py-1"
           />
         </div>
+        <!-- Comment API -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">评论 API:</h2>
+          <span
+            v-if="!editMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="SystemSetting.comment_api"
+            style="vertical-align: middle"
+          >
+            {{ SystemSetting.comment_api.length === 0 ? '暂无' : SystemSetting.comment_api }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="SystemSetting.comment_api"
+            type="text"
+            placeholder="请输入评论 API地址,带http(s)"
+            class="w-full !py-1"
+          />
+        </div>
         <!-- 自定义 CSS -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">自定义 CSS:</h2>
