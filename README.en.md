@@ -159,6 +159,9 @@ docker image prune -f
 11. **What content is not recommended for Ech0?**
    Ech0 published content consists of three parts: text, images, and extended content (such as music, video player cards). Ech0 does not recommend publishing dense content that simultaneously includes `text + images + extended content`, as this violates some of Ech0's design principles. Additionally, publishing extended content or lengthy articles is not recommended at any time.
 
+12. **How do I enable the comment feature?**  
+   Go to the settings page and enter your deployed Twikoo backend address in the `Comment API` field to enable comments automatically. Currently, only [Twikoo](https://twikoo.js.org/) is supported.
+
 ---
 
 # 📢 Feedback & Contributions
