@@ -35,8 +35,14 @@ func (settingService *SettingService) GetSetting(setting *model.SystemSetting) e
 		setting.AllowRegister = config.Config.Setting.AllowRegister
 		setting.ICPNumber = config.Config.Setting.Icpnumber
 		setting.MetingAPI = config.Config.Setting.MetingAPI
+		setting.CommentAPI = config.Config.Setting.CommentAPI
 		setting.CustomCSS = config.Config.Setting.CustomCSS
 		setting.CustomJS = config.Config.Setting.CustomJS
+
+		// 处理 URL
+		setting.ServerURL = httpUtil.TrimURL(setting.ServerURL)
+		setting.MetingAPI = httpUtil.TrimURL(setting.MetingAPI)
+		setting.CommentAPI = httpUtil.TrimURL(setting.CommentAPI)
 
 		// 序列化为 JSON
 		settingToJSON, err := jsonUtil.JSONMarshal(setting)
@@ -71,12 +77,13 @@ func (settingService *SettingService) UpdateSetting(userid uint, newSetting *mod
 	setting.ServerURL = httpUtil.TrimURL(newSetting.ServerURL)
 	setting.AllowRegister = newSetting.AllowRegister
 	setting.ICPNumber = newSetting.ICPNumber
-	setting.MetingAPI = newSetting.MetingAPI
+	setting.MetingAPI = httpUtil.TrimURL(newSetting.MetingAPI)
+	setting.CommentAPI = httpUtil.TrimURL(newSetting.CommentAPI)
 	setting.CustomCSS = newSetting.CustomCSS
 	setting.CustomJS = newSetting.CustomJS
 
 	// 序列化为 JSON
-	settingToJSON, err := jsonUtil.JSONMarshal(newSetting)
+	settingToJSON, err := jsonUtil.JSONMarshal(setting)
 	if err != nil {
 		return err
 	}

@@ -49,6 +49,7 @@ type AppConfig struct {
 		AllowRegister bool   `yaml:"allowregister"`
 		Icpnumber     string `yaml:"icpnumber"`
 		MetingAPI     string `yaml:"metingapi"`
+		CommentAPI    string `yaml:"commentapi"` // 目前仅支持 twikoo
 		CustomCSS     string `yaml:"customcss"`
 		CustomJS      string `yaml:"customjs"`
 	}
