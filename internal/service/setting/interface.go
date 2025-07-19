@@ -8,4 +8,10 @@ type SettingServiceInterface interface {
 
 	// UpdateSetting 更新设置
 	UpdateSetting(userid uint, newSetting *model.SystemSettingDto) error
+
+	// GetCommentSetting 获取评论设置
+	GetCommentSetting(setting *model.CommentSetting) error
+
+	// UpdateCommentSetting 更新评论设置
+	UpdateCommentSetting(userid uint, newSetting *model.CommentSettingDto) error
 }

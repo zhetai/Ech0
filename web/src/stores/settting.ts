@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchGetSettings, fetchGetStatus } from '@/service/api'
+import { fetchGetSettings, fetchGetStatus, fetchGetCommentSettings } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
 import { useRouter } from 'vue-router'
+import { CommentProvider } from '@/enums/enums'
 
 export const useSettingStore = defineStore('settingStore', () => {
   /**
@@ -17,9 +18,13 @@ export const useSettingStore = defineStore('settingStore', () => {
     allow_register: true,
     ICP_number: '',
     meting_api: '',
-    comment_api: '',
     custom_css: '',
     custom_js: '',
+  })
+  const CommentSetting = ref<App.Api.Setting.CommentSetting>({
+    enable_comment: false,
+    provider: CommentProvider.TWIKOO,
+    comment_api: '',
   })
   const loading = ref<boolean>(true)
   const router = useRouter()
@@ -69,6 +74,14 @@ export const useSettingStore = defineStore('settingStore', () => {
     })
   }
 
+  const getCommentSetting = async () => {
+    fetchGetCommentSettings().then((res) => {
+      if (res.code === 1) {
+        CommentSetting.value = res.data
+      }
+    })
+  }
+
   if (!isSystemReady.value) {
     getSystemSetting()
   }
@@ -77,5 +90,5 @@ export const useSettingStore = defineStore('settingStore', () => {
     isSystemReady.value = status
   }
 
-  return { isSystemReady, SystemSetting, loading, getSystemReady, getSystemSetting, setSystemReady }
+  return { isSystemReady, SystemSetting, CommentSetting, loading, getSystemReady, getSystemSetting, getCommentSetting, setSystemReady }
 })

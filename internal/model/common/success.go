@@ -34,8 +34,10 @@ const (
 
 // Setting 成功相关常量
 const (
-	GET_SETTINGS_SUCCESS    = "获取设置成功！"
-	UPDATE_SETTINGS_SUCCESS = "更新设置成功！"
+	GET_SETTINGS_SUCCESS            = "获取设置成功！"
+	UPDATE_SETTINGS_SUCCESS         = "更新设置成功！"
+	GET_COMMENT_SETTINGS_SUCCESS    = "获取评论设置成功！"
+	UPDATE_COMMENT_SETTINGS_SUCCESS = "更新评论设置成功！"
 )
 
 // To do 成功相关常量

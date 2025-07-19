@@ -95,25 +95,6 @@
             class="w-full !py-1"
           />
         </div>
-        <!-- Comment API -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">评论 API:</h2>
-          <span
-            v-if="!editMode"
-            class="truncate max-w-40 inline-block align-middle"
-            :title="SystemSetting.comment_api"
-            style="vertical-align: middle"
-          >
-            {{ SystemSetting.comment_api.length === 0 ? '暂无' : SystemSetting.comment_api }}
-          </span>
-          <BaseInput
-            v-else
-            v-model="SystemSetting.comment_api"
-            type="text"
-            placeholder="请输入评论 API地址,带http(s)"
-            class="w-full !py-1"
-          />
-        </div>
         <!-- 自定义 CSS -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">自定义 CSS:</h2>
@@ -231,14 +212,14 @@ import Close from '@/components/icons/close.vue'
 import Publish from '@/components/icons/publish.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
-import { fetchUpdateSettings, fetchAddConnect, fetchDeleteConnect } from '@/service/api'
+import { fetchUpdateSettings, fetchAddConnect, fetchUpdateCommentSettings, fetchDeleteConnect } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useSettingStore } from '@/stores/settting'
 import { useConnectStore } from '@/stores/connect'
 import { storeToRefs } from 'pinia'
 
 const settingStore = useSettingStore()
-const { getSystemSetting } = settingStore
+const { getSystemSetting, getCommentSetting } = settingStore
 const { SystemSetting } = storeToRefs(settingStore)
 
 const connectStore = useConnectStore()
@@ -246,6 +227,7 @@ const { getConnect } = connectStore
 const { connects } = storeToRefs(connectStore)
 
 const editMode = ref<boolean>(false)
+const commentEditMode = ref<boolean>(false)
 const connectsEdit = ref<boolean>(false)
 const connectUrl = ref<string>('')
 
@@ -260,6 +242,20 @@ const handleUpdateSystemSetting = async () => {
       editMode.value = false
       // 重新获取设置
       getSystemSetting()
+    })
+}
+
+const handleUpdateCommentSetting = async () => {
+  await fetchUpdateCommentSettings(settingStore.CommentSetting)
+    .then((res) => {
+      if (res.code === 1) {
+        theToast.success(res.msg)
+      }
+    })
+    .finally(() => {
+      commentEditMode.value = false
+      // 重新获取评论设置
+      getCommentSetting()
     })
 }
 
@@ -291,6 +287,7 @@ const handleDisconnect = async (connect_id: number) => {
 
 onMounted(() => {
   getSystemSetting()
+  getCommentSetting()
   getConnect()
 })
 </script>

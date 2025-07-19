@@ -49,10 +49,14 @@ type AppConfig struct {
 		AllowRegister bool   `yaml:"allowregister"`
 		Icpnumber     string `yaml:"icpnumber"`
 		MetingAPI     string `yaml:"metingapi"`
-		CommentAPI    string `yaml:"commentapi"` // 目前仅支持 twikoo
 		CustomCSS     string `yaml:"customcss"`
 		CustomJS      string `yaml:"customjs"`
-	}
+	} `yaml:"setting"`
+	Comment struct {
+		EnableComment bool   `yaml:"enablecomment"`
+		Provider      string `yaml:"provider"`   // 评论提供者
+		CommentAPI    string `yaml:"commentapi"` // 评论 API 地址
+	} `yaml:"comment"`
 }
 
 // LoadAppConfig 加载应用程序配置

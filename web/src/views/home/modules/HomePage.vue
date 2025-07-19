@@ -42,13 +42,11 @@ import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
 import TheHeatMap from '@/components/advanced/TheHeatMap.vue'
 import TheBackTop from '@/components/advanced/TheBackTop.vue'
 import { onMounted, ref, onBeforeUnmount } from 'vue'
-import { useSettingStore } from '@/stores/settting'
 import { useUserStore } from '@/stores/user'
 import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
 import TheAudioCard from '@/components/advanced/TheAudioCard.vue'
 
-const settingStore = useSettingStore()
 const todoStore = useTodoStore()
 const userStore = useUserStore()
 const { getTodos } = todoStore
@@ -82,7 +80,6 @@ const updatePosition = () => {
 
 onMounted(async () => {
   // 获取数据
-  await settingStore.getSystemSetting()
   if (isLogin.value) {
     await getTodos()
   }

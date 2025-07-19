@@ -36,6 +36,10 @@ setting:
   allowregister: true
   icpnumber: ""
   metingapi: ""
-  commentapi: "" # 当前仅支持twikoo
   customcss: ""
   customjs: ""
+
+comment:
+  enablecomment: false
+  provider: "twikoo"
+  commentapi: ""

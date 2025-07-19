@@ -63,5 +63,50 @@ func (settingHandler *SettingHandler) UpdateSettings() gin.HandlerFunc {
 			Msg: commonModel.UPDATE_SETTINGS_SUCCESS,
 		}
 	})
+}
 
+// GetCommentSettings 获取评论设置
+func (settingHandler *SettingHandler) GetCommentSettings() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		var commentSetting model.CommentSetting
+		if err := settingHandler.settingService.GetCommentSetting(&commentSetting); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: commentSetting,
+			Msg:  commonModel.GET_COMMENT_SETTINGS_SUCCESS,
+		}
+	})
+}
+
+// UpdateCommentSettings 更新评论设置
+func (settingHandler *SettingHandler) UpdateCommentSettings() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 解析请求体中的参数
+		var newCommentSettings model.CommentSettingDto
+		if err := ctx.ShouldBindJSON(&newCommentSettings); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		if err := settingHandler.settingService.UpdateCommentSetting(userid, &newCommentSettings); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.UPDATE_COMMENT_SETTINGS_SUCCESS,
+		}
+	})
 }

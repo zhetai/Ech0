@@ -154,9 +154,14 @@ declare namespace App {
         allow_register: boolean
         ICP_number: string
         meting_api: string
-        comment_api: string
         custom_css: string
         custom_js: string
+      }
+
+      type CommentSetting = {
+        enable_comment: boolean
+        provider: string // 评论提供者
+        comment_api: string // 评论 API 地址
       }
     }
 

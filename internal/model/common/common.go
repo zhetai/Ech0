@@ -25,6 +25,7 @@ type Heatmap struct {
 // File 相关
 type UploadFileType string
 type FileStorageType string
+type CommentProvider string
 
 const (
 	// ImageType  图片类型
@@ -42,6 +43,17 @@ const (
 	R2_FILE FileStorageType = "r2"
 )
 
+const (
+	// Twikoo 评论服务
+	TWIKOO CommentProvider = "twikoo"
+	// Artalk 评论服务
+	ARTALK CommentProvider = "artalk"
+	// WALINE 评论服务
+	WALINE CommentProvider = "waline"
+	// GISCUS 评论服务
+	GISCUS CommentProvider = "giscus"
+)
+
 // key value表
 type KeyValue struct {
 	Key   string `json:"key" gorm:"primaryKey"`
@@ -52,6 +64,8 @@ type KeyValue struct {
 const (
 	// SystemSettingsKey 是系统设置的键
 	SystemSettingsKey = "system_settings"
+	// CommentSettingKey 是评论设置的建
+	CommentSettingKey = "comment_setting"
 	// MigrationKey 是数据库迁移的标记键
 	MigrationKey = "db_migration:message_to_echo:v1"
 )

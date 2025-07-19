@@ -20,3 +20,10 @@ export enum ImageSource {
   S3 = 's3',
   R2 = 'r2',
 }
+
+export enum CommentProvider {
+  TWIKOO = 'twikoo',
+  ARTALK = 'artalk',
+  WALINE = 'waline',
+  GISCUS = 'giscus',
+}

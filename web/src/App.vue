@@ -27,6 +27,7 @@ onMounted(async () => {
   // 获取系统设置
   settingStore.getSystemReady()
   await settingStore.getSystemSetting()
+  settingStore.getCommentSetting()
 
   // 注入自定义 CSS
   if (SystemSetting.value.custom_css) {

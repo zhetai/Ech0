@@ -12,3 +12,9 @@ type SystemSettingDto struct {
 	CustomCSS     string `json:"custom_css"`     // 自定义 CSS
 	CustomJS      string `json:"custom_js"`      // 自定义 JS
 }
+
+type CommentSettingDto struct {
+	EnableComment bool   `json:"enable_comment"` // 是否启用评论
+	Provider      string `json:"provider"`       // 评论提供者
+	CommentAPI    string `json:"comment_api"`    // 评论 API 地址
+}
