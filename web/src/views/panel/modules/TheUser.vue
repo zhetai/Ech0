@@ -231,8 +231,8 @@ const getAllUsers = async () => {
   })
 }
 
-onMounted(async () => {
-  await fetchGetCurrentUser().then((res) => {
+onMounted(() => {
+  fetchGetCurrentUser().then((res) => {
     if (res.code === 1) {
       userInfo.value.username = res.data.username
       userInfo.value.password = res.data.password || ''
@@ -241,6 +241,6 @@ onMounted(async () => {
     }
   })
 
-  await getAllUsers()
+  getAllUsers()
 })
 </script>

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/home/HomeView.vue'
+import EchoView from '../views/echo/EchoView.vue'
 import NotFoundView from '../views/404/NotFoundView.vue'
 
 const router = createRouter({
@@ -31,7 +32,7 @@ const router = createRouter({
     {
       path: '/echo/:echoId',
       name: 'echo',
-      component: () => import('../views/echo/EchoView.vue'),
+      component: EchoView,
     },
     {
       path: '/:pathMatch(.*)*',

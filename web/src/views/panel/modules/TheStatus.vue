@@ -45,8 +45,8 @@ import TheHeatMap from '@/components/advanced/TheHeatMap.vue'
 const status = ref<App.Api.Ech0.Status>()
 const userStore = useUserStore()
 
-onMounted(async () => {
-  await fetchGetStatus().then((res) => {
+onMounted(() => {
+  fetchGetStatus().then((res) => {
     status.value = res.data
   })
 })

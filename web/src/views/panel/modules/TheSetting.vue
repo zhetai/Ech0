@@ -289,8 +289,8 @@ const handleDisconnect = async (connect_id: number) => {
   }
 }
 
-onMounted(async () => {
-  await getSystemSetting()
-  await getConnect()
+onMounted(() => {
+  getSystemSetting()
+  getConnect()
 })
 </script>
