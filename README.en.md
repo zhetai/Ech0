@@ -199,6 +199,11 @@ Install [wire](https://github.com/google/wire) for dependency injection code gen
 
 * `go install github.com/google/wire/cmd/wire@latest`
 
+📌 **Golangci-Lint**  
+Install [Golangci-Lint](https://golangci-lint.run/) for linting and formatting:  
+- Run `golangci-lint run` in the project root directory for linting  
+- Run `golangci-lint fmt` in the project root directory for formatting  
+
 ## **Frontend Requirements:**
 
 📌  **NodeJS v23.11.1, PNPM v10.13.1**
