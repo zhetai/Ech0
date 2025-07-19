@@ -149,6 +149,7 @@ import { fetchGetStatus } from '@/service/api'
 import { useSettingStore } from '@/stores/settting'
 import { getApiUrl } from '@/service/request/shared'
 import { ExtensionType } from '@/enums/enums'
+import { formatDate } from '@/utils/other'
 
 const emit = defineEmits(['updateLikeCount'])
 
@@ -191,31 +192,6 @@ const handleLikeEcho = (echoId: number) => {
       theToast.success('点赞成功！')
     }
   })
-}
-
-const formatDate = (dateString: string) => {
-  // 当天则显示（时：分）
-  // 非当天但是三内天则显示几天前
-  // 超过三天则显示（时：分 年月日）
-  const date = new Date(dateString)
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24))
-  const diffInHours = Math.floor(diff / (1000 * 60 * 60))
-  const diffInMinutes = Math.floor(diff / (1000 * 60))
-
-  const diffInSeconds = Math.floor(diff / 1000)
-  if (diffInSeconds < 60) {
-    return '刚刚'
-  } else if (diffInMinutes < 60) {
-    return `${diffInMinutes}分钟前`
-  } else if (diffInHours < 24) {
-    return `${diffInHours}小时前`
-  } else if (diffInDays < 3) {
-    return `${diffInDays}天前`
-  } else {
-    return date.toLocaleString() // 返回完整的日期和时间
-  }
 }
 
 const settingStore = useSettingStore()
