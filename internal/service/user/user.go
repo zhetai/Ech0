@@ -193,6 +193,9 @@ func (userService *UserService) UpdateUser(userid uint, userdto model.UserInfoDt
 func (userService *UserService) UpdateUserAdmin(userid uint, id uint) error {
 	// 检查执行操作的用户是否为管理员
 	user, err := userService.userRepository.GetUserByID(int(userid))
+	if err != nil {
+		return err
+	}
 	if !user.IsAdmin {
 		return errors.New(commonModel.NO_PERMISSION_DENIED)
 	}
@@ -283,7 +286,9 @@ func (userService *UserService) GetSysAdmin() (model.User, error) {
 func (userService *UserService) DeleteUser(userid, id uint) error {
 	// 检查执行操作的用户是否为管理员
 	user, err := userService.userRepository.GetUserByID(int(userid))
-
+	if err != nil {
+		return err
+	}
 	if !user.IsAdmin {
 		return errors.New(commonModel.NO_PERMISSION_DENIED)
 	}

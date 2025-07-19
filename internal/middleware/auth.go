@@ -48,7 +48,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if !(len(parts) == 2 && parts[0] == "Bearer") {
+		if len(parts) != 2 && parts[0] != "Bearer" {
 			ctx.JSON(http.StatusOK, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
 				Msg: commonModel.TOKEN_NOT_VALID,
 				Err: nil,

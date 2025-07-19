@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -54,7 +55,11 @@ func SendRequest(url, method string, customHeader Header) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("请求发送失败: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			log.Println("Failed to close response body:", closeErr)
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

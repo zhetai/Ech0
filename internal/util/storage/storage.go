@@ -14,16 +14,15 @@ func UploadFile(file *multipart.FileHeader, fileType commonModel.UploadFileType,
 		return "", errors.New(commonModel.NO_FILE_UPLOAD_ERROR)
 	}
 
-	if storageType == commonModel.LOCAL_FILE {
+	switch storageType {
+	case commonModel.LOCAL_FILE:
 		return UploadFileToLocal(file, fileType)
-	}
-
-	if storageType == commonModel.S3_FILE {
-
-	}
-
-	if storageType == commonModel.R2_FILE {
-
+	case commonModel.S3_FILE:
+		// TODO: Implement S3 file upload
+	case commonModel.R2_FILE:
+		// TODO: Implement R2 file upload
+	default:
+		return "", errors.New(commonModel.NO_FILE_STORAGE_ERROR)
 	}
 
 	return "", errors.New(commonModel.NO_FILE_STORAGE_ERROR)

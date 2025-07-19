@@ -88,10 +88,11 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 		if err != nil {
 			return commonModel.PageQueryResult[[]model.Echo]{}, err
 		}
-		if !user.IsAdmin {
+		if user.IsAdmin {
+			showPrivate = true
+		} else {
 			showPrivate = false
 		}
-		showPrivate = true
 	}
 
 	echosByPage, total := echoService.echoRepository.GetEchosByPage(pageQueryDto.Page, pageQueryDto.PageSize, pageQueryDto.Search, showPrivate)
@@ -145,10 +146,11 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 		if err != nil {
 			return nil, err
 		}
-		if !user.IsAdmin {
+		if user.IsAdmin {
+			showPrivate = true
+		} else {
 			showPrivate = false
 		}
-		showPrivate = true
 	}
 
 	// 获取当日发布的Echos
@@ -224,7 +226,7 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 	// 如果没有登录用户，则不允许获取私密Echo
 	if userId == authModel.NO_USER_LOGINED {
 		// 如果Echo是私密的，则不允许获取
-		if echo.Private == true {
+		if echo.Private {
 			// 不允许通过ID获取私密Echo
 			return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
 		}
@@ -235,7 +237,7 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 			return nil, err
 		}
 
-		if echo.Private == true {
+		if echo.Private {
 			if !user.IsAdmin {
 				return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
 			}

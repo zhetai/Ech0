@@ -23,8 +23,6 @@ const (
 )
 
 var (
-	isDarkBg = lipgloss.HasDarkBackground()
-
 	// 信息样式（每行）
 	infoStyle = lipgloss.NewStyle().
 			PaddingLeft(2).
@@ -75,7 +73,9 @@ func PrintGreetings(port string) {
 		boxStyle.Render(content),
 	)
 
-	fmt.Fprintln(os.Stdout, full)
+	if _, err := fmt.Fprintln(os.Stdout, full); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to print greetings: %v\n", err)
+	}
 }
 
 func gradientBanner(banner string) string {

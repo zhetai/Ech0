@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -45,7 +46,11 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer src.Close()
+	defer func() {
+		if closeErr := src.Close(); closeErr != nil {
+			log.Println("Failed to close file source:", closeErr)
+		}
+	}()
 
 	if err = os.MkdirAll(filepath.Dir(savePath), 0750); err != nil {
 		return "", err
@@ -55,7 +60,11 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer out.Close()
+	defer func() {
+		if closeErr := out.Close(); closeErr != nil {
+			log.Println("Failed to close destination file:", closeErr)
+		}
+	}()
 
 	if _, err = io.Copy(out, src); err != nil {
 		return "", err
@@ -82,7 +91,11 @@ func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer src.Close()
+	defer func() {
+		if closeErr := src.Close(); closeErr != nil {
+			log.Println("Failed to close file source:", closeErr)
+		}
+	}()
 
 	if err = os.MkdirAll(filepath.Dir(savePath), 0750); err != nil {
 		return "", err
@@ -92,7 +105,11 @@ func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer out.Close()
+	defer func() {
+		if closeErr := out.Close(); closeErr != nil {
+			log.Println("Failed to close destination file:", closeErr)
+		}
+	}()
 
 	if _, err = io.Copy(out, src); err != nil {
 		return "", err
