@@ -290,8 +290,8 @@ const connectsEdit = ref<boolean>(false)
 const connectUrl = ref<string>('')
 const commentServiceOptions = ref<{ label: string; value: CommentProvider }[]>([
   { label: 'Twikoo', value: CommentProvider.TWIKOO },
-  { label: 'Artalk', value: CommentProvider.ARTALK },
-  { label: 'Waline', value: CommentProvider.WALINE },
+  // { label: 'Artalk', value: CommentProvider.ARTALK },
+  // { label: 'Waline', value: CommentProvider.WALINE },
   // { label: 'Giscus', value: CommentProvider.GISCUS },
 ])
 
