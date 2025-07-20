@@ -25,6 +25,8 @@ import 'highlight.js/styles/atom-one-dark.css'
 import * as prettier from 'prettier'
 import parserMarkdown from 'prettier/plugins/markdown'
 
+import { initStores } from './stores/store-init'
+
 config({
   editorExtensions: {
     prettier: {
@@ -58,8 +60,14 @@ import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
+const pinia = createPinia()
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 
 app.mount('#app')
+
+// init
+initStores().catch((e) => {
+  console.error('Failed to initialize stores:', e)
+})

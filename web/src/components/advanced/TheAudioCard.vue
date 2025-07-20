@@ -66,7 +66,7 @@ defineExpose({
   handleGetMusic,
 })
 
-onMounted(async () => {
+onMounted(() => {
   handleGetMusic()
 })
 </script>

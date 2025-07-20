@@ -111,7 +111,7 @@ func (settingService *SettingService) GetCommentSetting(setting *model.CommentSe
 		if err != nil {
 			return err
 		}
-		if err := settingService.keyvalueRepository.AddKeyValue(commonModel.SystemSettingsKey, string(settingToJSON)); err != nil {
+		if err := settingService.keyvalueRepository.AddKeyValue(commonModel.CommentSettingKey, string(settingToJSON)); err != nil {
 			return err
 		}
 	}

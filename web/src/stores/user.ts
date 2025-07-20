@@ -82,5 +82,10 @@ export const useUserStore = defineStore('userStore', () => {
     })
   }
 
-  return { user, isLogin, login, signup, logout, autoLogin, refreshCurrentUser }
+  // 初始化
+  const init = async () => {
+    await autoLogin()
+  }
+
+  return { user, isLogin, login, signup, logout, autoLogin, refreshCurrentUser, init }
 })

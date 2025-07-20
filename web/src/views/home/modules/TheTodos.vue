@@ -1,12 +1,15 @@
 <template>
   <div class="mx-auto px-2 sm:px-5 my-4">
     <!-- Todos -->
-    <div v-if="isLogin && todos.length > 0">
+    <div v-if="isLogin && loading">
+      <div class="h-auto text-gray-300 text-center font-bold text-xl">加载中...</div>
+    </div>
+    <div v-if="isLogin && !loading && todos.length > 0">
       <div v-for="(todo, index) in todos" :key="todo.id" class="mb-4">
         <TheTodoCard :todo="todo" :index="index" :operative="true" @refresh="getTodos" />
       </div>
     </div>
-    <div v-if="isLogin && todos.length === 0">
+    <div v-if="isLogin && !loading && todos.length === 0">
       <div class="h-auto text-gray-300 text-center font-bold text-xl">🎉今日无事，好好休息吧！</div>
     </div>
     <div v-if="!isLogin">
@@ -38,10 +41,10 @@ const userStore = useUserStore()
 const { SystemSetting } = storeToRefs(settingStore)
 const { isLogin } = storeToRefs(userStore)
 const { getTodos } = todoStore
-const { todos } = storeToRefs(todoStore)
+const { loading, todos } = storeToRefs(todoStore)
 
-onMounted(async () => {
+onMounted(() => {
   // 获取数据
-  await getTodos()
+  getTodos()
 })
 </script>

@@ -8,6 +8,7 @@ export const useConnectStore = defineStore('connectStore', () => {
    */
   const connects = ref<App.Api.Connect.Connected[]>([])
   const connectsInfo = ref<App.Api.Connect.Connect[]>([])
+  const loading = ref<boolean>(true)
 
   /**
    * Actions
@@ -24,17 +25,20 @@ export const useConnectStore = defineStore('connectStore', () => {
       })
   }
 
-  async function getConnectInfo() {
-    await fetchGetAllConnectInfo().then((res) => {
+  const getConnectInfo = () => {
+    fetchGetAllConnectInfo().then((res) => {
       if (res.code === 1) {
         connectsInfo.value = res.data
       }
+    }).finally(() => {
+      loading.value = false
     })
   }
 
   return {
     connects,
     connectsInfo,
+    loading,
     getConnect,
     getConnectInfo,
   }

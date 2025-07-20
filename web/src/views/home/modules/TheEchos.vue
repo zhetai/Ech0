@@ -65,6 +65,6 @@ const handleUpdateLikeCount = (echoId: number) => {
 
 onMounted(async () => {
   // 获取数据
-  await echoStore.getEchosByPage()
+  echoStore.getEchosByPage()
 })
 </script>

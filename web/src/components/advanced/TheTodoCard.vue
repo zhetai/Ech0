@@ -31,10 +31,13 @@
       </p>
     </div>
     <!-- 具体内容 -->
-    <div>
+    <div v-if="!loading">
       <p class="text-gray-500 text-sm whitespace-pre-wrap">
         {{ props.todo.content }}
       </p>
+    </div>
+    <div v-else>
+      <p class="text-gray-500 text-sm">加载中...</p>
     </div>
   </div>
 </template>
@@ -46,6 +49,8 @@ import Delete from '../icons/delete.vue'
 import BaseButton from '../common/BaseButton.vue'
 import { fetchUpdateTodo, fetchDeleteTodo } from '@/service/api'
 import { theToast } from '@/utils/toast'
+import { useTodoStore } from '@/stores/todo'
+import { storeToRefs } from 'pinia'
 
 const props = defineProps<{
   todo: App.Api.Todo.Todo
@@ -54,6 +59,9 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['refresh'])
+
+const todoStore = useTodoStore()
+const { loading } = storeToRefs(todoStore)
 
 const handleDeleteTodo = () => {
   if (confirm('确定要删除待办吗？')) {

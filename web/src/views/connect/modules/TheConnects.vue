@@ -7,7 +7,7 @@
       <h2 class="text-gray-600 font-bold text-lg mb-2 flex items-center">
         <Connect class="mr-2" />连接到的Ech0:
       </h2>
-      <div>
+      <div v-if="!loading">
         <div v-if="!connectsInfo.length" class="text-gray-500 text-sm mb-2">当前暂无连接</div>
         <div v-else class="flex flex-wrap gap-4">
           <div
@@ -38,6 +38,9 @@
           </div>
         </div>
       </div>
+      <div v-else>
+        <div class="text-gray-500 text-sm mb-2">加载中...</div>
+      </div>
     </div>
   </div>
 </template>
@@ -50,7 +53,7 @@ import { onMounted } from 'vue'
 
 const connectStore = useConnectStore()
 const { getConnectInfo } = connectStore
-const { connectsInfo } = storeToRefs(connectStore)
+const { loading, connectsInfo } = storeToRefs(connectStore)
 
 const getColor = (count: number): string => {
   if (count >= 4) return '#196127'
@@ -60,8 +63,8 @@ const getColor = (count: number): string => {
   return '#b7bbb7' // 默认颜色
 }
 
-onMounted(async () => {
-  await getConnectInfo()
+onMounted(() => {
+  getConnectInfo()
 })
 </script>
 

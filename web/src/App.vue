@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { onMounted } from 'vue'
-import { useUserStore } from '@/stores/user'
 import { watch } from 'vue'
 import { useSettingStore } from '@/stores/settting'
 import { storeToRefs } from 'pinia'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
 
-const userStore = useUserStore()
 const settingStore = useSettingStore()
 const { SystemSetting } = storeToRefs(settingStore)
 
@@ -21,14 +19,6 @@ watch(
 )
 
 onMounted(async () => {
-  // 自动登录
-  await userStore.autoLogin()
-
-  // 获取系统设置
-  settingStore.getSystemReady()
-  await settingStore.getSystemSetting()
-  settingStore.getCommentSetting()
-
   // 注入自定义 CSS
   if (SystemSetting.value.custom_css) {
     const styleTag = document.createElement('style')

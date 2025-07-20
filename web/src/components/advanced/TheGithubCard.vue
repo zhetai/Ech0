@@ -45,8 +45,8 @@ const props = defineProps<{
 const [owner, repo] = props.GithubURL.split('/').slice(-2)
 const CardData = ref<App.Api.Ech0.GithubCardData>()
 
-onMounted(async () => {
-  await fetchGetGithubRepo({ owner, repo }).then((res) => {
+onMounted(() => {
+  fetchGetGithubRepo({ owner, repo }).then((res) => {
     if (res) {
       CardData.value = res
       // console.log('CardData', CardData.value)

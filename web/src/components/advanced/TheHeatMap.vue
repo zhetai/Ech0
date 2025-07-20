@@ -86,8 +86,8 @@ function hideTooltip() {
   tooltip.value.visible = false
 }
 
-onMounted(async () => {
-  await fetchGetHeatMap().then((res) => {
+onMounted(() => {
+  fetchGetHeatMap().then((res) => {
     heatmapData.value = res.data
   })
 })

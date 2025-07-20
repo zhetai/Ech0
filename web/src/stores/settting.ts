@@ -82,13 +82,17 @@ export const useSettingStore = defineStore('settingStore', () => {
     })
   }
 
-  if (!isSystemReady.value) {
-    getSystemSetting()
-  }
-
   const setSystemReady = (status: boolean) => {
     isSystemReady.value = status
   }
 
-  return { isSystemReady, SystemSetting, CommentSetting, loading, getSystemReady, getSystemSetting, getCommentSetting, setSystemReady }
+  const init = () => {
+    if (!isSystemReady.value) {
+      getSystemReady()
+    }
+    getSystemSetting()
+    getCommentSetting()
+  }
+
+  return { isSystemReady, SystemSetting, CommentSetting, loading, getSystemReady, getSystemSetting, getCommentSetting, setSystemReady, init }
 })

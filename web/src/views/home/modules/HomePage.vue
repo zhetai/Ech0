@@ -79,11 +79,6 @@ const updatePosition = () => {
 }
 
 onMounted(async () => {
-  // 获取数据
-  if (isLogin.value) {
-    await getTodos()
-  }
-
   // 监听窗口大小变化
   updateShowBackTop()
   updatePosition()
