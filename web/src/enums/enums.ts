@@ -22,7 +22,6 @@ export enum ImageSource {
 }
 
 export enum CommentProvider {
-  NONE = '',
   TWIKOO = 'twikoo',
   ARTALK = 'artalk',
   WALINE = 'waline',
