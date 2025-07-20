@@ -191,7 +191,6 @@
             class="w-full !py-1"
           />
         </div>
-
       </div>
     </div>
 
@@ -269,7 +268,12 @@ import Close from '@/components/icons/close.vue'
 import Publish from '@/components/icons/publish.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
 import { ref, onMounted } from 'vue'
-import { fetchUpdateSettings, fetchAddConnect, fetchUpdateCommentSettings, fetchDeleteConnect } from '@/service/api'
+import {
+  fetchUpdateSettings,
+  fetchAddConnect,
+  fetchUpdateCommentSettings,
+  fetchDeleteConnect,
+} from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useSettingStore } from '@/stores/settting'
 import { useConnectStore } from '@/stores/connect'

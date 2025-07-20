@@ -1,6 +1,6 @@
-import { useUserStore } from "./user";
-import { useSettingStore } from "./settting";
-import { useTodoStore } from "./todo";
+import { useUserStore } from './user'
+import { useSettingStore } from './settting'
+import { useTodoStore } from './todo'
 
 export async function initStores() {
   const userStore = useUserStore()

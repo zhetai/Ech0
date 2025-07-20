@@ -27,19 +27,25 @@
       >
         <!-- Selected Value Display -->
         <span
-          :class="[
-            'truncate',
-            !selectedOption && placeholder ? 'text-gray-500' : 'text-gray-900'
-          ]"
+          :class="['truncate', !selectedOption && placeholder ? 'text-gray-500' : 'text-gray-900']"
         >
           {{ displayValue }}
         </span>
 
         <!-- Dropdown Arrow -->
-        <svg :class="[
+        <svg
+          :class="[
             'w-8 text-yellow-200 transition-transform duration-200',
-            isOpen ? 'rotate-180' : ''
-          ]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="#888888" d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4z"/></svg>
+            isOpen ? 'rotate-180' : '',
+          ]"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+          <path fill="#888888" d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4z" />
+        </svg>
       </button>
 
       <!-- Dropdown Menu -->
@@ -63,7 +69,7 @@
               index === highlightedIndex
                 ? 'bg-orange-50 text-orange-900'
                 : 'text-gray-900 hover:bg-gray-50',
-              isSelected(option) ? 'font-medium' : 'font-normal'
+              isSelected(option) ? 'font-medium' : 'font-normal',
             ]"
             @click="onSelect(option)"
             @mouseenter="highlightedIndex = index"
@@ -71,7 +77,20 @@
             <div class="flex items-center justify-between">
               <span class="truncate">{{ getOptionLabel(option) }}</span>
               <!-- Check Icon for Selected -->
-              <svg v-if="isSelected(option)" class="text-orange-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Typicons by Stephen Hutchings - https://creativecommons.org/licenses/by-sa/4.0/ --><path fill="#888888" d="M16.972 6.251a2 2 0 0 0-2.72.777l-3.713 6.682l-2.125-2.125a2 2 0 1 0-2.828 2.828l4 4c.378.379.888.587 1.414.587l.277-.02a2 2 0 0 0 1.471-1.009l5-9a2 2 0 0 0-.776-2.72"/></svg>
+              <svg
+                v-if="isSelected(option)"
+                class="text-orange-500"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <!-- Icon from Typicons by Stephen Hutchings - https://creativecommons.org/licenses/by-sa/4.0/ -->
+                <path
+                  fill="#888888"
+                  d="M16.972 6.251a2 2 0 0 0-2.72.777l-3.713 6.682l-2.125-2.125a2 2 0 1 0-2.828 2.828l4 4c.378.379.888.587 1.414.587l.277-.02a2 2 0 0 0 1.471-1.009l5-9a2 2 0 0 0-.776-2.72"
+                />
+              </svg>
             </div>
           </div>
 
@@ -127,7 +146,7 @@ const customClass = props.class
 const emptyText = props.emptyText || '暂无选项'
 
 const normalizedOptions = computed((): SelectOption[] => {
-  return props.options.map(option => {
+  return props.options.map((option) => {
     if (typeof option === 'string' || typeof option === 'number') {
       return { label: String(option), value: option }
     }
@@ -136,9 +155,7 @@ const normalizedOptions = computed((): SelectOption[] => {
 })
 
 const selectedOption = computed(() => {
-  return normalizedOptions.value.find(option =>
-    option.value === props.modelValue
-  )
+  return normalizedOptions.value.find((option) => option.value === props.modelValue)
 })
 
 const displayValue = computed(() => {
@@ -176,9 +193,7 @@ function onToggle() {
 
 function onOpen() {
   isOpen.value = true
-  highlightedIndex.value = normalizedOptions.value.findIndex(option =>
-    isSelected(option)
-  )
+  highlightedIndex.value = normalizedOptions.value.findIndex((option) => isSelected(option))
   emit('open')
 }
 

@@ -94,5 +94,15 @@ export const useSettingStore = defineStore('settingStore', () => {
     getCommentSetting()
   }
 
-  return { isSystemReady, SystemSetting, CommentSetting, loading, getSystemReady, getSystemSetting, getCommentSetting, setSystemReady, init }
+  return {
+    isSystemReady,
+    SystemSetting,
+    CommentSetting,
+    loading,
+    getSystemReady,
+    getSystemSetting,
+    getCommentSetting,
+    setSystemReady,
+    init,
+  }
 })

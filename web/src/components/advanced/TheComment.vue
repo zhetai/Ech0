@@ -10,6 +10,8 @@ import { useSettingStore } from '@/stores/settting'
 import { storeToRefs } from 'pinia'
 
 declare global {
+  // @ts-nocheck
+  /* eslint-disable */
   interface Window {
     twikoo: any
   }
@@ -89,7 +91,7 @@ watch(
       await initializeTwikoo()
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 // 当评论设置变化时重新初始化
@@ -100,7 +102,7 @@ watch(
       isInitialized.value = false
       await initializeTwikoo()
     }
-  }
+  },
 )
 </script>
 

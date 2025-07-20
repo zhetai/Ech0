@@ -15,13 +15,15 @@ export const useTodoStore = defineStore('todoStore', () => {
    * Actions
    */
   function getTodos() {
-    fetchGetTodos().then((res) => {
-      if (res.code === 1) {
-        todos.value = res.data
-      }
-    }).finally(() => {
-      loading.value = false
-    })
+    fetchGetTodos()
+      .then((res) => {
+        if (res.code === 1) {
+          todos.value = res.data
+        }
+      })
+      .finally(() => {
+        loading.value = false
+      })
   }
 
   function setTodoMode(mode: boolean) {
