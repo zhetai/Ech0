@@ -147,7 +147,7 @@ func (connectService *ConnectService) GetConnect() (model.Connect, error) {
 
 // GetConnectsInfo 获取实例获取到的其它实例的连接信息
 func (connectService *ConnectService) GetConnectsInfo() ([]model.Connect, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second) // 8秒超时
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second) // 增加到15秒总超时
 	defer cancel()
 
 	// 获取所有连接地址
@@ -169,81 +169,105 @@ func (connectService *ConnectService) GetConnectsInfo() ([]model.Connect, error)
 	seenURLs := make(map[string]struct{})
 	var seenMutex sync.Mutex
 
-	// 重试配置
-	const maxRetries = 2
-	const retryDelay = 500 * time.Millisecond
+	// 改进重试配置
+	const maxRetries = 3
+	const baseDelay = 1 * time.Second
+	const requestTimeout = 4 * time.Second // 单个请求超时时间
 
 	for _, conn := range connects {
 		wg.Add(1)
 		go func(conn model.Connected) {
 			defer wg.Done()
 			url := httpUtil.TrimURL(conn.ConnectURL) + "/api/connect"
+
+			var lastErr error
 			for attempt := 0; attempt < maxRetries; attempt++ {
 				select {
 				case <-ctx.Done():
-					return // 超时直接退出
+					fmt.Printf("[连接信息获取取消] 地址: %s，原因: 总体超时\n", conn.ConnectURL)
+					return // 总体超时直接退出
 				default:
 				}
+
+				// 计算当前重试的延迟时间（指数退避）
+				if attempt > 0 {
+					delay := baseDelay * time.Duration(1<<(attempt-1)) // 1s, 2s, 4s...
+					select {
+					case <-time.After(delay):
+					case <-ctx.Done():
+						return
+					}
+				}
+
 				resp, err := httpUtil.SendRequest(url, "GET", struct {
 					Header  string
 					Content string
 				}{
 					Header:  "Ech0_URL",
 					Content: conn.ConnectURL,
-				})
+				}, requestTimeout) // 传入自定义超时时间
 
 				if err != nil {
-					// 如果不是最后一次重试，等待后继续
-					if attempt < maxRetries-1 {
-						time.Sleep(retryDelay * time.Duration(attempt+1))
-						continue
+					lastErr = err
+					fmt.Printf("[连接信息获取失败] 地址: %s，第%d次尝试，错误: %v\n", conn.ConnectURL, attempt+1, err)
+
+					// 如果是最后一次重试，记录最终失败
+					if attempt == maxRetries-1 {
+						fmt.Printf("[连接信息最终失败] 地址: %s，已重试%d次，最后错误: %v\n", conn.ConnectURL, maxRetries, lastErr)
 					}
-					// 最后一次重试也失败，放弃该连接
-					fmt.Printf("[连接信息获取失败] 地址: %s，阶段: 发送请求，错误: %v\n", conn.ConnectURL, err)
-					return
+					continue
 				}
 
 				var connectInfo commonModel.Result[model.Connect]
 				if err := json.Unmarshal(resp, &connectInfo); err != nil {
-					// JSON 解析失败，如果不是最后一次重试，等待后继续
-					if attempt < maxRetries-1 {
-						time.Sleep(retryDelay * time.Duration(attempt+1))
-						continue
+					lastErr = fmt.Errorf("JSON解析失败: %w", err)
+					fmt.Printf("[连接信息解析失败] 地址: %s，第%d次尝试，错误: %v\n", conn.ConnectURL, attempt+1, lastErr)
+
+					if attempt == maxRetries-1 {
+						fmt.Printf("[连接信息最终失败] 地址: %s，已重试%d次，最后错误: %v\n", conn.ConnectURL, maxRetries, lastErr)
 					}
-					// 最后一次重试也失败，放弃该连接
-					fmt.Printf("[连接信息获取失败] 地址: %s，阶段: 解析响应，错误: %v\n", conn.ConnectURL, err)
-					return
+					continue
 				}
 
 				// 验证响应数据
-				if connectInfo.Code != 1 || connectInfo.Data.ServerURL == "" {
-					lastErr := fmt.Errorf("无效响应: code=%d, serverURL=%s", connectInfo.Code, connectInfo.Data.ServerURL)
-					// 数据无效，如果不是最后一次重试，等待后继续
-					if attempt < maxRetries-1 {
-						time.Sleep(retryDelay * time.Duration(attempt+1))
-						continue
+				if connectInfo.Code != 1 {
+					lastErr = fmt.Errorf("响应码无效: %d, 消息: %s", connectInfo.Code, connectInfo.Message)
+					fmt.Printf("[连接信息校验失败] 地址: %s，第%d次尝试，错误: %v\n", conn.ConnectURL, attempt+1, lastErr)
+
+					if attempt == maxRetries-1 {
+						fmt.Printf("[连接信息最终失败] 地址: %s，已重试%d次，最后错误: %v\n", conn.ConnectURL, maxRetries, lastErr)
 					}
-					// 最后一次重试也失败，放弃该连接
-					fmt.Printf("[连接信息获取失败] 地址: %s，阶段: 校验数据，错误: %v\n", conn.ConnectURL, lastErr)
-					return
+					continue
+				}
+
+				if connectInfo.Data.ServerURL == "" {
+					lastErr = fmt.Errorf("服务器URL为空")
+					fmt.Printf("[连接信息校验失败] 地址: %s，第%d次尝试，错误: %v\n", conn.ConnectURL, attempt+1, lastErr)
+
+					if attempt == maxRetries-1 {
+						fmt.Printf("[连接信息最终失败] 地址: %s，已重试%d次，最后错误: %v\n", conn.ConnectURL, maxRetries, lastErr)
+					}
+					continue
 				}
 
 				// 成功获取有效数据，检查重复并发送
 				seenMutex.Lock()
 				if _, exists := seenURLs[connectInfo.Data.ServerURL]; exists {
 					seenMutex.Unlock()
+					fmt.Printf("[连接信息重复] 地址: %s，ServerURL: %s 已存在\n", conn.ConnectURL, connectInfo.Data.ServerURL)
 					return // 重复数据，直接返回
 				}
 				seenURLs[connectInfo.Data.ServerURL] = struct{}{}
 				seenMutex.Unlock()
 
+				fmt.Printf("[连接信息获取成功] 地址: %s，服务器: %s\n", conn.ConnectURL, connectInfo.Data.ServerName)
 				connectChan <- connectInfo.Data
 				return // 成功处理，退出重试循环
 			}
 		}(conn)
 	}
 
-	// 收集结果时也要支持超时
+	// 使用带缓冲的通道来避免goroutine泄漏
 	done := make(chan struct{})
 	go func() {
 		wg.Wait()
@@ -251,13 +275,17 @@ func (connectService *ConnectService) GetConnectsInfo() ([]model.Connect, error)
 		close(done)
 	}()
 
+	// 收集结果，支持超时和正常完成
 	select {
 	case <-done:
 		// 正常收集完毕
+		fmt.Printf("[连接信息收集完成] 开始处理收集到的连接\n")
 	case <-ctx.Done():
-		// 超时，提前返回
+		// 超时，但仍然处理已收集到的数据
+		fmt.Printf("[连接信息收集超时] 处理已收集到的部分连接\n")
 	}
 
+	// 收集所有有效的连接信息
 	for connect := range connectChan {
 		if connect.ServerURL == "" {
 			continue
@@ -265,6 +293,7 @@ func (connectService *ConnectService) GetConnectsInfo() ([]model.Connect, error)
 		connectList = append(connectList, connect)
 	}
 
+	fmt.Printf("[连接信息汇总] 总共获取到 %d 个有效连接\n", len(connectList))
 	return connectList, nil
 }
 

@@ -30,10 +30,16 @@ type Header struct {
 }
 
 // SendRequest 发送 HTTP 请求
-func SendRequest(url, method string, customHeader Header) ([]byte, error) {
+func SendRequest(url, method string, customHeader Header, timeout ...time.Duration) ([]byte, error) {
+	// 默认超时时间，如果有传入参数则使用传入的
+	clientTimeout := 2 * time.Second
+	if len(timeout) > 0 {
+		clientTimeout = timeout[0]
+	}
+
 	// 自定义 HTTP 客户端，忽略 TLS 证书验证
 	client := &http.Client{
-		Timeout: 2 * time.Second,
+		Timeout: clientTimeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true, // 忽略证书验证
