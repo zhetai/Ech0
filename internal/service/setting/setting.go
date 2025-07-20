@@ -133,6 +133,14 @@ func (settingService *SettingService) UpdateCommentSetting(userid uint, newSetti
 		return errors.New(commonModel.NO_PERMISSION_DENIED)
 	}
 
+	// 检查评论服务提供者是否有效
+	if newSetting.Provider != string(commonModel.TWIKOO) &&
+		newSetting.Provider != string(commonModel.ARTALK) &&
+		newSetting.Provider != string(commonModel.WALINE) &&
+		newSetting.Provider != string(commonModel.GISCUS) {
+		return errors.New(commonModel.NO_SUCH_COMMENT_PROVIDER)
+	}
+
 	commentSetting := &model.CommentSetting{
 		EnableComment: newSetting.EnableComment,
 		Provider:      newSetting.Provider,

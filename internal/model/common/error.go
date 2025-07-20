@@ -60,3 +60,8 @@ const (
 	INVALID_CONNECTION_URL = "connect url不能为空"
 	CONNECT_HAS_EXISTS     = "connect 已经存在"
 )
+
+// Setting 错误相关常量
+const (
+	NO_SUCH_COMMENT_PROVIDER = "无效的评论服务提供者"
+)
