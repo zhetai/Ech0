@@ -44,6 +44,8 @@ const (
 )
 
 const (
+	// NONE 无评论服务
+	NONE CommentProvider = ""
 	// Twikoo 评论服务
 	TWIKOO CommentProvider = "twikoo"
 	// Artalk 评论服务
