@@ -1,0 +1,235 @@
+<template>
+  <div class="base-select" ref="selectRef">
+    <!-- Label -->
+    <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1">
+      {{ label }}
+    </label>
+
+    <!-- Select Button -->
+    <div class="relative">
+      <button
+        :id="id"
+        type="button"
+        :disabled="disabled"
+        :class="[
+          'w-full flex items-center justify-between px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition duration-150 ease-in-out shadow-sm sm:text-sm text-left',
+          disabled
+            ? 'bg-gray-100 cursor-not-allowed opacity-70'
+            : 'bg-white hover:border-orange-400 cursor-pointer',
+          customClass,
+        ]"
+        @click="onToggle"
+        @keydown.space.prevent="onToggle"
+        @keydown.enter.prevent="onToggle"
+        @keydown.up.prevent="onNavigate(-1)"
+        @keydown.down.prevent="onNavigate(1)"
+        @keydown.escape="onClose"
+      >
+        <!-- Selected Value Display -->
+        <span
+          :class="[
+            'truncate',
+            !selectedOption && placeholder ? 'text-gray-500' : 'text-gray-900'
+          ]"
+        >
+          {{ displayValue }}
+        </span>
+
+        <!-- Dropdown Arrow -->
+        <svg :class="[
+            'w-8 text-yellow-200 transition-transform duration-200',
+            isOpen ? 'rotate-180' : ''
+          ]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="#888888" d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4z"/></svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <Transition
+        enter-active-class="transition ease-out duration-100"
+        enter-from-class="transform opacity-0 scale-95"
+        enter-to-class="transform opacity-100 scale-100"
+        leave-active-class="transition ease-in duration-75"
+        leave-from-class="transform opacity-100 scale-100"
+        leave-to-class="transform opacity-0 scale-95"
+      >
+        <div
+          v-show="isOpen"
+          class="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-lg border border-gray-200 overflow-auto focus:outline-none"
+        >
+          <div
+            v-for="(option, index) in normalizedOptions"
+            :key="getOptionValue(option)"
+            :class="[
+              'cursor-pointer select-none relative px-3 py-2 text-sm',
+              index === highlightedIndex
+                ? 'bg-orange-50 text-orange-900'
+                : 'text-gray-900 hover:bg-gray-50',
+              isSelected(option) ? 'font-medium' : 'font-normal'
+            ]"
+            @click="onSelect(option)"
+            @mouseenter="highlightedIndex = index"
+          >
+            <div class="flex items-center justify-between">
+              <span class="truncate">{{ getOptionLabel(option) }}</span>
+              <!-- Check Icon for Selected -->
+              <svg v-if="isSelected(option)" class="text-orange-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><!-- Icon from Typicons by Stephen Hutchings - https://creativecommons.org/licenses/by-sa/4.0/ --><path fill="#888888" d="M16.972 6.251a2 2 0 0 0-2.72.777l-3.713 6.682l-2.125-2.125a2 2 0 1 0-2.828 2.828l4 4c.378.379.888.587 1.414.587l.277-.02a2 2 0 0 0 1.471-1.009l5-9a2 2 0 0 0-.776-2.72"/></svg>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div
+            v-if="normalizedOptions.length === 0"
+            class="px-3 py-2 text-sm text-gray-500 text-center"
+          >
+            {{ emptyText }}
+          </div>
+        </div>
+      </Transition>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+
+interface SelectOption {
+  label: string
+  value: any
+  disabled?: boolean
+}
+
+const props = defineProps<{
+  modelValue: any
+  options: SelectOption[] | string[] | number[]
+  id?: string
+  label?: string
+  placeholder?: string
+  disabled?: boolean
+  class?: string
+  emptyText?: string
+  labelKey?: string
+  valueKey?: string
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: any): void
+  (e: 'change', value: any): void
+  (e: 'open'): void
+  (e: 'close'): void
+}>()
+
+// Refs
+const selectRef = ref<HTMLElement>()
+const isOpen = ref(false)
+const highlightedIndex = ref(-1)
+
+// Computed
+const customClass = props.class
+const emptyText = props.emptyText || '暂无选项'
+
+const normalizedOptions = computed((): SelectOption[] => {
+  return props.options.map(option => {
+    if (typeof option === 'string' || typeof option === 'number') {
+      return { label: String(option), value: option }
+    }
+    return option as SelectOption
+  })
+})
+
+const selectedOption = computed(() => {
+  return normalizedOptions.value.find(option =>
+    option.value === props.modelValue
+  )
+})
+
+const displayValue = computed(() => {
+  return selectedOption.value?.label || props.placeholder || '请选择'
+})
+
+// Methods
+function getOptionLabel(option: SelectOption): string {
+  if (props.labelKey && typeof option === 'object') {
+    return (option as any)[props.labelKey]
+  }
+  return option.label
+}
+
+function getOptionValue(option: SelectOption): any {
+  if (props.valueKey && typeof option === 'object') {
+    return (option as any)[props.valueKey]
+  }
+  return option.value
+}
+
+function isSelected(option: SelectOption): boolean {
+  return getOptionValue(option) === props.modelValue
+}
+
+function onToggle() {
+  if (props.disabled) return
+
+  if (isOpen.value) {
+    onClose()
+  } else {
+    onOpen()
+  }
+}
+
+function onOpen() {
+  isOpen.value = true
+  highlightedIndex.value = normalizedOptions.value.findIndex(option =>
+    isSelected(option)
+  )
+  emit('open')
+}
+
+function onClose() {
+  isOpen.value = false
+  highlightedIndex.value = -1
+  emit('close')
+}
+
+function onSelect(option: SelectOption) {
+  if (option.disabled) return
+
+  const value = getOptionValue(option)
+  emit('update:modelValue', value)
+  emit('change', value)
+  onClose()
+}
+
+function onNavigate(direction: number) {
+  if (!isOpen.value) {
+    onOpen()
+    return
+  }
+
+  const optionsCount = normalizedOptions.value.length
+  if (optionsCount === 0) return
+
+  let newIndex = highlightedIndex.value + direction
+
+  if (newIndex < 0) {
+    newIndex = optionsCount - 1
+  } else if (newIndex >= optionsCount) {
+    newIndex = 0
+  }
+
+  highlightedIndex.value = newIndex
+}
+
+// Handle clicks outside to close dropdown
+function handleClickOutside(event: Event) {
+  if (selectRef.value && !selectRef.value.contains(event.target as Node)) {
+    onClose()
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+</script>
