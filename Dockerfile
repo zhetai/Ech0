@@ -11,13 +11,11 @@ ARG TARGETVARIANT
 
 # 创建数据目录
 RUN mkdir -p /app/data && \
-    mkdir -p /app/template && \
-    mkdir -p /app/config
+    mkdir -p /app/template
 
 # 将所有平台的 ech0 二进制和前端资源复制进镜像
 COPY /backend-artifacts/* /tmp/
 COPY /frontend-asset/frontend.tar.gz /tmp/
-COPY /config/config.yaml /app/config/config.yaml
 
 # 解压对应平台的 ech0 二进制
 RUN mkdir -p /app/template && \
