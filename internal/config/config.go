@@ -1,7 +1,9 @@
 package config
 
 import (
+	"bytes"
 	"crypto/rand"
+	_ "embed"
 	"encoding/hex"
 	"log"
 	"os"
@@ -59,11 +61,15 @@ type AppConfig struct {
 	} `yaml:"comment"`
 }
 
+//go:embed config.yaml
+var configData []byte
+
 // LoadAppConfig 加载应用程序配置
 func LoadAppConfig() {
-	viper.SetConfigFile("config/config.yaml")
+	// viper.SetConfigFile("config/config.yaml")
 	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
+	// 使用嵌入的配置数据而不是从文件系统读取
+	err := viper.ReadConfig(bytes.NewReader(configData))
 	if err != nil {
 		panic(model.READ_CONFIG_PANIC + ":" + err.Error())
 	}
