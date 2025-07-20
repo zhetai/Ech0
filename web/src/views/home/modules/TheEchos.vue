@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto px-2 sm:px-4 md:px-6 my-4 sm:my-5 md:my-6">
     <!-- Echos -->
-    <div>
+    <div v-if="!echoStore.isLoading">
       <div v-for="echo in echoStore.echoList" :key="echo.id" class="will-change-transform">
         <TheEchoCard
           :echo="echo"
@@ -11,14 +11,18 @@
       </div>
     </div>
     <!-- 加载更多 -->
-    <div v-if="echoStore.hasMore" class="mb-4 mt-1 -ml-2">
+    <div v-if="echoStore.hasMore && !echoStore.isLoading" class="mb-4 mt-1 -ml-2">
       <BaseButton @click="handleLoadMore" class="rounded-full bg-white !active:bg-gray-100">
         <span class="text-gray-600 text-md text-center px-2 py-1">继续装填</span>
       </BaseButton>
     </div>
     <!-- 没有更多 -->
-    <div v-else class="mx-auto my-5 text-center">
+    <div v-if="!echoStore.hasMore && !echoStore.isLoading" class="mx-auto my-5 text-center">
       <span class="text-xl text-gray-400">没有啦！🎉</span>
+    </div>
+    <!-- 加载中 -->
+    <div v-if="echoStore.isLoading" class="mx-auto my-5 text-center">
+      <span class="text-xl text-gray-400">加载中...</span>
     </div>
     <!-- 备案号 -->
     <div class="text-center">
