@@ -63,7 +63,7 @@
         >
           <div
             v-for="(option, index) in normalizedOptions"
-            :key="getOptionValue(option)"
+            :key="String(getOptionValue(option) ?? index)"
             :class="[
               'cursor-pointer select-none relative px-3 py-2 text-sm',
               index === highlightedIndex
@@ -110,15 +110,27 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
+// 定义值的类型
+type SelectValue = string | number | boolean | null | undefined
+
+// 定义选项接口
 interface SelectOption {
   label: string
-  value: any
+  value: SelectValue
   disabled?: boolean
 }
 
+// 定义通用对象类型用于自定义键名
+interface CustomKeyOption {
+  [key: string]: unknown
+}
+
+// 定义选项类型联合
+type OptionType = SelectOption | string | number | CustomKeyOption
+
 const props = defineProps<{
-  modelValue: any
-  options: SelectOption[] | string[] | number[]
+  modelValue: SelectValue
+  options: OptionType[]
   id?: string
   label?: string
   placeholder?: string
@@ -130,8 +142,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: any): void
-  (e: 'change', value: any): void
+  (e: 'update:modelValue', value: SelectValue): void
+  (e: 'change', value: SelectValue): void
   (e: 'open'): void
   (e: 'close'): void
 }>()
@@ -146,11 +158,32 @@ const customClass = props.class
 const emptyText = props.emptyText || '暂无选项'
 
 const normalizedOptions = computed((): SelectOption[] => {
-  return props.options.map((option) => {
+  return props.options.map((option): SelectOption => {
     if (typeof option === 'string' || typeof option === 'number') {
       return { label: String(option), value: option }
     }
-    return option as SelectOption
+
+    // 如果是对象类型，检查是否已经是 SelectOption 格式
+    if (typeof option === 'object' && option !== null) {
+      const objOption = option as Record<string, unknown>
+
+      // 如果有自定义键名
+      if (props.labelKey && props.valueKey) {
+        return {
+          label: String(objOption[props.labelKey] || ''),
+          value: objOption[props.valueKey] as SelectValue,
+          disabled: objOption.disabled as boolean | undefined,
+        }
+      }
+
+      // 如果是标准的 SelectOption 格式
+      if ('label' in objOption && 'value' in objOption) {
+        return option as SelectOption
+      }
+    }
+
+    // 兜底情况
+    return { label: String(option), value: option as unknown as SelectValue }
   })
 })
 
@@ -164,16 +197,10 @@ const displayValue = computed(() => {
 
 // Methods
 function getOptionLabel(option: SelectOption): string {
-  if (props.labelKey && typeof option === 'object') {
-    return (option as any)[props.labelKey]
-  }
   return option.label
 }
 
-function getOptionValue(option: SelectOption): any {
-  if (props.valueKey && typeof option === 'object') {
-    return (option as any)[props.valueKey]
-  }
+function getOptionValue(option: SelectOption): SelectValue {
   return option.value
 }
 
@@ -181,7 +208,7 @@ function isSelected(option: SelectOption): boolean {
   return getOptionValue(option) === props.modelValue
 }
 
-function onToggle() {
+function onToggle(): void {
   if (props.disabled) return
 
   if (isOpen.value) {
@@ -191,19 +218,19 @@ function onToggle() {
   }
 }
 
-function onOpen() {
+function onOpen(): void {
   isOpen.value = true
   highlightedIndex.value = normalizedOptions.value.findIndex((option) => isSelected(option))
   emit('open')
 }
 
-function onClose() {
+function onClose(): void {
   isOpen.value = false
   highlightedIndex.value = -1
   emit('close')
 }
 
-function onSelect(option: SelectOption) {
+function onSelect(option: SelectOption): void {
   if (option.disabled) return
 
   const value = getOptionValue(option)
@@ -212,7 +239,7 @@ function onSelect(option: SelectOption) {
   onClose()
 }
 
-function onNavigate(direction: number) {
+function onNavigate(direction: number): void {
   if (!isOpen.value) {
     onOpen()
     return
@@ -233,8 +260,8 @@ function onNavigate(direction: number) {
 }
 
 // Handle clicks outside to close dropdown
-function handleClickOutside(event: Event) {
-  if (selectRef.value && !selectRef.value.contains(event.target as Node)) {
+function handleClickOutside(event: Event): void {
+  if (selectRef.value && event.target instanceof Node && !selectRef.value.contains(event.target)) {
     onClose()
   }
 }
