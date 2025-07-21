@@ -22,7 +22,8 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../template/dist',
+    // 当使用embed时则调整构建输出到后端的template/dist目录
+    // outDir: '../template/dist',
     emptyOutDir: true,
   }
 })

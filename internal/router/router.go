@@ -15,8 +15,16 @@ type AppRouterGroup struct {
 
 // SetupRouter 配置路由
 func SetupRouter(r *gin.Engine, h *di.Handlers) {
-	// === 使用 embed 提供前端 ===)
-	setupTemplateRoutes(r, h)
+	// === 使用 embed 提供前端（暂时不用） ===)
+	// setupTemplateRoutes(r, h)
+
+	// === 使用本地目录提供前端 ===)
+	// Setup Frontend
+	r.Use(static.Serve("/", static.LocalFile("./template", false)))
+	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./template/index.html")
+	})
 
 	// ===     静态资源映射     ===
 	r.Static("api/images", "./data/images")
@@ -48,14 +56,6 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 
 	// Setup Connect Routes
 	setupConnectRoutes(appRouterGroup, h)
-
-	// === 使用本地目录提供前端（暂时不用） ===)
-	// Setup Frontend
-	r.Use(static.Serve("/", static.LocalFile("./template", false)))
-	// 由于Vue3 和SPA模式，所以处理匹配不到的路由(重定向到index.html)
-	r.NoRoute(func(c *gin.Context) {
-		c.File("./template/index.html")
-	})
 }
 
 // setupRouterGroup 初始化路由组
