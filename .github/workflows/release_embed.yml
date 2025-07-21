@@ -1,88 +1,61 @@
-name: Create Release and Publish Docker Image
+name: Release with Embedded Frontend
 
-# Trigger when a new tag starting with 'v' is pushed
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'  # 触发条件：打 Tag，比如 v1.0.0
 
-# Permissions required for creating releases and pushing to GHCR
 permissions:
   contents: write
   packages: write
 
-# Environment variables available to all jobs for consistency and easy updates
-env:
-  # Define the Docker image name centrally
-  IMAGE_NAME: ${{ github.repository_owner }}/ech0
-  # Set Go proxy for all Go commands
-  GOPROXY: "https://proxy.golang.org,direct"
-  # Define the Go version in one place
-  GO_VERSION: '1.24.3'
-  # Define the Node.js version in one place
-  NODE_VERSION: '22'
-  # Define the pnpm version in one place
-  PNPM_VERSION: '10'
-
-
 jobs:
-  # ===================================================================
-  # JOB 1: Build all binaries for the GitHub Release
-  # This job now handles both frontend and backend builds in one place
-  # to allow Go 'embed' to work directly, eliminating the need for
-  # uploading/downloading frontend artifacts between jobs.
-  # ===================================================================
   build:
-    name: Build Binaries for Release
+    name: Build Frontend & Backend
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false # Don't cancel other matrix jobs if one fails
+      fail-fast: false
       matrix:
-        # Define all target platforms for cross-compilation
         include:
           - goos: linux
             goarch: amd64
           - goos: linux
             goarch: arm64
-          # You can easily add more targets here, like Windows or macOS
-          # - goos: windows
-          #   goarch: amd64
     steps:
-      - name:  checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # --- Frontend Build (happens once per job) ---
-      - name: 🏗️ Setup Node.js and Build Frontend
-        uses: actions/setup-node@v4
+      # --- Frontend Build Steps ---
+      - name: Setup Node.js Environment
+        uses: pnpm/action-setup@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 23
           cache: 'pnpm'
           cache-dependency-path: 'web/pnpm-lock.yaml'
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: 📦 Install Frontend Dependencies & Build
+      - name: Install dependencies and build frontend
         working-directory: ./web
-        # Using --frozen-lockfile is a best practice in CI for reproducibility
         run: pnpm install --frozen-lockfile && pnpm build --mode production
 
-      # --- Backend Build (cross-compiles for each matrix entry) ---
-      - name: 🛠️ Setup Go Environment
+      # --- Backend Build Steps ---
+      - name: Setup Go Environment
         uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version: '1.24.3'
           cache-dependency-path: '**/go.sum'
+      - name: Set Go proxy
+        run: go env -w GOPROXY=https://proxy.golang.org,direct
 
-      - name: 🔧 Setup Musl for ARM64 Cross-compilation
+      - name: Setup Musl for ARM64 Cross-compilation
         if: matrix.goarch == 'arm64'
         run: |
           wget -q https://github.com/lin-snow/musl-compilers/releases/download/2025-6-20/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
-          # Add the compiler to the PATH for this job
           echo "$(pwd)/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
 
-      - name: 🔨 Build Go Binary
-        # Environment variables are set here to configure the cross-compilation for each matrix run
+      - name: Build backend binary with embedded frontend
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -90,101 +63,97 @@ jobs:
           # Dynamically set the C compiler based on the architecture
           CC: ${{ matrix.goarch == 'arm64' && 'aarch64-linux-musl-gcc' || 'gcc' }}
         run: |
-          # Inject the version (git tag) into the binary and strip debug info
-          LDFLAGS="-s -w -X 'main.Version=${{ github.ref_name }}' -linkmode external -extldflags '-static'"
+          # Define linker flags for a static build
+          STATIC_LDFLAGS="-linkmode external -extldflags '-static'"
           OUTPUT_NAME="ech0-${GOOS}-${GOARCH}"
           
-          go build -v -trimpath -tags netgo -ldflags="${LDFLAGS}" -o "${OUTPUT_NAME}" ./cmd/ech0/main.go
+          # Build the binary. Go's 'embed' will automatically find the frontend
+          # files built in the previous steps.
+          go build -tags netgo -ldflags "$STATIC_LDFLAGS" -o "${OUTPUT_NAME}" ./cmd/ech0/main.go
 
-      - name: 📦 Compress Binary into a Tarball
+      # --- Artifact Packaging and Uploading ---
+      - name: Package binary
         run: tar -czvf "ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz" "ech0-${{ matrix.goos }}-${{ matrix.goarch }}"
 
-      - name: 📤 Upload Binary Artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          # All artifacts from different matrix jobs will be grouped under this single name
-          name: release-binaries
-          path: "*.tar.gz"
+          name: ech0-${{ matrix.goos }}-${{ matrix.goarch }}-asset
+          path: ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
           retention-days: 1
 
-  # ===================================================================
-  # JOB 2: Create the GitHub Release
-  # This job waits for all binaries to be built, then downloads them
-  # and attaches them to a new GitHub Release.
-  # ===================================================================
-  release:
-    name: Create GitHub Release
+
+  prepare-release:
+    name: Prepare Release Package
     runs-on: ubuntu-latest
-    needs: build # This job depends on the 'build' job completing successfully
+    needs: [build]
     steps:
-      - name: 📥 Download all binary artifacts
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: release-binaries
-          path: ./release-assets # Download all .tar.gz files into this directory
-      
-      - name: 🎉 Create Release and Upload Assets
+          pattern: ech0-*
+          path: ./backend-artifacts
+          merge-multiple: true
+
+      - name: Extract backend binaries
+        run: |
+          mkdir -p dist
+          find ./backend-artifacts -name "*.tar.gz" -exec tar -xzvf {} -C dist/ \;
+
+      # ✅ 创建 GitHub Release
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          # Attach all downloaded tarballs to the release
-          files: ./release-assets/*.tar.gz
-          fail_on_unmatched_files: true
+          files: |
+            ./backend-artifacts/*.tar.gz
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ===================================================================
-  # JOB 3: Build and Push Docker Image
-  # This job is now fully self-contained and uses a multi-stage Dockerfile.
-  # It no longer depends on artifacts from other jobs, which is a best practice.
-  # ===================================================================
-  build-and-push-docker:
-    name: Build and Push Docker Image
+  build-docker:
+    name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    # This job can run in parallel with the 'release' job
-    needs: build
+    needs: [build] 
     steps:
-      - name: 🔄 Checkout Source Code
+      - name: 🔄 Checkout source code
         uses: actions/checkout@v4
+
+      - name: 📦 Download backend artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ech0-* # 下载后端构建产物得到 ech0-*.tar.gz
+          path: ./backend-artifacts
 
       - name: 🐳 Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          # GITHUB_TOKEN has built-in permissions to push to the repo's GHCR
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
+          password: ${{ secrets.GHCR_PAT }}
+          
       - name: 🐳 Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: 🔧 Set up QEMU for multi-architecture builds
+          
+      - name: 📦 Set up QEMU
         uses: docker/setup-qemu-action@v3
-      
-      - name: 🔧 Set up Docker Buildx
+        
+      - name: 📦 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      - name: 🏷️ Generate Docker tags and labels
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.IMAGE_NAME }}
-            ghcr.io/${{ env.IMAGE_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
-
-      - name: 🚀 Build and push multi-platform Docker image
+      - name: 📦 Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
-          # The Dockerfile itself will handle building for different platforms
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          # Enable build cache to speed up subsequent runs
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/ech0:${{ github.ref_name }}
+            ghcr.io/${{ github.repository_owner }}/ech0:latest
+            docker.io/${{ vars.DOCKERHUB_USERNAME }}/ech0:${{ github.ref_name }}
+            docker.io/${{ vars.DOCKERHUB_USERNAME }}/ech0:latest
