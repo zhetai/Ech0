@@ -11,6 +11,7 @@ import (
 	settingHandler "github.com/lin-snow/ech0/internal/handler/setting"
 	todoHandler "github.com/lin-snow/ech0/internal/handler/todo"
 	userHandler "github.com/lin-snow/ech0/internal/handler/user"
+	webHandler "github.com/lin-snow/ech0/internal/handler/web"
 	commonRepository "github.com/lin-snow/ech0/internal/repository/common"
 	connectRepository "github.com/lin-snow/ech0/internal/repository/connect"
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
@@ -29,6 +30,7 @@ import (
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
 func BuildHandlers(db *gorm.DB) (*Handlers, error) {
 	wire.Build(
+		WebSet,
 		UserSet,
 		EchoSet,
 		CommonSet,
@@ -40,6 +42,11 @@ func BuildHandlers(db *gorm.DB) (*Handlers, error) {
 
 	return &Handlers{}, nil
 }
+
+// WebSet 包含了构建 WebHandler 所需的所有 Provider
+var WebSet = wire.NewSet(
+	webHandler.NewWebHandler,
+)
 
 // UserSet 包含了构建 UserHandler 所需的所有 Provider
 var UserSet = wire.NewSet(

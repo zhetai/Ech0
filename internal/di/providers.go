@@ -7,10 +7,12 @@ import (
 	settingHandler "github.com/lin-snow/ech0/internal/handler/setting"
 	todoHandler "github.com/lin-snow/ech0/internal/handler/todo"
 	userHandler "github.com/lin-snow/ech0/internal/handler/user"
+	webHandler "github.com/lin-snow/ech0/internal/handler/web"
 )
 
 // Handlers 聚合各个模块的Handler
 type Handlers struct {
+	WebHandler	 *webHandler.WebHandler
 	UserHandler    *userHandler.UserHandler
 	EchoHandler    *echoHandler.EchoHandler
 	CommonHandler  *commonHandler.CommonHandler
@@ -21,6 +23,7 @@ type Handlers struct {
 
 // NewHandlers 创建Handlers实例
 func NewHandlers(
+	webHandler *webHandler.WebHandler,
 	userHandler *userHandler.UserHandler,
 	echoHandler *echoHandler.EchoHandler,
 	commonHandler *commonHandler.CommonHandler,
@@ -29,6 +32,7 @@ func NewHandlers(
 	connectHandler *connectHandler.ConnectHandler,
 ) *Handlers {
 	return &Handlers{
+		WebHandler:     webHandler,
 		UserHandler:    userHandler,
 		EchoHandler:    echoHandler,
 		CommonHandler:  commonHandler,
