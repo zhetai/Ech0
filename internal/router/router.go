@@ -14,9 +14,6 @@ type AppRouterGroup struct {
 
 // SetupRouter 配置路由
 func SetupRouter(r *gin.Engine, h *di.Handlers) {
-	// === 使用 embed 提供前端 ===)
-	setupTemplateRoutes(r, h)
-
 	// === 使用本地目录提供前端 ===)
 	// // Setup Frontend
 	// r.Use(static.Serve("/", static.LocalFile("./template", false)))
@@ -24,6 +21,9 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 	// r.NoRoute(func(c *gin.Context) {
 	// 	c.File("./template/index.html")
 	// })
+
+	// === 使用 embed 提供前端 ===)
+	setupTemplateRoutes(r, h)
 
 	// ===     静态资源映射     ===
 	r.Static("api/images", "./data/images")
