@@ -23,7 +23,7 @@ export default defineConfig({
   },
   build: {
     // 当使用embed时则调整构建输出到后端的template/dist目录
-    // outDir: '../template/dist',
+    outDir: '../template/dist',
     emptyOutDir: true,
   }
 })
