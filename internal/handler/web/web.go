@@ -44,13 +44,13 @@ func (webHandler *WebHandler) Templates() gin.HandlerFunc {
 				ctx.Status(http.StatusNotFound)
 				return
 			}
-			defer fallback.Close()
+			defer func() { _ = fallback.Close() }()
 			fallbackStat, _ := fallback.Stat()
 			ctx.Header("Content-Type", "text/html; charset=utf-8")
 			http.ServeContent(ctx.Writer, ctx.Request, "index.html", fallbackStat.ModTime(), fallback)
 			return
 		}
-		defer f.Close()
+		defer func() { _ = f.Close() }()
 
 		stat, _ := f.Stat()
 		ctx.Header("Content-Type", getMimeType(fullPath))

@@ -12,7 +12,7 @@ import (
 
 // Handlers 聚合各个模块的Handler
 type Handlers struct {
-	WebHandler	 *webHandler.WebHandler
+	WebHandler     *webHandler.WebHandler
 	UserHandler    *userHandler.UserHandler
 	EchoHandler    *echoHandler.EchoHandler
 	CommonHandler  *commonHandler.CommonHandler
