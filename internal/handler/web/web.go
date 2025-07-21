@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/template"
 )
+
 type WebHandler struct {
 }
 
