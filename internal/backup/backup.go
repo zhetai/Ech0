@@ -1,6 +1,7 @@
 package backup
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -24,4 +25,19 @@ func ExecuteBackup() (string, string, error) {
 	return backupPath, backupFileName, fileUtil.ZipDirectoryWithOptions(dataDir, backupPath, fileUtil.ZipOptions{
 		ExcludePatterns: []string{excludeFile},
 	})
+}
+
+// ExecuteRestore 执行恢复
+func ExecuteRestore(backupFilePath string) error {
+	// 检查备份文件是否存在
+	if !fileUtil.FileExists(backupFilePath) {
+		return errors.New("备份文件不存在: " + backupFilePath)
+	}
+
+	// 解压备份文件到数据目录
+	if err := fileUtil.UnzipFile(backupFilePath, dataDir); err != nil {
+		return err
+	}
+
+	return nil
 }

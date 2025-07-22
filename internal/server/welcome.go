@@ -34,7 +34,7 @@ var (
 	titleStyle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.AdaptiveColor{
-			Light: "#0000FF", Dark: "#f7b457ff",
+			Light: "#4338ca", Dark: "#f7b457ff",
 		})
 
 	// 高亮样式
@@ -42,7 +42,7 @@ var (
 			Bold(false).
 			Italic(true).
 			Foreground(lipgloss.AdaptiveColor{
-			Light: "#0000FF", Dark: "#53b7f5ff",
+			Light: "#7c3aed", Dark: "#53b7f5ff",
 		})
 
 	// 外框
@@ -99,3 +99,4 @@ func gradientBanner(banner string) string {
 	}
 	return lipgloss.JoinVertical(lipgloss.Left, rendered...)
 }
+

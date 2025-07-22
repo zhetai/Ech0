@@ -302,3 +302,12 @@ func extractFile(file *zip.File, destDir string) error {
 	_, err = io.Copy(targetFile, fileReader)
 	return err
 }
+
+// FileExists 检查文件或目录是否存在
+func FileExists(path string) bool {
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return err == nil
+}
