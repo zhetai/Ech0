@@ -11,6 +11,10 @@ ARG TARGETVARIANT
 
 # 创建数据目录
 RUN mkdir -p /app/data
+
+# 创建备份目录
+RUN mkdir -p /app/backup
+
 # 创建数据目录(embed版无需手动创建template)
 # RUN mkdir -p /app/data && \
 #     mkdir -p /app/template
@@ -54,4 +58,6 @@ RUN chmod +x /app/ech0
 
 EXPOSE 6277
 
-CMD ["/app/ech0"]
+ENTRYPOINT ["/app/ech0"]
+
+CMD ["serve"]
