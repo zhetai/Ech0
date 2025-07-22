@@ -53,11 +53,8 @@ func ZipDirectoryWithOptions(sourceDir string, zipPath string, options ZipOption
 	}
 
 	// 清空目标目录下的所有文件
-	if _, err := os.Stat("backup"); err == nil {
-		// 如果目标文件已存在，删除它
-		if err := os.RemoveAll("backup"); err != nil {
-			return fmt.Errorf("无法删除旧备份 %s: %w", "backup", err)
-		}
+	if err := cleanBackupDir("backup"); err != nil {
+		return err // 或者带提示信息
 	}
 
 	// 确保目标目录存在
@@ -310,4 +307,21 @@ func FileExists(path string) bool {
 		return false
 	}
 	return err == nil
+}
+
+// cleanBackupDir 清理备份目录
+func cleanBackupDir(path string) error {
+    entries, err := os.ReadDir(path)
+    if err != nil {
+        return fmt.Errorf("读取备份目录失败: %w", err)
+    }
+
+    for _, entry := range entries {
+        fullPath := filepath.Join(path, entry.Name())
+        if err := os.RemoveAll(fullPath); err != nil {
+            return fmt.Errorf("删除旧备份失败: %w", err)
+        }
+    }
+
+    return nil
 }
