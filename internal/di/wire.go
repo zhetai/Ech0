@@ -5,6 +5,7 @@ package di
 
 import (
 	"github.com/google/wire"
+	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
 	echoHandler "github.com/lin-snow/ech0/internal/handler/echo"
@@ -18,6 +19,7 @@ import (
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
 	todoRepository "github.com/lin-snow/ech0/internal/repository/todo"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
+	backupService "github.com/lin-snow/ech0/internal/service/backup"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	connectService "github.com/lin-snow/ech0/internal/service/connect"
 	echoService "github.com/lin-snow/ech0/internal/service/echo"
@@ -37,7 +39,8 @@ func BuildHandlers(db *gorm.DB) (*Handlers, error) {
 		SettingSet,
 		TodoSet,
 		ConnectSet,
-		NewHandlers,
+		BackupSet,
+		NewHandlers, // NewHandlers 聚合各个模块的Handler
 	)
 
 	return &Handlers{}, nil
@@ -88,4 +91,10 @@ var ConnectSet = wire.NewSet(
 	connectRepository.NewConnectRepository,
 	connectService.NewConnectService,
 	connectHandler.NewConnectHandler,
+)
+
+// BackupSet 包含了构建 BackupHandler 所需的所有 Provider
+var BackupSet = wire.NewSet(
+	backupHandler.NewBackupHandler,
+	backupService.NewBackupService,
 )

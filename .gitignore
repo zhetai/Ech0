@@ -66,6 +66,7 @@ yarn-error.log
 **/node_modules
 template/dist/**
 !template/dist/.keep
+/backup/*
 
 .idea
 .VSCodeCounter

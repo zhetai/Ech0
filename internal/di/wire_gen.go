@@ -8,6 +8,7 @@ package di
 
 import (
 	"github.com/google/wire"
+	handler8 "github.com/lin-snow/ech0/internal/handler/backup"
 	handler4 "github.com/lin-snow/ech0/internal/handler/common"
 	handler7 "github.com/lin-snow/ech0/internal/handler/connect"
 	handler3 "github.com/lin-snow/ech0/internal/handler/echo"
@@ -21,6 +22,7 @@ import (
 	"github.com/lin-snow/ech0/internal/repository/keyvalue"
 	repository4 "github.com/lin-snow/ech0/internal/repository/todo"
 	"github.com/lin-snow/ech0/internal/repository/user"
+	service7 "github.com/lin-snow/ech0/internal/service/backup"
 	"github.com/lin-snow/ech0/internal/service/common"
 	service6 "github.com/lin-snow/ech0/internal/service/connect"
 	service4 "github.com/lin-snow/ech0/internal/service/echo"
@@ -53,7 +55,9 @@ func BuildHandlers(db *gorm.DB) (*Handlers, error) {
 	connectRepositoryInterface := repository5.NewConnectRepository(db)
 	connectServiceInterface := service6.NewConnectService(connectRepositoryInterface, echoRepositoryInterface, commonServiceInterface, settingServiceInterface)
 	connectHandler := handler7.NewConnectHandler(connectServiceInterface)
-	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler)
+	backupServiceInterface := service7.NewBackupService(commonServiceInterface)
+	backupHandler := handler8.NewBackupHandler(backupServiceInterface)
+	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler)
 	return handlers, nil
 }
 
@@ -79,3 +83,6 @@ var TodoSet = wire.NewSet(repository4.NewTodoRepository, service5.NewTodoService
 
 // ConnectSet 包含了构建 ConnectHandler 所需的所有 Provider
 var ConnectSet = wire.NewSet(repository5.NewConnectRepository, service6.NewConnectService, handler7.NewConnectHandler)
+
+// BackupSet 包含了构建 BackupHandler 所需的所有 Provider
+var BackupSet = wire.NewSet(handler8.NewBackupHandler, service7.NewBackupService)
