@@ -14,10 +14,14 @@ var rootCmd = &cobra.Command{
 
 	// 这个 Run 会在没有子命令时执行
     Run: func(cmd *cobra.Command, args []string) {
-        // 默认启动 Web 服务
-        s := server.New()
-        s.Init()
-        s.Start()
+        // 创建 Ech0 服务器
+		s := server.New()
+
+		// 初始化 Ech0
+		s.Init()
+
+		// 启动 Ech0
+		s.Start()
     },
 }
 
