@@ -123,6 +123,7 @@ jobs:
         with:
           files: |
             ./backend-artifacts/*.tar.gz
+            ./backend-artifacts/*.exe
           draft: true
           prerelease: false
         env:
