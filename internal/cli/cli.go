@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"strings"
-	"syscall"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -26,15 +24,6 @@ func DoServe() {
 	s.Init()
 	// 启动 Ech0
 	s.Start()
-
-	// 阻塞主线程，直到接收到终止信号
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-
-	if err := s.Stop(); err != nil {
-		fmt.Println("❌ 关闭服务器时发生错误:", err)
-	}
 }
 
 // DoStopServe 停止服务
@@ -48,6 +37,8 @@ func DoStopServe() {
 		PrintCLIInfo("😭 停止服务失败", err.Error())
 		return
 	}
+
+	s = nil // 清空全局服务器实例
 
 	PrintCLIInfo("🎉 停止服务成功", "Ech0 服务器已停止")
 }
