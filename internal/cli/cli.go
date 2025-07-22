@@ -1,9 +1,13 @@
 package cli
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/charmbracelet/huh"
 	"github.com/lin-snow/ech0/internal/backup"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/server"
@@ -54,4 +58,50 @@ func DoVersion() {
 		title: "📦 当前版本",
 		msg:   "v" + commonModel.Version,
 	})
+}
+
+// DoTui 执行 TUI
+func DoTui() {
+	for {
+		var action string
+		err := huh.NewSelect[string]().
+			Title("🌟 Ech0 CLI 操作菜单").
+			Options(
+				huh.NewOption("🪅 启动 Web 服务", "serve"),
+				huh.NewOption("📦 执行备份", "backup"),
+				huh.NewOption("💾 恢复数据", "restore"),
+				huh.NewOption("📌 查看版本信息", "version"),
+				huh.NewOption("❌ 退出", "exit"),
+			).
+			Value(&action).
+			Run()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		switch action {
+		case "serve":
+			DoServe()
+		case "backup":
+			DoBackup()
+		case "restore":
+			var path string
+			huh.NewInput().
+				Title("请输入备份文件路径").
+				Value(&path).
+				Run()
+			path = strings.TrimSpace(path)
+			if path != "" {
+				DoRestore(path)
+			} else {
+				PrintCLIInfo("⚠️ 跳过", "未输入备份路径")
+			}
+		case "version":
+			DoVersion()
+		case "exit":
+			fmt.Println("👋 已退出")
+			return
+		}
+	}
 }
