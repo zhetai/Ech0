@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/lin-snow/ech0/internal/backup"
@@ -10,13 +11,18 @@ import (
 
 // DoBackup 执行备份
 func DoBackup() {
-	backupFilePath, _, err := backup.ExecuteBackup()
+	_, backupFileName, err := backup.ExecuteBackup()
 	if err != nil {
 		// 处理错误
 		PrintCLIInfo("😭 执行结果", "备份失败: "+err.Error())
 		return
 	}
-	PrintCLIInfo("🎉 备份成功", backupFilePath)
+
+	// 获取PWD环境变量
+	pwd, _ := os.Getwd()
+	fullPath := filepath.Join(pwd, "backup", backupFileName)
+
+	PrintCLIInfo("🎉 备份成功", fullPath)
 }
 
 // DoRestore 执行恢复
