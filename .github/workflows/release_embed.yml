@@ -21,6 +21,8 @@ jobs:
             goarch: amd64
           - goos: linux
             goarch: arm64
+          - goos: windows
+            goarch: amd64
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,15 +75,24 @@ jobs:
 
       # --- Artifact Packaging and Uploading ---
       - name: Package binary
+        if: matrix.goos != 'windows'
         run: tar -czvf "ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz" "ech0-${{ matrix.goos }}-${{ matrix.goarch }}"
 
-      - name: Upload artifact
+      - name: Upload artifact (Linux/macOS)
+        if: matrix.goos != 'windows'
         uses: actions/upload-artifact@v4
         with:
           name: ech0-${{ matrix.goos }}-${{ matrix.goarch }}-asset
           path: ech0-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
           retention-days: 1
 
+      - name: Upload artifact (Windows)
+        if: matrix.goos == 'windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ech0-${{ matrix.goos }}-${{ matrix.goarch }}-asset
+          path: ech0-${{ matrix.goos }}-${{ matrix.goarch }}.exe
+          retention-days: 1
 
   prepare-release:
     name: Prepare Release Package
