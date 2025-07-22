@@ -84,8 +84,6 @@ func (s *Server) Start() {
 
 // Stop 优雅停止服务器
 func (s *Server) Stop() error {
-	fmt.Println("🛑 正在关闭 Ech0 Server...")
-
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -94,6 +92,5 @@ func (s *Server) Stop() error {
 		return err
 	}
 
-	fmt.Println("✅ Ech0 Server已关闭")
 	return nil
 }

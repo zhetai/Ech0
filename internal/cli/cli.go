@@ -102,6 +102,9 @@ func DoTui() {
 	printCLIBanner()
 
 	for {
+		// 输出一行空行
+		fmt.Println()
+
 		var action string
 		options := []huh.Option[string]{}
 
@@ -196,7 +199,7 @@ func printCLIBanner() {
 	gradientBanner := lipgloss.JoinVertical(lipgloss.Left, rendered...)
 
 	full := lipgloss.JoinVertical(lipgloss.Left,
-		boxStyle.Render(gradientBanner),
+		gradientBanner,
 	)
 
 	if _, err := fmt.Fprintln(os.Stdout, full); err != nil {

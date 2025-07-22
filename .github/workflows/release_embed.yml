@@ -56,6 +56,10 @@ jobs:
           wget -q https://github.com/lin-snow/musl-compilers/releases/download/2025-6-20/aarch64-linux-musl-cross.tgz
           tar -xf aarch64-linux-musl-cross.tgz
           echo "$(pwd)/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
+      
+      - name: Install mingw-w64 for Windows cross-compiling
+        if: matrix.goos == 'windows'
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
 
       - name: Build backend binary with embedded frontend
         env:
@@ -63,7 +67,7 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: 1
           # Dynamically set the C compiler based on the architecture
-          CC: ${{ matrix.goarch == 'arm64' && 'aarch64-linux-musl-gcc' || 'gcc' }}
+          CC: ${{ matrix.goos == 'windows' && 'x86_64-w64-mingw32-gcc' || (matrix.goarch == 'arm64' && 'aarch64-linux-musl-gcc' || 'gcc') }}
         run: |
           # Define linker flags for a static build
           STATIC_LDFLAGS="-linkmode external -extldflags '-static'"
