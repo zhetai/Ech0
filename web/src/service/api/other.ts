@@ -40,7 +40,7 @@ export function fetchBackup() {
   return request({
     url: '/backup',
     method: 'GET',
-  });
+  })
 }
 
 // 导出备份 - 使用专门的下载函数
@@ -48,5 +48,5 @@ export function fetchExportBackup() {
   return downloadFile({
     url: '/backup/export',
     method: 'POST',
-  });
+  })
 }

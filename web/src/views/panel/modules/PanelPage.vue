@@ -76,7 +76,12 @@ import { ShowWhichEnum } from '@/enums/enums'
 const userStore = useUserStore()
 const router = useRouter()
 
-const ShowingArray = [ShowWhichEnum.Status, ShowWhichEnum.Setting, ShowWhichEnum.UserCenter, ShowWhichEnum.Other]
+const ShowingArray = [
+  ShowWhichEnum.Status,
+  ShowWhichEnum.Setting,
+  ShowWhichEnum.UserCenter,
+  ShowWhichEnum.Other,
+]
 const ShowingIndex = ref<number>(0)
 const Showing = ref<string>(ShowWhichEnum.Status)
 

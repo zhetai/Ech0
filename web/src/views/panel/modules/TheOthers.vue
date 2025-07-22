@@ -12,31 +12,31 @@
           <div class="flex flex-start items-center gap-2">
             <p class="text-gray-400">创建快照:</p>
             <BaseButton
-            :icon="CreateBackup"
-            @click="handleBackup"
-            class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
-            title="创建快照"
-          />
+              :icon="CreateBackup"
+              @click="handleBackup"
+              class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
+              title="创建快照"
+            />
           </div>
           <!-- 导出快照 -->
           <div class="flex flex-start items-center gap-2">
             <p class="text-gray-400">导出快照:</p>
             <BaseButton
-            :icon="ExportBackup"
-            @click="handleBackupExport"
-            class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
-            title="导出快照"
-          />
+              :icon="ExportBackup"
+              @click="handleBackupExport"
+              class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
+              title="导出快照"
+            />
           </div>
           <!-- 恢复数据 -->
           <div class="flex flex-start items-center gap-2">
             <p class="text-gray-400">恢复快照:</p>
             <BaseButton
-            :icon="RestoreBackup"
-            @click="handleBackupRestore"
-            class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
-            title="恢复快照"
-          />
+              :icon="RestoreBackup"
+              @click="handleBackupRestore"
+              class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
+              title="恢复快照"
+            />
           </div>
         </div>
       </div>
@@ -48,13 +48,12 @@
 import BaseButton from '@/components/common/BaseButton.vue'
 import CreateBackup from '@/components/icons/createbackup.vue'
 import ExportBackup from '@/components/icons/exportbackup.vue'
-import RestoreBackup from '@/components/icons/restorebackup.vue';
-import { fetchBackup, fetchExportBackup } from '@/service/api';
+import RestoreBackup from '@/components/icons/restorebackup.vue'
+import { fetchBackup, fetchExportBackup } from '@/service/api'
 import { theToast } from '@/utils/toast'
 
 const handleBackup = async () => {
-  fetchBackup()
-  .then((res) => {
+  fetchBackup().then((res) => {
     if (res.code === 1) {
       theToast.success('备份成功')
     }
@@ -76,7 +75,7 @@ const handleBackupExport = async () => {
 
     // 4. 将元素添加到 DOM 并触发点击
     document.body.appendChild(link)
-    link.click()  // 这会触发浏览器的下载行为
+    link.click() // 这会触发浏览器的下载行为
 
     // 5. 清理：移除元素和释放内存
     document.body.removeChild(link)
@@ -85,6 +84,7 @@ const handleBackupExport = async () => {
     theToast.info('开始导出')
   } catch (error) {
     theToast.error('导出失败')
+    console.error('导出备份失败:', error)
   }
 }
 
@@ -93,5 +93,4 @@ const handleBackupRestore = async () => {
     duration: 3000,
   })
 }
-
 </script>
