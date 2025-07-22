@@ -146,16 +146,22 @@ func DoTui() {
 		case "backup":
 			DoBackup()
 		case "restore":
-			var path string
-			huh.NewInput().
-				Title("请输入备份文件路径").
-				Value(&path).
-				Run()
-			path = strings.TrimSpace(path)
-			if path != "" {
-				DoRestore(path)
+			// 如果服务器已经启动，则先停止服务器
+			if s != nil {
+				PrintCLIInfo("⚠️ 警告", "恢复数据前请先停止服务器")
 			} else {
-				PrintCLIInfo("⚠️ 跳过", "未输入备份路径")
+				// 获取备份文件路径
+				var path string
+				huh.NewInput().
+					Title("请输入备份文件路径").
+					Value(&path).
+					Run()
+				path = strings.TrimSpace(path)
+				if path != "" {
+					DoRestore(path)
+				} else {
+					PrintCLIInfo("⚠️ 跳过", "未输入备份路径")
+				}
 			}
 		case "version":
 			ClearScreen()
