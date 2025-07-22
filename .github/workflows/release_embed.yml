@@ -63,17 +63,26 @@ jobs:
 
       - name: Build backend binary with embedded frontend
         env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: 1
           # Dynamically set the C compiler based on the architecture
           CC: ${{ matrix.goos == 'windows' && 'x86_64-w64-mingw32-gcc' || (matrix.goarch == 'arm64' && 'aarch64-linux-musl-gcc' || 'gcc') }}
         run: |
+          # Define linker flags for a static build
           STATIC_LDFLAGS="-linkmode external -extldflags '-static'"
           OUTPUT_NAME="ech0-${{ matrix.goos }}-${{ matrix.goarch }}"
-          if [ "${{ matrix.goos }}" = "windows" ]; then
+          # 如果是 Windows 平台，给输出文件名加上 .exe 后缀
+          if [ "${{ matrix.goos }}" == "windows" ]; then
             OUTPUT_NAME="${OUTPUT_NAME}.exe"
           fi
+  
+          # Build the binary. Go's 'embed' will automatically find the frontend
+          # files built in the previous steps.
+          go build -tags netgo -ldflags "$STATIC_LDFLAGS" -o "${OUTPUT_NAME}" ./main.go
 
-          go build -tags netgo -ldflags "$STATIC_LDFLAGS" -o "$OUTPUT_NAME" ./main.go
+      - name: List output files
+        run: ls -lh .
 
       # --- Artifact Packaging and Uploading ---
       - name: Package binary
