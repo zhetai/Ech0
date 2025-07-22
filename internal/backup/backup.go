@@ -12,7 +12,7 @@ const (
 	dataDir        = "data"                // 待备份的数据目录
 	backupDir      = "backup"              // 备份后存储zip的目录
 	backupFileName = "ech0_backup"         // 备份文件名
-	excludeFile = "*.log" // 排除的文件名
+	excludeFile    = "*.log"               // 排除的文件名
 	timeLayout     = "2006-01-02_15-04-05" // 时间格式化布局
 )
 

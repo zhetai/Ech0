@@ -10,7 +10,7 @@ import (
 )
 
 type BackupService struct {
-	commonService  commonService.CommonServiceInterface
+	commonService commonService.CommonServiceInterface
 }
 
 func NewBackupService(commonService commonService.CommonServiceInterface) BackupServiceInterface {
@@ -53,7 +53,7 @@ func (backupService *BackupService) ExportBackup(userid uint, ctx *gin.Context) 
 	// 1. 先备份
 	var backupFilePath string // 备份文件路径
 	var backupFileName string // 备份文件名
-	backupFilePath, backupFileName, err = backup.ExecuteBackup();
+	backupFilePath, backupFileName, err = backup.ExecuteBackup()
 	if err != nil {
 		return err
 	}

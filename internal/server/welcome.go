@@ -99,4 +99,3 @@ func gradientBanner(banner string) string {
 	}
 	return lipgloss.JoinVertical(lipgloss.Left, rendered...)
 }
-

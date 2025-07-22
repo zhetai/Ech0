@@ -67,7 +67,7 @@ const (
 
 // Backup 成功相关常量
 const (
-	BACKUP_SUCCESS       = "备份成功"
+	BACKUP_SUCCESS        = "备份成功"
 	EXPORT_BACKUP_SUCCESS = "导出备份成功"
 	IMPORT_BACKUP_SUCCESS = "导入备份成功"
 )
