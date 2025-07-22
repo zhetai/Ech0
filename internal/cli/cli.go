@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -20,12 +22,19 @@ var s *server.Server // s 是全局的 Ech0 服务器实例
 func DoServe() {
 	// 创建 Ech0 服务器
 	s = server.New()
-
 	// 初始化 Ech0
 	s.Init()
-
 	// 启动 Ech0
 	s.Start()
+
+	// 阻塞主线程，直到接收到终止信号
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	if err := s.Stop(); err != nil {
+		fmt.Println("❌ 关闭服务器时发生错误:", err)
+	}
 }
 
 // DoStopServe 停止服务
