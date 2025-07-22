@@ -69,7 +69,7 @@ jobs:
           
           # Build the binary. Go's 'embed' will automatically find the frontend
           # files built in the previous steps.
-          go build -tags netgo -ldflags "$STATIC_LDFLAGS" -o "${OUTPUT_NAME}" ./cmd/ech0/main.go
+          go build -tags netgo -ldflags "$STATIC_LDFLAGS" -o "${OUTPUT_NAME}" ./main.go
 
       # --- Artifact Packaging and Uploading ---
       - name: Package binary
