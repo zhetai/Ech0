@@ -3,6 +3,8 @@ package cli
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"runtime"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -48,7 +50,7 @@ func PrintCLIWithBox(items ...struct{ title, msg string }) {
 	if len(items) == 0 {
 		return
 	}
-	
+
 	var content string
 	for i, item := range items {
 		line := infoStyle.Render(titleStyle.Render(item.title) + ": " + highlight.Render(item.msg))
@@ -57,7 +59,18 @@ func PrintCLIWithBox(items ...struct{ title, msg string }) {
 		}
 		content += line
 	}
-	
+
 	boxedContent := boxStyle.Render(content)
 	fmt.Fprintln(os.Stdout, boxedContent)
+}
+
+func ClearScreen() {
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/c", "cls") // Windows 清屏命令
+	} else {
+		cmd = exec.Command("clear") // Linux/macOS 清屏命令
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }

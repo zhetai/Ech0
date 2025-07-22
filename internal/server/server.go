@@ -1,6 +1,11 @@
 package server
 
 import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/internal/config"
 	"github.com/lin-snow/ech0/internal/database"
@@ -13,7 +18,8 @@ import (
 
 // Server 服务器结构体，包含Gin引擎
 type Server struct {
-	GinEngine *gin.Engine
+	GinEngine  *gin.Engine
+	httpServer *http.Server // 用于优雅停止服务器
 }
 
 // New 创建一个新的服务器实例
@@ -55,14 +61,39 @@ func (s *Server) Init() {
 	router.SetupRouter(s.GinEngine, handlers)
 }
 
-// Start 启动服务器
+// Start 异步启动服务器
 func (s *Server) Start() {
 	port := config.Config.Server.Port
 	PrintGreetings(port)
-	if err := s.GinEngine.Run(":" + port); err != nil {
-		errUtil.HandlePanicError(&commonModel.ServerError{
-			Msg: commonModel.GIN_RUN_FAILED,
-			Err: err,
-		})
+
+	s.httpServer = &http.Server{
+		Addr:    ":" + port,
+		Handler: s.GinEngine,
 	}
+
+	go func() {
+		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			errUtil.HandlePanicError(&commonModel.ServerError{
+				Msg: commonModel.GIN_RUN_FAILED,
+				Err: err,
+			})
+		}
+	}()
+	fmt.Println("🚀 Ech0 Server已启动，监听端口", port)
+}
+
+// Stop 优雅停止服务器
+func (s *Server) Stop() error {
+	fmt.Println("🛑 正在关闭 Ech0 Server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := s.httpServer.Shutdown(ctx); err != nil {
+		fmt.Println("Ech0 Server关闭时出现错误:", err)
+		return err
+	}
+
+	fmt.Println("✅ Ech0 Server已关闭")
+	return nil
 }

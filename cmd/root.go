@@ -26,10 +26,19 @@ var versionCmd = &cobra.Command{
 	},
 }
 
+var infoCmd = &cobra.Command{
+	Use:   "info",
+	Short: "查看当前信息",
+	Run: func(cmd *cobra.Command, args []string) {
+		cli.DoEch0Info()
+	},
+}
+
 func init() {
 	// 解决Windows下使用 Cobra 触发 mousetrap 提示
-    cobra.MousetrapHelpText = ""
+	cobra.MousetrapHelpText = ""
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(infoCmd)
 }
 
 func Execute() {
@@ -37,5 +46,3 @@ func Execute() {
 		os.Exit(1)
 	}
 }
-
-
