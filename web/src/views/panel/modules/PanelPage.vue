@@ -20,7 +20,7 @@
         <div class="flex flex-row items-center gap-2">
           <!-- 状态 / 设置 / 个人中心 / 其它 -->
           <BaseButton
-            :icon="[Setting, User, Status, TheOthersIcon][ShowingIndex]"
+            :icon="[Setting, User, TheOthersIcon, Status][ShowingIndex]"
             @click="changeShow"
             class="text-gray-600 rounded-md w-8 h-8 sm:w-9 sm:h-9"
             title="状态 / 设置 / 个人中心 / 其它"
