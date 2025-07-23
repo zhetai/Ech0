@@ -45,13 +45,13 @@ func DoServeWithBlock() {
 	<-quit
 
 	// 创建 context，最大等待 5 秒优雅关闭
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	if err := s.Stop(ctx); err != nil {
-        PrintCLIInfo("❌ 服务停止", "服务器强制关闭")
-        os.Exit(1)
-    }
+		PrintCLIInfo("❌ 服务停止", "服务器强制关闭")
+		os.Exit(1)
+	}
 	PrintCLIInfo("🎉 停止服务成功", "Ech0 服务器已停止")
 }
 
@@ -63,8 +63,8 @@ func DoStopServe() {
 	}
 
 	// 创建 context，最大等待 5 秒优雅关闭
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	if err := s.Stop(ctx); err != nil {
 		PrintCLIInfo("😭 停止服务失败", err.Error())
@@ -156,10 +156,10 @@ func DoTui() {
 		)
 
 		err := huh.NewSelect[string]().
-			Title("欢迎使用 Ech0 TUI 操作菜单").
+			Title("欢迎使用 Ech0 TUI .").
 			Options(options...).
 			Value(&action).
-			WithTheme(huh.ThemeCatppuccin()).
+			WithTheme(huh.ThemeCharm()).
 			Run()
 
 		if err != nil {
@@ -200,7 +200,7 @@ func DoTui() {
 			ClearScreen()
 			DoVersion()
 		case "exit":
-			fmt.Println("👋 已退出")
+			fmt.Println("👋 感谢使用 Ech0 TUI，期待下次再见")
 			return
 		}
 	}

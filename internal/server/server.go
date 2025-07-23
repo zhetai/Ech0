@@ -85,22 +85,22 @@ func (s *Server) Start() {
 // Stop 优雅停止服务器
 func (s *Server) Stop(ctx context.Context) error {
 	// 使用传入的 context，如果没有则创建默认的 5 秒超时
-    shutdownCtx := ctx
-    var cancel context.CancelFunc
-    
-    if ctx == nil {
-        shutdownCtx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
-        defer cancel()
-    }
-	
+	shutdownCtx := ctx
+	var cancel context.CancelFunc
+
+	if ctx == nil {
+		shutdownCtx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+	}
+
 	if s.httpServer == nil {
-        fmt.Println("⚠️ HTTP 服务器未启动，无需关闭")
-        return nil
-    }
+		fmt.Println("⚠️ HTTP 服务器未启动，无需关闭")
+		return nil
+	}
 
 	if err := s.httpServer.Shutdown(shutdownCtx); err != nil {
-        return err
-    }
-	
+		return err
+	}
+
 	return nil
 }

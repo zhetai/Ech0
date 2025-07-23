@@ -311,17 +311,17 @@ func FileExists(path string) bool {
 
 // cleanBackupDir 清理备份目录
 func cleanBackupDir(path string) error {
-    entries, err := os.ReadDir(path)
-    if err != nil {
-        return fmt.Errorf("读取备份目录失败: %w", err)
-    }
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return fmt.Errorf("读取备份目录失败: %w", err)
+	}
 
-    for _, entry := range entries {
-        fullPath := filepath.Join(path, entry.Name())
-        if err := os.RemoveAll(fullPath); err != nil {
-            return fmt.Errorf("删除旧备份失败: %w", err)
-        }
-    }
+	for _, entry := range entries {
+		fullPath := filepath.Join(path, entry.Name())
+		if err := os.RemoveAll(fullPath); err != nil {
+			return fmt.Errorf("删除旧备份失败: %w", err)
+		}
+	}
 
-    return nil
+	return nil
 }

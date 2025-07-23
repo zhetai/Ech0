@@ -4,7 +4,7 @@
       <!-- 设置 -->
       <div>
         <div class="flex items-center justify-start mb-3">
-          <h1 class="text-gray-600 font-bold text-lg">其它</h1>
+          <h1 class="text-gray-600 font-bold text-lg">数据管理</h1>
         </div>
 
         <div class="flex flex-col gap-4">
@@ -62,6 +62,9 @@ const handleBackup = async () => {
 
 const handleBackupExport = async () => {
   try {
+    theToast.info('导出中...请稍等', {
+      duration: 4000,
+    })
     // 1. 获取文件数据（Blob 对象）
     const blob = await fetchExportBackup()
 
@@ -80,8 +83,6 @@ const handleBackupExport = async () => {
     // 5. 清理：移除元素和释放内存
     document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
-
-    theToast.info('开始导出')
   } catch (error) {
     theToast.error('导出失败')
     console.error('导出备份失败:', error)
@@ -89,7 +90,7 @@ const handleBackupExport = async () => {
 }
 
 const handleBackupRestore = async () => {
-  theToast.info('功能开发中，请使用CLI模式执行恢复', {
+  theToast.info('功能开发中，请使用TUI/CLI模式执行恢复', {
     duration: 3000,
   })
 }

@@ -47,6 +47,6 @@ export function fetchBackup() {
 export function fetchExportBackup() {
   return downloadFile({
     url: '/backup/export',
-    method: 'POST',
+    method: 'GET',
   })
 }

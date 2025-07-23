@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	backup "github.com/lin-snow/ech0/internal/backup"
@@ -52,14 +54,20 @@ func (backupService *BackupService) ExportBackup(userid uint, ctx *gin.Context) 
 	// 导出备份
 	// 1. 先备份
 	var backupFilePath string // 备份文件路径
-	var backupFileName string // 备份文件名
-	backupFilePath, backupFileName, err = backup.ExecuteBackup()
+	backupFilePath, _, err = backup.ExecuteBackup()
 	if err != nil {
 		return err
 	}
 
-	// 2. 再导出
-	ctx.Header("Content-Disposition", "attachment; filename="+backupFileName)
+	// 2. 计算文件大小
+	fileInfo, err := os.Stat(backupFilePath)
+	if err != nil {
+		return err
+	}
+	ctx.Header("Content-Length", fmt.Sprintf("%d", fileInfo.Size()))
+
+	// 3. 再导出
+	ctx.Header("Content-Disposition", "attachment; filename=backup-latest.zip")
 	ctx.Header("Content-Type", "application/zip")
 	ctx.File(backupFilePath)
 
