@@ -159,7 +159,7 @@ func DoTui() {
 			Title("欢迎使用 Ech0 TUI .").
 			Options(options...).
 			Value(&action).
-			WithTheme(huh.ThemeCharm()).
+			WithTheme(huh.ThemeCatppuccin()).
 			Run()
 
 		if err != nil {
