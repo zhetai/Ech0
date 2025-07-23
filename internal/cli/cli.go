@@ -1,11 +1,15 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
+	"time"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -26,6 +30,31 @@ func DoServe() {
 	s.Start()
 }
 
+// DoServeWithBlock 阻塞当前线程，直到服务器停止
+func DoServeWithBlock() {
+	// 创建 Ech0 服务器
+	s = server.New()
+	// 初始化 Ech0
+	s.Init()
+	// 启动 Ech0
+	s.Start()
+
+	// 阻塞主线程，直到接收到终止信号
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	// 创建 context，最大等待 5 秒优雅关闭
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+
+	if err := s.Stop(ctx); err != nil {
+        PrintCLIInfo("❌ 服务停止", "服务器强制关闭")
+        os.Exit(1)
+    }
+	PrintCLIInfo("🎉 停止服务成功", "Ech0 服务器已停止")
+}
+
 // DoStopServe 停止服务
 func DoStopServe() {
 	if s == nil {
@@ -33,7 +62,11 @@ func DoStopServe() {
 		return
 	}
 
-	if err := s.Stop(); err != nil {
+	// 创建 context，最大等待 5 秒优雅关闭
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+
+	if err := s.Stop(ctx); err != nil {
 		PrintCLIInfo("😭 停止服务失败", err.Error())
 		return
 	}
