@@ -18,6 +18,14 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+var tuiCmd = &cobra.Command{
+	Use:   "tui",
+	Short: "启动 Ech0 TUI",
+	Run: func(cmd *cobra.Command, args []string) {
+		cli.DoTui()
+	},
+}
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "查看当前版本信息",
@@ -37,6 +45,7 @@ var infoCmd = &cobra.Command{
 func init() {
 	// 解决Windows下使用 Cobra 触发 mousetrap 提示
 	cobra.MousetrapHelpText = ""
+	rootCmd.AddCommand(tuiCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(infoCmd)
 }
