@@ -42,12 +42,21 @@ var infoCmd = &cobra.Command{
 	},
 }
 
+var helloCmd = &cobra.Command{
+	Use:   "hello",
+	Short: "输出 Ech0 Logo",
+	Run: func(cmd *cobra.Command, args []string) {
+		cli.DoHello()
+	},
+}
+
 func init() {
 	// 解决Windows下使用 Cobra 触发 mousetrap 提示
 	cobra.MousetrapHelpText = ""
 	rootCmd.AddCommand(tuiCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(infoCmd)
+	rootCmd.AddCommand(helloCmd)
 }
 
 func Execute() {

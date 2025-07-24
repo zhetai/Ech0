@@ -129,6 +129,11 @@ func DoEch0Info() {
 	}
 }
 
+func DoHello() {
+	ClearScreen()
+	printCLIBanner()
+}
+
 // DoTui 执行 TUI
 func DoTui() {
 	ClearScreen()
