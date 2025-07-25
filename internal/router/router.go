@@ -28,10 +28,11 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 	// ===     静态资源映射     ===
 	r.Static("api/images", "./data/images")
 
-	// ===  中间件、路由组与各模块路由  ===
+	// ===        中间件        ===
 	// Setup Middleware
 	setupMiddleware(r)
 
+	// ===  路由组与各模块路由  ===
 	// Setup Router Groups
 	appRouterGroup := setupRouterGroup(r)
 
