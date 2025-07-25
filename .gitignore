@@ -67,6 +67,7 @@ yarn-error.log
 template/dist/**
 !template/dist/.keep
 /backup/*
+quality-report.md
 
 .idea
 .VSCodeCounter
