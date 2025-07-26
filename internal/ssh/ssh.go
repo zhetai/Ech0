@@ -165,7 +165,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	s := tui.GetLogoBanner()
-	return m.txtStyle.Render(s) + "\n\n" + m.quitStyle.Render("Press 'q' to quit\n")
+	return m.txtStyle.Render(s) + "\n\n" + m.quitStyle.Render("按 'q' 退出\n")
 }
 
 
