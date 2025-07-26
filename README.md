@@ -73,7 +73,7 @@ docker run -d \
   -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/backup:/app/backup \
-  -e JWT_SECRET="Hello Echos!" \
+  -e JWT_SECRET="Hello Echos" \
   sn0wl1n/ech0:latest
 ```
 
