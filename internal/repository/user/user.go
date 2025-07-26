@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	UsernameKeyPrefix = "username:"
-	IDKeyPrefix       = "id:"
+	UsernameKeyPrefix = "username" // username:username
+	IDKeyPrefix       = "id" // id:userid
+	AdminKey = "admin" // admin:userid
 	SysAdminKey       = "sysadmin"
 )
 
@@ -29,7 +30,7 @@ func NewUserRepository(db *gorm.DB, cache cache.ICache[string, *model.User]) Use
 // GetUserByUsername 根据用户名获取用户
 func (userRepository *UserRepository) GetUserByUsername(username string) (model.User, error) {
 	// 先查缓存
-	cacheKey := UsernameKeyPrefix + username
+	cacheKey := UsernameKeyPrefix + ":" + username
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
 		return *cachedUser, nil
 	}
@@ -42,7 +43,7 @@ func (userRepository *UserRepository) GetUserByUsername(username string) (model.
 	}
 
 	// 写缓存， cost 设为1
-	userRepository.cache.Set(UsernameKeyPrefix+username, &user, 1)
+	userRepository.cache.Set(cacheKey, &user, 1)
 
 	return user, nil
 }
@@ -66,10 +67,7 @@ func (userRepository *UserRepository) CreateUser(user *model.User) error {
 
 	// 加入缓存
 	userRepository.cache.Set(fmt.Sprintf("%s:%d", IDKeyPrefix, user.ID), user, 1)
-	userRepository.cache.Set(UsernameKeyPrefix+user.Username, user, 1)
-	if user.IsAdmin {
-		userRepository.cache.Set(SysAdminKey, user, 1)
-	}
+	userRepository.cache.Set(fmt.Sprintf("%s:%s", UsernameKeyPrefix, user.Username), user, 1)
 
 	return nil
 }
@@ -118,9 +116,9 @@ func (userRepository *UserRepository) UpdateUser(user *model.User) error {
 	}
 
 	userRepository.cache.Set(fmt.Sprintf("%s:%d", IDKeyPrefix, user.ID), user, 1)
-	userRepository.cache.Set(UsernameKeyPrefix+user.Username, user, 1)
+	userRepository.cache.Set(fmt.Sprintf("%s:%s", UsernameKeyPrefix, user.Username), user, 1)
 	if user.IsAdmin {
-		userRepository.cache.Set(SysAdminKey, user, 1)
+		userRepository.cache.Set(fmt.Sprintf("%s:%d", AdminKey, user.ID), user, 1)
 	}
 
 	return nil
@@ -141,9 +139,9 @@ func (userRepository *UserRepository) DeleteUser(id uint) error {
 
 	// 清空缓存
 	userRepository.cache.Delete(fmt.Sprintf("%s:%d", IDKeyPrefix, userToDel.ID))
-	userRepository.cache.Delete(UsernameKeyPrefix + userToDel.Username)
+	userRepository.cache.Delete(fmt.Sprintf("%s:%s", UsernameKeyPrefix, userToDel.Username))
 	if userToDel.IsAdmin {
-		userRepository.cache.Delete(SysAdminKey)
+		userRepository.cache.Delete(fmt.Sprintf("%s:%d", AdminKey, userToDel.ID))
 	}
 
 	return nil
