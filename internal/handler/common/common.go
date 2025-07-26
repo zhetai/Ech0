@@ -24,7 +24,7 @@ func NewCommonHandler(commonService service.CommonServiceInterface) *CommonHandl
 // func (commonHandler *CommonHandler) ShowImage() gin.HandlerFunc {
 // 	return func (ctx *gin.Context) {
 // 		ctx.Header("Access-Control-Allow-Origin", "*")
-		
+
 // 		// 安全校验：防止路径遍历攻击
 // 		filepath := ctx.Param("filepath")
 // 		if filepath == "/" || filepath == ".." {

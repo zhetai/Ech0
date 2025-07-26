@@ -52,5 +52,5 @@ func NewHandlers(
 // 提供缓存实例给wire注入
 // 提供 User 缓存实例给 wire 注入
 func ProvideUserCache(factory *cache.CacheFactory) cache.ICache[string, *userModel.User] {
-    return factory.UserCache()
+	return factory.UserCache()
 }

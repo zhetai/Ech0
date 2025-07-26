@@ -10,19 +10,19 @@ import (
 
 const (
 	UsernameKeyPrefix = "username" // username:username
-	IDKeyPrefix       = "id" // id:userid
-	AdminKey = "admin" // admin:userid
+	IDKeyPrefix       = "id"       // id:userid
+	AdminKey          = "admin"    // admin:userid
 	SysAdminKey       = "sysadmin"
 )
 
 type UserRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
 	cache cache.ICache[string, *model.User]
 }
 
 func NewUserRepository(db *gorm.DB, cache cache.ICache[string, *model.User]) UserRepositoryInterface {
 	return &UserRepository{
-		db: db,
+		db:    db,
 		cache: cache,
 	}
 }
@@ -34,7 +34,7 @@ func (userRepository *UserRepository) GetUserByUsername(username string) (model.
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
 		return *cachedUser, nil
 	}
-	
+
 	// 缓存未命中，查询数据库
 	user := model.User{}
 	err := userRepository.db.Where("username = ?", username).First(&user).Error
@@ -78,7 +78,7 @@ func (userRepository *UserRepository) GetUserByID(id int) (model.User, error) {
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
 		return *cachedUser, nil
 	}
-	
+
 	var user model.User
 	if err := userRepository.db.First(&user, id).Error; err != nil {
 		return user, err
@@ -95,7 +95,7 @@ func (userRepository *UserRepository) GetSysAdmin() (model.User, error) {
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
 		return *cachedUser, nil
 	}
-	
+
 	// 获取系统管理员（首个注册的用户）
 	user := model.User{}
 	err := userRepository.db.Where("is_admin = ?", true).First(&user).Error

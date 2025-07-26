@@ -34,4 +34,3 @@ func NewCacheFactory() *CacheFactory {
 func (f *CacheFactory) UserCache() ICache[string, *userModel.User] {
 	return f.userCache
 }
-
