@@ -149,7 +149,7 @@ func DoTui() {
 		options := []huh.Option[string]{}
 
 		if s == nil {
-			options = append(options, huh.NewOption("🪅  启动 Web 服务", "serve"))
+			options = append(options, huh.NewOption("🪅 启动 Web 服务", "serve"))
 		} else {
 			options = append(options, huh.NewOption("🛑 停止 Web 服务", "stopserve"))
 		}
