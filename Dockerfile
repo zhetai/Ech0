@@ -57,6 +57,7 @@ RUN ls -lh /app
 RUN chmod +x /app/ech0
 
 EXPOSE 6277
+EXPOSE 6278
 
 ENTRYPOINT ["/app/ech0"]
 

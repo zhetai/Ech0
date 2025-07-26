@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/charmbracelet/huh"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/lin-snow/ech0/internal/backup"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/server"
@@ -51,16 +50,16 @@ func DoServeWithBlock() {
 	defer cancel()
 
 	if err := s.Stop(ctx); err != nil {
-		PrintCLIInfo("❌ 服务停止", "服务器强制关闭")
+		tui.PrintCLIInfo("❌ 服务停止", "服务器强制关闭")
 		os.Exit(1)
 	}
-	PrintCLIInfo("🎉 停止服务成功", "Ech0 服务器已停止")
+	tui.PrintCLIInfo("🎉 停止服务成功", "Ech0 服务器已停止")
 }
 
 // DoStopServe 停止服务
 func DoStopServe() {
 	if s == nil {
-		PrintCLIInfo("⚠️ 停止服务", "Ech0 服务器未启动")
+		tui.PrintCLIInfo("⚠️ 停止服务", "Ech0 服务器未启动")
 		return
 	}
 
@@ -69,13 +68,13 @@ func DoStopServe() {
 	defer cancel()
 
 	if err := s.Stop(ctx); err != nil {
-		PrintCLIInfo("😭 停止服务失败", err.Error())
+		tui.PrintCLIInfo("😭 停止服务失败", err.Error())
 		return
 	}
 
 	s = nil // 清空全局服务器实例
 
-	PrintCLIInfo("🎉 停止服务成功", "Ech0 服务器已停止")
+	tui.PrintCLIInfo("🎉 停止服务成功", "Ech0 服务器已停止")
 }
 
 // DoBackup 执行备份
@@ -83,7 +82,7 @@ func DoBackup() {
 	_, backupFileName, err := backup.ExecuteBackup()
 	if err != nil {
 		// 处理错误
-		PrintCLIInfo("😭 执行结果", "备份失败: "+err.Error())
+		tui.PrintCLIInfo("😭 执行结果", "备份失败: "+err.Error())
 		return
 	}
 
@@ -91,7 +90,7 @@ func DoBackup() {
 	pwd, _ := os.Getwd()
 	fullPath := filepath.Join(pwd, "backup", backupFileName)
 
-	PrintCLIInfo("🎉 备份成功", fullPath)
+	tui.PrintCLIInfo("🎉 备份成功", fullPath)
 }
 
 // DoRestore 执行恢复
@@ -99,40 +98,30 @@ func DoRestore(backupFilePath string) {
 	err := backup.ExecuteRestore(backupFilePath)
 	if err != nil {
 		// 处理错误
-		PrintCLIInfo("😭 执行结果", "恢复失败: "+err.Error())
+		tui.PrintCLIInfo("😭 执行结果", "恢复失败: "+err.Error())
 		return
 	}
-	PrintCLIInfo("🎉 恢复成功", "已从备份文件 "+backupFilePath+" 中恢复数据")
+	tui.PrintCLIInfo("🎉 恢复成功", "已从备份文件 "+backupFilePath+" 中恢复数据")
 }
 
 // DoVersion 打印版本信息
 func DoVersion() {
-	PrintCLIWithBox(struct{ title, msg string }{
-		title: "📦 当前版本",
-		msg:   "v" + commonModel.Version,
-	})
+	item := struct{ Title, Msg string }{
+		Title: "📦 当前版本",
+		Msg:   "v" + commonModel.Version,
+	}
+	tui.PrintCLIWithBox(item)
 }
 
 // DoEch0Info() 打印 Ech0 信息
 func DoEch0Info() {
-	content := lipgloss.JoinVertical(lipgloss.Left,
-		infoStyle.Render("📦 "+titleStyle.Render("Version")+": "+highlight.Render(commonModel.Version)),
-		infoStyle.Render("🧙 "+titleStyle.Render("Author")+": "+highlight.Render("L1nSn0w")),
-		infoStyle.Render("👉 "+titleStyle.Render("Website")+": "+highlight.Render("https://echo.soopy.cn/")),
-		infoStyle.Render("👉 "+titleStyle.Render("GitHub")+": "+highlight.Render("https://github.com/lin-snow/Ech0")),
-	)
-
-	full := lipgloss.JoinVertical(lipgloss.Left,
-		boxStyle.Render(content),
-	)
-
-	if _, err := fmt.Fprintln(os.Stdout, full); err != nil {
+	if _, err := fmt.Fprintln(os.Stdout, tui.GetEch0Info()); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to print ech0 info: %v\n", err)
 	}
 }
 
 func DoHello() {
-	ClearScreen()
+	tui.ClearScreen()
 	tui.PrintCLIBanner()
 }
 
@@ -141,7 +130,7 @@ func DoSSH() {
 		ssh.SSHStart()
 	} else {
 		if err := ssh.SSHStop(); err != nil {
-			PrintCLIInfo("❌ 服务停止", "SSH 服务器强制关闭")
+			tui.PrintCLIInfo("❌ 服务停止", "SSH 服务器强制关闭")
 			return
 		}
 	}
@@ -149,7 +138,7 @@ func DoSSH() {
 
 // DoTui 执行 TUI
 func DoTui() {
-	ClearScreen()
+	tui.ClearScreen()
 	tui.PrintCLIBanner()
 
 	for {
@@ -192,22 +181,22 @@ func DoTui() {
 
 		switch action {
 		case "serve":
-			ClearScreen()
+			tui.ClearScreen()
 			DoServe()
 		case "ssh":
 			DoSSH()
 		case "stopserve":
-			ClearScreen()
+			tui.ClearScreen()
 			DoStopServe()
 		case "info":
-			ClearScreen()
+			tui.ClearScreen()
 			DoEch0Info()
 		case "backup":
 			DoBackup()
 		case "restore":
 			// 如果服务器已经启动，则先停止服务器
 			if s != nil {
-				PrintCLIInfo("⚠️ 警告", "恢复数据前请先停止服务器")
+				tui.PrintCLIInfo("⚠️ 警告", "恢复数据前请先停止服务器")
 			} else {
 				// 获取备份文件路径
 				var path string
@@ -219,11 +208,11 @@ func DoTui() {
 				if path != "" {
 					DoRestore(path)
 				} else {
-					PrintCLIInfo("⚠️ 跳过", "未输入备份路径")
+					tui.PrintCLIInfo("⚠️ 跳过", "未输入备份路径")
 				}
 			}
 		case "version":
-			ClearScreen()
+			tui.ClearScreen()
 			DoVersion()
 		case "exit":
 			fmt.Println("👋 感谢使用 Ech0 TUI，期待下次再见")
