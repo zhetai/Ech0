@@ -62,6 +62,7 @@ var UserSet = wire.NewSet(
 
 // EchoSet 包含了构建 EchoHandler 所需的所有 Provider
 var EchoSet = wire.NewSet(
+	ProvideEchoCache,
 	echoRepository.NewEchoRepository,
 	echoService.NewEchoService,
 	echoHandler.NewEchoHandler,

@@ -46,7 +46,8 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory) (*Handlers, er
 	settingServiceInterface := service2.NewSettingService(commonServiceInterface, keyValueRepositoryInterface)
 	userServiceInterface := service3.NewUserService(userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
-	echoRepositoryInterface := repository3.NewEchoRepository(db)
+	cacheICache := ProvideEchoCache(cacheFactory)
+	echoRepositoryInterface := repository3.NewEchoRepository(db, cacheICache)
 	echoServiceInterface := service4.NewEchoService(commonServiceInterface, echoRepositoryInterface)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
@@ -74,7 +75,9 @@ var UserSet = wire.NewSet(
 )
 
 // EchoSet 包含了构建 EchoHandler 所需的所有 Provider
-var EchoSet = wire.NewSet(repository3.NewEchoRepository, service4.NewEchoService, handler3.NewEchoHandler)
+var EchoSet = wire.NewSet(
+	ProvideEchoCache, repository3.NewEchoRepository, service4.NewEchoService, handler3.NewEchoHandler,
+)
 
 // CommonSet 包含了构建 CommonHandler 所需的所有 Provider
 var CommonSet = wire.NewSet(repository2.NewCommonRepository, service.NewCommonService, handler4.NewCommonHandler)

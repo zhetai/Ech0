@@ -2,6 +2,8 @@ package cache
 
 import (
 	"github.com/dgraph-io/ristretto/v2"
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
+	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 )
 
@@ -18,6 +20,7 @@ func NewCache[K ristretto.Key, V any]() (ICache[K, V], error) {
 
 type CacheFactory struct {
 	userCache ICache[string, *userModel.User]
+	echoCache ICache[string, commonModel.PageQueryResult[[]echoModel.Echo]]
 }
 
 func NewCacheFactory() *CacheFactory {
@@ -26,11 +29,21 @@ func NewCacheFactory() *CacheFactory {
 		panic(err)
 	}
 
+	echoCache, err := NewCache[string, commonModel.PageQueryResult[[]echoModel.Echo]]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &CacheFactory{
 		userCache: userCache,
+		echoCache: echoCache,
 	}
 }
 
 func (f *CacheFactory) UserCache() ICache[string, *userModel.User] {
 	return f.userCache
+}
+
+func (f *CacheFactory) EchoCache() ICache[string, commonModel.PageQueryResult[[]echoModel.Echo]] {
+	return f.echoCache
 }
