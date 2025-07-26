@@ -8,6 +8,12 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	UsernameKeyPrefix = "username:"
+	IDKeyPrefix       = "id:"
+	SysAdminKey       = "sysadmin"
+)
+
 type UserRepository struct {
 	db *gorm.DB
 	cache cache.ICache[string, *model.User]
@@ -23,7 +29,7 @@ func NewUserRepository(db *gorm.DB, cache cache.ICache[string, *model.User]) Use
 // GetUserByUsername 根据用户名获取用户
 func (userRepository *UserRepository) GetUserByUsername(username string) (model.User, error) {
 	// 先查缓存
-	cacheKey := "username:" + username
+	cacheKey := UsernameKeyPrefix + username
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
 		return *cachedUser, nil
 	}
@@ -36,7 +42,7 @@ func (userRepository *UserRepository) GetUserByUsername(username string) (model.
 	}
 
 	// 写缓存， cost 设为1
-	userRepository.cache.Set(username, &user, 1)
+	userRepository.cache.Set(UsernameKeyPrefix+username, &user, 1)
 
 	return user, nil
 }
@@ -59,10 +65,10 @@ func (userRepository *UserRepository) CreateUser(user *model.User) error {
 	}
 
 	// 加入缓存
-	userRepository.cache.Set(fmt.Sprintf("id:%d", user.ID), user, 1)
-	userRepository.cache.Set("username:"+user.Username, user,1)
+	userRepository.cache.Set(fmt.Sprintf("%s:%d", IDKeyPrefix, user.ID), user, 1)
+	userRepository.cache.Set(UsernameKeyPrefix+user.Username, user, 1)
 	if user.IsAdmin {
-		userRepository.cache.Set("sysadmin", user, 1)
+		userRepository.cache.Set(SysAdminKey, user, 1)
 	}
 
 	return nil
@@ -70,7 +76,7 @@ func (userRepository *UserRepository) CreateUser(user *model.User) error {
 
 // GetUserByID 根据用户ID获取用户
 func (userRepository *UserRepository) GetUserByID(id int) (model.User, error) {
-	cacheKey := fmt.Sprintf("id:%d", id)
+	cacheKey := fmt.Sprintf("%s:%d", IDKeyPrefix, id)
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
 		return *cachedUser, nil
 	}
@@ -87,7 +93,7 @@ func (userRepository *UserRepository) GetUserByID(id int) (model.User, error) {
 
 // GetSysAdmin 获取系统管理员
 func (userRepository *UserRepository) GetSysAdmin() (model.User, error) {
-	const cacheKey = "sysadmin"
+	cacheKey := SysAdminKey
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
 		return *cachedUser, nil
 	}
@@ -111,10 +117,10 @@ func (userRepository *UserRepository) UpdateUser(user *model.User) error {
 		return err
 	}
 
-	userRepository.cache.Set(fmt.Sprintf("id:%d", user.ID), user, 1)
-	userRepository.cache.Set("username:"+user.Username, user, 1)
+	userRepository.cache.Set(fmt.Sprintf("%s:%d", IDKeyPrefix, user.ID), user, 1)
+	userRepository.cache.Set(UsernameKeyPrefix+user.Username, user, 1)
 	if user.IsAdmin {
-		userRepository.cache.Set("sysadmin", user, 1)
+		userRepository.cache.Set(SysAdminKey, user, 1)
 	}
 
 	return nil
@@ -134,10 +140,10 @@ func (userRepository *UserRepository) DeleteUser(id uint) error {
 	}
 
 	// 清空缓存
-	userRepository.cache.Delete(fmt.Sprintf("id:%d", userToDel.ID))
-	userRepository.cache.Delete("username:" + userToDel.Username)
+	userRepository.cache.Delete(fmt.Sprintf("%s:%d", IDKeyPrefix, userToDel.ID))
+	userRepository.cache.Delete(UsernameKeyPrefix + userToDel.Username)
 	if userToDel.IsAdmin {
-		userRepository.cache.Delete("sysadmin")
+		userRepository.cache.Delete(SysAdminKey)
 	}
 
 	return nil
