@@ -8,6 +8,7 @@ package di
 
 import (
 	"github.com/google/wire"
+	"github.com/lin-snow/ech0/internal/cache"
 	handler8 "github.com/lin-snow/ech0/internal/handler/backup"
 	handler4 "github.com/lin-snow/ech0/internal/handler/common"
 	handler7 "github.com/lin-snow/ech0/internal/handler/connect"
@@ -35,9 +36,10 @@ import (
 // Injectors from wire.go:
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
-func BuildHandlers(db *gorm.DB) (*Handlers, error) {
+func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory) (*Handlers, error) {
 	webHandler := handler.NewWebHandler()
-	userRepositoryInterface := repository.NewUserRepository(db)
+	iCache := ProvideUserCache(cacheFactory)
+	userRepositoryInterface := repository.NewUserRepository(db, iCache)
 	commonRepositoryInterface := repository2.NewCommonRepository(db)
 	commonServiceInterface := service.NewCommonService(commonRepositoryInterface)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db)
@@ -67,7 +69,9 @@ func BuildHandlers(db *gorm.DB) (*Handlers, error) {
 var WebSet = wire.NewSet(handler.NewWebHandler)
 
 // UserSet 包含了构建 UserHandler 所需的所有 Provider
-var UserSet = wire.NewSet(repository.NewUserRepository, service3.NewUserService, handler2.NewUserHandler)
+var UserSet = wire.NewSet(
+	ProvideUserCache, repository.NewUserRepository, service3.NewUserService, handler2.NewUserHandler,
+)
 
 // EchoSet 包含了构建 EchoHandler 所需的所有 Provider
 var EchoSet = wire.NewSet(repository3.NewEchoRepository, service4.NewEchoService, handler3.NewEchoHandler)

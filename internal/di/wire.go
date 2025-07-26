@@ -5,6 +5,7 @@ package di
 
 import (
 	"github.com/google/wire"
+	"github.com/lin-snow/ech0/internal/cache"
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
@@ -30,7 +31,7 @@ import (
 )
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
-func BuildHandlers(db *gorm.DB) (*Handlers, error) {
+func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory) (*Handlers, error) {
 	wire.Build(
 		WebSet,
 		UserSet,
@@ -53,6 +54,7 @@ var WebSet = wire.NewSet(
 
 // UserSet 包含了构建 UserHandler 所需的所有 Provider
 var UserSet = wire.NewSet(
+	ProvideUserCache,
 	userRepository.NewUserRepository,
 	userService.NewUserService,
 	userHandler.NewUserHandler,

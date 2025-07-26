@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lin-snow/ech0/internal/cache"
 	"github.com/lin-snow/ech0/internal/config"
 	"github.com/lin-snow/ech0/internal/database"
 	"github.com/lin-snow/ech0/internal/di"
@@ -48,8 +49,11 @@ func (s *Server) Init() {
 	// Database
 	database.InitDatabase()
 
+	// Cache
+	cacheFactory := cache.NewCacheFactory()
+
 	// Handlers
-	handlers, err := di.BuildHandlers(database.DB)
+	handlers, err := di.BuildHandlers(database.DB, cacheFactory)
 	if err != nil {
 		errUtil.HandlePanicError(&commonModel.ServerError{
 			Msg: commonModel.INIT_HANDLERS_PANIC,
