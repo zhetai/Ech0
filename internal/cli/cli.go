@@ -16,6 +16,8 @@ import (
 	"github.com/lin-snow/ech0/internal/backup"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/server"
+	"github.com/lin-snow/ech0/internal/ssh"
+	"github.com/lin-snow/ech0/internal/tui"
 )
 
 var s *server.Server // s 是全局的 Ech0 服务器实例
@@ -131,13 +133,24 @@ func DoEch0Info() {
 
 func DoHello() {
 	ClearScreen()
-	printCLIBanner()
+	tui.PrintCLIBanner()
+}
+
+func DoSSH() {
+	if ssh.SSHServer == nil {
+		ssh.SSHStart()
+	} else {
+		if err := ssh.SSHStop(); err != nil {
+			PrintCLIInfo("❌ 服务停止", "SSH 服务器强制关闭")
+			return
+		}
+	}
 }
 
 // DoTui 执行 TUI
 func DoTui() {
 	ClearScreen()
-	printCLIBanner()
+	tui.PrintCLIBanner()
 
 	for {
 		// 输出一行空行
@@ -147,9 +160,15 @@ func DoTui() {
 		options := []huh.Option[string]{}
 
 		if s == nil {
-			options = append(options, huh.NewOption("🪅 启动 Web 服务", "serve"))
+			options = append(options, huh.NewOption("🪅  启动 Web 服务", "serve"))
 		} else {
 			options = append(options, huh.NewOption("🛑 停止 Web 服务", "stopserve"))
+		}
+
+		if ssh.SSHServer != nil {
+			options = append(options, huh.NewOption("🛑 停止 SSH 服务", "ssh"))
+		} else {
+			options = append(options, huh.NewOption("🦄 启动 SSH 服务", "ssh"))
 		}
 
 		options = append(options,
@@ -175,6 +194,8 @@ func DoTui() {
 		case "serve":
 			ClearScreen()
 			DoServe()
+		case "ssh":
+			DoSSH()
 		case "stopserve":
 			ClearScreen()
 			DoStopServe()
@@ -208,45 +229,5 @@ func DoTui() {
 			fmt.Println("👋 感谢使用 Ech0 TUI，期待下次再见")
 			return
 		}
-	}
-}
-
-const (
-	banner = `
-    ______     __    ____ 
-   / ____/____/ /_  / __ \
-  / __/ / ___/ __ \/ / / /
- / /___/ /__/ / / / /_/ / 
-/_____/\___/_/ /_/\____/  
-`
-)
-
-func printCLIBanner() {
-	lines := strings.Split(banner, "\n")
-	var rendered []string
-
-	colors := []string{
-		"#FF7F7F", // 珊瑚红
-		"#FFB347", // 桃橙色
-		"#FFEB9C", // 金黄色
-		"#B8E6B8", // 薄荷绿
-		"#87CEEB", // 天空蓝
-		"#DDA0DD", // 梅花紫
-		"#F0E68C", // 卡其色
-	}
-
-	for i, line := range lines {
-		color := lipgloss.Color(colors[i%len(colors)])
-		style := lipgloss.NewStyle().Foreground(color)
-		rendered = append(rendered, style.Render(line))
-	}
-	gradientBanner := lipgloss.JoinVertical(lipgloss.Left, rendered...)
-
-	full := lipgloss.JoinVertical(lipgloss.Left,
-		gradientBanner,
-	)
-
-	if _, err := fmt.Fprintln(os.Stdout, full); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to print banner: %v\n", err)
 	}
 }

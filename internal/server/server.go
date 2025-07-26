@@ -14,7 +14,6 @@ import (
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/router"
 	errUtil "github.com/lin-snow/ech0/internal/util/err"
-	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
 // Server 服务器结构体，包含Gin引擎
@@ -30,12 +29,6 @@ func New() *Server {
 
 // Init 初始化服务器
 func (s *Server) Init() {
-	// Logger
-	logUtil.InitLogger()
-
-	// Config
-	config.LoadAppConfig()
-
 	// Mode
 	if config.Config.Server.Mode == "debug" {
 		gin.SetMode(gin.DebugMode)
