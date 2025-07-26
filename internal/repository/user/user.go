@@ -6,8 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
 type UserRepository struct {
 	db    *gorm.DB
 	cache cache.ICache[string, *model.User]

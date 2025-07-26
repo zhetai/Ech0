@@ -12,7 +12,7 @@ import (
 )
 
 type EchoRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
 	cache cache.ICache[string, commonModel.PageQueryResult[[]model.Echo]]
 }
 
@@ -40,7 +40,7 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 	if cachedResult, err := echoRepository.cache.Get(cacheKey); err == nil {
 		return cachedResult.Items, cachedResult.Total
 	}
-	
+
 	// 如果缓存未命中，进行数据库查询
 
 	// 计算偏移量
@@ -149,7 +149,7 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 	// 清空缓存
 	ClearEchoPageCache(echoRepository.cache)
-	
+
 	// 开启事务确保数据一致性
 	tx := echoRepository.db.Begin()
 	if tx.Error != nil {
