@@ -146,3 +146,58 @@ func GetEch0Info() string {
 
 	return full
 }
+
+func GetSSHView() string {
+	// header是一个长方形横向方框，内部是欢迎标题
+	header := lipgloss.NewStyle().
+		Width(80).
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("#FF6B6B")).
+		Render(
+			lipgloss.JoinHorizontal(lipgloss.Center,
+				"👋 Welcome to Ech0 SSH Session!",
+			),
+		)
+
+	// body是一个长方形横向方框，内部分为左右两部分，左边是Logo,右边是简介
+	body := lipgloss.NewStyle().
+		Render(
+			lipgloss.JoinHorizontal(lipgloss.Center,
+				lipgloss.NewStyle().
+					Width(40).
+					Height(8).
+					Render(GetLogoBanner()), // 使用logo
+				lipgloss.NewStyle().
+					Width(40).
+					Height(8).
+					Border(lipgloss.NormalBorder()).
+					BorderForeground(lipgloss.Color("#dbe8f4ff")).
+					Render(
+						"Ech0 is a lightweight, self-hosted platform designed for quick sharing of your ideas, texts, and links.",
+					),
+			),
+		)
+
+	// footer是一个长方形横向方框，内部是退出提示
+	footer := lipgloss.NewStyle().
+		Width(80).
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("#FF6B6B")).
+		Render(
+			lipgloss.JoinHorizontal(lipgloss.Center,
+				"🧙 Press 'Ctrl+C' to exit the session.",
+			),
+		)
+
+	// 将header, body, footer垂直连接起来
+	full := lipgloss.NewStyle().
+		Render(
+			lipgloss.JoinVertical(lipgloss.Left,
+				header,
+				body,
+				footer,
+			),
+		)
+
+    return full
+}

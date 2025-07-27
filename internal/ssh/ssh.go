@@ -22,7 +22,7 @@ func SSHStart() {
 	host := config.Config.SSH.Host
 	port := config.Config.SSH.Port
 	key := config.Config.SSH.Key
-	
+
 	var err error
 
 	SSHServer, err = wish.NewServer(
@@ -130,14 +130,16 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 		bg:        bg,
 		txtStyle:  txtStyle,
 		quitStyle: quitStyle,
-		logo: tui.GetLogoBanner(),
-		textarea: textarea.New(),
+		logo:      tui.GetLogoBanner(),
+		textarea:  textarea.New(),
 	}
 
 	m.textarea.Placeholder = "请输入..."
 	m.textarea.Focus()
 
-	return m, []tea.ProgramOption{tea.WithAltScreen()}
+	return m, []tea.ProgramOption{
+		tea.WithAltScreen(),
+	}
 }
 
 // Just a generic tea.Model to demo terminal information of ssh.
@@ -149,7 +151,7 @@ type model struct {
 	bg        string
 	txtStyle  lipgloss.Style
 	quitStyle lipgloss.Style
-	textarea textarea.Model
+	textarea  textarea.Model
 	logo      string
 }
 
@@ -172,34 +174,34 @@ func (m model) Init() tea.Cmd {
 // }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    var cmds []tea.Cmd // 声明 cmds 切片
-    var cmd tea.Cmd    // 声明 cmd 变量
+	var cmds []tea.Cmd // 声明 cmds 切片
+	var cmd tea.Cmd    // 声明 cmd 变量
 
-    switch msg := msg.(type) {
-    case tea.WindowSizeMsg:
-        // 处理窗口大小变化消息。当 SSH 客户端窗口大小改变时，wish 中间件会发送此消息。
-        m.height = msg.Height
-        m.width = msg.Width
-        // 将消息传递给 textarea，让它也能调整自身大小（如果需要）
-        m.textarea, cmd = m.textarea.Update(msg)
-        cmds = append(cmds, cmd) // 将 textarea 返回的命令添加到列表中
-    case tea.KeyMsg:
-        switch msg.String() {
-        case "ctrl+c":
-            // 处理 'Ctrl+C' 退出命令
-            return m, tea.Quit
-        case "esc": // 添加对 Esc 键的处理
-            if m.textarea.Focused() {
-                m.textarea.Blur()
-            }
-        default:
-            // 如果 textarea 没有焦点，按下任意键使其获得焦点
-            if !m.textarea.Focused() {
-                cmd = m.textarea.Focus()
-                cmds = append(cmds, cmd)
-            }
-        }
-		// 将键盘消息传递给 textarea，让它处理文本输入
+	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		// 处理窗口大小变化消息。当 SSH 客户端窗口大小改变时，wish 中间件会发送此消息。
+		m.height = msg.Height
+		m.width = msg.Width
+		// 将消息传递给 textarea，让它也能调整自身大小（如果需要）
+		m.textarea, cmd = m.textarea.Update(msg)
+		cmds = append(cmds, cmd) // 将 textarea 返回的命令添加到列表中
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c":
+			// 处理 'Ctrl+C' 退出命令
+			return m, tea.Quit
+		case "esc": // 添加对 Esc 键的处理
+			if m.textarea.Focused() {
+				m.textarea.Blur()
+			}
+		default:
+			// 如果 textarea 没有焦点，按下任意键使其获得焦点
+			if !m.textarea.Focused() {
+				cmd = m.textarea.Focus()
+				cmds = append(cmds, cmd)
+			}
+		}
+		// 将输入的消息强制转换编码为 UTF-8
 		m.textarea, cmd = m.textarea.Update(msg)
 		cmds = append(cmds, cmd) // 将 textarea 返回的命令添加到列表中
 	}
@@ -209,15 +211,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return m.txtStyle.Render(m.logo) +
-	"\n\n" +
-	// fmt.Sprintf(
-	// 	"\n\n"+"🧙 请把你的故事写在这里.\n\n%s",
-	// 	m.textarea.View(),
-	// ) +
-	tui.GetEch0Info() +
-	"\n\n🧙 欢迎使用 Ech0 SSH (更多功能开发中...)" +
-	"\n\n" + m.quitStyle.Render("按 'ctrl+c' 退出\n")
+	// return m.txtStyle.Render(m.logo) +
+	// 	"\n\n" +
+	// 	// fmt.Sprintf(
+	// 	// 	"\n\n"+"🧙 请把你的故事写在这里(暂不支持中文输入).\n\n%s",
+	// 	// 	m.textarea.View(),
+	// 	// ) +
+	// 	tui.GetEch0Info() +
+	// 	"\n\n🧙 欢迎使用 Ech0 SSH (更多功能开发中...)" +
+	// 	"\n\n" + m.quitStyle.Render("按 'ctrl+c' 退出\n")
+
+	return tui.GetSSHView()
 }
-
-
