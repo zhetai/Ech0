@@ -211,15 +211,5 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	// return m.txtStyle.Render(m.logo) +
-	// 	"\n\n" +
-	// 	// fmt.Sprintf(
-	// 	// 	"\n\n"+"🧙 请把你的故事写在这里(暂不支持中文输入).\n\n%s",
-	// 	// 	m.textarea.View(),
-	// 	// ) +
-	// 	tui.GetEch0Info() +
-	// 	"\n\n🧙 欢迎使用 Ech0 SSH (更多功能开发中...)" +
-	// 	"\n\n" + m.quitStyle.Render("按 'ctrl+c' 退出\n")
-
 	return tui.GetSSHView()
 }
