@@ -36,7 +36,7 @@ const injectCustomContent = () => {
 
 onMounted(() => {
   watch(
-    () => SystemSetting.value,
+    () => SystemSetting.value.custom_css || SystemSetting.value.custom_js,
     (newSetting) => {
       if (newSetting) {
         injectCustomContent()
