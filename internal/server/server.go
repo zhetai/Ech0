@@ -1,3 +1,8 @@
+// @title Ech0 API 文档
+// @version 1.0
+// @description 开源、自托管轻量级发布平台 Ech0 的 API 文档
+// @host localhost:6277
+// @BasePath /api
 package server
 
 import (

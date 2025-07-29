@@ -240,6 +240,11 @@ ssh -p 6278 ssh.vaaat.com
 - 在项目根目录下执行`golangci-lint run`进行lint  
 - 在项目根目录下执行`golangci-lint fmt`进行格式化  
 
+📌 **Swagger**  
+安装[Swagger](https://github.com/swaggo/gin-swagger)用于生成和使用符合OpenAPI规范的接口文档
+- 在项目根目录下执行`swag init -g internal/server/server.go -o internal/swagger`后生成或更新swagger文档  
+- 打开浏览器访问`http://localhost:6277/swagger/index.html`查看和使用swagger文档  
+
 ## **前端要求:**  
 📌  **NodeJS v23.11.1, PNPM v10.13.1**
 > 注：如需要多个nodejs版本共存可使用[fnm](https://github.com/Schniz/fnm)进行管理  
