@@ -199,5 +199,5 @@ func GetSSHView() string {
 			),
 		)
 
-    return full
+	return full
 }

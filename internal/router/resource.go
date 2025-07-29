@@ -11,6 +11,6 @@ import (
 func setupResourceRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Swagger UI
 	appRouterGroup.ResourceGroup.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	
+
 	appRouterGroup.ResourceGroup.GET("rss", h.CommonHandler.GetRss)
 }
