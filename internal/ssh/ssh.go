@@ -18,6 +18,7 @@ import (
 
 var SSHServer *ssh.Server
 
+// SSHStart 启动 SSH 服务器
 func SSHStart() {
 	host := config.Config.SSH.Host
 	port := config.Config.SSH.Port
@@ -57,6 +58,7 @@ func SSHStart() {
 	// }
 }
 
+// SSHStop 停止 SSH 服务器
 func SSHStop() error {
 	if SSHServer == nil {
 		return nil
@@ -142,7 +144,7 @@ func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption) {
 	}
 }
 
-// Just a generic tea.Model to demo terminal information of ssh.
+// model TUI 模型定义
 type model struct {
 	term      string
 	profile   string
@@ -155,24 +157,12 @@ type model struct {
 	logo      string
 }
 
+// Init 初始化TUI
 func (m model) Init() tea.Cmd {
 	return textarea.Blink
 }
 
-// func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-// 	switch msg := msg.(type) {
-// 	case tea.WindowSizeMsg:
-// 		m.height = msg.Height
-// 		m.width = msg.Width
-// 	case tea.KeyMsg:
-// 		switch msg.String() {
-// 		case "q", "ctrl+c":
-// 			return m, tea.Quit
-// 		}
-// 	}
-// 	return m, nil
-// }
-
+// Update 更新View的内容
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd // 声明 cmds 切片
 	var cmd tea.Cmd    // 声明 cmd 变量
@@ -210,6 +200,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
+// View 渲染TUI页面内容
 func (m model) View() string {
 	return tui.GetSSHView()
 }

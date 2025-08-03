@@ -53,6 +53,7 @@ const (
 `
 )
 
+// GetLogoBanner 获取Logo横幅
 func GetLogoBanner() string {
 	lines := strings.Split(banner, "\n")
 	var rendered []string
@@ -81,6 +82,7 @@ func GetLogoBanner() string {
 	return full
 }
 
+// PrintCLIBanner 打印CLI横幅
 func PrintCLIBanner() {
 	banner := GetLogoBanner()
 
@@ -89,16 +91,19 @@ func PrintCLIBanner() {
 	}
 }
 
+// PrintCLIInfo 打印CLI信息
 func PrintCLIInfo(title, msg string) {
 	// 使用 lipgloss 渲染 CLI 信息
 	fmt.Fprintln(os.Stdout, infoStyle.Render(titleStyle.Render(title)+": "+highlight.Render(msg)))
 }
 
+// CLIInfoItem 定义了一个CLI信息项，包含标题和消息
 type CLIInfoItem struct {
 	Title string
 	Msg   string
 }
 
+// GetCLIPrintWithBox 获取带边框的CLI信息打印内容
 func GetCLIPrintWithBox(items ...CLIInfoItem) string {
 	if len(items) == 0 {
 		return ""
@@ -117,10 +122,12 @@ func GetCLIPrintWithBox(items ...CLIInfoItem) string {
 	return boxedContent
 }
 
+// PrintCLIWithBox 打印带边框的CLI信息
 func PrintCLIWithBox(items ...CLIInfoItem) {
 	fmt.Fprintln(os.Stdout, GetCLIPrintWithBox(items...))
 }
 
+// ClearScreen 清屏函数，根据操作系统执行不同的清屏命令
 func ClearScreen() {
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
@@ -132,6 +139,7 @@ func ClearScreen() {
 	cmd.Run()
 }
 
+// GetEch0Info 获取Ech0信息
 func GetEch0Info() string {
 	content := lipgloss.JoinVertical(lipgloss.Left,
 		infoStyle.Render("📦 "+titleStyle.Render("Version")+": "+highlight.Render(commonModel.Version)),
@@ -147,6 +155,7 @@ func GetEch0Info() string {
 	return full
 }
 
+// GetSSHView 获取SSH会话的视图
 func GetSSHView() string {
 	// header是一个长方形横向方框，内部是欢迎标题
 	header := lipgloss.NewStyle().
