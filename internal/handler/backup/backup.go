@@ -12,6 +12,7 @@ type BackupHandler struct {
 	backupService service.BackupServiceInterface
 }
 
+// NewBackupHandler BackupHandler 的构造函数
 func NewBackupHandler(backupService service.BackupServiceInterface) *BackupHandler {
 	return &BackupHandler{
 		backupService: backupService,

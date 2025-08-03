@@ -15,6 +15,7 @@ type EchoHandler struct {
 	echoService service.EchoServiceInterface
 }
 
+// NewEchoHandler EchoHandler 的构造函数
 func NewEchoHandler(echoService service.EchoServiceInterface) *EchoHandler {
 	return &EchoHandler{
 		echoService: echoService,

@@ -12,6 +12,7 @@ type SettingHandler struct {
 	settingService service.SettingServiceInterface
 }
 
+// NewSettingHandler SettingHandler 的构造函数
 func NewSettingHandler(settingService service.SettingServiceInterface) *SettingHandler {
 	return &SettingHandler{
 		settingService: settingService,

@@ -14,6 +14,7 @@ type CommonHandler struct {
 	commonService service.CommonServiceInterface
 }
 
+// NewCommonHandler CommonHandler 的构造函数
 func NewCommonHandler(commonService service.CommonServiceInterface) *CommonHandler {
 	return &CommonHandler{
 		commonService: commonService,

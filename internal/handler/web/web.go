@@ -15,6 +15,7 @@ import (
 type WebHandler struct {
 }
 
+// NewWebHandler WebHandler 的构造函数
 func NewWebHandler() *WebHandler {
 	return &WebHandler{}
 }

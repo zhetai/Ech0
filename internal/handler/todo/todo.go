@@ -14,6 +14,7 @@ type TodoHandler struct {
 	todoService service.TodoServiceInterface
 }
 
+// NewTodoHandler TodoHandler 的构造函数
 func NewTodoHandler(todoService service.TodoServiceInterface) *TodoHandler {
 	return &TodoHandler{todoService: todoService}
 }

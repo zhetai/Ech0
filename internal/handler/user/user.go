@@ -15,6 +15,7 @@ type UserHandler struct {
 	userService service.UserServiceInterface
 }
 
+// NewUserHandler UserHandler 的构造函数
 func NewUserHandler(userService service.UserServiceInterface) *UserHandler {
 	return &UserHandler{
 		userService: userService,

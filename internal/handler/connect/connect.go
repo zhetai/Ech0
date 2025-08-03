@@ -14,6 +14,7 @@ type ConnectHandler struct {
 	connectService service.ConnectServiceInterface
 }
 
+// NewConnectHandler ConnectHandler 的构造函数
 func NewConnectHandler(connectService service.ConnectServiceInterface) *ConnectHandler {
 	return &ConnectHandler{
 		connectService: connectService,
