@@ -1,10 +1,13 @@
 package repository
 
-import model "github.com/lin-snow/ech0/internal/model/echo"
+import (
+	"context"
+	model "github.com/lin-snow/ech0/internal/model/echo"
+)
 
 type EchoRepositoryInterface interface {
 	// CreateEcho 创建一个新的 Echo
-	CreateEcho(echo *model.Echo) error
+	CreateEcho(ctx context.Context, echo *model.Echo) error
 
 	// GetEchosByPage 获取分页的 Echo 列表
 	GetEchosByPage(page, pageSize int, search string, showPrivate bool) ([]model.Echo, int64)
@@ -13,14 +16,14 @@ type EchoRepositoryInterface interface {
 	GetEchosById(id uint) (*model.Echo, error)
 
 	// DeleteEchoById 删除 Echo
-	DeleteEchoById(id uint) error
+	DeleteEchoById(ctx context.Context, id uint) error
 
 	// GetTodayEchos 获取今天的 Echo 列表
 	GetTodayEchos(showPrivate bool) []model.Echo
 
 	// UpdateEcho 更新 Echo
-	UpdateEcho(echo *model.Echo) error
+	UpdateEcho(ctx context.Context, echo *model.Echo) error
 
 	// LikeEcho 点赞 Echo
-	LikeEcho(id uint) error
+	LikeEcho(ctx context.Context, id uint) error
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/lin-snow/ech0/internal/transaction"
 
@@ -32,48 +33,51 @@ func NewEchoService(
 
 // PostEcho 创建新的Echo
 func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error {
-	newEcho.UserID = userid
+	return echoService.txManager.Run(func(ctx context.Context) error {
+		newEcho.UserID = userid
 
-	user, err := echoService.commonService.CommonGetUserByUserId(userid)
-	if err != nil {
-		return err
-	}
-
-	if !user.IsAdmin {
-		return errors.New(commonModel.NO_PERMISSION_DENIED)
-	}
-
-	// 检查Extension内容
-	if newEcho.Extension != "" && newEcho.ExtensionType != "" {
-		switch newEcho.ExtensionType {
-		case model.Extension_MUSIC:
-			// 处理音乐链接 (暂无)
-		case model.Extension_VIDEO:
-			// 处理视频链接 (暂无)
-		case model.Extension_GITHUBPROJ:
-			// 处理GitHub项目的链接
-			newEcho.Extension = httpUtil.TrimURL(newEcho.Extension)
-		case model.Extension_WEBSITE:
-			// 处理网站链接 (暂无)
+		user, err := echoService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
 		}
-	} else {
-		newEcho.Extension = ""
-		newEcho.ExtensionType = ""
-	}
 
-	newEcho.Username = user.Username
-
-	for i := range newEcho.Images {
-		if newEcho.Images[i].ImageURL == "" {
-			newEcho.Images[i].ImageSource = ""
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
 		}
-	}
 
-	if newEcho.Content == "" && len(newEcho.Images) == 0 && (newEcho.Extension == "" || newEcho.ExtensionType == "") {
-		return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
-	}
+		// 检查Extension内容
+		if newEcho.Extension != "" && newEcho.ExtensionType != "" {
+			switch newEcho.ExtensionType {
+			case model.Extension_MUSIC:
+				// 处理音乐链接 (暂无)
+			case model.Extension_VIDEO:
+				// 处理视频链接 (暂无)
+			case model.Extension_GITHUBPROJ:
+				// 处理GitHub项目的链接
+				newEcho.Extension = httpUtil.TrimURL(newEcho.Extension)
+			case model.Extension_WEBSITE:
+				// 处理网站链接 (暂无)
+			}
+		} else {
+			newEcho.Extension = ""
+			newEcho.ExtensionType = ""
+		}
 
-	return echoService.echoRepository.CreateEcho(newEcho)
+		newEcho.Username = user.Username
+
+		for i := range newEcho.Images {
+			if newEcho.Images[i].ImageURL == "" {
+				newEcho.Images[i].ImageSource = ""
+			}
+		}
+
+		if newEcho.Content == "" && len(newEcho.Images) == 0 && (newEcho.Extension == "" || newEcho.ExtensionType == "") {
+			return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
+		}
+
+		return echoService.echoRepository.CreateEcho(ctx, newEcho)
+	})
+
 }
 
 // GetEchosByPage 获取Echo列表，支持分页
@@ -113,33 +117,36 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 
 // DeleteEchoById 删除指定ID的Echo
 func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
-	user, err := echoService.commonService.CommonGetUserByUserId(userid)
-	if err != nil {
-		return err
-	}
-	if !user.IsAdmin {
-		return errors.New(commonModel.NO_PERMISSION_DENIED)
-	}
+	return echoService.txManager.Run(func(ctx context.Context) error {
+		user, err := echoService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
+		}
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
+		}
 
-	// 检查该Echo是否存在图片
-	echo, err := echoService.echoRepository.GetEchosById(id)
-	if err != nil {
-		return err
-	}
-	if echo == nil {
-		return errors.New(commonModel.ECHO_NOT_FOUND)
-	}
+		// 检查该Echo是否存在图片
+		echo, err := echoService.echoRepository.GetEchosById(id)
+		if err != nil {
+			return err
+		}
+		if echo == nil {
+			return errors.New(commonModel.ECHO_NOT_FOUND)
+		}
 
-	// 删除Echo中的图片
-	if len(echo.Images) > 0 {
-		for _, img := range echo.Images {
-			if err := echoService.commonService.DirectDeleteImage(img.ImageURL, img.ImageSource); err != nil {
-				return err
+		// 删除Echo中的图片
+		if len(echo.Images) > 0 {
+			for _, img := range echo.Images {
+				if err := echoService.commonService.DirectDeleteImage(img.ImageURL, img.ImageSource); err != nil {
+					return err
+				}
 			}
 		}
-	}
 
-	return echoService.echoRepository.DeleteEchoById(id)
+		return echoService.echoRepository.DeleteEchoById(ctx, id)
+	})
+
 }
 
 // GetTodayEchos 获取今天的Echo列表
@@ -168,52 +175,58 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 
 // UpdateEcho 更新指定ID的Echo
 func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error {
-	user, err := echoService.commonService.CommonGetUserByUserId(userid)
-	if err != nil {
-		return err
-	}
-	if !user.IsAdmin {
-		return errors.New(commonModel.NO_PERMISSION_DENIED)
-	}
-
-	// 检查Extension内容
-	if echo.Extension != "" && echo.ExtensionType != "" {
-		switch echo.ExtensionType {
-		case model.Extension_MUSIC:
-			// 处理音乐链接 (暂无)
-		case model.Extension_VIDEO:
-			// 处理视频链接 (暂无)
-		case model.Extension_GITHUBPROJ:
-			echo.Extension = httpUtil.TrimURL(echo.Extension)
-		case model.Extension_WEBSITE:
-			// 处理网站链接 (暂无)
+	return echoService.txManager.Run(func(ctx context.Context) error {
+		user, err := echoService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
 		}
-	} else {
-		echo.Extension = ""
-		echo.ExtensionType = ""
-	}
-
-	// 处理无效图片
-	for i := range echo.Images {
-		if echo.Images[i].ImageURL == "" {
-			echo.Images[i].ImageSource = ""
-			echo.Images[i].ImageURL = ""
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
 		}
-		// 确保外键正确设置
-		echo.Images[i].MessageID = echo.ID
-	}
 
-	// 检查是否为空
-	if echo.Content == "" && len(echo.Images) == 0 && (echo.Extension == "" || echo.ExtensionType == "") {
-		return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
-	}
+		// 检查Extension内容
+		if echo.Extension != "" && echo.ExtensionType != "" {
+			switch echo.ExtensionType {
+			case model.Extension_MUSIC:
+				// 处理音乐链接 (暂无)
+			case model.Extension_VIDEO:
+				// 处理视频链接 (暂无)
+			case model.Extension_GITHUBPROJ:
+				echo.Extension = httpUtil.TrimURL(echo.Extension)
+			case model.Extension_WEBSITE:
+				// 处理网站链接 (暂无)
+			}
+		} else {
+			echo.Extension = ""
+			echo.ExtensionType = ""
+		}
 
-	return echoService.echoRepository.UpdateEcho(echo)
+		// 处理无效图片
+		for i := range echo.Images {
+			if echo.Images[i].ImageURL == "" {
+				echo.Images[i].ImageSource = ""
+				echo.Images[i].ImageURL = ""
+			}
+			// 确保外键正确设置
+			echo.Images[i].MessageID = echo.ID
+		}
+
+		// 检查是否为空
+		if echo.Content == "" && len(echo.Images) == 0 && (echo.Extension == "" || echo.ExtensionType == "") {
+			return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
+		}
+
+		return echoService.echoRepository.UpdateEcho(ctx, echo)
+	})
+
 }
 
 // LikeEcho 点赞指定ID的Echo
 func (echoService *EchoService) LikeEcho(id uint) error {
-	return echoService.echoRepository.LikeEcho(id)
+	return echoService.txManager.Run(func(ctx context.Context) error {
+		return echoService.echoRepository.LikeEcho(ctx, id)
+	})
+
 }
 
 // GetEchoById 获取指定 ID 的 Echo

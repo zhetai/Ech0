@@ -31,10 +31,10 @@ func (echoRepository *EchoRepository) getDB(ctx context.Context) *gorm.DB {
 }
 
 // CreateEcho 创建新的 Echo
-func (echoRepository *EchoRepository) CreateEcho(echo *model.Echo) error {
+func (echoRepository *EchoRepository) CreateEcho(ctx context.Context, echo *model.Echo) error {
 	echo.Content = strings.TrimSpace(echo.Content)
 
-	result := echoRepository.db.Create(echo)
+	result := echoRepository.getDB(ctx).Create(echo)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -108,12 +108,12 @@ func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error)
 }
 
 // DeleteEchoById 删除 Echo
-func (echoRepository *EchoRepository) DeleteEchoById(id uint) error {
+func (echoRepository *EchoRepository) DeleteEchoById(ctx context.Context, id uint) error {
 	var echo model.Echo
 	// 删除外键images
-	echoRepository.db.Where("message_id = ?", id).Delete(&model.Image{})
+	echoRepository.getDB(ctx).Where("message_id = ?", id).Delete(&model.Image{})
 
-	result := echoRepository.db.Delete(&echo, id)
+	result := echoRepository.getDB(ctx).Delete(&echo, id)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -157,7 +157,7 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 }
 
 // UpdateEcho 更新 Echo
-func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
+func (echoRepository *EchoRepository) UpdateEcho(ctx context.Context, echo *model.Echo) error {
 	// 清空缓存
 	ClearEchoPageCache(echoRepository.cache)
 
@@ -173,13 +173,12 @@ func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 	}()
 
 	// 1. 先删除该 Echo 关联的所有旧图片
-	if err := tx.Where("message_id = ?", echo.ID).Delete(&model.Image{}).Error; err != nil {
-		tx.Rollback()
+	if err := echoRepository.getDB(ctx).Where("message_id = ?", echo.ID).Delete(&model.Image{}).Error; err != nil {
 		return err
 	}
 
 	// 2. 更新 Echo 内容（包括关联的新图片）
-	if err := tx.Model(&model.Echo{}).
+	if err := echoRepository.getDB(ctx).Model(&model.Echo{}).
 		Where("id = ?", echo.ID).
 		Updates(map[string]interface{}{
 			"content":        echo.Content,
@@ -187,7 +186,6 @@ func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 			"extension":      echo.Extension,
 			"extension_type": echo.ExtensionType,
 		}).Error; err != nil {
-		tx.Rollback()
 		return err
 	}
 
@@ -200,21 +198,20 @@ func (echoRepository *EchoRepository) UpdateEcho(echo *model.Echo) error {
 			images = append(images, img)
 		}
 		// 批量插入新图片
-		if err := tx.Create(&images).Error; err != nil {
-			tx.Rollback()
+		if err := echoRepository.getDB(ctx).Create(&images).Error; err != nil {
 			return err
 		}
 	}
 
 	// 提交事务
-	return tx.Commit().Error
+	return nil
 }
 
 // LikeEcho 点赞 Echo
-func (echoRepository *EchoRepository) LikeEcho(id uint) error {
+func (echoRepository *EchoRepository) LikeEcho(ctx context.Context, id uint) error {
 	// 检查是否存在（可选，防止无效点赞）
 	var exists bool
-	if err := echoRepository.db.
+	if err := echoRepository.getDB(ctx).
 		Model(&model.Echo{}).
 		Select("count(*) > 0").
 		Where("id = ?", id).
@@ -226,7 +223,7 @@ func (echoRepository *EchoRepository) LikeEcho(id uint) error {
 	}
 
 	// 原子自增点赞数
-	if err := echoRepository.db.
+	if err := echoRepository.getDB(ctx).
 		Model(&model.Echo{}).
 		Where("id = ?", id).
 		UpdateColumn("fav_count", gorm.Expr("fav_count + ?", 1)).Error; err != nil {
