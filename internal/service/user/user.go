@@ -4,6 +4,8 @@ package service
 import (
 	"errors"
 
+	"github.com/lin-snow/ech0/internal/transaction"
+
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
@@ -16,6 +18,7 @@ import (
 
 // UserService 用户服务结构体，提供用户相关的业务逻辑处理
 type UserService struct {
+	txManager      transaction.TransactionManager         // 事务管理器
 	userRepository repository.UserRepositoryInterface     // 用户数据层接口
 	settingService settingService.SettingServiceInterface // 系统设置数据层接口
 }
@@ -28,8 +31,13 @@ type UserService struct {
 //
 // 返回:
 //   - UserServiceInterface: 用户服务接口实现
-func NewUserService(userRepository repository.UserRepositoryInterface, settingService settingService.SettingServiceInterface) UserServiceInterface {
+func NewUserService(
+	tm transaction.TransactionManager,
+	userRepository repository.UserRepositoryInterface,
+	settingService settingService.SettingServiceInterface,
+) UserServiceInterface {
 	return &UserService{
+		txManager:      tm,
 		userRepository: userRepository,
 		settingService: settingService,
 	}

@@ -30,21 +30,23 @@ import (
 	service2 "github.com/lin-snow/ech0/internal/service/setting"
 	service5 "github.com/lin-snow/ech0/internal/service/todo"
 	service3 "github.com/lin-snow/ech0/internal/service/user"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
 
 // Injectors from wire.go:
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
-func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory) (*Handlers, error) {
+func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*Handlers, error) {
 	webHandler := handler.NewWebHandler()
+	transactionManager := ProvideTransactionManager(tmFactory)
 	iCache := ProvideUserCache(cacheFactory)
 	userRepositoryInterface := repository.NewUserRepository(db, iCache)
 	commonRepositoryInterface := repository2.NewCommonRepository(db)
 	commonServiceInterface := service.NewCommonService(commonRepositoryInterface)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db)
 	settingServiceInterface := service2.NewSettingService(commonServiceInterface, keyValueRepositoryInterface)
-	userServiceInterface := service3.NewUserService(userRepositoryInterface, settingServiceInterface)
+	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	cacheICache := ProvideEchoCache(cacheFactory)
 	echoRepositoryInterface := repository3.NewEchoRepository(db, cacheICache)
@@ -71,7 +73,8 @@ var WebSet = wire.NewSet(handler.NewWebHandler)
 
 // UserSet 包含了构建 UserHandler 所需的所有 Provider
 var UserSet = wire.NewSet(
-	ProvideUserCache, repository.NewUserRepository, service3.NewUserService, handler2.NewUserHandler,
+	ProvideUserCache,
+	ProvideTransactionManager, repository.NewUserRepository, service3.NewUserService, handler2.NewUserHandler,
 )
 
 // EchoSet 包含了构建 EchoHandler 所需的所有 Provider
