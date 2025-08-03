@@ -8,6 +8,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"net/http"
 	"time"
 
@@ -47,11 +48,14 @@ func (s *Server) Init() {
 	// Database
 	database.InitDatabase()
 
-	// Cache
+	// CacheFactory
 	cacheFactory := cache.NewCacheFactory()
 
+	// TransactionManagerFactory
+	transactionManagerFactory := transaction.NewTransactionManagerFactory(database.DB)
+
 	// Handlers
-	handlers, err := di.BuildHandlers(database.DB, cacheFactory)
+	handlers, err := di.BuildHandlers(database.DB, cacheFactory, transactionManagerFactory)
 	if err != nil {
 		errUtil.HandlePanicError(&commonModel.ServerError{
 			Msg: commonModel.INIT_HANDLERS_PANIC,

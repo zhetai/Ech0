@@ -27,11 +27,16 @@ import (
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	todoService "github.com/lin-snow/ech0/internal/service/todo"
 	userService "github.com/lin-snow/ech0/internal/service/user"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
-func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory) (*Handlers, error) {
+func BuildHandlers(
+	db *gorm.DB,
+	cacheFactory *cache.CacheFactory,
+	tmFactory *transaction.TransactionManagerFactory,
+) (*Handlers, error) {
 	wire.Build(
 		WebSet,
 		UserSet,
@@ -55,6 +60,7 @@ var WebSet = wire.NewSet(
 // UserSet 包含了构建 UserHandler 所需的所有 Provider
 var UserSet = wire.NewSet(
 	ProvideUserCache,
+	ProvideTransactionManager,
 	userRepository.NewUserRepository,
 	userService.NewUserService,
 	userHandler.NewUserHandler,
