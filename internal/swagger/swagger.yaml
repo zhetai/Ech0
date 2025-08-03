@@ -11,6 +11,30 @@ definitions:
         description: Msg 返回信息，通常是状态描述
         type: string
     type: object
+  model.CommentSetting:
+    properties:
+      comment_api:
+        description: 评论 API 地址
+        type: string
+      enable_comment:
+        description: 是否启用评论
+        type: boolean
+      provider:
+        description: 评论提供者
+        type: string
+    type: object
+  model.CommentSettingDto:
+    properties:
+      comment_api:
+        description: 评论 API 地址
+        type: string
+      enable_comment:
+        description: 是否启用评论
+        type: boolean
+      provider:
+        description: 评论提供者
+        type: string
+    type: object
   model.Connected:
     properties:
       connect_url:
@@ -97,6 +121,79 @@ definitions:
     required:
     - password
     - username
+    type: object
+  model.SystemSetting:
+    properties:
+      ICP_number:
+        description: 备案号
+        type: string
+      allow_register:
+        description: 是否允许注册'
+        type: boolean
+      custom_css:
+        description: 自定义 CSS
+        type: string
+      custom_js:
+        description: 自定义 JS
+        type: string
+      meting_api:
+        description: Meting API 地址
+        type: string
+      server_name:
+        description: 服务器名称
+        type: string
+      server_url:
+        description: 服务器地址
+        type: string
+      site_title:
+        description: 站点标题
+        type: string
+    type: object
+  model.SystemSettingDto:
+    properties:
+      ICP_number:
+        description: 备案号
+        type: string
+      allow_register:
+        description: 是否允许注册
+        type: boolean
+      comment_api:
+        description: 评论 API 地址
+        type: string
+      custom_css:
+        description: 自定义 CSS
+        type: string
+      custom_js:
+        description: 自定义 JS
+        type: string
+      meting_api:
+        description: Meting API 地址
+        type: string
+      server_name:
+        description: 服务器名称
+        type: string
+      server_url:
+        description: 服务器地址
+        type: string
+      site_title:
+        description: 站点标题
+        type: string
+    type: object
+  model.Todo:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      status:
+        description: 0:未完成 1:已完成
+        type: integer
+      user_id:
+        type: integer
+      username:
+        type: string
     type: object
   model.UserInfoDto:
     properties:
@@ -233,6 +330,42 @@ paths:
       summary: 导出数据备份
       tags:
       - 系统备份
+  /comment/settings:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统的评论相关设置
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取评论设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取评论设置
+      tags:
+      - 系统设置
+    put:
+      consumes:
+      - application/json
+      description: 更新系统的评论相关设置
+      parameters:
+      - description: 新的评论设置
+        in: body
+        name: commentSettings
+        required: true
+        schema:
+          $ref: '#/definitions/model.CommentSettingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新评论设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 更新评论设置
+      tags:
+      - 系统设置
   /connect:
     get:
       consumes:
@@ -361,6 +494,47 @@ paths:
           schema:
             $ref: '#/definitions/handler.Response'
       summary: 删除Echo
+      tags:
+      - Echo
+    get:
+      consumes:
+      - application/json
+      description: 根据ID获取指定的Echo动态详情
+      parameters:
+      - description: Echo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取指定ID的Echo
+      tags:
+      - Echo
+  /echo/like/{id}:
+    put:
+      consumes:
+      - application/json
+      description: 根据ID为指定的Echo动态点赞
+      parameters:
+      - description: Echo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 点赞失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 点赞Echo
       tags:
       - Echo
   /echo/page:
@@ -602,6 +776,42 @@ paths:
       summary: 获取RSS订阅源
       tags:
       - 通用功能
+  /settings:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统的全局设置
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取设置
+      tags:
+      - 系统设置
+    put:
+      consumes:
+      - application/json
+      description: 更新系统的全局设置
+      parameters:
+      - description: 新的系统设置
+        in: body
+        name: settings
+        required: true
+        schema:
+          $ref: '#/definitions/model.SystemSettingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 更新设置
+      tags:
+      - 系统设置
   /status:
     get:
       consumes:
@@ -617,6 +827,83 @@ paths:
       summary: 获取 Echo 系统状态
       tags:
       - 通用功能
+  /todo:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前用户的所有待办事项
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取待办事项列表
+      tags:
+      - 待办事项
+    post:
+      consumes:
+      - application/json
+      description: 用户添加一条新的待办事项
+      parameters:
+      - description: 待办事项内容
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/model.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 添加新的待办事项
+      tags:
+      - 待办事项
+  /todo/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据ID删除指定的待办事项
+      parameters:
+      - description: 待办事项ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 删除待办事项
+      tags:
+      - 待办事项
+    put:
+      consumes:
+      - application/json
+      description: 根据ID更新指定的待办事项
+      parameters:
+      - description: 待办事项ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 更新待办事项
+      tags:
+      - 待办事项
   /user:
     get:
       consumes:

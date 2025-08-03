@@ -178,6 +178,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/comment/settings": {
+            "get": {
+                "description": "获取系统的评论相关设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "获取评论设置",
+                "responses": {
+                    "200": {
+                        "description": "获取评论设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "更新系统的评论相关设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "更新评论设置",
+                "parameters": [
+                    {
+                        "description": "新的评论设置",
+                        "name": "commentSettings",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CommentSettingDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新评论设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/connect": {
             "get": {
                 "description": "获取当前实例的连接详细信息",
@@ -345,6 +400,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/echo/like/{id}": {
+            "put": {
+                "description": "根据ID为指定的Echo动态点赞",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "点赞Echo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Echo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "点赞失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/echo/page": {
             "get": {
                 "description": "获取Echo列表，支持分页，兼容 GET Query 和 POST JSON 请求",
@@ -457,6 +544,36 @@ const docTemplate = `{
             }
         },
         "/echo/{id}": {
+            "get": {
+                "description": "根据ID获取指定的Echo动态详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "获取指定ID的Echo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Echo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "根据ID删除指定的Echo动态",
                 "consumes": [
@@ -749,6 +866,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/settings": {
+            "get": {
+                "description": "获取系统的全局设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "获取设置",
+                "responses": {
+                    "200": {
+                        "description": "获取设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "更新系统的全局设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "更新设置",
+                "parameters": [
+                    {
+                        "description": "新的系统设置",
+                        "name": "settings",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SystemSettingDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/status": {
             "get": {
                 "description": "查询系统当前运行状态及初始化安装状态",
@@ -765,6 +937,123 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "获取状态失败或未初始化",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/todo": {
+            "get": {
+                "description": "获取当前用户的所有待办事项",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办事项"
+                ],
+                "summary": "获取待办事项列表",
+                "responses": {
+                    "200": {
+                        "description": "获取失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "用户添加一条新的待办事项",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办事项"
+                ],
+                "summary": "添加新的待办事项",
+                "parameters": [
+                    {
+                        "description": "待办事项内容",
+                        "name": "todo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Todo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "添加失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/todo/{id}": {
+            "put": {
+                "description": "根据ID更新指定的待办事项",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办事项"
+                ],
+                "summary": "更新待办事项",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "待办事项ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "根据ID删除指定的待办事项",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "待办事项"
+                ],
+                "summary": "删除待办事项",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "待办事项ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除失败",
                         "schema": {
                             "$ref": "#/definitions/handler.Response"
                         }
@@ -929,6 +1218,40 @@ const docTemplate = `{
                 }
             }
         },
+        "model.CommentSetting": {
+            "type": "object",
+            "properties": {
+                "comment_api": {
+                    "description": "评论 API 地址",
+                    "type": "string"
+                },
+                "enable_comment": {
+                    "description": "是否启用评论",
+                    "type": "boolean"
+                },
+                "provider": {
+                    "description": "评论提供者",
+                    "type": "string"
+                }
+            }
+        },
+        "model.CommentSettingDto": {
+            "type": "object",
+            "properties": {
+                "comment_api": {
+                    "description": "评论 API 地址",
+                    "type": "string"
+                },
+                "enable_comment": {
+                    "description": "是否启用评论",
+                    "type": "boolean"
+                },
+                "provider": {
+                    "description": "评论提供者",
+                    "type": "string"
+                }
+            }
+        },
         "model.Connected": {
             "type": "object",
             "properties": {
@@ -1053,6 +1376,108 @@ const docTemplate = `{
             "properties": {
                 "password": {
                     "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SystemSetting": {
+            "type": "object",
+            "properties": {
+                "ICP_number": {
+                    "description": "备案号",
+                    "type": "string"
+                },
+                "allow_register": {
+                    "description": "是否允许注册'",
+                    "type": "boolean"
+                },
+                "custom_css": {
+                    "description": "自定义 CSS",
+                    "type": "string"
+                },
+                "custom_js": {
+                    "description": "自定义 JS",
+                    "type": "string"
+                },
+                "meting_api": {
+                    "description": "Meting API 地址",
+                    "type": "string"
+                },
+                "server_name": {
+                    "description": "服务器名称",
+                    "type": "string"
+                },
+                "server_url": {
+                    "description": "服务器地址",
+                    "type": "string"
+                },
+                "site_title": {
+                    "description": "站点标题",
+                    "type": "string"
+                }
+            }
+        },
+        "model.SystemSettingDto": {
+            "type": "object",
+            "properties": {
+                "ICP_number": {
+                    "description": "备案号",
+                    "type": "string"
+                },
+                "allow_register": {
+                    "description": "是否允许注册",
+                    "type": "boolean"
+                },
+                "comment_api": {
+                    "description": "评论 API 地址",
+                    "type": "string"
+                },
+                "custom_css": {
+                    "description": "自定义 CSS",
+                    "type": "string"
+                },
+                "custom_js": {
+                    "description": "自定义 JS",
+                    "type": "string"
+                },
+                "meting_api": {
+                    "description": "Meting API 地址",
+                    "type": "string"
+                },
+                "server_name": {
+                    "description": "服务器名称",
+                    "type": "string"
+                },
+                "server_url": {
+                    "description": "服务器地址",
+                    "type": "string"
+                },
+                "site_title": {
+                    "description": "站点标题",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Todo": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "0:未完成 1:已完成",
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"
