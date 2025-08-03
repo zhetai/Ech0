@@ -279,6 +279,215 @@ const docTemplate = `{
                 }
             }
         },
+        "/echo": {
+            "put": {
+                "description": "更新指定的Echo动态内容",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "更新Echo",
+                "parameters": [
+                    {
+                        "description": "要更新的Echo内容",
+                        "name": "echo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Echo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "用户创建一条新的Echo动态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "创建新的Echo",
+                "parameters": [
+                    {
+                        "description": "Echo内容",
+                        "name": "echo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Echo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/echo/page": {
+            "get": {
+                "description": "获取Echo列表，支持分页，兼容 GET Query 和 POST JSON 请求",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "获取Echo列表（分页）",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码（GET方式）",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量（GET方式）",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "description": "分页参数（POST方式）",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.PageQueryDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "获取Echo列表，支持分页，兼容 GET Query 和 POST JSON 请求",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "获取Echo列表（分页）",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码（GET方式）",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量（GET方式）",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "description": "分页参数（POST方式）",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.PageQueryDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/echo/today": {
+            "get": {
+                "description": "获取当前用户今天发布的所有Echo动态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "获取今天的Echo列表",
+                "responses": {
+                    "200": {
+                        "description": "获取失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/echo/{id}": {
+            "delete": {
+                "description": "根据ID删除指定的Echo动态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "删除Echo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Echo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/getmusic": {
             "get": {
                 "description": "获取当前可供播放的音乐文件URL",
@@ -732,6 +941,61 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Echo": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "extension": {
+                    "type": "string"
+                },
+                "extension_type": {
+                    "type": "string"
+                },
+                "fav_count": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Image"
+                    }
+                },
+                "private": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Image": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_source": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "message_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.ImageDto": {
             "type": "object",
             "required": [
@@ -759,6 +1023,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PageQueryDto": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "description": "页码，从1开始",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "每页大小",
+                    "type": "integer"
+                },
+                "search": {
+                    "description": "用于搜索的关键字",
                     "type": "string"
                 }
             }

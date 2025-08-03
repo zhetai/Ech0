@@ -1,6 +1,8 @@
 package model
 
 // PageQueryDto 用于分页查询的请求数据传输对象
+//
+// swagger:model PageQueryDto
 type PageQueryDto struct {
 	Page     int    `json:"page" form:"page"`         // 页码，从1开始
 	PageSize int    `json:"pageSize" form:"pageSize"` // 每页大小
@@ -8,6 +10,8 @@ type PageQueryDto struct {
 }
 
 // ImageDto 用于图片相关的请求数据传输对象
+//
+// swagger:model ImageDto
 type ImageDto struct {
 	// 图片的 URL 地址
 	URL    string `json:"url" binding:"required"`

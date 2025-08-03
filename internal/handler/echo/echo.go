@@ -23,6 +23,16 @@ func NewEchoHandler(echoService service.EchoServiceInterface) *EchoHandler {
 }
 
 // PostEcho 创建新的Echo
+//
+// @Summary 创建新的Echo
+// @Description 用户创建一条新的Echo动态
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Param echo body model.Echo true "Echo内容"
+// @Success 200 {object} res.Response "创建成功"
+// @Failure 200 {object} res.Response "创建失败"
+// @Router /echo [post]
 func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		var newEcho model.Echo
@@ -49,6 +59,19 @@ func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 }
 
 // GetEchosByPage 获取Echo列表，支持分页, 兼容 GET Query 和 POST JSON 请求
+//
+// @Summary 获取Echo列表（分页）
+// @Description 获取Echo列表，支持分页，兼容 GET Query 和 POST JSON 请求
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Param page query int false "页码（GET方式）"
+// @Param pageSize query int false "每页数量（GET方式）"
+// @Param body body commonModel.PageQueryDto false "分页参数（POST方式）"
+// @Success 200 {object} res.Response{data=object} "获取成功"
+// @Failure 200 {object} res.Response "获取失败"
+// @Router /echo/page [get]
+// @Router /echo/page [post]
 func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取分页参数
@@ -101,6 +124,16 @@ func (echoHandler *EchoHandler) GetEchosByPage() gin.HandlerFunc {
 }
 
 // DeleteEcho 删除Echo
+//
+// @Summary 删除Echo
+// @Description 根据ID删除指定的Echo动态
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Param id path int true "Echo ID"
+// @Success 200 {object} res.Response "删除成功"
+// @Failure 200 {object} res.Response "删除失败"
+// @Router /echo/{id} [delete]
 func (echoHandler *EchoHandler) DeleteEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -129,6 +162,15 @@ func (echoHandler *EchoHandler) DeleteEcho() gin.HandlerFunc {
 }
 
 // GetTodayEchos 获取今天的Echo列表
+//
+// @Summary 获取今天的Echo列表
+// @Description 获取当前用户今天发布的所有Echo动态
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response "获取成功"
+// @Failure 200 {object} res.Response "获取失败"
+// @Router /echo/today [get]
 func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -149,6 +191,16 @@ func (echoHandler *EchoHandler) GetTodayEchos() gin.HandlerFunc {
 }
 
 // UpdateEcho 更新Echo
+//
+// @Summary 更新Echo
+// @Description 更新指定的Echo动态内容
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Param echo body model.Echo true "要更新的Echo内容"
+// @Success 200 {object} res.Response "更新成功"
+// @Failure 200 {object} res.Response "更新失败"
+// @Router /echo [put]
 func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		var updateEcho model.Echo
@@ -174,6 +226,16 @@ func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
 }
 
 // LikeEcho 点赞Echo
+//
+// @Summary 点赞Echo
+// @Description 根据ID为指定的Echo动态点赞
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Param id path int true "Echo ID"
+// @Success 200 {object} res.Response "点赞成功"
+// @Failure 200 {object} res.Response "点赞失败"
+// @Router /echo/like/{id} [put]
 func (echoHandler *EchoHandler) LikeEcho() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 从 URL 参数获取Echo ID
@@ -199,6 +261,16 @@ func (echoHandler *EchoHandler) LikeEcho() gin.HandlerFunc {
 }
 
 // GetEchoById 获取指定 ID 的 Echo
+//
+// @Summary 获取指定ID的Echo
+// @Description 根据ID获取指定的Echo动态详情
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Param id path int true "Echo ID"
+// @Success 200 {object} res.Response "获取成功"
+// @Failure 200 {object} res.Response "获取失败"
+// @Router /echo/{id} [get]
 func (echoHandler *EchoHandler) GetEchoById() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 从 URL 参数获取Echo ID

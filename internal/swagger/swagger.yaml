@@ -19,6 +19,42 @@ definitions:
       id:
         type: integer
     type: object
+  model.Echo:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      extension:
+        type: string
+      extension_type:
+        type: string
+      fav_count:
+        type: integer
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/model.Image'
+        type: array
+      private:
+        type: boolean
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  model.Image:
+    properties:
+      id:
+        type: integer
+      image_source:
+        type: string
+      image_url:
+        type: string
+      message_id:
+        type: integer
+    type: object
   model.ImageDto:
     properties:
       source:
@@ -39,6 +75,18 @@ definitions:
     required:
     - password
     - username
+    type: object
+  model.PageQueryDto:
+    properties:
+      page:
+        description: 页码，从1开始
+        type: integer
+      pageSize:
+        description: 每页大小
+        type: integer
+      search:
+        description: 用于搜索的关键字
+        type: string
     type: object
   model.RegisterDto:
     properties:
@@ -251,6 +299,142 @@ paths:
       summary: 删除连接
       tags:
       - 连接管理
+  /echo:
+    post:
+      consumes:
+      - application/json
+      description: 用户创建一条新的Echo动态
+      parameters:
+      - description: Echo内容
+        in: body
+        name: echo
+        required: true
+        schema:
+          $ref: '#/definitions/model.Echo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 创建新的Echo
+      tags:
+      - Echo
+    put:
+      consumes:
+      - application/json
+      description: 更新指定的Echo动态内容
+      parameters:
+      - description: 要更新的Echo内容
+        in: body
+        name: echo
+        required: true
+        schema:
+          $ref: '#/definitions/model.Echo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 更新Echo
+      tags:
+      - Echo
+  /echo/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据ID删除指定的Echo动态
+      parameters:
+      - description: Echo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 删除Echo
+      tags:
+      - Echo
+  /echo/page:
+    get:
+      consumes:
+      - application/json
+      description: 获取Echo列表，支持分页，兼容 GET Query 和 POST JSON 请求
+      parameters:
+      - description: 页码（GET方式）
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量（GET方式）
+        in: query
+        name: pageSize
+        type: integer
+      - description: 分页参数（POST方式）
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/model.PageQueryDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取Echo列表（分页）
+      tags:
+      - Echo
+    post:
+      consumes:
+      - application/json
+      description: 获取Echo列表，支持分页，兼容 GET Query 和 POST JSON 请求
+      parameters:
+      - description: 页码（GET方式）
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量（GET方式）
+        in: query
+        name: pageSize
+        type: integer
+      - description: 分页参数（POST方式）
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/model.PageQueryDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取Echo列表（分页）
+      tags:
+      - Echo
+  /echo/today:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前用户今天发布的所有Echo动态
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取今天的Echo列表
+      tags:
+      - Echo
   /getmusic:
     get:
       consumes:
