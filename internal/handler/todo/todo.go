@@ -20,6 +20,16 @@ func NewTodoHandler(todoService service.TodoServiceInterface) *TodoHandler {
 }
 
 // AddTodo 添加新的待办事项
+//
+// @Summary 添加新的待办事项
+// @Description 用户添加一条新的待办事项
+// @Tags 待办事项
+// @Accept json
+// @Produce json
+// @Param todo body model.Todo true "待办事项内容"
+// @Success 200 {object} res.Response "添加成功"
+// @Failure 200 {object} res.Response "添加失败"
+// @Router /todo [post]
 func (todoHandler *TodoHandler) AddTodo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -44,10 +54,19 @@ func (todoHandler *TodoHandler) AddTodo() gin.HandlerFunc {
 			Msg: commonModel.ADD_TODO_SUCCESS,
 		}
 	})
-
 }
 
 // UpdateTodo 更新待办事项
+//
+// @Summary 更新待办事项
+// @Description 根据ID更新指定的待办事项
+// @Tags 待办事项
+// @Accept json
+// @Produce json
+// @Param id path int true "待办事项ID"
+// @Success 200 {object} res.Response "更新成功"
+// @Failure 200 {object} res.Response "更新失败"
+// @Router /todo/{id} [put]
 func (todoHandler *TodoHandler) UpdateTodo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -74,10 +93,19 @@ func (todoHandler *TodoHandler) UpdateTodo() gin.HandlerFunc {
 			Msg: commonModel.UPDATE_TODO_SUCCESS,
 		}
 	})
-
 }
 
 // DeleteTodo 删除待办事项
+//
+// @Summary 删除待办事项
+// @Description 根据ID删除指定的待办事项
+// @Tags 待办事项
+// @Accept json
+// @Produce json
+// @Param id path int true "待办事项ID"
+// @Success 200 {object} res.Response "删除成功"
+// @Failure 200 {object} res.Response "删除失败"
+// @Router /todo/{id} [delete]
 func (todoHandler *TodoHandler) DeleteTodo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -104,10 +132,18 @@ func (todoHandler *TodoHandler) DeleteTodo() gin.HandlerFunc {
 			Msg: commonModel.DELETE_TODO_SUCCESS,
 		}
 	})
-
 }
 
 // GetTodoList 获取待办事项列表
+//
+// @Summary 获取待办事项列表
+// @Description 获取当前用户的所有待办事项
+// @Tags 待办事项
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response "获取成功"
+// @Failure 200 {object} res.Response "获取失败"
+// @Router /todo [get]
 func (todoHandler *TodoHandler) GetTodoList() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
@@ -126,5 +162,4 @@ func (todoHandler *TodoHandler) GetTodoList() gin.HandlerFunc {
 			Msg:  commonModel.GET_TODO_LIST_SUCCESS,
 		}
 	})
-
 }
