@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -20,11 +21,16 @@ import (
 )
 
 type CommonService struct {
+	txManager        transaction.TransactionManager
 	commonRepository repository.CommonRepositoryInterface
 }
 
-func NewCommonService(commonRepository repository.CommonRepositoryInterface) CommonServiceInterface {
+func NewCommonService(
+	tm transaction.TransactionManager,
+	commonRepository repository.CommonRepositoryInterface,
+) CommonServiceInterface {
 	return &CommonService{
+		txManager:        tm,
 		commonRepository: commonRepository,
 	}
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/lin-snow/ech0/internal/transaction"
 
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -13,12 +14,18 @@ import (
 )
 
 type SettingService struct {
+	txManager          transaction.TransactionManager
 	commonService      commonService.CommonServiceInterface
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
 }
 
-func NewSettingService(commonService commonService.CommonServiceInterface, keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface) SettingServiceInterface {
+func NewSettingService(
+	tm transaction.TransactionManager,
+	commonService commonService.CommonServiceInterface,
+	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface,
+) SettingServiceInterface {
 	return &SettingService{
+		txManager:          tm,
 		commonService:      commonService,
 		keyvalueRepository: keyvalueRepository,
 	}

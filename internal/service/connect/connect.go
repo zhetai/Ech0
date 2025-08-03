@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"sync"
 	"time"
 
@@ -22,6 +23,7 @@ import (
 )
 
 type ConnectService struct {
+	txManager         transaction.TransactionManager
 	connectRepository repository.ConnectRepositoryInterface
 	echoRepository    echoRepository.EchoRepositoryInterface
 	commonService     commonService.CommonServiceInterface
@@ -29,12 +31,14 @@ type ConnectService struct {
 }
 
 func NewConnectService(
+	tm transaction.TransactionManager,
 	connectRepository repository.ConnectRepositoryInterface,
 	echoRepository echoRepository.EchoRepositoryInterface,
 	commonService commonService.CommonServiceInterface,
 	settingService settingService.SettingServiceInterface,
 ) ConnectServiceInterface {
 	return &ConnectService{
+		txManager:         tm,
 		connectRepository: connectRepository,
 		echoRepository:    echoRepository,
 		commonService:     commonService,

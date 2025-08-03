@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/lin-snow/ech0/internal/transaction"
 
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -12,12 +13,18 @@ import (
 )
 
 type EchoService struct {
+	txManager      transaction.TransactionManager
 	commonService  commonService.CommonServiceInterface
 	echoRepository repository.EchoRepositoryInterface
 }
 
-func NewEchoService(commonService commonService.CommonServiceInterface, echoRepository repository.EchoRepositoryInterface) EchoServiceInterface {
+func NewEchoService(
+	tm transaction.TransactionManager,
+	commonService commonService.CommonServiceInterface,
+	echoRepository repository.EchoRepositoryInterface,
+) EchoServiceInterface {
 	return &EchoService{
+		txManager:      tm,
 		commonService:  commonService,
 		echoRepository: echoRepository,
 	}

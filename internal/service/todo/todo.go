@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/lin-snow/ech0/internal/transaction"
 
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/todo"
@@ -10,12 +11,18 @@ import (
 )
 
 type TodoService struct {
+	txManager      transaction.TransactionManager
 	todoRepository repository.TodoRepositoryInterface
 	commonService  commonService.CommonServiceInterface
 }
 
-func NewTodoService(todoRepository repository.TodoRepositoryInterface, commonService commonService.CommonServiceInterface) TodoServiceInterface {
+func NewTodoService(
+	tm transaction.TransactionManager,
+	todoRepository repository.TodoRepositoryInterface,
+	commonService commonService.CommonServiceInterface,
+) TodoServiceInterface {
 	return &TodoService{
+		txManager:      tm,
 		todoRepository: todoRepository,
 		commonService:  commonService,
 	}

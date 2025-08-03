@@ -38,6 +38,8 @@ func BuildHandlers(
 	tmFactory *transaction.TransactionManagerFactory,
 ) (*Handlers, error) {
 	wire.Build(
+		CacheSet,
+		TransactionManagerSet,
 		WebSet,
 		UserSet,
 		EchoSet,
@@ -52,6 +54,17 @@ func BuildHandlers(
 	return &Handlers{}, nil
 }
 
+// CacheSet 包含了构建缓存所需的所有 Provider
+var CacheSet = wire.NewSet(
+	ProvideUserCache,
+	ProvideEchoCache,
+)
+
+// TransactionManagerSet 包含了构建事务管理器所需的所有 Provider
+var TransactionManagerSet = wire.NewSet(
+	ProvideTransactionManager,
+)
+
 // WebSet 包含了构建 WebHandler 所需的所有 Provider
 var WebSet = wire.NewSet(
 	webHandler.NewWebHandler,
@@ -59,8 +72,6 @@ var WebSet = wire.NewSet(
 
 // UserSet 包含了构建 UserHandler 所需的所有 Provider
 var UserSet = wire.NewSet(
-	ProvideUserCache,
-	ProvideTransactionManager,
 	userRepository.NewUserRepository,
 	userService.NewUserService,
 	userHandler.NewUserHandler,
@@ -68,7 +79,6 @@ var UserSet = wire.NewSet(
 
 // EchoSet 包含了构建 EchoHandler 所需的所有 Provider
 var EchoSet = wire.NewSet(
-	ProvideEchoCache,
 	echoRepository.NewEchoRepository,
 	echoService.NewEchoService,
 	echoHandler.NewEchoHandler,

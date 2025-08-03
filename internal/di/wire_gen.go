@@ -43,22 +43,22 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	iCache := ProvideUserCache(cacheFactory)
 	userRepositoryInterface := repository.NewUserRepository(db, iCache)
 	commonRepositoryInterface := repository2.NewCommonRepository(db)
-	commonServiceInterface := service.NewCommonService(commonRepositoryInterface)
+	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db)
-	settingServiceInterface := service2.NewSettingService(commonServiceInterface, keyValueRepositoryInterface)
+	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface)
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	cacheICache := ProvideEchoCache(cacheFactory)
 	echoRepositoryInterface := repository3.NewEchoRepository(db, cacheICache)
-	echoServiceInterface := service4.NewEchoService(commonServiceInterface, echoRepositoryInterface)
+	echoServiceInterface := service4.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
 	settingHandler := handler5.NewSettingHandler(settingServiceInterface)
 	todoRepositoryInterface := repository4.NewTodoRepository(db)
-	todoServiceInterface := service5.NewTodoService(todoRepositoryInterface, commonServiceInterface)
+	todoServiceInterface := service5.NewTodoService(transactionManager, todoRepositoryInterface, commonServiceInterface)
 	todoHandler := handler6.NewTodoHandler(todoServiceInterface)
 	connectRepositoryInterface := repository5.NewConnectRepository(db)
-	connectServiceInterface := service6.NewConnectService(connectRepositoryInterface, echoRepositoryInterface, commonServiceInterface, settingServiceInterface)
+	connectServiceInterface := service6.NewConnectService(transactionManager, connectRepositoryInterface, echoRepositoryInterface, commonServiceInterface, settingServiceInterface)
 	connectHandler := handler7.NewConnectHandler(connectServiceInterface)
 	backupServiceInterface := service7.NewBackupService(commonServiceInterface)
 	backupHandler := handler8.NewBackupHandler(backupServiceInterface)
@@ -68,19 +68,25 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 
 // wire.go:
 
+// CacheSet 包含了构建缓存所需的所有 Provider
+var CacheSet = wire.NewSet(
+	ProvideUserCache,
+	ProvideEchoCache,
+)
+
+// TransactionManagerSet 包含了构建事务管理器所需的所有 Provider
+var TransactionManagerSet = wire.NewSet(
+	ProvideTransactionManager,
+)
+
 // WebSet 包含了构建 WebHandler 所需的所有 Provider
 var WebSet = wire.NewSet(handler.NewWebHandler)
 
 // UserSet 包含了构建 UserHandler 所需的所有 Provider
-var UserSet = wire.NewSet(
-	ProvideUserCache,
-	ProvideTransactionManager, repository.NewUserRepository, service3.NewUserService, handler2.NewUserHandler,
-)
+var UserSet = wire.NewSet(repository.NewUserRepository, service3.NewUserService, handler2.NewUserHandler)
 
 // EchoSet 包含了构建 EchoHandler 所需的所有 Provider
-var EchoSet = wire.NewSet(
-	ProvideEchoCache, repository3.NewEchoRepository, service4.NewEchoService, handler3.NewEchoHandler,
-)
+var EchoSet = wire.NewSet(repository3.NewEchoRepository, service4.NewEchoService, handler3.NewEchoHandler)
 
 // CommonSet 包含了构建 CommonHandler 所需的所有 Provider
 var CommonSet = wire.NewSet(repository2.NewCommonRepository, service.NewCommonService, handler4.NewCommonHandler)
