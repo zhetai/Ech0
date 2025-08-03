@@ -124,7 +124,7 @@ func (commonHandler *CommonHandler) DeleteImage() gin.HandlerFunc {
 // @Tags 通用功能
 // @Accept json
 // @Produce json
-// @Success 200 {object} res.Response{data=commonModel.StatusDto} "获取状态成功"
+// @Success 200 {object} res.Response "获取状态成功"
 // @Failure 200 {object} res.Response "获取状态失败或未初始化"
 // @Router /status [get]
 func (commonHandler *CommonHandler) GetStatus() gin.HandlerFunc {
