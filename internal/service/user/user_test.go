@@ -47,11 +47,15 @@ func (m *MockSettingService) GetSetting(setting *settingModel.SystemSetting) err
 	}
 	return args.Error(0)
 }
-func (m *MockSettingService) GetCommentSetting(setting *settingModel.CommentSetting) error { return nil }
+func (m *MockSettingService) GetCommentSetting(setting *settingModel.CommentSetting) error {
+	return nil
+}
 func (m *MockSettingService) UpdateCommentSetting(id uint, setting *settingModel.CommentSettingDto) error {
 	return nil
 }
-func (m *MockSettingService) UpdateSetting(id uint, setting *settingModel.SystemSettingDto) error { return nil }
+func (m *MockSettingService) UpdateSetting(id uint, setting *settingModel.SystemSettingDto) error {
+	return nil
+}
 
 // 测试套件
 type UserServiceTestSuite struct {
