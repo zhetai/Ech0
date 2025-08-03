@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// backupCmd 是备份数据的命令
 var backupCmd = &cobra.Command{
 	Use:   "backup",
 	Short: "备份数据",
@@ -14,6 +15,7 @@ var backupCmd = &cobra.Command{
 	},
 }
 
+// restoreCmd 是恢复数据的命令
 var restoreCmd = &cobra.Command{
 	Use:   "restore",
 	Short: "恢复数据",
@@ -28,6 +30,7 @@ var restoreCmd = &cobra.Command{
 	},
 }
 
+// init 函数用于初始化根命令和子命令
 func init() {
 	rootCmd.AddCommand(backupCmd)
 	rootCmd.AddCommand(restoreCmd)

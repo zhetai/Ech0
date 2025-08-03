@@ -120,11 +120,13 @@ func DoEch0Info() {
 	}
 }
 
+// DoHello 打印 Ech0 Logo
 func DoHello() {
 	tui.ClearScreen()
 	tui.PrintCLIBanner()
 }
 
+// DoSSH 启动或停止 SSH 服务
 func DoSSH() {
 	if ssh.SSHServer == nil {
 		ssh.SSHStart()

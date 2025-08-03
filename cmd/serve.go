@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// serveCmd 是启动 Web 和 SSH 服务的命令
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "启动 Web 和 SSH 服务",
@@ -14,6 +15,7 @@ var serveCmd = &cobra.Command{
 	},
 }
 
+// init 函数用于初始化根命令和子命令
 func init() {
 	rootCmd.AddCommand(serveCmd)
 }
