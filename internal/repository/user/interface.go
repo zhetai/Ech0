@@ -1,6 +1,9 @@
 package repository
 
-import model "github.com/lin-snow/ech0/internal/model/user"
+import (
+	"context"
+	model "github.com/lin-snow/ech0/internal/model/user"
+)
 
 type UserRepositoryInterface interface {
 	// GetUserByID 根据用户ID获取用户
@@ -13,14 +16,14 @@ type UserRepositoryInterface interface {
 	GetAllUsers() ([]model.User, error)
 
 	// CreateUser 创建一个新的用户
-	CreateUser(newUser *model.User) error
+	CreateUser(ctx context.Context, newUser *model.User) error
 
 	// GetSysAdmin 获取系统管理员
 	GetSysAdmin() (model.User, error)
 
 	// UpdateUser 更新用户
-	UpdateUser(user *model.User) error
+	UpdateUser(ctx context.Context, user *model.User) error
 
 	// DeleteUser 删除用户
-	DeleteUser(id uint) error
+	DeleteUser(ctx context.Context, id uint) error
 }

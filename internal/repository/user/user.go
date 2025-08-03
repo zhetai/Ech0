@@ -60,8 +60,8 @@ func (userRepository *UserRepository) GetAllUsers() ([]model.User, error) {
 }
 
 // CreateUser 创建一个新的用户
-func (userRepository *UserRepository) CreateUser(user *model.User) error {
-	err := userRepository.db.Create(user).Error
+func (userRepository *UserRepository) CreateUser(ctx context.Context, user *model.User) error {
+	err := userRepository.getDB(ctx).Create(user).Error
 	if err != nil {
 		return err
 	}
@@ -110,8 +110,8 @@ func (userRepository *UserRepository) GetSysAdmin() (model.User, error) {
 }
 
 // UpdateUser 更新用户信息
-func (userRepository *UserRepository) UpdateUser(user *model.User) error {
-	err := userRepository.db.Save(user).Error
+func (userRepository *UserRepository) UpdateUser(ctx context.Context, user *model.User) error {
+	err := userRepository.getDB(ctx).Save(user).Error
 	if err != nil {
 		return err
 	}
@@ -126,14 +126,14 @@ func (userRepository *UserRepository) UpdateUser(user *model.User) error {
 }
 
 // DeleteUser 删除用户
-func (userRepository *UserRepository) DeleteUser(id uint) error {
+func (userRepository *UserRepository) DeleteUser(ctx context.Context, id uint) error {
 	// 先查找待删除的用户
 	userToDel, err := userRepository.GetUserByID(int(id))
 	if err != nil {
 		return err
 	}
 
-	err = userRepository.db.Delete(&model.User{}, id).Error
+	err = userRepository.getDB(ctx).Delete(&model.User{}, id).Error
 	if err != nil {
 		return err
 	}
