@@ -36,8 +36,8 @@ func (keyvalueRepository *KeyValueRepository) GetKeyValue(key string) (interface
 }
 
 // AddKeyValue 添加键值对
-func (keyvalueRepository *KeyValueRepository) AddKeyValue(key string, value interface{}) error {
-	if err := keyvalueRepository.db.Create(&model.KeyValue{
+func (keyvalueRepository *KeyValueRepository) AddKeyValue(ctx context.Context, key string, value interface{}) error {
+	if err := keyvalueRepository.getDB(ctx).Create(&model.KeyValue{
 		Key:   key,
 		Value: value.(string),
 	}).Error; err != nil {
@@ -48,8 +48,8 @@ func (keyvalueRepository *KeyValueRepository) AddKeyValue(key string, value inte
 }
 
 // DeleteKeyValue 删除键值对
-func (keyvalueRepository *KeyValueRepository) DeleteKeyValue(key string) error {
-	if err := keyvalueRepository.db.Where("key = ?", key).Delete(&model.KeyValue{}).Error; err != nil {
+func (keyvalueRepository *KeyValueRepository) DeleteKeyValue(ctx context.Context, key string) error {
+	if err := keyvalueRepository.getDB(ctx).Where("key = ?", key).Delete(&model.KeyValue{}).Error; err != nil {
 		return err
 	}
 
@@ -57,8 +57,8 @@ func (keyvalueRepository *KeyValueRepository) DeleteKeyValue(key string) error {
 }
 
 // UpdateKeyValue 更新键值对
-func (keyvalueRepository *KeyValueRepository) UpdateKeyValue(key string, value interface{}) error {
-	if err := keyvalueRepository.db.Model(&model.KeyValue{}).Where("key = ?", key).Update("value", value.(string)).Error; err != nil {
+func (keyvalueRepository *KeyValueRepository) UpdateKeyValue(ctx context.Context, key string, value interface{}) error {
+	if err := keyvalueRepository.getDB(ctx).Model(&model.KeyValue{}).Where("key = ?", key).Update("value", value.(string)).Error; err != nil {
 		return err
 	}
 
