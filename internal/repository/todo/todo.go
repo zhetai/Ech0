@@ -41,8 +41,8 @@ func (todoRepository *TodoRepository) GetTodosByUserID(userid uint) ([]model.Tod
 }
 
 // CreateTodo 创建一个新的待办事项
-func (todoRepository *TodoRepository) CreateTodo(todo *model.Todo) error {
-	if err := todoRepository.db.Create(todo).Error; err != nil {
+func (todoRepository *TodoRepository) CreateTodo(ctx context.Context, todo *model.Todo) error {
+	if err := todoRepository.getDB(ctx).Create(todo).Error; err != nil {
 		return err
 	}
 	return nil
@@ -59,9 +59,9 @@ func (todoRepository *TodoRepository) GetTodoByID(todoID int64) (*model.Todo, er
 }
 
 // UpdateTodo 更新待办事项
-func (todoRepository *TodoRepository) UpdateTodo(todo *model.Todo) error {
+func (todoRepository *TodoRepository) UpdateTodo(ctx context.Context, todo *model.Todo) error {
 	// 根据 ID 查找 To do 并更新
-	if err := todoRepository.db.Model(&model.Todo{}).Where("id = ?", todo.ID).Updates(todo).Error; err != nil {
+	if err := todoRepository.getDB(ctx).Model(&model.Todo{}).Where("id = ?", todo.ID).Updates(todo).Error; err != nil {
 		return err
 	}
 
@@ -69,9 +69,9 @@ func (todoRepository *TodoRepository) UpdateTodo(todo *model.Todo) error {
 }
 
 // DeleteTodo 删除待办事项
-func (todoRepository *TodoRepository) DeleteTodo(id int64) error {
+func (todoRepository *TodoRepository) DeleteTodo(ctx context.Context, id int64) error {
 	// 根据 ID 删除 To do
-	if err := todoRepository.db.Delete(&model.Todo{}, id).Error; err != nil {
+	if err := todoRepository.getDB(ctx).Delete(&model.Todo{}, id).Error; err != nil {
 		return err
 	}
 
