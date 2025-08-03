@@ -15,6 +15,40 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/addConnect": {
+            "post": {
+                "description": "用户添加一个新的连接",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "连接管理"
+                ],
+                "summary": "添加连接",
+                "parameters": [
+                    {
+                        "description": "连接信息",
+                        "name": "connected",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Connected"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "添加连接失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/allusers": {
             "get": {
                 "security": [
@@ -36,6 +70,355 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "获取失败，code=0，msg错误描述",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/audios/delete": {
+            "delete": {
+                "description": "用户删除已上传的音频文件",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "删除音频",
+                "responses": {
+                    "200": {
+                        "description": "删除失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/audios/upload": {
+            "post": {
+                "description": "用户上传音频文件，成功后返回音频的访问 URL",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "上传音频",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "音频文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "上传失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/backup": {
+            "get": {
+                "description": "用户触发数据备份操作，成功后返回备份成功信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统备份"
+                ],
+                "summary": "执行数据备份",
+                "responses": {
+                    "200": {
+                        "description": "备份失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/backup/export": {
+            "get": {
+                "description": "用户导出备份文件，成功后触发文件下载",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "系统备份"
+                ],
+                "summary": "导出数据备份",
+                "responses": {
+                    "200": {
+                        "description": "导出备份失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/connect": {
+            "get": {
+                "description": "获取当前实例的连接详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "连接管理"
+                ],
+                "summary": "获取当前实例的连接信息",
+                "responses": {
+                    "200": {
+                        "description": "获取连接信息失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/connect/list": {
+            "get": {
+                "description": "获取当前实例添加的所有连接列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "连接管理"
+                ],
+                "summary": "获取所有连接",
+                "responses": {
+                    "200": {
+                        "description": "获取连接列表失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/connects/info": {
+            "get": {
+                "description": "获取当前用户所有已添加的连接的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "连接管理"
+                ],
+                "summary": "获取所有添加的连接信息",
+                "responses": {
+                    "200": {
+                        "description": "获取连接信息失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delConnect/{id}": {
+            "delete": {
+                "description": "用户根据ID删除一个已添加的连接",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "连接管理"
+                ],
+                "summary": "删除连接",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "连接ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除连接失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/getmusic": {
+            "get": {
+                "description": "获取当前可供播放的音乐文件URL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "获取可播放的音乐",
+                "responses": {
+                    "200": {
+                        "description": "获取音乐URL失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/heatmap": {
+            "get": {
+                "description": "获取系统活动热力图数据，用于展示用户活动分布情况",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "获取热力图数据",
+                "responses": {
+                    "200": {
+                        "description": "获取热力图数据失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/hello": {
+            "get": {
+                "description": "获取 Ech0 系统欢迎信息、版本号和 GitHub 地址",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "Hello Ech0",
+                "responses": {
+                    "200": {
+                        "description": "获取欢迎信息成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/handler.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/images/delete": {
+            "delete": {
+                "description": "用户删除已上传的图片，需传入图片 URL 和来源信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "删除图片",
+                "parameters": [
+                    {
+                        "description": "图片删除请求体",
+                        "name": "imageDto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ImageDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/images/upload": {
+            "post": {
+                "description": "用户上传图片，成功后返回图片的访问 URL",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "上传图片",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "图片文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "上传失败",
                         "schema": {
                             "$ref": "#/definitions/handler.Response"
                         }
@@ -77,6 +460,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/playmusic": {
+            "get": {
+                "description": "以流的方式播放当前可用的音乐文件",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "audio/mpeg"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "播放音乐",
+                "responses": {
+                    "200": {
+                        "description": "播放失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "通过提交用户名、密码等信息完成注册",
@@ -104,6 +510,52 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "请求参数错误或注册失败，code=0，msg错误描述",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/rss": {
+            "get": {
+                "description": "获取系统的RSS订阅源（Atom格式），用于订阅最新动态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/rss+xml"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "获取RSS订阅源",
+                "responses": {
+                    "200": {
+                        "description": "获取RSS失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/status": {
+            "get": {
+                "description": "查询系统当前运行状态及初始化安装状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "获取 Echo 系统状态",
+                "responses": {
+                    "200": {
+                        "description": "获取状态失败或未初始化",
                         "schema": {
                             "$ref": "#/definitions/handler.Response"
                         }
@@ -264,6 +716,34 @@ const docTemplate = `{
                 },
                 "msg": {
                     "description": "Msg 返回信息，通常是状态描述",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Connected": {
+            "type": "object",
+            "properties": {
+                "connect_url": {
+                    "description": "连接地址",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ImageDto": {
+            "type": "object",
+            "required": [
+                "source",
+                "url"
+            ],
+            "properties": {
+                "source": {
+                    "type": "string"
+                },
+                "url": {
+                    "description": "图片的 URL 地址",
                     "type": "string"
                 }
             }

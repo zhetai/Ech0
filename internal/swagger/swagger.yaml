@@ -11,6 +11,25 @@ definitions:
         description: Msg 返回信息，通常是状态描述
         type: string
     type: object
+  model.Connected:
+    properties:
+      connect_url:
+        description: 连接地址
+        type: string
+      id:
+        type: integer
+    type: object
+  model.ImageDto:
+    properties:
+      source:
+        type: string
+      url:
+        description: 图片的 URL 地址
+        type: string
+    required:
+    - source
+    - url
+    type: object
   model.LoginDto:
     properties:
       password:
@@ -61,6 +80,28 @@ info:
   title: Ech0 API 文档
   version: "1.0"
 paths:
+  /addConnect:
+    post:
+      consumes:
+      - application/json
+      description: 用户添加一个新的连接
+      parameters:
+      - description: 连接信息
+        in: body
+        name: connected
+        required: true
+        schema:
+          $ref: '#/definitions/model.Connected'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加连接失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 添加连接
+      tags:
+      - 连接管理
   /allusers:
     get:
       consumes:
@@ -78,6 +119,231 @@ paths:
       summary: 获取所有用户
       tags:
       - 用户管理
+  /audios/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 用户删除已上传的音频文件
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 删除音频
+      tags:
+      - 通用功能
+  /audios/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 用户上传音频文件，成功后返回音频的访问 URL
+      parameters:
+      - description: 音频文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 上传音频
+      tags:
+      - 通用功能
+  /backup:
+    get:
+      consumes:
+      - application/json
+      description: 用户触发数据备份操作，成功后返回备份成功信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 备份失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 执行数据备份
+      tags:
+      - 系统备份
+  /backup/export:
+    get:
+      consumes:
+      - application/json
+      description: 用户导出备份文件，成功后触发文件下载
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: 导出备份失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 导出数据备份
+      tags:
+      - 系统备份
+  /connect:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前实例的连接详细信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取连接信息失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取当前实例的连接信息
+      tags:
+      - 连接管理
+  /connect/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前实例添加的所有连接列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取连接列表失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取所有连接
+      tags:
+      - 连接管理
+  /connects/info:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前用户所有已添加的连接的详细信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取连接信息失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取所有添加的连接信息
+      tags:
+      - 连接管理
+  /delConnect/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 用户根据ID删除一个已添加的连接
+      parameters:
+      - description: 连接ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除连接失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 删除连接
+      tags:
+      - 连接管理
+  /getmusic:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前可供播放的音乐文件URL
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取音乐URL失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取可播放的音乐
+      tags:
+      - 通用功能
+  /heatmap:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统活动热力图数据，用于展示用户活动分布情况
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取热力图数据失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取热力图数据
+      tags:
+      - 通用功能
+  /hello:
+    get:
+      consumes:
+      - application/json
+      description: 获取 Ech0 系统欢迎信息、版本号和 GitHub 地址
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取欢迎信息成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.Response'
+            - properties:
+                data:
+                  type: object
+              type: object
+      summary: Hello Ech0
+      tags:
+      - 通用功能
+  /images/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 用户删除已上传的图片，需传入图片 URL 和来源信息
+      parameters:
+      - description: 图片删除请求体
+        in: body
+        name: imageDto
+        required: true
+        schema:
+          $ref: '#/definitions/model.ImageDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 删除图片
+      tags:
+      - 通用功能
+  /images/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 用户上传图片，成功后返回图片的访问 URL
+      parameters:
+      - description: 图片文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 上传图片
+      tags:
+      - 通用功能
   /login:
     post:
       consumes:
@@ -100,6 +366,21 @@ paths:
       summary: 用户登录接口
       tags:
       - 用户认证
+  /playmusic:
+    get:
+      consumes:
+      - application/json
+      description: 以流的方式播放当前可用的音乐文件
+      produces:
+      - audio/mpeg
+      responses:
+        "200":
+          description: 播放失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 播放音乐
+      tags:
+      - 通用功能
   /register:
     post:
       consumes:
@@ -122,6 +403,36 @@ paths:
       summary: 用户注册
       tags:
       - 用户认证
+  /rss:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统的RSS订阅源（Atom格式），用于订阅最新动态
+      produces:
+      - application/rss+xml
+      responses:
+        "200":
+          description: 获取RSS失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取RSS订阅源
+      tags:
+      - 通用功能
+  /status:
+    get:
+      consumes:
+      - application/json
+      description: 查询系统当前运行状态及初始化安装状态
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取状态失败或未初始化
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取 Echo 系统状态
+      tags:
+      - 通用功能
   /user:
     get:
       consumes:
