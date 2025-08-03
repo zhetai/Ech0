@@ -17,12 +17,16 @@ import (
 
 // UploadFileToLocal 根据文件类型上传文件到本地存储
 func UploadFileToLocal(file *multipart.FileHeader, fileType commonModel.UploadFileType) (string, error) {
+	// 根据文件类型选择上传方式
 	switch fileType {
 	case commonModel.ImageType:
+		// 上传图片到本地
 		return UploadImageToLocal(file)
 	case commonModel.AudioType:
+		// 上传音频到本地
 		return UploadAudioToLocal(file)
 	default:
+		// 不支持的文件类型
 		return "", errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
 	}
 }
@@ -61,6 +65,7 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 	defer func() {
+		// 确保文件被正确关闭
 		if closeErr := out.Close(); closeErr != nil {
 			log.Println("Failed to close destination file:", closeErr)
 		}
@@ -70,6 +75,7 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 
+	// 返回图片的 URL
 	imageURL := fmt.Sprintf("/images/%s", newFileName)
 	return imageURL, nil
 }
@@ -92,6 +98,7 @@ func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 	defer func() {
+		// 确保文件被正确关闭
 		if closeErr := src.Close(); closeErr != nil {
 			log.Println("Failed to close file source:", closeErr)
 		}
@@ -106,6 +113,7 @@ func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 	defer func() {
+		// 确保文件被正确关闭
 		if closeErr := out.Close(); closeErr != nil {
 			log.Println("Failed to close destination file:", closeErr)
 		}

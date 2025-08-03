@@ -11,9 +11,9 @@ import (
 )
 
 type TodoService struct {
-	txManager      transaction.TransactionManager
-	todoRepository repository.TodoRepositoryInterface
-	commonService  commonService.CommonServiceInterface
+	txManager      transaction.TransactionManager       // 事务管理器
+	todoRepository repository.TodoRepositoryInterface   // To do数据层接口
+	commonService  commonService.CommonServiceInterface // 公共服务接口
 }
 
 func NewTodoService(
@@ -30,6 +30,7 @@ func NewTodoService(
 
 // GetTodoList 获取当前用户的Todo列表
 func (todoService *TodoService) GetTodoList(userid uint) ([]model.Todo, error) {
+	// 检查执行操作的用户是否为管理员
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
 		return nil, err
@@ -54,6 +55,7 @@ func (todoService *TodoService) GetTodoList(userid uint) ([]model.Todo, error) {
 
 // AddTodo 创建新的Todo
 func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
+	// 检查执行操作的用户是否为管理员
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
 		return err
@@ -81,6 +83,7 @@ func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
 	todo.Username = user.Username
 	todo.Status = uint(model.NotDone)
 
+	// 创建 To do
 	if err := todoService.todoRepository.CreateTodo(todo); err != nil {
 		return err
 	}
@@ -89,6 +92,7 @@ func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
 
 // UpdateTodo 更新指定ID的Todo
 func (todoService *TodoService) UpdateTodo(userid uint, id int64) error {
+	// 检查执行操作的用户是否为管理员
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
 		return err
@@ -124,6 +128,7 @@ func (todoService *TodoService) UpdateTodo(userid uint, id int64) error {
 
 // DeleteTodo 删除指定ID的Todo
 func (todoService *TodoService) DeleteTodo(userid uint, id int64) error {
+	// 检查执行操作的用户是否为管理员
 	user, err := todoService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
 		return err
