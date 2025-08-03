@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	model "github.com/lin-snow/ech0/internal/model/connect"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
 
@@ -13,6 +15,14 @@ func NewConnectRepository(db *gorm.DB) ConnectRepositoryInterface {
 	return &ConnectRepository{
 		db: db,
 	}
+}
+
+// getDB 从上下文中获取事务
+func (connectRepository *ConnectRepository) getDB(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
+		return tx
+	}
+	return connectRepository.db
 }
 
 // GetAllConnects 获取所有连接

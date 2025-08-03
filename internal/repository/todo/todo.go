@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	model "github.com/lin-snow/ech0/internal/model/todo"
 	"gorm.io/gorm"
 )
@@ -13,6 +14,14 @@ func NewTodoRepository(db *gorm.DB) TodoRepositoryInterface {
 	return &TodoRepository{
 		db: db,
 	}
+}
+
+// getDB 从上下文中获取事务
+func (todoRepository *TodoRepository) getDB(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
+		return tx
+	}
+	return todoRepository.db
 }
 
 // GetTodosByUserID 根据用户ID获取待办事项

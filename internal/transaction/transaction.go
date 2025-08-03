@@ -7,7 +7,7 @@ import (
 
 type contextKey string
 
-const txKey contextKey = "tx"
+const TxKey contextKey = "tx"
 
 // TransactionManager 定义事务管理器接口
 type TransactionManager interface {

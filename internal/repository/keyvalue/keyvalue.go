@@ -1,7 +1,9 @@
 package keyvalue
 
 import (
+	"context"
 	model "github.com/lin-snow/ech0/internal/model/common"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
 
@@ -13,6 +15,14 @@ func NewKeyValueRepository(db *gorm.DB) KeyValueRepositoryInterface {
 	return &KeyValueRepository{
 		db: db,
 	}
+}
+
+// getDB 从上下文中获取事务
+func (keyvalueRepository *KeyValueRepository) getDB(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
+		return tx
+	}
+	return keyvalueRepository.db
 }
 
 // GetKeyValue 根据键获取值

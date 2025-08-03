@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +17,14 @@ func NewCommonRepository(db *gorm.DB) CommonRepositoryInterface {
 	return &CommonRepository{
 		db: db,
 	}
+}
+
+// getDB 从上下文中获取事务
+func (commonRepository *CommonRepository) getDB(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
+		return tx
+	}
+	return commonRepository.db
 }
 
 // GetUserByUserId 根据用户ID获取用户信息

@@ -31,7 +31,7 @@ func (tm *GormTransactionManager) Run(fn func(ctx context.Context) error) error 
 	// 在这个上下文中，txKey 被设置为当前事务的 gorm.DB
 	return tm.db.Transaction(func(tx *gorm.DB) error {
 		// 将当前事务的 gorm.DB 设置到上下文中
-		ctx := context.WithValue(context.Background(), txKey, tx)
+		ctx := context.WithValue(context.Background(), TxKey, tx)
 
 		// 执行传入的函数，并传递事务上下文
 		return fn(ctx)

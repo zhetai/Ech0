@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"context"
 	"github.com/lin-snow/ech0/internal/cache"
 	model "github.com/lin-snow/ech0/internal/model/user"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
 
@@ -16,6 +18,14 @@ func NewUserRepository(db *gorm.DB, cache cache.ICache[string, *model.User]) Use
 		db:    db,
 		cache: cache,
 	}
+}
+
+// getDB 从上下文中获取事务
+func (userRepository *UserRepository) getDB(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
+		return tx
+	}
+	return userRepository.db
 }
 
 // GetUserByUsername 根据用户名获取用户

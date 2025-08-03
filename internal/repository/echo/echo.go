@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	"errors"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"strings"
 	"time"
 
@@ -20,6 +22,15 @@ func NewEchoRepository(db *gorm.DB, cache cache.ICache[string, commonModel.PageQ
 	return &EchoRepository{db: db, cache: cache}
 }
 
+// getDB 从上下文中获取事务
+func (echoRepository *EchoRepository) getDB(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
+		return tx
+	}
+	return echoRepository.db
+}
+
+// CreateEcho 创建新的 Echo
 func (echoRepository *EchoRepository) CreateEcho(echo *model.Echo) error {
 	echo.Content = strings.TrimSpace(echo.Content)
 
