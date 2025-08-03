@@ -48,61 +48,66 @@ func NewConnectService(
 
 // AddConnect 添加连接
 func (connectService *ConnectService) AddConnect(userid uint, connected model.Connected) error {
-	user, err := connectService.commonService.CommonGetUserByUserId(userid)
-	if err != nil {
-		return err
-	}
-
-	if !user.IsAdmin {
-		return errors.New(commonModel.NO_PERMISSION_DENIED)
-	}
-
-	// 检查连接地址是否为空
-	if connected.ConnectURL == "" {
-		return errors.New(commonModel.INVALID_CONNECTION_URL)
-	}
-
-	// 去除连接地址前后的空格和斜杠
-	connected.ConnectURL = httpUtil.TrimURL(connected.ConnectURL)
-
-	// 检查连接地址是否已存在
-	connectedList, err := connectService.connectRepository.GetAllConnects()
-	if err != nil {
-		return err
-	}
-
-	// 检查连接地址是否已存在
-	for _, conn := range connectedList {
-		if conn.ConnectURL == connected.ConnectURL {
-			return errors.New(commonModel.CONNECT_HAS_EXISTS)
+	return connectService.txManager.Run(func(ctx context.Context) error {
+		user, err := connectService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
 		}
-	}
 
-	// 添加连接地址
-	if err := connectService.connectRepository.CreateConnect(&connected); err != nil {
-		return err
-	}
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
+		}
 
-	return nil
+		// 检查连接地址是否为空
+		if connected.ConnectURL == "" {
+			return errors.New(commonModel.INVALID_CONNECTION_URL)
+		}
+
+		// 去除连接地址前后的空格和斜杠
+		connected.ConnectURL = httpUtil.TrimURL(connected.ConnectURL)
+
+		// 检查连接地址是否已存在
+		connectedList, err := connectService.connectRepository.GetAllConnects()
+		if err != nil {
+			return err
+		}
+
+		// 检查连接地址是否已存在
+		for _, conn := range connectedList {
+			if conn.ConnectURL == connected.ConnectURL {
+				return errors.New(commonModel.CONNECT_HAS_EXISTS)
+			}
+		}
+
+		// 添加连接地址
+		if err := connectService.connectRepository.CreateConnect(ctx, &connected); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 }
 
 // DeleteConnect 删除连接
 func (connectService *ConnectService) DeleteConnect(userid, id uint) error {
-	user, err := connectService.commonService.CommonGetUserByUserId(userid)
-	if err != nil {
-		return err
-	}
+	return connectService.txManager.Run(func(ctx context.Context) error {
+		user, err := connectService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
+		}
 
-	if !user.IsAdmin {
-		return errors.New(commonModel.NO_PERMISSION_DENIED)
-	}
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
+		}
 
-	// 删除连接地址
-	if err := connectService.connectRepository.DeleteConnect(id); err != nil {
-		return err
-	}
+		// 删除连接地址
+		if err := connectService.connectRepository.DeleteConnect(ctx, id); err != nil {
+			return err
+		}
 
-	return nil
+		return nil
+	})
 }
 
 // GetConnect 提供当前实例的连接信息

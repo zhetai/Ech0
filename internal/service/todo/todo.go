@@ -54,7 +54,7 @@ func (todoService *TodoService) GetTodoList(userid uint) ([]model.Todo, error) {
 	return todos, nil
 }
 
-// AddTodo 创建新的To do
+// AddTodo 创建新的 To do
 func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
 	return todoService.txManager.Run(func(ctx context.Context) error {
 		// 检查执行操作的用户是否为管理员

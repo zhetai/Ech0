@@ -41,17 +41,17 @@ func (connectRepository *ConnectRepository) GetAllConnects() ([]model.Connected,
 }
 
 // CreateConnect 创建一个新的连接
-func (connectRepository *ConnectRepository) CreateConnect(connect *model.Connected) error {
-	if err := connectRepository.db.Create(connect).Error; err != nil {
+func (connectRepository *ConnectRepository) CreateConnect(ctx context.Context, connect *model.Connected) error {
+	if err := connectRepository.getDB(ctx).Create(connect).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 // DeleteConnect 删除连接
-func (connectRepository *ConnectRepository) DeleteConnect(id uint) error {
+func (connectRepository *ConnectRepository) DeleteConnect(ctx context.Context, id uint) error {
 	// 根据 ID 删除 Connect
-	if err := connectRepository.db.Delete(&model.Connected{}, id).Error; err != nil {
+	if err := connectRepository.getDB(ctx).Delete(&model.Connected{}, id).Error; err != nil {
 		return err
 	}
 
