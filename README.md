@@ -248,7 +248,7 @@ ssh -p 6278 ssh.vaaat.com
 - 打开浏览器访问`http://localhost:6277/swagger/index.html`查看和使用swagger文档  
 
 ## **前端要求:**  
-📌  **NodeJS v23.11.1, PNPM v10.13.1**
+📌  **NodeJS v24.5.0+, PNPM v10.14.0+**
 > 注：如需要多个nodejs版本共存可使用[fnm](https://github.com/Schniz/fnm)进行管理  
 
 ---
