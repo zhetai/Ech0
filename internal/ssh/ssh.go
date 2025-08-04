@@ -83,7 +83,7 @@ func SSHStop() error {
 	return nil
 }
 
-// Middleware will exit 1 connections trying with no active terminals.
+// ActivetermMiddleware Middleware will exit 1 connections trying with no active terminals.
 func ActivetermMiddleware() wish.Middleware {
 	return func(next ssh.Handler) ssh.Handler {
 		return func(sess ssh.Session) {

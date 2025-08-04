@@ -34,7 +34,7 @@ type Handler func(sess ssh.Session) (tea.Model, []tea.ProgramOption)
 // 否则程序将无法正常工作。
 type ProgramHandler func(sess ssh.Session) *tea.Program
 
-// Middleware 接受一个 Handler 并将 ssh.Session 的输入和输出
+// BubbleteaMiddleware 接受一个 Handler 并将 ssh.Session 的输入和输出
 // 挂钩到 tea.Program 中。
 //
 // 它还捕获窗口调整大小事件并将它们作为 tea.WindowSizeMsgs
@@ -47,9 +47,9 @@ func BubbleteaMiddleware(handler Handler) wish.Middleware {
 //
 // 如果客户端的颜色配置文件的颜色少于 p，将强制使用 p。
 // 请谨慎使用。
-func MiddlewareWithColorProfile(handler Handler, profile termenv.Profile) wish.Middleware {
-	return MiddlewareWithProgramHandler(newDefaultProgramHandler(handler), profile)
-}
+//func MiddlewareWithColorProfile(handler Handler, profile termenv.Profile) wish.Middleware {
+//	return MiddlewareWithProgramHandler(newDefaultProgramHandler(handler), profile)
+//}
 
 // MiddlewareWithProgramHandler 允许您指定 ProgramHandler 以便
 // 能够访问底层的 tea.Program，以及最低支持的颜色配置文件。
@@ -130,9 +130,9 @@ func MakeRenderer(sess ssh.Session) *lipgloss.Renderer {
 
 // MakeOptions 返回 tea.WithInput 和 tea.WithOutput 程序选项，
 // 考虑可能的模拟或分配的 PTY。
-func MakeOptions(sess ssh.Session) []tea.ProgramOption {
-	return makeOpts(sess)
-}
+//func MakeOptions(sess ssh.Session) []tea.ProgramOption {
+//	return makeOpts(sess)
+//}
 
 type sshEnviron []string
 

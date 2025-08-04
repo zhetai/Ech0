@@ -8,7 +8,7 @@ import (
 	model "github.com/lin-snow/ech0/internal/model/echo"
 )
 
-var echoKeyList = []string{}
+var echoKeyList []string
 
 const (
 	EchoPageCacheKeyPrefix = "echo_page" // echo_page:page:pageSize:search:showPrivate

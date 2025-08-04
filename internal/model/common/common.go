@@ -23,6 +23,7 @@ type Heatmap struct {
 }
 
 // File 相关
+
 type UploadFileType string
 type FileStorageType string
 type CommentProvider string

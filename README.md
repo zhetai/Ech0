@@ -271,7 +271,14 @@ pnpm dev # 启动前端预览
 
 **第三步： 前后端启动后访问:**  
 前端预览： http://localhost:5173 （端口在启动后可在控制台查看）  
-后端预览： http://localhost:6277 （默认后端端口为6277）  
+后端预览： http://localhost:6277 （默认后端端口为6277） 
+
+> 对使用**层次化架构的包**进行导入时，请使用**规范的 alias 命名**：  
+> model 层： `xxxModel`  
+> util 层： `xxxUtil`  
+> handler 层： `xxxHandler`  
+> service 层： `xxxService`  
+> repository 层： `xxxRepository`  
 
 ---
 

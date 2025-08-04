@@ -1,3 +1,5 @@
+// Package server
+//
 // @title Ech0 API 文档
 // @version 1.0
 // @description 开源、自托管轻量级发布平台 Ech0 的 API 文档
@@ -7,6 +9,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/lin-snow/ech0/internal/transaction"
 	"net/http"
@@ -78,7 +81,7 @@ func (s *Server) Start() {
 	}
 
 	go func() {
-		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := s.httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errUtil.HandlePanicError(&commonModel.ServerError{
 				Msg: commonModel.GIN_RUN_FAILED,
 				Err: err,

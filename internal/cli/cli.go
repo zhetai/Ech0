@@ -113,7 +113,7 @@ func DoVersion() {
 	tui.PrintCLIWithBox(item)
 }
 
-// DoEch0Info() 打印 Ech0 信息
+// DoEch0Info 打印 Ech0 信息
 func DoEch0Info() {
 	if _, err := fmt.Fprintln(os.Stdout, tui.GetEch0Info()); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to print ech0 info: %v\n", err)
@@ -148,7 +148,7 @@ func DoTui() {
 		fmt.Println()
 
 		var action string
-		options := []huh.Option[string]{}
+		var options []huh.Option[string]
 
 		if s == nil {
 			options = append(options, huh.NewOption("🪅 启动 Web 服务", "serve"))

@@ -167,27 +167,32 @@ func GetLogger() *zap.Logger {
 	return Logger
 }
 
-// 便捷的日志方法
+// Debug 打印调试级别日志
 func Debug(msg string, fields ...zap.Field) {
 	GetLogger().Debug(msg, fields...)
 }
 
+// Info 打印信息级别日志
 func Info(msg string, fields ...zap.Field) {
 	GetLogger().Info(msg, fields...)
 }
 
+// Warn 打印警告级别日志
 func Warn(msg string, fields ...zap.Field) {
 	GetLogger().Warn(msg, fields...)
 }
 
+// Error 打印错误级别日志
 func Error(msg string, fields ...zap.Field) {
 	GetLogger().Error(msg, fields...)
 }
 
+// Panic 打印恐慌级别日志并触发 panic
 func Panic(msg string, fields ...zap.Field) {
 	GetLogger().Panic(msg, fields...)
 }
 
+// Fatal 打印致命错误级别日志并终止程序
 func Fatal(msg string, fields ...zap.Field) {
 	GetLogger().Fatal(msg, fields...)
 }

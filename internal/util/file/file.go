@@ -135,7 +135,7 @@ func ZipDirectoryWithOptions(sourceDir string, zipPath string, options ZipOption
 		// 创建文件条目
 		header := &zip.FileHeader{
 			Name:     relPath,
-			Method:   uint16(options.CompressionLevel),
+			Method:   options.CompressionLevel,
 			Modified: info.ModTime(),
 		}
 
@@ -194,25 +194,25 @@ func shouldIncludeFile(info os.FileInfo, options ZipOptions) bool {
 }
 
 // ZipFiles 压缩指定的文件列表
-func ZipFiles(files []string, zipPath string) error {
-	zipFile, err := os.Create(zipPath)
-	if err != nil {
-		return fmt.Errorf("无法创建 ZIP 文件: %w", err)
-	}
-	defer zipFile.Close()
-
-	zipWriter := zip.NewWriter(zipFile)
-	defer zipWriter.Close()
-
-	for _, file := range files {
-		err := addFileToZip(zipWriter, file, filepath.Base(file))
-		if err != nil {
-			return fmt.Errorf("添加文件 %s 到 ZIP 失败: %w", file, err)
-		}
-	}
-
-	return nil
-}
+//func ZipFiles(files []string, zipPath string) error {
+//	zipFile, err := os.Create(zipPath)
+//	if err != nil {
+//		return fmt.Errorf("无法创建 ZIP 文件: %w", err)
+//	}
+//	defer zipFile.Close()
+//
+//	zipWriter := zip.NewWriter(zipFile)
+//	defer zipWriter.Close()
+//
+//	for _, file := range files {
+//		err := addFileToZip(zipWriter, file, filepath.Base(file))
+//		if err != nil {
+//			return fmt.Errorf("添加文件 %s 到 ZIP 失败: %w", file, err)
+//		}
+//	}
+//
+//	return nil
+//}
 
 // addFileToZip 将单个文件添加到 ZIP
 func addFileToZip(zipWriter *zip.Writer, filename, archiveName string) error {

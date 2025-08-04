@@ -27,7 +27,7 @@ type CommonHandlerInterface interface {
 	// GetPlayMusic 获取可播放的音乐
 	GetPlayMusic() gin.HandlerFunc
 
-	// HelloEch0
+	// HelloEch0 一个简单的获取一些有关 Ech0 的信息的接口
 	HelloEch0() gin.HandlerFunc
 
 	// GetRss 获取RSS
