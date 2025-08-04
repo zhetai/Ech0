@@ -59,6 +59,8 @@ func (settingService *SettingService) GetSetting(setting *model.SystemSetting) e
 			if err := settingService.keyvalueRepository.AddKeyValue(ctx, commonModel.SystemSettingsKey, string(settingToJSON)); err != nil {
 				return err
 			}
+
+			return nil
 		}
 
 		if err := jsonUtil.JSONUnmarshal([]byte(systemSetting.(string)), setting); err != nil {
@@ -67,7 +69,6 @@ func (settingService *SettingService) GetSetting(setting *model.SystemSetting) e
 
 		return nil
 	})
-
 }
 
 // UpdateSetting 更新设置
