@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+
 	"github.com/lin-snow/ech0/internal/transaction"
 
 	"github.com/lin-snow/ech0/internal/config"
@@ -130,6 +131,8 @@ func (settingService *SettingService) GetCommentSetting(setting *model.CommentSe
 			if err := settingService.keyvalueRepository.AddKeyValue(ctx, commonModel.CommentSettingKey, string(settingToJSON)); err != nil {
 				return err
 			}
+
+			return nil
 		}
 
 		if err := jsonUtil.JSONUnmarshal([]byte(commentSetting.(string)), setting); err != nil {
