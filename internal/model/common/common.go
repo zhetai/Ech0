@@ -84,5 +84,5 @@ const (
 
 const (
 	// Version 是当前版本号
-	Version = "2.4.6"
+	Version = "2.4.7"
 )
