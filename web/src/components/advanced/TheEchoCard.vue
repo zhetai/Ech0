@@ -88,7 +88,7 @@
     </div>
 
     <!-- 图片 && 内容 -->
-    <div class="border-l-2 border-gray-300 ml-1 mb-1">
+    <div class="border-l-2 border-[#0000000d] ml-1 mb-1">
       <div class="p-6">
         <!-- 图片 -->
         <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
