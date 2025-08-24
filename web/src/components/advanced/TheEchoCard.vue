@@ -91,9 +91,9 @@
 
     <!-- 图片 && 内容 -->
     <div class="border-l-2 border-[#0000000d] ml-1">
-      <div class="px-6 py-4">
+      <div class="px-4 py-3">
         <!-- 图片 -->
-        <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
+        <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto mb-4">
           <div class="echoimg overflow-hidden mb-2">
             <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
               <img
@@ -119,7 +119,7 @@
         </div>
 
         <!-- 内容 -->
-        <div class="mt-4 mx-auto w-11/12 px-1">
+        <div class="mx-auto w-11/12 pl-1">
           <MdPreview
             :id="previewOptions.proviewId"
             :modelValue="props.echo.content"
