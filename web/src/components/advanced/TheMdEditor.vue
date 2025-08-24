@@ -159,7 +159,12 @@ config({
 }
 
 :deep(.md-editor-toolbar-item) {
-  color: #939393 !important;
+  color: #c5c5c5;
+}
+
+:deep(.md-editor-toolbar-wrapper .md-editor-toolbar-active) {
+  color: #ff9f46d4;
+  background-color: #f6d6bf59;
 }
 
 :deep(ul li) {

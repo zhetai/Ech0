@@ -39,7 +39,7 @@
             v-if="userStore.isLogin"
             @click="handleDeleteEcho(props.echo.id)"
             title="删除"
-            class="transform transition-transform duration-200 hover:scale-160"
+            class="transform transition-transform duration-200 hover:scale-120"
           >
             <Roll />
           </button>
@@ -49,7 +49,7 @@
             v-if="userStore.isLogin"
             @click="handleUpdateEcho()"
             title="更新"
-            class="transform transition-transform duration-200 hover:scale-160"
+            class="transform transition-transform duration-200 hover:scale-120"
           >
             <EditEcho />
           </button>
@@ -59,7 +59,7 @@
           <button
             @click="handleExpandEcho(echo.id)"
             title="展开Echo"
-            class="transform transition-transform duration-200 hover:scale-160"
+            class="transform transition-transform duration-200 hover:scale-120"
           >
             <Expand />
           </button>
@@ -71,7 +71,7 @@
               <button
                 @click="handleLikeEcho(props.echo.id)"
                 title="点赞"
-                class="transform transition-transform duration-200 hover:scale-160"
+                class="transform transition-transform duration-200 hover:scale-120"
               >
                 <GrayLike class="w-4 h-4 transition-colors duration-200 hover:text-red-500" />
               </button>
