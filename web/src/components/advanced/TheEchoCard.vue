@@ -88,11 +88,11 @@
     </div>
 
     <!-- 图片 && 内容 -->
-    <div class="border-l-2 border-[#0000000d] ml-1 mb-1">
-      <div class="p-6">
+    <div class="border-l-2 border-[#0000000d] ml-1">
+      <div class="px-6 py-4">
         <!-- 图片 -->
         <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto">
-          <div class="shadow-lg rounded-lg overflow-hidden mb-2">
+          <div class="echoimg overflow-hidden mb-2">
             <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
               <img
                 :src="getImageUrl(props.echo.images[imageIndex])"
@@ -117,7 +117,7 @@
         </div>
 
         <!-- 内容 -->
-        <div>
+        <div class="mt-4 mx-auto w-11/12 px-1">
           <MdPreview
             :id="previewOptions.proviewId"
             :modelValue="props.echo.content"
@@ -293,9 +293,19 @@ onBeforeUnmount(() => {
   background-color: inherit;
 }
 
-.md-editor {
+.echoimg {
+  box-shadow: 0 1px 2px rgba(0,0,0,.02),0 2px 4px rgba(0,0,0,.02),0 4px 8px rgba(0,0,0,.02),0 8px 16px rgba(0,0,0,.02);
+  border-radius: 8px;
+}
+
+:deep(.md-editor) {
   /* font-family: var(--font-sans); */
   font-family: 'LXGW WenKai Screen';
+}
+
+:deep(.md-editor div.github-theme) {
+  line-height: 1.6;
+  color: #000;
 }
 
 :deep(ul li) {
