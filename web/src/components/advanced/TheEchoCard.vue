@@ -3,11 +3,11 @@
     <!-- 日期时间 && 操作按钮 -->
     <div class="flex justify-between items-center">
       <!-- 日期时间 -->
-      <div class="flex justify-start items-center h-auto">
+      <div @click="handleExpandEcho(echo.id)" class="flex justify-start items-center h-auto">
         <!-- 小点 -->
         <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
         <!-- 具体日期时间 -->
-        <div class="flex justify-start text-sm text-orange-500">
+        <div class="flex justify-start text-sm text-orange-500 hover:underline hover:decoration-offset-3 hover:decoration-1">
           {{ formatDate(props.echo.created_at) }}
         </div>
       </div>

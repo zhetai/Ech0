@@ -49,7 +49,12 @@ export const formatDate = (dateString: string) => {
   } else if (diffInDays < 3) {
     return `${diffInDays}天前`
   } else {
-    return date.toLocaleString() // 返回完整的日期和时间
+    const padZero = (num: number) => (num < 10 ? '0' + num : num)
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    const weekDay = weekDays[date.getDay()]
+
+    return `${padZero(date.getHours())}:${padZero(date.getMinutes())} · ` +
+          `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 · ${weekDay}`
   }
 }
 

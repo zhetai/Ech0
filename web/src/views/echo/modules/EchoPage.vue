@@ -4,7 +4,7 @@
       <div class="mx-auto max-w-sm">
         <!-- 返回上一页 -->
         <BaseButton
-          @click="router.push({ name: 'home' })"
+          @click="goBack"
           class="text-gray-600 rounded-md !shadow-none !border-none !ring-0 !bg-transparent group"
           title="返回首页"
         >
@@ -48,6 +48,15 @@ const handleUpdateLikeCount = () => {
     echo.value.fav_count += 1
   }
 }
+
+const goBack = () => {
+  if (window.history.length > 2) {
+    window.history.back()
+  } else {
+    router.push({ name: 'home' }) // 没有历史记录则跳首页
+  }
+}
+
 
 onMounted(() => {
   // 在这里可以添加获取Echo详情的逻辑
