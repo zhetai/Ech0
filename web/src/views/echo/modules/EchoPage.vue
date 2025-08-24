@@ -57,7 +57,6 @@ const goBack = () => {
   }
 }
 
-
 onMounted(() => {
   // 在这里可以添加获取Echo详情的逻辑
   fetchGetEchoById(echoId).then((res) => {

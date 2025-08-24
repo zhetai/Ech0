@@ -7,7 +7,9 @@
         <!-- 小点 -->
         <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
         <!-- 具体日期时间 -->
-        <div class="flex justify-start text-sm text-orange-500 hover:underline hover:decoration-offset-3 hover:decoration-1">
+        <div
+          class="flex justify-start text-sm text-orange-500 hover:underline hover:decoration-offset-3 hover:decoration-1"
+        >
           {{ formatDate(props.echo.created_at) }}
         </div>
       </div>
@@ -294,7 +296,11 @@ onBeforeUnmount(() => {
 }
 
 .echoimg {
-  box-shadow: 0 1px 2px rgba(0,0,0,.02),0 2px 4px rgba(0,0,0,.02),0 4px 8px rgba(0,0,0,.02),0 8px 16px rgba(0,0,0,.02);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.02),
+    0 2px 4px rgba(0, 0, 0, 0.02),
+    0 4px 8px rgba(0, 0, 0, 0.02),
+    0 8px 16px rgba(0, 0, 0, 0.02);
   border-radius: 8px;
 }
 

@@ -52,7 +52,7 @@ const initEditor = reactive({
     '-',
     '=',
     'previewOnly',
-    'pageFullscreen'
+    'pageFullscreen',
   ] as ToolbarNames[],
   noPrettier: false,
   tabWidth: 2,
@@ -149,8 +149,7 @@ config({
       },
     },
   },
-});
-
+})
 </script>
 
 <style scoped lang="css">

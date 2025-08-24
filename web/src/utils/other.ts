@@ -53,8 +53,10 @@ export const formatDate = (dateString: string) => {
     const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
     const weekDay = weekDays[date.getDay()]
 
-    return `${padZero(date.getHours())}:${padZero(date.getMinutes())} · ` +
-          `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 · ${weekDay}`
+    return (
+      `${padZero(date.getHours())}:${padZero(date.getMinutes())} · ` +
+      `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 · ${weekDay}`
+    )
   }
 }
 
