@@ -26,3 +26,8 @@ body {
     } */
   }
 }
+
+::selection {
+  color: #fff;
+  background: #000000;
+}
