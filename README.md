@@ -289,7 +289,6 @@ pnpm dev # 启动前端预览
 - 感谢 [Figma](https://www.figma.com/) 提供便捷的 Logo 设计工具
 - 感谢 [VSCode](https://code.visualstudio.com/) 和 [Jetbrain GoLand](https://www.jetbrains.com/) 提供强大易用的开发工具
 - 感谢异家人群友提供的各种改进建议和问题反馈
-- 感谢舍友提供了初版 Logo 设计
 - 感谢所有开源社区的贡献者与支持者
 
 ---
