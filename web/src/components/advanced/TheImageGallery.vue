@@ -3,7 +3,7 @@
   <div
     v-if="images?.length"
     :class="[
-      'w-5/6 mx-auto grid gap-2 mb-4',
+      'imgwidth mx-auto grid gap-2 mb-4',
       images.length === 1 ? 'grid-cols-1 justify-items-center' : 'grid-cols-2',
     ]"
   >
@@ -18,7 +18,7 @@
         :src="getImageUrl(src)"
         alt="`预览图片${idx + 1}`"
         loading="lazy"
-        class="block rounded-md max-w-full h-auto"
+        class="echoimg block max-w-full h-auto"
       />
     </button>
   </div>
@@ -79,6 +79,19 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.imgwidth {
+  width: 88%;
+}
+
+.echoimg {
+  border-radius: 8px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.02),
+    0 2px 4px rgba(0, 0, 0, 0.02),
+    0 4px 8px rgba(0, 0, 0, 0.02),
+    0 8px 16px rgba(0, 0, 0, 0.02);
+}
+
 /* 过渡动画 */
 .fade-enter-active,
 .fade-leave-active {
