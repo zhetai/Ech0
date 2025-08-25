@@ -92,31 +92,46 @@
     <!-- 图片 && 内容 -->
     <div class="border-l-2 border-[#0000000d] ml-1">
       <div class="px-4 py-3">
-        <!-- 图片 -->
-        <div v-if="props.echo.images && props.echo.images.length > 0" class="w-5/6 mx-auto mb-4">
-          <div class="echoimg overflow-hidden mb-2">
-            <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
-              <img
-                :src="getImageUrl(props.echo.images[imageIndex])"
-                alt="Image"
-                class="max-w-full object-cover"
-                loading="lazy"
-              />
-            </a>
-          </div>
-          <!-- 图片切换 -->
-          <div v-if="props.echo.images.length > 1" class="flex items-center justify-center">
-            <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
-              <Prev class="w-6 h-6" />
-            </button>
-            <span class="text-gray-500 text-sm mx-2">
-              {{ imageIndex + 1 }} / {{ props.echo.images.length }}
-            </span>
-            <button @click="imageIndex = Math.min(imageIndex + 1, props.echo.images.length - 1)">
-              <Next class="w-6 h-6" />
-            </button>
-          </div>
+        <!-- 瀑布流缩略图 -->
+        <div
+          v-if="props.echo.images?.length"
+          :class="[
+            'w-5/6 mx-auto grid gap-2 mb-4',
+            props.echo.images.length === 1 ? 'grid-cols-1 justify-items-center' : 'grid-cols-2',
+          ]"
+        >
+          <button
+            v-for="(src, idx) in props.echo.images"
+            :key="idx"
+            class="bg-transparent border-0 p-0 cursor-pointer w-fit"
+            :class="getColSpan(idx, props.echo.images.length)"
+            @click="active = idx"
+          >
+            <img
+              :src="getImageUrl(src)"
+              alt="`预览图片${idx + 1}`"
+              loading="lazy"
+              class="block rounded-md max-w-full h-auto"
+            />
+          </button>
         </div>
+
+        <!-- 灯箱层 -->
+        <Teleport to="body">
+          <transition name="fade">
+            <div
+              v-if="active !== null"
+              class="fixed inset-0 w-screen h-screen bg-black/80 backdrop-blur-[12px] flex justify-center items-center z-[9999] overflow-hidden"
+              @click.self="active = null"
+            >
+              <img
+                :src="getImageUrl(props.echo.images[active])"
+                class="max-w-[80vw] max-h-[80vh] rounded-md cursor-pointer object-contain shadow-[0_4px_12px_rgba(0,0,0,0.4)] transition ease-in-out duration-200"
+                @click="active = null"
+              />
+            </div>
+          </transition>
+        </Teleport>
 
         <!-- 内容 -->
         <div class="mx-auto w-11/12 pl-1">
@@ -172,8 +187,6 @@ import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import 'md-editor-v3/lib/preview.css'
 import Roll from '../icons/roll.vue'
 import Lock from '../icons/lock.vue'
-import Prev from '../icons/prev.vue'
-import Next from '../icons/next.vue'
 import More from '../icons/more.vue'
 import Expand from '../icons/expand.vue'
 import GrayLike from '../icons/graylike.vue'
@@ -193,7 +206,7 @@ type Echo = App.Api.Ech0.Echo
 const props = defineProps<{
   echo: Echo
 }>()
-const imageIndex = ref<number>(0)
+
 const userStore = useUserStore()
 const previewOptions = {
   proviewId: 'preview-only',
@@ -277,6 +290,34 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
+const active = ref<number | null>(null)
+const getColSpan = (idx: number, total: number) => {
+  // 单张图片占满
+  if (total === 1) return 'col-span-1 justify-self-center'
+  // 第一张在奇数张时跨两列
+  if (idx === 0 && total % 2 !== 0) return 'col-span-2'
+  // 其他图片默认占一列
+  return ''
+}
+
+function close() {
+  active.value = null
+}
+
+function onKeyDown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && active.value !== null) {
+    close()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeyDown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeyDown)
+})
+
 onMounted(() => {
   Fancybox.bind('[data-fancybox]', {
     // Your custom options
@@ -295,13 +336,14 @@ onBeforeUnmount(() => {
   background-color: inherit;
 }
 
-.echoimg {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.02),
-    0 2px 4px rgba(0, 0, 0, 0.02),
-    0 4px 8px rgba(0, 0, 0, 0.02),
-    0 8px 16px rgba(0, 0, 0, 0.02);
-  border-radius: 8px;
+/* 过渡动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.05s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 :deep(.md-editor) {
