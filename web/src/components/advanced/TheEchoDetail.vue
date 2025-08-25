@@ -26,7 +26,9 @@
 
     <!-- 图片 && 内容 -->
     <div>
-      <div>
+      <div class="py-4">
+        <TheImageGallery :images="props.echo.images" />
+
         <!-- 内容 -->
         <div>
           <MdPreview
@@ -61,32 +63,6 @@
             :website="props.echo.extension"
             class="px-2 mx-auto hover:shadow-md"
           />
-        </div>
-
-        <!-- 图片 -->
-        <div v-if="props.echo.images && props.echo.images.length > 0" class="mx-auto w-11/12 my-4">
-          <div class="rounded-lg overflow-hidden mb-2">
-            <a :href="getImageUrl(props.echo.images[imageIndex])" data-fancybox>
-              <img
-                :src="getImageUrl(props.echo.images[imageIndex])"
-                alt="Image"
-                class="max-w-full object-cover"
-                loading="lazy"
-              />
-            </a>
-          </div>
-          <!-- 图片切换 -->
-          <div v-if="props.echo.images.length > 1" class="flex items-center justify-center">
-            <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
-              <Prev class="w-6 h-6" />
-            </button>
-            <span class="text-gray-500 text-sm mx-2">
-              {{ imageIndex + 1 }} / {{ props.echo.images.length }}
-            </span>
-            <button @click="imageIndex = Math.min(imageIndex + 1, props.echo.images.length - 1)">
-              <Next class="w-6 h-6" />
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -129,17 +105,13 @@
 <script setup lang="ts">
 import TheGithubCard from './TheGithubCard.vue'
 import TheVideoCard from './TheVideoCard.vue'
-import Prev from '../icons/prev.vue'
-import Next from '../icons/next.vue'
 import Verified from '../icons/verified.vue'
 import GrayLike from '../icons/graylike.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
-import '@fancyapps/ui/dist/fancybox/fancybox.css'
+import TheImageGallery from './TheImageGallery.vue'
 import 'md-editor-v3/lib/preview.css'
-import { Fancybox } from '@fancyapps/ui'
 import { MdPreview } from 'md-editor-v3'
-import { getImageUrl } from '@/utils/other'
 import { onMounted, ref } from 'vue'
 import { fetchLikeEcho } from '@/service/api'
 import { theToast } from '@/utils/toast'
@@ -158,7 +130,6 @@ type Echo = App.Api.Ech0.Echo
 const props = defineProps<{
   echo: Echo
 }>()
-const imageIndex = ref<number>(0)
 const previewOptions = {
   proviewId: 'preview-only',
   theme: 'light' as 'light' | 'dark',
@@ -202,10 +173,6 @@ const apiUrl = getApiUrl()
 const logo = ref<string>('/favicon.svg')
 
 onMounted(() => {
-  Fancybox.bind('[data-fancybox]', {
-    // Your custom options
-  })
-
   fetchGetStatus().then((res) => {
     if (res.code === 1) {
       const theLogo = res.data.logo
