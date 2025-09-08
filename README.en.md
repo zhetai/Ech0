@@ -181,7 +181,7 @@ If you encounter bugs, please report them via [issues](https://github.com/lin-sn
 
 ## **Backend Requirements:**
 
-📌 **Go 1.24.3+**
+📌 **Go 1.25.1+**
 
 📌 **C Compiler**
 Required for libraries like `go-sqlite3` that use CGO:
@@ -205,7 +205,7 @@ Install [Golangci-Lint](https://golangci-lint.run/) for linting and formatting:
 
 ## **Frontend Requirements:**
 
-📌  **NodeJS v23.11.1, PNPM v10.13.1**
+📌  **NodeJS v24.5.0, PNPM v10.15.1**
 
 > Tip: Use [fnm](https://github.com/Schniz/fnm) for managing multiple Node versions.
 
