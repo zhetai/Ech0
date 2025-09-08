@@ -95,7 +95,7 @@
         <TheImageGallery :images="props.echo.images" />
 
         <!-- 内容 -->
-        <div class="mx-auto w-11/12 pl-1">
+        <div class="mx-auto w-11/12 pl-1 whitespace-normal break-words">
           <MdPreview
             :id="previewOptions.proviewId"
             :modelValue="props.echo.content"
