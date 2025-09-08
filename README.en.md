@@ -111,18 +111,6 @@ docker image prune -f
 
 ---
 
-# 🦖 Roadmap
-
-* [x] Rewrite frontend using plain Vue 3
-* [x] Fix a security issue
-* [x] Refactor backend for elegance and efficiency
-* [x] Resolve cross-platform issues
-* [x] Redesign logo using Figma
-* [ ] Polish UI details and add more practical features
-* [ ] Performance optimization & UI beautification
-
----
-
 # ❓ FAQ
 
 1. **What is Ech0?**
