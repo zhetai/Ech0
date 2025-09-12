@@ -28,9 +28,9 @@ func NewGormTransactionManager(db *gorm.DB) *GormTransactionManager {
 //   - error: 如果 fn 执行成功返回 nil，否则返回错误信息
 func (tm *GormTransactionManager) Run(fn func(ctx context.Context) error) error {
 	// 返回一个新的事务上下文
-	// 在这个上下文中，txKey 被设置为当前事务的 gorm.DB
+	// 在这个上下文中，txKey 被设置为当前事务的 gorm.DB，使用gorm自带的自动事务管理
 	return tm.db.Transaction(func(tx *gorm.DB) error {
-		// 将当前事务的 gorm.DB 设置到上下文中
+		// 将当前事务的 gorm.DB 设置到上下文中，这里创建一个新的上下文
 		ctx := context.WithValue(context.Background(), TxKey, tx)
 
 		// 执行传入的函数，并传递事务上下文
