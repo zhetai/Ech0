@@ -5,7 +5,6 @@ import { saveAuthToken } from '@/service/request/shared'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
 import { useRouter } from 'vue-router'
-import { useEchoStore } from './echo'
 
 export const useUserStore = defineStore('userStore', () => {
   /**
@@ -33,10 +32,6 @@ export const useUserStore = defineStore('userStore', () => {
         // 登录成功
         theToast.success('登录成功')
         router.push({ name: 'home' })
-
-        // 登录后刷新Echo
-        const echoStore = useEchoStore()
-        echoStore.refreshEchos()
       }
     })
   }
