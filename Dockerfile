@@ -53,10 +53,8 @@ COPY --from=builder /app /app
 
 RUN ls -lh /app
 
-# 安装 ncurses-utils 和 bash（方便调试）
-RUN apk add --no-cache ncurses-utils bash \
-    && chmod +x /app/ech0 \
-    && ls -lh /app
+# 设置 ech0 二进制文件的权限
+RUN chmod +x /app/ech0
 
 EXPOSE 6277
 EXPOSE 6278
