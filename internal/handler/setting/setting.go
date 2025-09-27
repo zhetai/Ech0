@@ -149,3 +149,72 @@ func (settingHandler *SettingHandler) UpdateCommentSettings() gin.HandlerFunc {
 		}
 	})
 }
+
+// GetS3Settings 获取 S3 存储设置
+//
+// @Summary 获取 S3 存储设置
+// @Description 获取系统的 S3 存储相关设置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response{data=model.S3Setting} "获取 S3 存储设置成功"
+// @Failure 200 {object} res.Response "获取 S3 存储设置失败"
+// @Router /s3/settings [get]
+func (settingHandler *SettingHandler) GetS3Settings() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		var s3Setting model.S3Setting
+		if err := settingHandler.settingService.GetS3Setting(userid, &s3Setting); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: s3Setting,
+			Msg:  commonModel.GET_S3_SETTINGS_SUCCESS,
+		}
+	})
+
+}
+
+// UpdateS3Settings 更新 S3 存储设置
+//
+// @Summary 更新 S3 存储设置
+// @Description 更新系统的 S3 存储相关设置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param s3Settings body model.S3SettingDto true "新的 S3 存储设置"
+// @Success 200 {object} res.Response "更新 S3 存储设置成功"
+// @Failure 200 {object} res.Response "更新 S3 存储设置失败"
+// @Router /s3/settings [put]
+func (settingHandler *SettingHandler) UpdateS3Settings() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 解析请求体中的参数
+		var newS3Settings model.S3SettingDto
+		if err := ctx.ShouldBindJSON(&newS3Settings); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}		
+
+		if err := settingHandler.settingService.UpdateS3Setting(userid, &newS3Settings); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.UPDATE_S3_SETTINGS_SUCCESS,
+		}
+	})
+}

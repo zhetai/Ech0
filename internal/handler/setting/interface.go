@@ -14,4 +14,10 @@ type SettingHandlerInterface interface {
 
 	// UpdateCommentSettings 更新评论设置
 	UpdateCommentSettings() gin.HandlerFunc
+
+	// GetS3Settings 获取 S3 存储设置
+	GetS3Settings() gin.HandlerFunc
+
+	// UpdateS3Settings 更新 S3 存储设置
+	UpdateS3Settings() gin.HandlerFunc
 }

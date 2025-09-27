@@ -7,6 +7,7 @@ import (
 	"github.com/lin-snow/ech0/internal/transaction"
 
 	"github.com/lin-snow/ech0/internal/config"
+	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/setting"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
@@ -176,6 +177,83 @@ func (settingService *SettingService) UpdateCommentSetting(userid uint, newSetti
 		}
 
 		if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.CommentSettingKey, string(settingToJSON)); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+}
+
+// GetS3Setting 获取 S3 存储设置
+func (settingService *SettingService) GetS3Setting(userid uint, setting *model.S3Setting) error {
+	return settingService.txManager.Run(func(ctx context.Context) error {
+		s3Setting, err := settingService.keyvalueRepository.GetKeyValue(commonModel.S3SettingKey)
+		if err != nil {
+			// 数据库中不存在数据，手动添加初始数据
+			setting.Enable = false
+			setting.Endpoint = ""
+			setting.AccessKeyID = ""
+			setting.SecretAccessKey = ""
+			setting.BucketName = ""
+			setting.Region = ""
+			setting.UseSSL = false
+
+			// 序列化为 JSON
+			settingToJSON, err := jsonUtil.JSONMarshal(setting)
+			if err != nil {
+				return err
+			}
+			if err := settingService.keyvalueRepository.AddKeyValue(ctx, commonModel.S3SettingKey, string(settingToJSON)); err != nil {
+				return err
+			}
+
+			return nil
+		}
+
+		if err := jsonUtil.JSONUnmarshal([]byte(s3Setting.(string)), setting); err != nil {
+			return err
+		}
+
+		// 如果用户未登录且不为管理员,则屏蔽 S3 设置的敏感信息
+		if userid == authModel.NO_USER_LOGINED {
+			setting.AccessKeyID = "******"
+			setting.SecretAccessKey = "******"
+		}
+
+		return nil
+	})
+
+}
+
+// UpdateS3Setting 更新 S3 存储设置
+func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *model.S3SettingDto) error {
+	return settingService.txManager.Run(func(ctx context.Context) error {
+		user, err := settingService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
+		}
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
+		}
+
+		s3Setting := &model.S3Setting{
+			Enable:         newSetting.Enable,
+			Endpoint:       newSetting.Endpoint,
+			AccessKeyID:    newSetting.AccessKeyID,
+			SecretAccessKey: newSetting.SecretAccessKey,
+			BucketName:     newSetting.BucketName,
+			Region:         newSetting.Region,
+			UseSSL:         newSetting.UseSSL,
+		}
+
+		// 序列化为 JSON
+		settingToJSON, err := jsonUtil.JSONMarshal(s3Setting)
+		if err != nil {
+			return err
+		}
+
+		if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.S3SettingKey, string(settingToJSON)); err != nil {
 			return err
 		}
 

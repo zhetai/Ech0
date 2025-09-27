@@ -18,3 +18,13 @@ type CommentSettingDto struct {
 	Provider      string `json:"provider"`       // 评论提供者
 	CommentAPI    string `json:"comment_api"`    // 评论 API 地址
 }
+
+type S3SettingDto struct {
+	Enable         bool   `json:"enable"`           // 是否启用 S3 存储
+	Endpoint       string `json:"endpoint"`         // S3 端点
+	AccessKeyID    string `json:"access_key_id"`    // 访问密钥 ID
+	SecretAccessKey string `json:"secret_access_key"`// 秘密访问密钥
+	BucketName     string `json:"bucket_name"`      // 存储桶名称
+	Region         string `json:"region"`           // 区域
+	UseSSL         bool   `json:"use_ssl"`          // 是否使用 SSL
+}

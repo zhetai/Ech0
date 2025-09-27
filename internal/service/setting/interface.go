@@ -14,4 +14,10 @@ type SettingServiceInterface interface {
 
 	// UpdateCommentSetting 更新评论设置
 	UpdateCommentSetting(userid uint, newSetting *model.CommentSettingDto) error
+
+	// GetS3Setting 获取 S3 存储设置
+	GetS3Setting(userid uint, setting *model.S3Setting) error
+
+	// UpdateS3Setting 更新 S3 存储设置
+	UpdateS3Setting(userid uint, newSetting *model.S3SettingDto) error
 }

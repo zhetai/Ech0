@@ -67,6 +67,8 @@ const (
 	SystemSettingsKey = "system_settings"
 	// CommentSettingKey 是评论设置的建
 	CommentSettingKey = "comment_setting"
+	// S3SettingKey 是 S3 存储设置的键
+	S3SettingKey = "s3_setting"
 	// MigrationKey 是数据库迁移的标记键
 	MigrationKey = "db_migration:message_to_echo:v1"
 )

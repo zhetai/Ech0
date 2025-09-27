@@ -64,6 +64,14 @@ func (m *MockSettingService) UpdateSetting(id uint, setting *settingModel.System
 	return nil
 }
 
+func (m *MockSettingService) GetS3Setting(userid uint, setting *settingModel.S3Setting) error {
+	return nil
+}
+
+func (m *MockSettingService) UpdateS3Setting(userid uint, setting *settingModel.S3SettingDto) error {
+	return nil
+}
+
 // 测试套件
 type UserServiceTestSuite struct {
 	suite.Suite
