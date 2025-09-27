@@ -16,6 +16,7 @@ interface RequestOptions {
 const ofetchInstance = ofetch.create({
   baseURL: import.meta.env.VITE_SERVICE_BASE_URL,
   timeout: 20000,
+  ignoreResponseError: true, // 忽略响应错误，让响应拦截器处理
 
   // 请求拦截器
   onRequest({ options }) {
@@ -30,9 +31,18 @@ const ofetchInstance = ofetch.create({
     options.headers.delete('X-Direct-URL')
   },
   // 响应拦截器
-  onResponseError({ response }) {
-    const data = response._data
-    theToast.error(data?.msg ? String(data.msg) : '请求失败')
+  onResponseError: async ({ response }) => {
+    let data
+    try {
+      data = await response.json()
+    } catch {
+      data = { code: 0, msg: `请求失败`, data: null }
+    }
+
+    response._data = data
+
+    // 不再 throw，让后续 then() 也能拿到
+    return data
   },
 })
 

@@ -72,7 +72,7 @@ onMounted(() => {
   })
 
   uppy.use(XHRUpload, {
-    endpoint: 'http://localhost:6277/api/images/upload', // 换成你的后端上传接口
+    endpoint: '/api/images/upload', // 换成你的后端上传接口
     fieldName: 'file',
     formData: true,
     headers: {
