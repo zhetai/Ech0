@@ -16,7 +16,7 @@
 
         <!-- ImageMode : TheImageEditor -->
         <div v-if="currentMode === Mode.Image">
-          <h2 class="text-gray-500 font-bold my-2">插入图片（支持直链、本地上传）</h2>
+          <h2 class="text-gray-500 font-bold my-2">插入图片</h2>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="text-gray-500">选择添加方式：</span>
@@ -34,6 +34,13 @@
                 @click="imageToAdd.image_source = ImageSource.LOCAL"
                 title="上传本地图片"
               />
+              <!-- S3 存储 -->
+              <BaseButton
+                :icon="Bucket"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.S3"
+                title="从S3存储选择图片"
+              />
             </div>
             <div>
               <BaseButton
@@ -45,6 +52,11 @@
               />
             </div>
           </div>
+
+          <div class="text-gray-400 text-sm mb-1">
+            当前为上传方式为 <span class="font-bold"> {{ imageToAdd.image_source === ImageSource.URL ? '直链' : imageToAdd.image_source === ImageSource.LOCAL ? '本地上传' : 'S3存储' }}</span>
+          </div>
+
           <div class="my-1">
             <!-- 图片上传本地 -->
             <!-- <input
@@ -64,7 +76,7 @@
               <span class="text-gray-400">点击上传</span>
             </BaseButton> -->
 
-            <TheUppy v-if="imageToAdd.image_source === ImageSource.LOCAL" @uppyUploaded="handleUppyUploaded" />
+            <TheUppy v-if="imageToAdd.image_source !== ImageSource.URL" @uppyUploaded="handleUppyUploaded" :TheImageSource="imageToAdd.image_source" />
 
             <!-- 图片直链 -->
             <BaseInput
@@ -125,6 +137,7 @@
 import Upload from '@/components/icons/upload.vue'
 import Url from '@/components/icons/url.vue'
 import Addmore from '@/components/icons/addmore.vue'
+import Bucket from '@/components/icons/bucket.vue'
 
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
@@ -211,7 +224,7 @@ const imageSourceMemory = ref<string>()
 // 临时图片添加变量
 const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
   image_url: '',
-  image_source: '',
+  image_source: ImageSource.LOCAL,
 })
 // 临时的多张图片数组变量
 const imagesToAdd = ref<App.Api.Ech0.ImageToAdd[]>([])
@@ -283,10 +296,13 @@ const handleUploadImage = async (event: Event) => {
   }
 }
 
-const handleUppyUploaded = (files: string[]) => {
-  files.forEach((fileUrl) => {
-    imageToAdd.value.image_url = fileUrl
-    imageToAdd.value.image_source = ImageSource.LOCAL
+const handleUppyUploaded = (files: {
+  image_url: string
+  image_source: string
+}[]) => {
+  files.forEach((file) => {
+    imageToAdd.value.image_url = file.image_url
+    imageToAdd.value.image_source = file.image_source
     handleAddMoreImage()
   })
 

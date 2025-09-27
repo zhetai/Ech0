@@ -11,6 +11,9 @@ importers:
       '@fancyapps/ui':
         specifier: ^5.0.36
         version: 5.0.36
+      '@uppy/aws-s3':
+        specifier: ^5.0.1
+        version: 5.0.1(@uppy/core@5.0.2)
       '@uppy/core':
         specifier: ^5.0.2
         version: 5.0.2
@@ -1672,6 +1675,11 @@ packages:
     resolution: {integrity: sha512-0tVm68Ka3DlYbs5+r9O4yqYxbjU/K7v9LX8Ff93/9MXk/EMJ7omH51ICxu8beER64zphNoeGaE5PTQ+g9JMJEQ==}
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0 || ^6.0.0-0
+
+  '@uppy/aws-s3@5.0.1':
+    resolution: {integrity: sha512-HHbmDl1GQ3XfEU925R5pbBiFODaPY0T5qExw0lablKwI4nh4Z9e238mr05U9O8LUyqpZLx+2MNURpG1Pb49C0w==}
+    peerDependencies:
+      '@uppy/core': ^5.0.2
 
   '@uppy/companion-client@5.0.1':
     resolution: {integrity: sha512-Gy4NCoj5JXQqm6Gr0T6VTeKVhrf8OvnFP1Ddz35dHUsy4GkXuvcc1FMzzKpxKWONtXWz6iQZocnhslgVIZvZwQ==}
@@ -6873,6 +6881,12 @@ snapshots:
       vite: 6.3.6(@types/node@22.18.6)(jiti@2.6.0)(lightningcss@1.29.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - vue
+
+  '@uppy/aws-s3@5.0.1(@uppy/core@5.0.2)':
+    dependencies:
+      '@uppy/companion-client': 5.0.1(@uppy/core@5.0.2)
+      '@uppy/core': 5.0.2
+      '@uppy/utils': 7.0.2
 
   '@uppy/companion-client@5.0.1(@uppy/core@5.0.2)':
     dependencies:

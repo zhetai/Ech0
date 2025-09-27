@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@fancyapps/ui": "^5.0.36",
+    "@uppy/aws-s3": "^5.0.1",
     "@uppy/core": "^5.0.2",
     "@uppy/dashboard": "^5.0.2",
     "@uppy/locales": "^5.0.1",

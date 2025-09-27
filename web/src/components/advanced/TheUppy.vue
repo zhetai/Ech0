@@ -10,10 +10,12 @@ import { getAuthToken } from '@/service/request/shared'
 import { useUserStore } from '@/stores/user';
 import { theToast } from '@/utils/toast';
 import { storeToRefs } from 'pinia';
+import { ImageSource } from '@/enums/enums';
 /* --------------- 与Uppy相关 ---------------- */
 import Uppy from '@uppy/core';
 import Dashboard from '@uppy/dashboard';
 import XHRUpload from '@uppy/xhr-upload';
+import AwsS3 from '@uppy/aws-s3';
 import '@uppy/core/css/style.min.css';
 import '@uppy/dashboard/css/style.min.css';
 import zh_CN from '@uppy/locales/lib/zh_CN'
@@ -21,9 +23,12 @@ import zh_CN from '@uppy/locales/lib/zh_CN'
 
 let uppy: Uppy | null = null
 
+const props = defineProps<{
+  TheImageSource: string
+}>()
 const emit = defineEmits(["uppyUploaded"])
 
-const files = ref<string[]>([]);
+const files = ref<{ image_url: string; image_source: string }[]>([]);
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore);
@@ -49,6 +54,8 @@ const handlePaste = (e: ClipboardEvent) => {
 }
 
 onMounted(() => {
+  console.log("TheImageSource", props.TheImageSource)
+
   uppy = new Uppy({
     restrictions: {
       maxNumberOfFiles: 6,
@@ -72,7 +79,7 @@ onMounted(() => {
   })
 
   uppy.use(XHRUpload, {
-    endpoint: '/api/images/upload', // 换成你的后端上传接口
+    endpoint: 'http://localhost:6277/api/images/upload', // 换成你的后端上传接口
     fieldName: 'file',
     formData: true,
     headers: {
@@ -85,7 +92,8 @@ onMounted(() => {
   document.addEventListener("paste", handlePaste)
 
   // uppy.on("file-added", file => {})
-  uppy.on("upload", () => {
+  uppy.on("upload", (uploadID, files) => {
+    console.log("Upload started", uploadID, files)
     if (!isLogin.value) {
       theToast.error("请先登录再上传图片 😢")
       uppy?.cancelAll()
@@ -124,7 +132,11 @@ onMounted(() => {
   uppy.on("upload-success", (file, response) => {
     theToast.success(`好耶,上传成功！🎉`)
     const fileUrl = String(response.body?.data);
-    files.value.push(fileUrl);
+    const item = {
+      image_url: fileUrl,
+      image_source: props.TheImageSource === ImageSource.LOCAL ? ImageSource.LOCAL : ImageSource.S3
+    }
+    files.value.push(item);
   });
   uppy.on("complete", () => {
     emit("uppyUploaded", files.value); // 发射事件到父组件
