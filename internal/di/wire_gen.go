@@ -44,7 +44,7 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	userRepositoryInterface := repository.NewUserRepository(db, iCache)
 	commonRepositoryInterface := repository2.NewCommonRepository(db)
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface)
-	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db)
+	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db, iCache)
 	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface)
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)

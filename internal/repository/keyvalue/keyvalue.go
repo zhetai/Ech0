@@ -2,6 +2,8 @@ package keyvalue
 
 import (
 	"context"
+
+	"github.com/lin-snow/ech0/internal/cache"
 	model "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
@@ -9,11 +11,13 @@ import (
 
 type KeyValueRepository struct {
 	db *gorm.DB
+	cache cache.ICache[string, any]
 }
 
-func NewKeyValueRepository(db *gorm.DB) KeyValueRepositoryInterface {
+func NewKeyValueRepository(db *gorm.DB, cache cache.ICache[string, any]) KeyValueRepositoryInterface {
 	return &KeyValueRepository{
 		db: db,
+		cache: cache,
 	}
 }
 
@@ -27,16 +31,31 @@ func (keyvalueRepository *KeyValueRepository) getDB(ctx context.Context) *gorm.D
 
 // GetKeyValue 根据键获取值
 func (keyvalueRepository *KeyValueRepository) GetKeyValue(key string) (interface{}, error) {
+	// 先查缓存
+	if cachedValue, err := keyvalueRepository.cache.Get(key); err == nil {
+		// 缓存命中，类型断言
+		if value, ok := cachedValue.(string); ok {
+			return value, nil
+		}
+	}
+
+	// 缓存未命中，查询数据库
 	var kv model.KeyValue
 	if err := keyvalueRepository.db.Where("key = ?", key).First(&kv).Error; err != nil {
 		return nil, err
 	}
+
+	// 将查询到的值放入缓存
+	keyvalueRepository.cache.Set(key, kv.Value, 1)
 
 	return kv.Value, nil
 }
 
 // AddKeyValue 添加键值对
 func (keyvalueRepository *KeyValueRepository) AddKeyValue(ctx context.Context, key string, value interface{}) error {
+	// 清除相关缓存
+	keyvalueRepository.cache.Delete(key) // 删除该键的缓存
+
 	if err := keyvalueRepository.getDB(ctx).Create(&model.KeyValue{
 		Key:   key,
 		Value: value.(string),
@@ -44,11 +63,17 @@ func (keyvalueRepository *KeyValueRepository) AddKeyValue(ctx context.Context, k
 		return err
 	}
 
+	// 添加新的缓存
+	keyvalueRepository.cache.Set(key, value, 1)
+
 	return nil
 }
 
 // DeleteKeyValue 删除键值对
 func (keyvalueRepository *KeyValueRepository) DeleteKeyValue(ctx context.Context, key string) error {
+	// 删除缓存
+	keyvalueRepository.cache.Delete(key) // 删除该键的缓存
+
 	if err := keyvalueRepository.getDB(ctx).Where("key = ?", key).Delete(&model.KeyValue{}).Error; err != nil {
 		return err
 	}
@@ -58,9 +83,15 @@ func (keyvalueRepository *KeyValueRepository) DeleteKeyValue(ctx context.Context
 
 // UpdateKeyValue 更新键值对
 func (keyvalueRepository *KeyValueRepository) UpdateKeyValue(ctx context.Context, key string, value interface{}) error {
+	// 更新缓存
+	keyvalueRepository.cache.Delete(key) // 删除该键的缓存
+
 	if err := keyvalueRepository.getDB(ctx).Model(&model.KeyValue{}).Where("key = ?", key).Update("value", value.(string)).Error; err != nil {
 		return err
 	}
+
+	// 添加新的缓存
+	keyvalueRepository.cache.Set(key, value, 1)
 
 	return nil
 }
