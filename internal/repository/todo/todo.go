@@ -31,9 +31,6 @@ func (todoRepository *TodoRepository) getDB(ctx context.Context) *gorm.DB {
 
 // GetTodosByUserID 根据用户ID获取待办事项
 func (todoRepository *TodoRepository) GetTodosByUserID(userid uint) ([]model.Todo, error) {
-	// 查找缓存
-	
-
 	var todos []model.Todo
 	// 查询数据库(按创建时间，最新的在前)
 	if err := todoRepository.db.Where("user_id = ?", userid).Order("created_at DESC").Find(&todos).Error; err != nil {
@@ -43,6 +40,7 @@ func (todoRepository *TodoRepository) GetTodosByUserID(userid uint) ([]model.Tod
 	if len(todos) == 0 {
 		return []model.Todo{}, nil
 	}
+
 	// 返回查询到的 todos
 	return todos, nil
 }
@@ -52,6 +50,7 @@ func (todoRepository *TodoRepository) CreateTodo(ctx context.Context, todo *mode
 	if err := todoRepository.getDB(ctx).Create(todo).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -62,6 +61,7 @@ func (todoRepository *TodoRepository) GetTodoByID(todoID int64) (*model.Todo, er
 	if err := todoRepository.db.Where("id = ?", todoID).First(&todo).Error; err != nil {
 		return nil, err
 	}
+
 	return &todo, nil
 }
 
@@ -81,6 +81,6 @@ func (todoRepository *TodoRepository) DeleteTodo(ctx context.Context, id int64) 
 	if err := todoRepository.getDB(ctx).Delete(&model.Todo{}, id).Error; err != nil {
 		return err
 	}
-
+	
 	return nil
 }

@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+
 	"github.com/lin-snow/ech0/internal/transaction"
 
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -77,6 +79,7 @@ func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
 			}
 		}
 		if len(todos) >= model.MaxTodoCount {
+			fmt.Println("Current todo count:", todos)
 			return errors.New(commonModel.TODO_EXCEED_LIMIT)
 		}
 
@@ -120,8 +123,6 @@ func (todoService *TodoService) UpdateTodo(userid uint, id int64) error {
 		// 设置To do的状态
 		if theTodo.Status == uint(model.NotDone) {
 			theTodo.Status = uint(model.Done)
-		} else {
-			theTodo.Status = uint(model.NotDone)
 		}
 
 		if err := todoService.todoRepository.UpdateTodo(ctx, theTodo); err != nil {
