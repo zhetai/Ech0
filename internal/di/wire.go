@@ -56,8 +56,7 @@ func BuildHandlers(
 
 // CacheSet 包含了构建缓存所需的所有 Provider
 var CacheSet = wire.NewSet(
-	ProvideUserCache,
-	ProvideEchoCache,
+	ProvideCache,
 )
 
 // TransactionManagerSet 包含了构建事务管理器所需的所有 Provider

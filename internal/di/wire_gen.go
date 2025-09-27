@@ -40,7 +40,7 @@ import (
 func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*Handlers, error) {
 	webHandler := handler.NewWebHandler()
 	transactionManager := ProvideTransactionManager(tmFactory)
-	iCache := ProvideUserCache(cacheFactory)
+	iCache := ProvideCache(cacheFactory)
 	userRepositoryInterface := repository.NewUserRepository(db, iCache)
 	commonRepositoryInterface := repository2.NewCommonRepository(db)
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface)
@@ -48,13 +48,12 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface)
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
-	cacheICache := ProvideEchoCache(cacheFactory)
-	echoRepositoryInterface := repository3.NewEchoRepository(db, cacheICache)
+	echoRepositoryInterface := repository3.NewEchoRepository(db, iCache)
 	echoServiceInterface := service4.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
 	settingHandler := handler5.NewSettingHandler(settingServiceInterface)
-	todoRepositoryInterface := repository4.NewTodoRepository(db)
+	todoRepositoryInterface := repository4.NewTodoRepository(db, iCache)
 	todoServiceInterface := service5.NewTodoService(transactionManager, todoRepositoryInterface, commonServiceInterface)
 	todoHandler := handler6.NewTodoHandler(todoServiceInterface)
 	connectRepositoryInterface := repository5.NewConnectRepository(db)
@@ -70,8 +69,7 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 
 // CacheSet 包含了构建缓存所需的所有 Provider
 var CacheSet = wire.NewSet(
-	ProvideUserCache,
-	ProvideEchoCache,
+	ProvideCache,
 )
 
 // TransactionManagerSet 包含了构建事务管理器所需的所有 Provider

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/lin-snow/ech0/internal/cache"
 	model "github.com/lin-snow/ech0/internal/model/user"
 	"github.com/lin-snow/ech0/internal/transaction"
@@ -10,10 +11,10 @@ import (
 
 type UserRepository struct {
 	db    *gorm.DB
-	cache cache.ICache[string, *model.User]
+	cache cache.ICache[string, any]
 }
 
-func NewUserRepository(db *gorm.DB, cache cache.ICache[string, *model.User]) UserRepositoryInterface {
+func NewUserRepository(db *gorm.DB, cache cache.ICache[string, any]) UserRepositoryInterface {
 	return &UserRepository{
 		db:    db,
 		cache: cache,
@@ -33,7 +34,10 @@ func (userRepository *UserRepository) GetUserByUsername(username string) (model.
 	// 先查缓存
 	cacheKey := GetUsernameKey(username)
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
-		return *cachedUser, nil
+		// 缓存命中，类型断言
+		if user, ok := cachedUser.(model.User); ok {
+			return user, nil
+		}
 	}
 
 	// 缓存未命中，查询数据库
@@ -68,7 +72,7 @@ func (userRepository *UserRepository) CreateUser(ctx context.Context, user *mode
 
 	// 加入缓存
 	userRepository.cache.Set(GetUserIDKey(user.ID), user, 1)
-	userRepository.cache.Set(GetUsernameKey(user.Username), user, 1)
+	userRepository.cache.Set(GetUsernameKey(user.Username), *user, 1)
 
 	return nil
 }
@@ -77,7 +81,10 @@ func (userRepository *UserRepository) CreateUser(ctx context.Context, user *mode
 func (userRepository *UserRepository) GetUserByID(id int) (model.User, error) {
 	cacheKey := GetUserIDKey(uint(id))
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
-		return *cachedUser, nil
+		// 缓存命中，类型断言
+		if user, ok := cachedUser.(model.User); ok {
+			return user, nil
+		}
 	}
 
 	var user model.User
@@ -85,7 +92,7 @@ func (userRepository *UserRepository) GetUserByID(id int) (model.User, error) {
 		return user, err
 	}
 
-	userRepository.cache.Set(cacheKey, &user, 1)
+	userRepository.cache.Set(cacheKey, user, 1)
 
 	return user, nil
 }
@@ -94,7 +101,10 @@ func (userRepository *UserRepository) GetUserByID(id int) (model.User, error) {
 func (userRepository *UserRepository) GetSysAdmin() (model.User, error) {
 	cacheKey := GetSysAdminKey()
 	if cachedUser, err := userRepository.cache.Get(cacheKey); err == nil {
-		return *cachedUser, nil
+		// 缓存命中，类型断言
+		if user, ok := cachedUser.(model.User); ok {
+			return user, nil
+		}
 	}
 
 	// 获取系统管理员（首个注册的用户）
@@ -104,7 +114,7 @@ func (userRepository *UserRepository) GetSysAdmin() (model.User, error) {
 		return model.User{}, err
 	}
 
-	userRepository.cache.Set(cacheKey, &user, 1)
+	userRepository.cache.Set(cacheKey, user, 1)
 
 	return user, nil
 }
@@ -117,9 +127,9 @@ func (userRepository *UserRepository) UpdateUser(ctx context.Context, user *mode
 	}
 
 	userRepository.cache.Set(GetUserIDKey(user.ID), user, 1)
-	userRepository.cache.Set(GetUsernameKey(user.Username), user, 1)
+	userRepository.cache.Set(GetUsernameKey(user.Username), *user, 1)
 	if user.IsAdmin {
-		userRepository.cache.Set(GetAdminKey(user.ID), user, 1)
+		userRepository.cache.Set(GetAdminKey(user.ID), *user, 1)
 	}
 
 	return nil

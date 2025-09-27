@@ -4,8 +4,6 @@ import (
 	"strconv"
 
 	"github.com/lin-snow/ech0/internal/cache"
-	commonModel "github.com/lin-snow/ech0/internal/model/common"
-	model "github.com/lin-snow/ech0/internal/model/echo"
 )
 
 var echoKeyList []string
@@ -24,9 +22,17 @@ func GetEchoPageCacheKey(page, pageSize int, search string, showPrivate bool) st
 	return EchoPageCacheKeyPrefix + ":" + strconv.Itoa(page) + ":" + strconv.Itoa(pageSize) + ":" + search + ":" + showPrivateStr
 }
 
-func ClearEchoPageCache(cache cache.ICache[string, commonModel.PageQueryResult[[]model.Echo]]) {
+func ClearEchoPageCache(cache cache.ICache[string, any]) {
 	for _, key := range echoKeyList {
 		cache.Delete(key)
 	}
 	echoKeyList = []string{}
+}
+
+func GetEchoByIDCacheKey(id uint) string {
+	return "echo_id:" + strconv.Itoa(int(id))
+}
+
+func GetTodayEchosCacheKey(showPrivate bool) string {
+	return "echo_today:" + strconv.FormatBool(showPrivate)
 }

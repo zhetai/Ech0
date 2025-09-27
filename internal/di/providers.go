@@ -10,9 +10,6 @@ import (
 	todoHandler "github.com/lin-snow/ech0/internal/handler/todo"
 	userHandler "github.com/lin-snow/ech0/internal/handler/user"
 	webHandler "github.com/lin-snow/ech0/internal/handler/web"
-	commonModel "github.com/lin-snow/ech0/internal/model/common"
-	echoModel "github.com/lin-snow/ech0/internal/model/echo"
-	userModel "github.com/lin-snow/ech0/internal/model/user"
 	"github.com/lin-snow/ech0/internal/transaction"
 )
 
@@ -51,14 +48,9 @@ func NewHandlers(
 	}
 }
 
-// ProvideUserCache 提供 User 缓存实例给 wire 注入
-func ProvideUserCache(factory *cache.CacheFactory) cache.ICache[string, *userModel.User] {
-	return factory.UserCache()
-}
-
-// ProvideEchoCache 提供 Echo 缓存实例给 wire 注入
-func ProvideEchoCache(factory *cache.CacheFactory) cache.ICache[string, commonModel.PageQueryResult[[]echoModel.Echo]] {
-	return factory.EchoCache()
+// ProvideCache 提供通用缓存实例给 wire 注入
+func ProvideCache(factory *cache.CacheFactory) cache.ICache[string, any] {
+	return factory.Cache()
 }
 
 // ProvideTransactionManager 提供事务管理器实例给 wire 注入

@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+
+	"github.com/lin-snow/ech0/internal/cache"
 	model "github.com/lin-snow/ech0/internal/model/todo"
 	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
@@ -9,11 +11,13 @@ import (
 
 type TodoRepository struct {
 	db *gorm.DB
+	cache cache.ICache[string, any]
 }
 
-func NewTodoRepository(db *gorm.DB) TodoRepositoryInterface {
+func NewTodoRepository(db *gorm.DB, cache cache.ICache[string, any]) TodoRepositoryInterface {
 	return &TodoRepository{
 		db: db,
+		cache: cache,
 	}
 }
 
@@ -27,6 +31,9 @@ func (todoRepository *TodoRepository) getDB(ctx context.Context) *gorm.DB {
 
 // GetTodosByUserID 根据用户ID获取待办事项
 func (todoRepository *TodoRepository) GetTodosByUserID(userid uint) ([]model.Todo, error) {
+	// 查找缓存
+	
+
 	var todos []model.Todo
 	// 查询数据库(按创建时间，最新的在前)
 	if err := todoRepository.db.Where("user_id = ?", userid).Order("created_at DESC").Find(&todos).Error; err != nil {

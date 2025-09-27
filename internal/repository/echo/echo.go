@@ -3,9 +3,10 @@ package repository
 import (
 	"context"
 	"errors"
-	"github.com/lin-snow/ech0/internal/transaction"
 	"strings"
 	"time"
+
+	"github.com/lin-snow/ech0/internal/transaction"
 
 	"github.com/lin-snow/ech0/internal/cache"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -15,10 +16,10 @@ import (
 
 type EchoRepository struct {
 	db    *gorm.DB
-	cache cache.ICache[string, commonModel.PageQueryResult[[]model.Echo]]
+	cache cache.ICache[string, any]
 }
 
-func NewEchoRepository(db *gorm.DB, cache cache.ICache[string, commonModel.PageQueryResult[[]model.Echo]]) EchoRepositoryInterface {
+func NewEchoRepository(db *gorm.DB, cache cache.ICache[string, any]) EchoRepositoryInterface {
 	return &EchoRepository{db: db, cache: cache}
 }
 
@@ -39,7 +40,10 @@ func (echoRepository *EchoRepository) CreateEcho(ctx context.Context, echo *mode
 		return result.Error
 	}
 
+	// 清除相关缓存
 	ClearEchoPageCache(echoRepository.cache)
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(true))  // 删除今天的 Echo 缓存（管理员视图）
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
 
 	return nil
 }
@@ -49,7 +53,12 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 	// 查找缓存
 	cacheKey := GetEchoPageCacheKey(page, pageSize, search, showPrivate)
 	if cachedResult, err := echoRepository.cache.Get(cacheKey); err == nil {
-		return cachedResult.Items, cachedResult.Total
+		// 缓存命中，直接返回
+		// 类型断言
+		cachedResultTyped, ok := cachedResult.(commonModel.PageQueryResult[[]model.Echo])
+		if ok {
+			return cachedResultTyped.Items, cachedResultTyped.Total
+		}
 	}
 
 	// 如果缓存未命中，进行数据库查询
@@ -95,6 +104,17 @@ func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search 
 
 // GetEchosById 根据 ID 获取 Echo
 func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error) {
+	// 查询缓存
+	cacheKey := GetEchoByIDCacheKey(id)
+	if cachedEcho, err := echoRepository.cache.Get(cacheKey); err == nil {
+		// 缓存命中，直接返回
+		if echo, ok := cachedEcho.(*model.Echo); ok {
+			return echo, nil
+		}
+	}
+
+	// 缓存未命中，查询数据库
+	// 使用 Preload 预加载关联的 Images
 	var echo model.Echo
 	result := echoRepository.db.Preload("Images").First(&echo, id)
 	if result.Error != nil {
@@ -103,6 +123,9 @@ func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error)
 		}
 		return nil, result.Error // 其他错误返回
 	}
+
+	// 保存到缓存
+	echoRepository.cache.Set(cacheKey, &echo, 1)
 
 	return &echo, nil
 }
@@ -121,6 +144,11 @@ func (echoRepository *EchoRepository) DeleteEchoById(ctx context.Context, id uin
 		return gorm.ErrRecordNotFound // 如果没有找到记录
 	}
 
+	// 清除缓存
+	echoRepository.cache.Delete(GetEchoByIDCacheKey(id)) // 删除具体 Echo 的缓存
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(true)) // 删除今天的 Echo 缓存（管理员视图）
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
+
 	// 清除相关缓存
 	ClearEchoPageCache(echoRepository.cache)
 
@@ -129,6 +157,14 @@ func (echoRepository *EchoRepository) DeleteEchoById(ctx context.Context, id uin
 
 // GetTodayEchos 获取今天的 Echo 列表
 func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Echo {
+	// 查找缓存
+	if cachedTodayEchos, err := echoRepository.cache.Get(GetTodayEchosCacheKey(showPrivate)); err == nil {
+		// 缓存命中，直接返回
+		if todayEchos, ok := cachedTodayEchos.([]model.Echo); ok {
+			return todayEchos
+		}
+	}
+
 	// 查询数据库
 	var echos []model.Echo
 
@@ -152,6 +188,9 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 		Order("created_at DESC").
 		Find(&echos)
 
+	// 保存到缓存
+	echoRepository.cache.Set(GetTodayEchosCacheKey(showPrivate), echos, 1)
+
 	// 返回结果
 	return echos
 }
@@ -160,6 +199,9 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 func (echoRepository *EchoRepository) UpdateEcho(ctx context.Context, echo *model.Echo) error {
 	// 清空缓存
 	ClearEchoPageCache(echoRepository.cache)
+	echoRepository.cache.Delete(GetEchoByIDCacheKey(echo.ID)) // 删除具体 Echo 的缓存
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(true))  // 删除今天的 Echo 缓存（管理员视图）
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
 
 	// 开启事务确保数据一致性
 	tx := echoRepository.db.Begin()
@@ -232,6 +274,9 @@ func (echoRepository *EchoRepository) LikeEcho(ctx context.Context, id uint) err
 
 	// 清除相关缓存
 	ClearEchoPageCache(echoRepository.cache)
+	echoRepository.cache.Delete(GetEchoByIDCacheKey(id)) // 删除具体 Echo 的缓存
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(true))  // 删除今天的 Echo 缓存（管理员视图）
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
 
 	return nil
 }
