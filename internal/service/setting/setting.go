@@ -223,6 +223,8 @@ func (settingService *SettingService) GetS3Setting(userid uint, setting *model.S
 		if userid == authModel.NO_USER_LOGINED {
 			setting.AccessKey = "******"
 			setting.SecretKey = "******"
+			setting.BucketName = "******"
+			setting.Endpoint = "******"
 		}
 
 		return nil

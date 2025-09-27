@@ -37,6 +37,7 @@ type Image struct {
 	MessageID   uint   `gorm:"index;not null" json:"message_id"` // 关联的Echo ID(注意⚠️: 该字段名为MessageID, 但实际关联的是Echo表,因为为了兼容旧版Echo用户)
 	ImageURL    string `gorm:"type:text" json:"image_url"`
 	ImageSource string `gorm:"type:varchar(20)" json:"image_source"`
+	ObjectKey  string `gorm:"type:text" json:"object_key,omitempty"` // 对象存储的Key (如果是本地存储则为空)
 }
 
 const (
