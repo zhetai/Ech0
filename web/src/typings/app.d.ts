@@ -163,6 +163,19 @@ declare namespace App {
         provider: string // 评论提供者
         comment_api: string // 评论 API 地址
       }
+
+      type S3Setting = {
+        enable: boolean
+        endpoint: string
+        access_key: string
+        secret_key: string
+        bucket_name: string
+        region: string
+        use_ssl: boolean
+        cdn_url: string
+        path_prefix: string
+        public_read: boolean
+      }
     }
 
     namespace Connect {

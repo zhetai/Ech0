@@ -193,11 +193,14 @@ func (settingService *SettingService) GetS3Setting(userid uint, setting *model.S
 			// 数据库中不存在数据，手动添加初始数据
 			setting.Enable = false
 			setting.Endpoint = ""
-			setting.AccessKeyID = ""
-			setting.SecretAccessKey = ""
+			setting.AccessKey = ""
+			setting.SecretKey = ""
 			setting.BucketName = ""
 			setting.Region = ""
 			setting.UseSSL = false
+			setting.CDNURL = ""
+			setting.PathPrefix = ""
+			setting.PublicRead = true
 
 			// 序列化为 JSON
 			settingToJSON, err := jsonUtil.JSONMarshal(setting)
@@ -217,8 +220,8 @@ func (settingService *SettingService) GetS3Setting(userid uint, setting *model.S
 
 		// 如果用户未登录且不为管理员,则屏蔽 S3 设置的敏感信息
 		if userid == authModel.NO_USER_LOGINED {
-			setting.AccessKeyID = "******"
-			setting.SecretAccessKey = "******"
+			setting.AccessKey = "******"
+			setting.SecretKey = "******"
 		}
 
 		return nil
@@ -240,11 +243,14 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 		s3Setting := &model.S3Setting{
 			Enable:         newSetting.Enable,
 			Endpoint:       newSetting.Endpoint,
-			AccessKeyID:    newSetting.AccessKeyID,
-			SecretAccessKey: newSetting.SecretAccessKey,
+			AccessKey:      newSetting.AccessKey,
+			SecretKey:      newSetting.SecretKey,
 			BucketName:     newSetting.BucketName,
 			Region:         newSetting.Region,
 			UseSSL:         newSetting.UseSSL,
+			CDNURL:         httpUtil.TrimURL(newSetting.CDNURL),
+			PathPrefix:     newSetting.PathPrefix,
+			PublicRead:     newSetting.PublicRead,
 		}
 
 		// 序列化为 JSON

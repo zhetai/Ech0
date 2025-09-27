@@ -33,3 +33,20 @@ export function fetchUpdateCommentSettings(commentSetting: App.Api.Setting.Comme
     data: commentSetting,
   })
 }
+
+// 获取 S3 存储设置
+export function fetchGetS3Settings() {
+  return request<App.Api.Setting.S3Setting>({
+    url: '/s3/settings',
+    method: 'GET',
+  })
+}
+
+// 更新 S3 存储设置
+export function fetchUpdateS3Settings(s3Setting: App.Api.Setting.S3Setting) {
+  return request({
+    url: '/s3/settings',
+    method: 'PUT',
+    data: s3Setting,
+  })
+}
