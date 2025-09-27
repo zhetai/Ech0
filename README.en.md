@@ -193,7 +193,7 @@ Install [Golangci-Lint](https://golangci-lint.run/) for linting and formatting:
 
 ## **Frontend Requirements:**
 
-📌  **NodeJS v24.5.0, PNPM v10.15.1**
+📌  **NodeJS v24.5.0, PNPM v10.17.1**
 
 > Tip: Use [fnm](https://github.com/Schniz/fnm) for managing multiple Node versions.
 
