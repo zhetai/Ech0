@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { getAuthToken } from '@/service/request/shared'
 import { useUserStore } from '@/stores/user';
 import { theToast } from '@/utils/toast';
@@ -15,7 +15,7 @@ import { ImageSource } from '@/enums/enums';
 import Uppy from '@uppy/core';
 import Dashboard from '@uppy/dashboard';
 import XHRUpload from '@uppy/xhr-upload';
-import AwsS3 from '@uppy/aws-s3';
+import AwsS3, { type AwsBody } from '@uppy/aws-s3';
 import '@uppy/core/css/style.min.css';
 import '@uppy/dashboard/css/style.min.css';
 import zh_CN from '@uppy/locales/lib/zh_CN'
@@ -53,7 +53,7 @@ const handlePaste = (e: ClipboardEvent) => {
   }
 }
 
-onMounted(() => {
+const initUppy = () => {
   console.log("TheImageSource", props.TheImageSource)
 
   uppy = new Uppy({
@@ -78,16 +78,22 @@ onMounted(() => {
     note: '支持粘贴或选择图片上传哦！',
   })
 
-  uppy.use(XHRUpload, {
-    endpoint: 'http://localhost:6277/api/images/upload', // 换成你的后端上传接口
-    fieldName: 'file',
-    formData: true,
-    headers: {
-      "Authorization": `${getAuthToken()}`
-    }
-  })
+  // 根据 props.TheImageSource 动态切换上传插件
+  if (props.TheImageSource === ImageSource.LOCAL) {
+    uppy.use(XHRUpload, {
+      endpoint: 'http://localhost:6277/api/images/upload', // 本地上传接口
+      fieldName: 'file',
+      formData: true,
+      headers: {
+        "Authorization": `${getAuthToken()}`
+      }
+    });
+  } else if (props.TheImageSource === ImageSource.S3) {
+    uppy.use(AwsS3, {
+      endpoint: 'http://localhost:6277/api/images/s3/get-presigned-url', // 获取预签名URL的接口
 
-
+    });
+  }
 
   document.addEventListener("paste", handlePaste)
 
@@ -102,32 +108,32 @@ onMounted(() => {
     theToast.info("正在上传图片，请稍等... ⏳")
   })
   uppy.on("upload-error", (file, error, response) => {
-  type ResponseBody = {
-    code: number;
-    msg: string;
-    data: any;
-  };
+    type ResponseBody = {
+      code: number;
+      msg: string;
+      data: any;
+    };
 
-  let errorMsg = "上传图片时发生错误 😢";
+    let errorMsg = "上传图片时发生错误 😢";
 
-  const resp = response as any; // 忽略 TS 类型限制
+    const resp = response as any; // 忽略 TS 类型限制
 
-  if (resp?.response) {
-    let resObj: ResponseBody;
+    if (resp?.response) {
+      let resObj: ResponseBody;
 
-    if (typeof resp.response === "string") {
-      resObj = JSON.parse(resp.response) as ResponseBody;
-    } else {
-      resObj = resp.response as ResponseBody;
+      if (typeof resp.response === "string") {
+        resObj = JSON.parse(resp.response) as ResponseBody;
+      } else {
+        resObj = resp.response as ResponseBody;
+      }
+
+      if (resObj?.msg) {
+        errorMsg = resObj.msg;
+      }
     }
 
-    if (resObj?.msg) {
-      errorMsg = resObj.msg;
-    }
-  }
-
-  theToast.error(errorMsg);
-});
+    theToast.error(errorMsg);
+  });
 
   uppy.on("upload-success", (file, response) => {
     theToast.success(`好耶,上传成功！🎉`)
@@ -141,7 +147,26 @@ onMounted(() => {
   uppy.on("complete", () => {
     emit("uppyUploaded", files.value); // 发射事件到父组件
   })
+}
+
+onMounted(() => {
+  initUppy
 })
+
+// 监听 props.TheImageSource 变化
+watch(
+  () => props.TheImageSource,
+  (newSource, oldSource) => {
+    if (newSource !== oldSource) {
+      // 销毁旧的 Uppy 实例
+      uppy?.destroy()
+      uppy = null
+      files.value = [] // 清空已上传文件列表
+      // 初始化新的 Uppy 实例
+      initUppy();
+    }
+  }
+);
 
 onBeforeUnmount(() => {
   document.removeEventListener("paste", handlePaste)
