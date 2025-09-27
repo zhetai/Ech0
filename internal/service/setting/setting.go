@@ -192,6 +192,7 @@ func (settingService *SettingService) GetS3Setting(userid uint, setting *model.S
 		if err != nil {
 			// 数据库中不存在数据，手动添加初始数据
 			setting.Enable = false
+			setting.Provider = string(commonModel.AWS)
 			setting.Endpoint = ""
 			setting.AccessKey = ""
 			setting.SecretKey = ""
@@ -242,6 +243,7 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 
 		s3Setting := &model.S3Setting{
 			Enable:         newSetting.Enable,
+			Provider:       newSetting.Provider,
 			Endpoint:       newSetting.Endpoint,
 			AccessKey:      newSetting.AccessKey,
 			SecretKey:      newSetting.SecretKey,

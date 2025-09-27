@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchGetSettings, fetchGetStatus, fetchGetCommentSettings } from '@/service/api'
+import { fetchGetSettings, fetchGetStatus, fetchGetCommentSettings,fetchGetS3Settings } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
 import { useRouter } from 'vue-router'
-import { CommentProvider } from '@/enums/enums'
+import { CommentProvider, S3Provider } from '@/enums/enums'
 
 export const useSettingStore = defineStore('settingStore', () => {
   /**
@@ -25,6 +25,19 @@ export const useSettingStore = defineStore('settingStore', () => {
     enable_comment: false,
     provider: CommentProvider.TWIKOO,
     comment_api: '',
+  })
+  const S3Setting = ref<App.Api.Setting.S3Setting>({
+    enable: false,
+    provider: S3Provider.AWS,
+    endpoint: "",
+    access_key: "",
+    secret_key: "",
+    bucket_name: "",
+    region: "",
+    use_ssl: false,
+    cdn_url: "",
+    path_prefix: "",
+    public_read: true,
   })
   const loading = ref<boolean>(true)
   const router = useRouter()
@@ -82,6 +95,14 @@ export const useSettingStore = defineStore('settingStore', () => {
     })
   }
 
+  const getS3Setting = async () => {
+    fetchGetS3Settings().then((res) => {
+      if (res.code === 1) {
+        S3Setting.value = res.data
+      }
+    })
+  }
+
   const setSystemReady = (status: boolean) => {
     isSystemReady.value = status
   }
@@ -92,16 +113,19 @@ export const useSettingStore = defineStore('settingStore', () => {
     }
     getSystemSetting()
     getCommentSetting()
+    getS3Setting()
   }
 
   return {
     isSystemReady,
     SystemSetting,
     CommentSetting,
+    S3Setting,
     loading,
     getSystemReady,
     getSystemSetting,
     getCommentSetting,
+    getS3Setting,
     setSystemReady,
     init,
   }

@@ -27,6 +27,7 @@ type Heatmap struct {
 type UploadFileType string
 type FileStorageType string
 type CommentProvider string
+type S3Provider string
 
 const (
 	// ImageType  图片类型
@@ -53,6 +54,14 @@ const (
 	WALINE CommentProvider = "waline"
 	// GISCUS 评论服务
 	GISCUS CommentProvider = "giscus"
+)
+
+const (
+	AWS S3Provider = "aws"
+	ALIYUN S3Provider = "aliyun"
+	TENCENT S3Provider = "tencent"
+	MINIO S3Provider = "minio"
+	OTHER S3Provider = "other"
 )
 
 // key value表

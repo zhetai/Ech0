@@ -39,3 +39,12 @@ export enum CommentProvider {
   WALINE = 'waline',
   GISCUS = 'giscus',
 }
+
+// S3 Service Provider
+export enum S3Provider {
+  AWS = 'aws',
+  ALIYUN = 'aliyun',
+  TENCENT = 'tencent',
+  MINIO = 'minio',
+  OTHER = 'other', // 其它默认按照 MINIO 处理
+}
