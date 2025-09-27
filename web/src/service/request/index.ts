@@ -30,11 +30,9 @@ const ofetchInstance = ofetch.create({
     options.headers.delete('X-Direct-URL')
   },
   // 响应拦截器
-  onResponse({ response }) {
-    // 处理响应数据
-    if (response.status !== 200) {
-      throw new Error(`Request failed with status ${response.status}`)
-    }
+  onResponseError({ response }) {
+    const data = response._data
+    theToast.error(data?.msg ? String(data.msg) : '请求失败')
   },
 })
 

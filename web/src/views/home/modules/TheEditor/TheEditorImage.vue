@@ -47,13 +47,7 @@ import { useEchoStore } from '@/stores/echo'
 import { Mode } from '@/enums/enums'
 import { Fancybox } from '@fancyapps/ui'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
-
-const enum ImageSource {
-  LOCAL = 'local',
-  URL = 'url',
-  S3 = 's3',
-  R2 = 'r2',
-}
+import { ImageSource } from '@/enums/enums'
 
 const images = defineModel<App.Api.Ech0.ImageToAdd[]>('imagesToAdd', { required: true })
 

@@ -47,7 +47,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			}
 
 			// 如果 Authorization 头部信息为空，或者格式不正确，或者 token 为空，则返回错误
-			ctx.JSON(http.StatusOK, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
+			ctx.JSON(http.StatusUnauthorized, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
 				Msg: commonModel.TOKEN_NOT_FOUND,
 				Err: nil,
 			})))
@@ -57,7 +57,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 
 		// 如果 Authorization 头部信息格式不正确，或者 token 格式不正确，则返回错误
 		if len(parts) != 2 && parts[0] != "Bearer" {
-			ctx.JSON(http.StatusOK, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
+			ctx.JSON(http.StatusUnauthorized, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
 				Msg: commonModel.TOKEN_NOT_VALID,
 				Err: nil,
 			})))
@@ -69,7 +69,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		mc, err := jwtUtil.ParseToken(parts[1])
 		if err != nil {
 			// 如果 token 解析失败，则返回错误
-			ctx.JSON(http.StatusOK, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
+			ctx.JSON(http.StatusUnauthorized, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
 				Msg: commonModel.TOKEN_PARSE_ERROR,
 				Err: err,
 			})))

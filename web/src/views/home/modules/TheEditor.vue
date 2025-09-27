@@ -47,7 +47,7 @@
           </div>
           <div class="my-1">
             <!-- 图片上传本地 -->
-            <input
+            <!-- <input
               id="file-input"
               class="hidden"
               type="file"
@@ -62,7 +62,10 @@
               title="上传本地图片"
             >
               <span class="text-gray-400">点击上传</span>
-            </BaseButton>
+            </BaseButton> -->
+
+            <TheUppy v-if="imageToAdd.image_source === ImageSource.LOCAL" @uppyUploaded="handleUppyUploaded" />
+
             <!-- 图片直链 -->
             <BaseInput
               v-if="imageToAdd.image_source === ImageSource.URL"
@@ -134,6 +137,7 @@ import TheEditorButtons from './TheEditor/TheEditorButtons.vue'
 import TheTodoModeEditor from './TheEditor/TheTodoModeEditor.vue'
 import TheMusicModeEditor from './TheEditor/TheMusicModeEditor.vue'
 import TheExtensionEditor from './TheEditor/TheExtensionEditor.vue'
+import TheUppy from '@/components/advanced/TheUppy.vue'
 
 import { theToast } from '@/utils/toast'
 import { ref, watch } from 'vue'
@@ -249,6 +253,7 @@ const handleTriggerUpload = () => {
   }
 }
 
+// 旧版本单图片上传函数
 const handleUploadImage = async (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
@@ -275,6 +280,18 @@ const handleUploadImage = async (event: Event) => {
   } finally {
     // 重置 input，防止同图重复上传失效
     target.value = ''
+  }
+}
+
+const handleUppyUploaded = (files: string[]) => {
+  files.forEach((fileUrl) => {
+    imageToAdd.value.image_url = fileUrl
+    imageToAdd.value.image_source = ImageSource.LOCAL
+    handleAddMoreImage()
+  })
+
+  if (isUpdateMode.value && echoToUpdate.value) {
+    handleAddorUpdateEcho(true)
   }
 }
 /* ----------------------------------------------------- */
