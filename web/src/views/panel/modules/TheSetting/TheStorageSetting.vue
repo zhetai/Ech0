@@ -60,7 +60,7 @@
 
       <!-- S3 Access Key -->
       <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">S3 Access Key:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">Access Key:</h2>
         <span
           v-if="!storageEditMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -80,7 +80,7 @@
 
       <!-- S3 Secret Key -->
       <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">S3 Secret Key:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">Secret Key:</h2>
         <span
           v-if="!storageEditMode"
           class="truncate max-w-40 inline-block align-middle"
