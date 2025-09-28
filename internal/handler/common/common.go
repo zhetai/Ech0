@@ -100,7 +100,7 @@ func (commonHandler *CommonHandler) DeleteImage() gin.HandlerFunc {
 			}
 		}
 
-		if err := commonHandler.commonService.DeleteImage(userId, imageDto.URL, imageDto.SOURCE); err != nil {
+		if err := commonHandler.commonService.DeleteImage(userId, imageDto.URL, imageDto.SOURCE, imageDto.ObjectKey); err != nil {
 			ctx.JSON(http.StatusOK, commonModel.Fail[string](errorUtil.HandleError(&commonModel.ServerError{
 				Msg: "",
 				Err: err,

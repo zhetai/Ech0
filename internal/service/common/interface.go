@@ -16,10 +16,10 @@ type CommonServiceInterface interface {
 	UploadImage(userid uint, file *multipart.FileHeader) (string, error)
 
 	// DeleteImage 删除图片
-	DeleteImage(userid uint, url, source string) error
+	DeleteImage(userid uint, url, source, object_key string) error
 
 	// DirectDeleteImage 直接根据URL和来源删除图片
-	DirectDeleteImage(url, source string) error
+	DirectDeleteImage(url, source, object_key string) error
 
 	// GetSysAdmin 获取系统管理员
 	GetSysAdmin() (userModel.User, error)

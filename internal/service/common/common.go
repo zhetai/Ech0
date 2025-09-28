@@ -81,7 +81,7 @@ func (commonService *CommonService) UploadImage(userId uint, file *multipart.Fil
 	return imageUrl, nil
 }
 
-func (commonService *CommonService) DeleteImage(userid uint, url, source string) error {
+func (commonService *CommonService) DeleteImage(userid uint, url, source, object_key string) error {
 	user, err := commonService.commonRepository.GetUserByUserId(userid)
 	if err != nil {
 		return err
@@ -126,7 +126,7 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source string)
 	return nil
 }
 
-func (commonService *CommonService) DirectDeleteImage(url, source string) error {
+func (commonService *CommonService) DirectDeleteImage(url, source, object_key string) error {
 	// 检查图片是否存在
 	if url == "" {
 		return errors.New(commonModel.IMAGE_NOT_FOUND)

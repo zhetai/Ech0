@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+
 	"github.com/lin-snow/ech0/internal/transaction"
 
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
@@ -112,6 +113,8 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 		Total: total,
 	}
 
+	// 处理echosByPage中的图片URL
+
 	return result, nil
 }
 
@@ -138,7 +141,7 @@ func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
 		// 删除Echo中的图片
 		if len(echo.Images) > 0 {
 			for _, img := range echo.Images {
-				if err := echoService.commonService.DirectDeleteImage(img.ImageURL, img.ImageSource); err != nil {
+				if err := echoService.commonService.DirectDeleteImage(img.ImageURL, img.ImageSource, img.ObjectKey); err != nil {
 					return err
 				}
 			}
