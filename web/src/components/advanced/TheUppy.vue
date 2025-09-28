@@ -127,7 +127,6 @@ const initUppy = () => {
 
   // 上传开始前，检查是否登录
   uppy.on("upload", (uploadID, files) => {
-    console.log("Upload started", uploadID, files)
     if (!isLogin.value) {
       theToast.error("请先登录再上传图片 😢")
       uppy?.cancelAll()
