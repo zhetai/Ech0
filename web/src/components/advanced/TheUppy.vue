@@ -28,6 +28,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(["uppyUploaded"])
 
+const isUploading = ref<boolean>(false); // 是否正在上传
 const files = ref<App.Api.Ech0.ImageToAdd[]>([]); // 已上传的文件列表
 const tempFiles = ref<Map<string, string>>(new Map()); // 用于S3临时存储文件回显地址的 Map(key: fileName, value: url)
 
@@ -135,6 +136,7 @@ const initUppy = () => {
       return
     }
     theToast.info("正在上传图片，请稍等... ⏳", { duration: 1000})
+    isUploading.value = true;
   })
   // 单个文件上传失败后，显示错误信息
   uppy.on("upload-error", (file, error, response) => {
@@ -162,6 +164,7 @@ const initUppy = () => {
       }
       theToast.error(errorMsg);
     }
+    isUploading.value = false;
   });
   // 单个文件上传成功后，保存文件 URL 到 files 列表
   uppy.on("upload-success", (file, response) => {
@@ -188,6 +191,7 @@ const initUppy = () => {
   });
   // 全部文件上传完成后，发射事件到父组件
   uppy.on("complete", () => {
+    isUploading.value = false;
     emit("uppyUploaded", files.value); // 发射事件到父组件
   })
 }
@@ -196,7 +200,7 @@ const initUppy = () => {
 watch(
   () => props.TheImageSource,
   (newSource, oldSource) => {
-    if (newSource !== oldSource) {
+    if ((newSource !== oldSource) && (isUploading.value === false)) {
       // 销毁旧的 Uppy 实例
       uppy?.destroy()
       uppy = null
@@ -208,7 +212,7 @@ watch(
 );
 
 onMounted(() => {
-  initUppy
+  initUppy();
 })
 
 onBeforeUnmount(() => {
