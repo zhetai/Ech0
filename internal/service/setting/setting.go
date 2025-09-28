@@ -246,7 +246,7 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 		s3Setting := &model.S3Setting{
 			Enable:         newSetting.Enable,
 			Provider:       newSetting.Provider,
-			Endpoint:       newSetting.Endpoint,
+			Endpoint:       httpUtil.TrimURL(newSetting.Endpoint),
 			AccessKey:      newSetting.AccessKey,
 			SecretKey:      newSetting.SecretKey,
 			BucketName:     newSetting.BucketName,

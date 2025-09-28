@@ -21,6 +21,12 @@
           <BaseSwitch v-model="S3Setting.enable" :disabled="!storageEditMode" />
         </div>
 
+        <!-- 使用 SSL -->
+        <div class="flex flex-row items-center justify-start text-gray-500 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">启用SSL:</h2>
+          <BaseSwitch v-model="S3Setting.use_ssl" :disabled="!storageEditMode" />
+        </div>
+
         <!-- S3 Service Provider -->
         <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">S3 服务:</h2>
@@ -47,7 +53,7 @@
             v-else
             v-model="S3Setting.endpoint"
             type="text"
-            placeholder="S3 Endpoint地址,带http(s)"
+            placeholder="S3 Endpoint地址"
             class="w-full !py-1"
           />
         </div>

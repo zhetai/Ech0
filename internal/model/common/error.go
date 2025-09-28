@@ -44,6 +44,7 @@ const (
 	IMAGE_NOT_FOUND        = "图片未找到"
 	INVALID_PARAMS         = "错误的参数"
 	SIGNUP_FIRST           = "请先注册用户"
+	S3_NOT_ENABLED        = "S3存储未启用"
 	S3_NOT_CONFIGURED	  = "S3存储未配置"
 	S3_CONFIG_ERROR 	  = "S3存储配置错误"
 )

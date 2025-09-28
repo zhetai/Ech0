@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"mime"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/lin-snow/ech0/internal/transaction"
@@ -21,6 +23,7 @@ import (
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	repository "github.com/lin-snow/ech0/internal/repository/common"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
+	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 	mdUtil "github.com/lin-snow/ech0/internal/util/md"
 	storageUtil "github.com/lin-snow/ech0/internal/util/storage"
@@ -425,10 +428,10 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	if s3Dto.FileName == "" {
 		return result, errors.New(commonModel.INVALID_PARAMS)
 	}
-	contentType := s3Dto.ContentType
-	// 如果Content Type为空，调用 MIME 探测
+	ext := filepath.Ext(s3Dto.FileName) // ".png"
+	contentType := mime.TypeByExtension(ext)
 	if contentType == "" {
-		contentType = http.DetectContentType([]byte(s3Dto.FileName))
+		contentType = "application/octet-stream"
 	}
 
 	// 检查Content-Type是否为Image开头
@@ -464,6 +467,10 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	if err := jsonUtil.JSONUnmarshal([]byte(value.(string)), &s3setting); err != nil {
 		return result, errors.New(commonModel.S3_CONFIG_ERROR)
 	}
+	if !s3setting.Enable {
+		return result, errors.New(commonModel.S3_NOT_ENABLED)
+	}
+	s3setting.Endpoint = httpUtil.TrimURL(s3setting.Endpoint)
 
 	// 初始化 S3 客户端
 	commonService.objStorage, err = storageUtil.NewMinioStorage(s3setting.Endpoint, s3setting.AccessKey, s3setting.SecretKey, s3setting.BucketName, s3setting.UseSSL)
