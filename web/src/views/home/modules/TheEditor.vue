@@ -159,6 +159,7 @@ import { useEchoStore } from '@/stores/echo'
 import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
 import { Mode, ExtensionType, ImageSource } from '@/enums/enums'
+import { useEditorStore } from '@/stores/editor'
 
 /* --------------- 与音乐播放相关 ---------------- */
 const emit = defineEmits(['refreshAudio'])
@@ -175,6 +176,7 @@ const { setTodoMode, getTodos } = todoStore
 
 const { todoMode } = storeToRefs(todoStore)
 const { echoToUpdate, isUpdateMode } = storeToRefs(echoStore)
+
 /* -------------------------------------------- */
 
 /* --------------- 与模式和扩展类型相关 ---------------- */
@@ -259,6 +261,9 @@ const handleAddMoreImage = () => {
 }
 
 const handleAddImageMode = () => {
+  if (imageToAdd.value.image_source === '') {
+    imageToAdd.value.image_source = ImageSource.LOCAL
+  }
   currentMode.value = Mode.Image
 }
 const fileInput = ref<HTMLInputElement | null>(null)

@@ -79,7 +79,7 @@ const handleRemoveImage = () => {
       object_key: images.value[index].object_key,
     }
 
-    if (imageToDel.source === ImageSource.LOCAL) {
+    if (imageToDel.source === ImageSource.LOCAL || imageToDel.source === ImageSource.S3) {
       fetchDeleteImage({
         url: imageToDel.url,
         source: imageToDel.source,
