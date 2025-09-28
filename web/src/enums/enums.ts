@@ -3,7 +3,7 @@ export enum ShowWhichEnum {
   Status = 'status',
   Setting = 'setting',
   UserCenter = 'usercenter',
-  Other = 'other',
+  Advance = 'advance',
 }
 
 // 编辑器的状态

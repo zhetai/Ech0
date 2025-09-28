@@ -8,9 +8,6 @@
 
     <!-- Connect设置 -->
     <TheConnectSetting />
-
-    <!-- 存储设置 -->
-    <TheStorageSetting />
   </div>
 </template>
 
@@ -18,5 +15,4 @@
 import TheSystemSetting from './TheSetting/TheSystemSetting.vue'
 import TheCommentSetting from './TheSetting/TheCommentSetting.vue'
 import TheConnectSetting from './TheSetting/TheConnectSetting.vue'
-import TheStorageSetting from './TheSetting/TheStorageSetting.vue'
 </script>

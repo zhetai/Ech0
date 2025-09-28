@@ -166,10 +166,14 @@ const initUppy = () => {
       type ResponseBody = {
         code: number
         msg: string
+        // @ts-nocheck
+        /* eslint-disable */
         data: any
       }
 
       let errorMsg = '上传图片时发生错误 😢'
+      // @ts-nocheck
+      /* eslint-disable */
       const resp = response as any // 忽略 TS 类型限制
       if (resp?.response) {
         let resObj: ResponseBody

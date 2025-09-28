@@ -1,43 +1,41 @@
 <template>
-  <div class="w-full px-2">
-    <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-2">
-      <!-- 设置 -->
-      <div>
-        <div class="flex items-center justify-start mb-3">
-          <h1 class="text-gray-600 font-bold text-lg">数据管理</h1>
-        </div>
+  <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
+    <!-- 数据管理 -->
+    <div>
+      <div class="flex items-center justify-start mb-3">
+        <h1 class="text-gray-600 font-bold text-lg">数据管理</h1>
+      </div>
 
-        <div class="flex flex-col gap-4">
-          <!-- 备份数据 -->
-          <div class="flex flex-start items-center gap-2">
-            <p class="text-gray-400">创建快照:</p>
-            <BaseButton
-              :icon="CreateBackup"
-              @click="handleBackup"
-              class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
-              title="创建快照"
-            />
-          </div>
-          <!-- 导出快照 -->
-          <div class="flex flex-start items-center gap-2">
-            <p class="text-gray-400">导出快照:</p>
-            <BaseButton
-              :icon="ExportBackup"
-              @click="handleBackupExport"
-              class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
-              title="导出快照"
-            />
-          </div>
-          <!-- 恢复数据 -->
-          <div class="flex flex-start items-center gap-2">
-            <p class="text-gray-400">恢复快照:</p>
-            <BaseButton
-              :icon="RestoreBackup"
-              @click="handleBackupRestore"
-              class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
-              title="恢复快照"
-            />
-          </div>
+      <div class="flex flex-col gap-4">
+        <!-- 备份数据 -->
+        <div class="flex flex-start items-center gap-2">
+          <p class="text-gray-400">创建快照:</p>
+          <BaseButton
+            :icon="CreateBackup"
+            @click="handleBackup"
+            class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
+            title="创建快照"
+          />
+        </div>
+        <!-- 导出快照 -->
+        <div class="flex flex-start items-center gap-2">
+          <p class="text-gray-400">导出快照:</p>
+          <BaseButton
+            :icon="ExportBackup"
+            @click="handleBackupExport"
+            class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
+            title="导出快照"
+          />
+        </div>
+        <!-- 恢复数据 -->
+        <div class="flex flex-start items-center gap-2">
+          <p class="text-gray-400">恢复快照:</p>
+          <BaseButton
+            :icon="RestoreBackup"
+            @click="handleBackupRestore"
+            class="rounded-lg !bg-gray-100 !text-gray-600 hover:!bg-gray-200"
+            title="恢复快照"
+          />
         </div>
       </div>
     </div>

@@ -18,12 +18,12 @@
         </div>
         <!-- 操作按钮 -->
         <div class="flex flex-row items-center gap-2">
-          <!-- 状态 / 设置 / 个人中心 / 其它 -->
+          <!-- 状态 / 设置 / 个人中心 / 高级 -->
           <BaseButton
             :icon="[Setting, User, TheOthersIcon, Status][ShowingIndex]"
             @click="changeShow"
             class="text-gray-600 rounded-md w-8 h-8 sm:w-9 sm:h-9"
-            title="状态 / 设置 / 个人中心 / 其它"
+            title="状态 / 设置 / 个人中心 / 高级"
           />
 
           <!-- 退出登录 -->
@@ -49,8 +49,8 @@
       <TheSetting v-if="Showing === ShowWhichEnum.Setting" />
       <!-- TheUserCenter -->
       <TheUser v-if="Showing === ShowWhichEnum.UserCenter" />
-      <!-- TheOthers -->
-      <TheOthers v-if="Showing === ShowWhichEnum.Other" />
+      <!-- TheAdvance -->
+      <TheAdvance v-if="Showing === ShowWhichEnum.Advance" />
     </div>
   </div>
 </template>
@@ -66,7 +66,7 @@ import Setting from '@/components/icons/setting.vue'
 import TheStatus from './TheStatus.vue'
 import TheSetting from './TheSetting.vue'
 import TheUser from './TheUser.vue'
-import TheOthers from './TheOthers.vue'
+import TheAdvance from './TheAdvance.vue'
 import Logout from '@/components/icons/logout.vue'
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
@@ -80,7 +80,7 @@ const ShowingArray = [
   ShowWhichEnum.Status,
   ShowWhichEnum.Setting,
   ShowWhichEnum.UserCenter,
-  ShowWhichEnum.Other,
+  ShowWhichEnum.Advance,
 ]
 const ShowingIndex = ref<number>(0)
 const Showing = ref<string>(ShowWhichEnum.Status)
