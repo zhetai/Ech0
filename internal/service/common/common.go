@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"mime/multipart"
@@ -13,10 +14,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 	"github.com/lin-snow/ech0/internal/config"
+
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
+	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	repository "github.com/lin-snow/ech0/internal/repository/common"
+	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
+	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 	mdUtil "github.com/lin-snow/ech0/internal/util/md"
 	storageUtil "github.com/lin-snow/ech0/internal/util/storage"
 )
@@ -24,17 +29,20 @@ import (
 type CommonService struct {
 	txManager        transaction.TransactionManager
 	commonRepository repository.CommonRepositoryInterface
+	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
 	objStorage storageUtil.ObjectStorage
 }
 
 func NewCommonService(
 	tm transaction.TransactionManager,
 	commonRepository repository.CommonRepositoryInterface,
+	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface,
 ) CommonServiceInterface {
 	return &CommonService{
 		txManager:        tm,
 		commonRepository: commonRepository,
-		objStorage: nil,
+		keyvalueRepository: keyvalueRepository,
+		objStorage:       nil,
 	}
 }
 
@@ -424,17 +432,18 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	}
 
 	// 检查Content-Type是否为Image开头
-	if contentType[:5] == "image" {
+	switch contentType[:5] {
+	case "image":
 		// 检查文件类型是否合法
 		if !storageUtil.IsAllowedType(contentType, config.Config.Upload.AllowedTypes) {
 			return result, errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
 		}
-	} else if contentType[:5] == "audio" {
+	case "audio":
 		// 检查文件类型是否合法
 		if !storageUtil.IsAllowedType(contentType, config.Config.Upload.AllowedTypes) {
 			return result, errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
 		}
-	} else {
+	default:
 		return result, errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
 	}
 
@@ -447,18 +456,26 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 
 	// 生成预签名 URL
 	// 检查是否配置了 S3
-	if commonService.objStorage == nil {
-		// 获取S3 配置
-		
-		// 初始化 S3 对象存储
-
+	var s3setting settingModel.S3Setting
+	value, err := commonService.keyvalueRepository.GetKeyValue(commonModel.S3SettingKey);
+	if err != nil || value == "" {
+		return result, errors.New(commonModel.S3_NOT_CONFIGURED)
+	}
+	if err := jsonUtil.JSONUnmarshal([]byte(value.(string)), &s3setting); err != nil {
+		return result, errors.New(commonModel.S3_CONFIG_ERROR)
 	}
 
-	// presignURL, err := commonService.commonRepository.GetS3PresignURL(objectKey, contentType, method)
-	// if err != nil {
-	// 	return result, err
-	// }
-	// result.PresignURL = presignURL
+	// 初始化 S3 客户端
+	commonService.objStorage, err = storageUtil.NewMinioStorage(s3setting.Endpoint, s3setting.AccessKey, s3setting.SecretKey, s3setting.BucketName, s3setting.UseSSL)
+	if err != nil {
+		return result, errors.New(commonModel.S3_CONFIG_ERROR)
+	}
+
+	presignURL, err := commonService.objStorage.PresignURL(context.Background(), objectKey, 24*time.Hour, method)
+	if err != nil {
+		return result, err
+	}
+	result.PresignURL = presignURL
 	
 	return result, nil
 }
