@@ -114,7 +114,11 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 	}
 
 	// 处理echosByPage中的图片URL
+	for i := range result.Items {
+		echoService.RefreshEchoImageURL(userid, &result.Items[i])
+	}
 
+	// 返回结果
 	return result, nil
 }
 
@@ -172,6 +176,11 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 
 	// 获取当日发布的Echos
 	todayEchos := echoService.echoRepository.GetTodayEchos(showPrivate)
+
+	// 处理todayEchos中的图片URL
+	for i := range todayEchos {
+		echoService.RefreshEchoImageURL(userid, &todayEchos[i])
+	}
 
 	return todayEchos, nil
 }
@@ -269,5 +278,31 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 		}
 	}
 
+	// 刷新图片URL
+	echoService.RefreshEchoImageURL(userId, echo)
+	
+	// 返回Echo
 	return echo, nil
+}
+
+// RefreshEchoImageURL 刷新Echo中的图片URL
+func (echoService *EchoService) RefreshEchoImageURL(userid uint, echo *model.Echo) {
+	_, s3setting, err := echoService.commonService.GetS3Client()
+	if err != nil {
+		// 如果没有配置 S3，则不处理
+		return
+	}
+
+	// 开始刷新图片URL
+	for i := range echo.Images {
+		if echo.Images[i].ImageSource == model.ImageSourceS3 && echo.Images[i].ObjectKey != "" {
+			if newURL, err := echoService.commonService.GetS3ObjectURL(s3setting, echo.Images[i].ObjectKey); err == nil {
+				echo.Images[i].ImageURL = newURL
+				// 顺便更新数据库中的Echo
+				echoService.txManager.Run(func(ctx context.Context) error {
+					return echoService.echoRepository.UpdateEcho(ctx, echo)
+				})
+			}
+		}
+	}
 }

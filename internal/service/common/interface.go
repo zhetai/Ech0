@@ -5,7 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	model "github.com/lin-snow/ech0/internal/model/common"
+	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
+	storageUtil "github.com/lin-snow/ech0/internal/util/storage"
 )
 
 type CommonServiceInterface interface {
@@ -47,4 +49,10 @@ type CommonServiceInterface interface {
 
 	// GetS3PresignURL 获取 S3 预签名 URL
 	GetS3PresignURL(userid uint, s3Dto *model.GetPresignURLDto, method string) (model.PresignDto, error)
+
+	// GetS3Client 获取 S3 客户端和配置信息
+	GetS3Client() (storageUtil.ObjectStorage, settingModel.S3Setting, error)
+
+	// GetS3ObjectURL 获取 S3 对象的访问 URL
+	GetS3ObjectURL(s3setting settingModel.S3Setting, objectKey string) (string, error)
 }

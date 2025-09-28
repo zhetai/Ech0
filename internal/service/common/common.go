@@ -490,17 +490,23 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 		return result, err
 	}
 
+	// 检查是否开启了 S3
+	if !s3setting.Enable {
+		return result, errors.New(commonModel.S3_NOT_ENABLED)
+	}
+
 	// 生成预签名 URL
 	presignURL, err := commonService.objStorage.PresignURL(context.Background(), objectKey, 24*time.Hour, method)
 	if err != nil {
 		return result, err
 	}
 	result.PresignURL = presignURL
-	protocal := "http"
-	if s3setting.UseSSL {
-		protocal = "https"
+	// 生成访问 URL
+	fileURL, err := commonService.GetS3ObjectURL(s3setting, objectKey)
+	if err != nil {
+		return result, err
 	}
-	result.FileURL = fmt.Sprintf("%s://%s/%s/%s", protocal, s3setting.Endpoint, s3setting.BucketName, objectKey)
+	result.FileURL = fileURL
 	
 	return result, nil
 }
@@ -516,9 +522,6 @@ func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, se
 	if err := jsonUtil.JSONUnmarshal([]byte(value.(string)), &s3setting); err != nil {
 		return nil, s3setting, errors.New(commonModel.S3_CONFIG_ERROR)
 	}
-	if !s3setting.Enable {
-		return nil, s3setting, errors.New(commonModel.S3_NOT_ENABLED)
-	}
 	s3setting.Endpoint = httpUtil.TrimURL(s3setting.Endpoint)
 
 	// 初始化 S3 客户端
@@ -528,4 +531,18 @@ func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, se
 	}
 
 	return commonService.objStorage, s3setting, nil
+}
+
+// GetS3ObjectURL 获取 S3 对象的 URL
+func (CommonService *CommonService) GetS3ObjectURL(s3Setting settingModel.S3Setting, objectKey string) (string, error) {
+	if s3Setting.Endpoint == "" || s3Setting.BucketName == "" || objectKey == "" {
+		return "", errors.New(commonModel.S3_CONFIG_ERROR)
+	}
+
+	protocal := "http"
+	if s3Setting.UseSSL {
+		protocal = "https"
+	}
+
+	return fmt.Sprintf("%s://%s/%s/%s", protocal, s3Setting.Endpoint, s3Setting.BucketName, objectKey), nil
 }
