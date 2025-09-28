@@ -204,7 +204,7 @@ func (settingHandler *SettingHandler) UpdateS3Settings() gin.HandlerFunc {
 				Msg: commonModel.INVALID_REQUEST_BODY,
 				Err: err,
 			}
-		}		
+		}
 
 		if err := settingHandler.settingService.UpdateS3Setting(userid, &newS3Settings); err != nil {
 			return res.Response{

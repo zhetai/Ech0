@@ -24,12 +24,12 @@ const (
 
 // Common 成功相关常量
 const (
-	UPLOAD_SUCCESS        = "上传成功"
-	DELETE_SUCCESS        = "删除成功"
-	GET_STATUS_SUCCESS    = "获取状态成功"
-	GET_HEATMAP_SUCCESS   = "获取热力图成功"
-	GET_MUSIC_URL_SUCCESS = "获取音乐播放链接成功"
-	GET_HELLO_SUCCESS     = "获取Hello成功"
+	UPLOAD_SUCCESS             = "上传成功"
+	DELETE_SUCCESS             = "删除成功"
+	GET_STATUS_SUCCESS         = "获取状态成功"
+	GET_HEATMAP_SUCCESS        = "获取热力图成功"
+	GET_MUSIC_URL_SUCCESS      = "获取音乐播放链接成功"
+	GET_HELLO_SUCCESS          = "获取Hello成功"
 	GET_S3_PRESIGN_URL_SUCCESS = "获取 S3 预签名 URL 成功"
 )
 
@@ -39,8 +39,8 @@ const (
 	UPDATE_SETTINGS_SUCCESS         = "更新设置成功！"
 	GET_COMMENT_SETTINGS_SUCCESS    = "获取评论设置成功！"
 	UPDATE_COMMENT_SETTINGS_SUCCESS = "更新评论设置成功！"
-	GET_S3_SETTINGS_SUCCESS		 = "获取 S3 存储设置成功！"
-	UPDATE_S3_SETTINGS_SUCCESS	 = "更新 S3 存储设置成功！"
+	GET_S3_SETTINGS_SUCCESS         = "获取 S3 存储设置成功！"
+	UPDATE_S3_SETTINGS_SUCCESS      = "更新 S3 存储设置成功！"
 )
 
 // To do 成功相关常量

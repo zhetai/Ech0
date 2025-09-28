@@ -10,13 +10,13 @@ import (
 )
 
 type KeyValueRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
 	cache cache.ICache[string, any]
 }
 
 func NewKeyValueRepository(db *gorm.DB, cache cache.ICache[string, any]) KeyValueRepositoryInterface {
 	return &KeyValueRepository{
-		db: db,
+		db:    db,
 		cache: cache,
 	}
 }

@@ -21,15 +21,15 @@ type CommentSetting struct {
 
 // S3Setting 定义 S3 存储设置实体
 type S3Setting struct {
-	Enable bool  `json:"enable"`          // 是否启用 S3 存储
-	Provider        string `json:"provider"`         // S3 服务提供商，例如 "aws", "aliyun", "minio", "other"
-	Endpoint        string `json:"endpoint"`         // S3 端点
-	AccessKey      string `json:"access_key"`      // 访问密钥 ID
-	SecretKey      string `json:"secret_key"`      // 秘密访问密钥
-	BucketName      string `json:"bucket_name"`      // 存储桶名称
-	Region          string `json:"region"`           // 区域
-	UseSSL          bool   `json:"use_ssl"`          // 是否使用 SSL
-    CDNURL      string `json:"cdn_url"`       // CDN 加速域名（可选，没有就走 Endpoint）
-    PathPrefix  string `json:"path_prefix"`   // 存储路径前缀，例如 "uploads/"，方便隔离目录
-    PublicRead  bool   `json:"public_read"`   // 上传时是否默认设置对象为 public-read
+	Enable     bool   `json:"enable"`      // 是否启用 S3 存储
+	Provider   string `json:"provider"`    // S3 服务提供商，例如 "aws", "aliyun", "minio", "other"
+	Endpoint   string `json:"endpoint"`    // S3 端点
+	AccessKey  string `json:"access_key"`  // 访问密钥 ID
+	SecretKey  string `json:"secret_key"`  // 秘密访问密钥
+	BucketName string `json:"bucket_name"` // 存储桶名称
+	Region     string `json:"region"`      // 区域
+	UseSSL     bool   `json:"use_ssl"`     // 是否使用 SSL
+	CDNURL     string `json:"cdn_url"`     // CDN 加速域名（可选，没有就走 Endpoint）
+	PathPrefix string `json:"path_prefix"` // 存储路径前缀，例如 "uploads/"，方便隔离目录
+	PublicRead bool   `json:"public_read"` // 上传时是否默认设置对象为 public-read
 }

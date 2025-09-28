@@ -85,7 +85,7 @@ var EchoSet = wire.NewSet(
 
 // CommonSet 包含了构建 CommonHandler 所需的所有 Provider
 var CommonSet = wire.NewSet(
-	
+
 	commonRepository.NewCommonRepository,
 	commonService.NewCommonService,
 	commonHandler.NewCommonHandler,

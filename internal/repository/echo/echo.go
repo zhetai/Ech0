@@ -145,8 +145,8 @@ func (echoRepository *EchoRepository) DeleteEchoById(ctx context.Context, id uin
 	}
 
 	// 清除缓存
-	echoRepository.cache.Delete(GetEchoByIDCacheKey(id)) // 删除具体 Echo 的缓存
-	echoRepository.cache.Delete(GetTodayEchosCacheKey(true)) // 删除今天的 Echo 缓存（管理员视图）
+	echoRepository.cache.Delete(GetEchoByIDCacheKey(id))      // 删除具体 Echo 的缓存
+	echoRepository.cache.Delete(GetTodayEchosCacheKey(true))  // 删除今天的 Echo 缓存（管理员视图）
 	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
 
 	// 清除相关缓存
@@ -274,7 +274,7 @@ func (echoRepository *EchoRepository) LikeEcho(ctx context.Context, id uint) err
 
 	// 清除相关缓存
 	ClearEchoPageCache(echoRepository.cache)
-	echoRepository.cache.Delete(GetEchoByIDCacheKey(id)) // 删除具体 Echo 的缓存
+	echoRepository.cache.Delete(GetEchoByIDCacheKey(id))      // 删除具体 Echo 的缓存
 	echoRepository.cache.Delete(GetTodayEchosCacheKey(true))  // 删除今天的 Echo 缓存（管理员视图）
 	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
 

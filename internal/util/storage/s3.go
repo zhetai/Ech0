@@ -11,32 +11,33 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
+
 type minioStorage struct {
 	client     *minio.Client
 	bucketName string
 }
 
 func NewMinioStorage(endpoint, accessKey, secretKey, bucketName string, secure bool) (ObjectStorage, error) {
-    client, err := minio.New(endpoint, &minio.Options{
-        Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
-        Secure: secure,
-    })
-    if err != nil {
-        return nil, fmt.Errorf("failed to create Minio client: %w", err)
-    }
+	client, err := minio.New(endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
+		Secure: secure,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Minio client: %w", err)
+	}
 
-    // Check if the bucket exists. If not, create it.
-    exists, err := client.BucketExists(context.Background(), bucketName)
-    if err != nil {
-        return nil, fmt.Errorf("failed to check if bucket exists: %w", err)
-    }
-    if !exists {
-        if err := client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{}); err != nil {
-            return nil, fmt.Errorf("failed to create bucket: %w", err)
-        }
-    }
+	// Check if the bucket exists. If not, create it.
+	exists, err := client.BucketExists(context.Background(), bucketName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check if bucket exists: %w", err)
+	}
+	if !exists {
+		if err := client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{}); err != nil {
+			return nil, fmt.Errorf("failed to create bucket: %w", err)
+		}
+	}
 
-    return &minioStorage{client: client, bucketName: bucketName}, nil
+	return &minioStorage{client: client, bucketName: bucketName}, nil
 }
 
 // DeleteObject implements storage.ObjectStorage.
@@ -79,29 +80,29 @@ func (m *minioStorage) ListObjects(ctx context.Context, prefix string) ([]string
 
 // ListObjectStream streams object names to a channel to avoid high memory usage.
 func (m *minioStorage) ListObjectStream(ctx context.Context, prefix string) (<-chan string, error) {
-    objectCh := m.client.ListObjects(ctx, m.bucketName, minio.ListObjectsOptions{
-        Prefix:    prefix,
-        Recursive: true,
-    })
+	objectCh := m.client.ListObjects(ctx, m.bucketName, minio.ListObjectsOptions{
+		Prefix:    prefix,
+		Recursive: true,
+	})
 
-    resultCh := make(chan string)
+	resultCh := make(chan string)
 
-    go func() {
-        defer close(resultCh)
-        for obj := range objectCh {
-            if obj.Err != nil {
-                // Handle error
-                return
-            }
-            select {
-            case resultCh <- obj.Key:
-            case <-ctx.Done():
-                return
-            }
-        }
-    }()
+	go func() {
+		defer close(resultCh)
+		for obj := range objectCh {
+			if obj.Err != nil {
+				// Handle error
+				return
+			}
+			select {
+			case resultCh <- obj.Key:
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
 
-    return resultCh, nil
+	return resultCh, nil
 }
 
 // PresignURL implements storage.ObjectStorage.
@@ -132,23 +133,23 @@ func (m *minioStorage) PresignURL(ctx context.Context, objectName string, expiry
 
 // Upload implements storage.ObjectStorage.
 func (m *minioStorage) Upload(ctx context.Context, objectName string, r io.Reader, contentType string) error {
-    var objectSize int64 = -1
-    // Try to determine the size of the reader
-    if s, ok := r.(interface {
-        Size() int64
-    }); ok {
-        objectSize = s.Size()
-    } else if f, ok := r.(*os.File); ok {
-        if stat, err := f.Stat(); err == nil {
-            objectSize = stat.Size()
-        }
-    }
+	var objectSize int64 = -1
+	// Try to determine the size of the reader
+	if s, ok := r.(interface {
+		Size() int64
+	}); ok {
+		objectSize = s.Size()
+	} else if f, ok := r.(*os.File); ok {
+		if stat, err := f.Stat(); err == nil {
+			objectSize = stat.Size()
+		}
+	}
 
-    _, err := m.client.PutObject(ctx, m.bucketName, objectName, r, objectSize, minio.PutObjectOptions{
-        ContentType: contentType,
-    })
-    if err != nil {
-        return fmt.Errorf("failed to upload object: %w", err)
-    }
-    return nil
+	_, err := m.client.PutObject(ctx, m.bucketName, objectName, r, objectSize, minio.PutObjectOptions{
+		ContentType: contentType,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to upload object: %w", err)
+	}
+	return nil
 }

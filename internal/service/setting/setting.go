@@ -244,17 +244,17 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 		}
 
 		s3Setting := &model.S3Setting{
-			Enable:         newSetting.Enable,
-			Provider:       newSetting.Provider,
-			Endpoint:       httpUtil.TrimURL(newSetting.Endpoint),
-			AccessKey:      newSetting.AccessKey,
-			SecretKey:      newSetting.SecretKey,
-			BucketName:     newSetting.BucketName,
-			Region:         newSetting.Region,
-			UseSSL:         newSetting.UseSSL,
-			CDNURL:         httpUtil.TrimURL(newSetting.CDNURL),
-			PathPrefix:     newSetting.PathPrefix,
-			PublicRead:     newSetting.PublicRead,
+			Enable:     newSetting.Enable,
+			Provider:   newSetting.Provider,
+			Endpoint:   httpUtil.TrimURL(newSetting.Endpoint),
+			AccessKey:  newSetting.AccessKey,
+			SecretKey:  newSetting.SecretKey,
+			BucketName: newSetting.BucketName,
+			Region:     newSetting.Region,
+			UseSSL:     newSetting.UseSSL,
+			CDNURL:     httpUtil.TrimURL(newSetting.CDNURL),
+			PathPrefix: newSetting.PathPrefix,
+			PublicRead: newSetting.PublicRead,
 		}
 
 		// 序列化为 JSON

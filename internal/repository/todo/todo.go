@@ -10,13 +10,13 @@ import (
 )
 
 type TodoRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
 	cache cache.ICache[string, any]
 }
 
 func NewTodoRepository(db *gorm.DB, cache cache.ICache[string, any]) TodoRepositoryInterface {
 	return &TodoRepository{
-		db: db,
+		db:    db,
 		cache: cache,
 	}
 }
@@ -81,6 +81,6 @@ func (todoRepository *TodoRepository) DeleteTodo(ctx context.Context, id int64) 
 	if err := todoRepository.getDB(ctx).Delete(&model.Todo{}, id).Error; err != nil {
 		return err
 	}
-	
+
 	return nil
 }

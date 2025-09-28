@@ -28,8 +28,8 @@ func (m *MockUserRepository) GetUserByUsername(username string) (model.User, err
 	return args.Get(0).(model.User), args.Error(1)
 }
 func (m *MockUserRepository) CreateUser(ctx context.Context, user *model.User) error {
-    args := m.Called(ctx, user)
-    return args.Error(0)
+	args := m.Called(ctx, user)
+	return args.Error(0)
 }
 func (m *MockUserRepository) GetUserByID(id int) (model.User, error) { return model.User{}, nil }
 func (m *MockUserRepository) UpdateUser(ctx context.Context, user *model.User) error {
@@ -40,7 +40,7 @@ func (m *MockUserRepository) DeleteUser(ctx context.Context, id uint) error {
 	args := m.Called(ctx, id)
 	return args.Error(0)
 }
-func (m *MockUserRepository) GetSysAdmin() (model.User, error)       { return model.User{}, nil }
+func (m *MockUserRepository) GetSysAdmin() (model.User, error) { return model.User{}, nil }
 
 // MockSettingService 模拟设置服务接口
 type MockSettingService struct{ mock.Mock }

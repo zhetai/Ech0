@@ -280,7 +280,7 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 
 	// 刷新图片URL
 	echoService.RefreshEchoImageURL(userId, echo)
-	
+
 	// 返回Echo
 	return echo, nil
 }

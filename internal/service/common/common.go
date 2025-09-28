@@ -30,10 +30,10 @@ import (
 )
 
 type CommonService struct {
-	txManager        transaction.TransactionManager
-	commonRepository repository.CommonRepositoryInterface
+	txManager          transaction.TransactionManager
+	commonRepository   repository.CommonRepositoryInterface
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
-	objStorage storageUtil.ObjectStorage
+	objStorage         storageUtil.ObjectStorage
 }
 
 func NewCommonService(
@@ -42,10 +42,10 @@ func NewCommonService(
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface,
 ) CommonServiceInterface {
 	return &CommonService{
-		txManager:        tm,
-		commonRepository: commonRepository,
+		txManager:          tm,
+		commonRepository:   commonRepository,
 		keyvalueRepository: keyvalueRepository,
-		objStorage:       nil,
+		objStorage:         nil,
 	}
 }
 
@@ -114,12 +114,12 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source, object
 			return nil
 		}
 
-		_, _, err := commonService.GetS3Client();
+		_, _, err := commonService.GetS3Client()
 		if err != nil {
 			// 如果没有配置 S3，则无法删除,忽略
 			return nil
 		}
-		
+
 		// 删除 S3 上的图片
 		return commonService.objStorage.DeleteObject(context.Background(), object_key)
 
@@ -159,7 +159,7 @@ func (commonService *CommonService) DirectDeleteImage(url, source, object_key st
 	case echoModel.ImageSourceURL:
 		// 无需处理
 	case echoModel.ImageSourceS3:
-		cli, _, err := commonService.GetS3Client();
+		cli, _, err := commonService.GetS3Client()
 		if err != nil {
 			// 如果没有配置 S3，则无法删除,忽略
 			return nil
@@ -477,13 +477,13 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 
 	result.FileName = s3Dto.FileName
 	result.ContentType = contentType
-	
+
 	// 生成 Object Key (fileName_时间戳)
 	objectKey := fmt.Sprintf("%s_%d", s3Dto.FileName, time.Now().Unix())
 	result.ObjectKey = objectKey
 
 	// 获取 S3 配置和客户端
-	_, s3setting, err := commonService.GetS3Client();
+	_, s3setting, err := commonService.GetS3Client()
 	if err != nil {
 		return result, err
 	}
@@ -505,7 +505,7 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 		return result, err
 	}
 	result.FileURL = fileURL
-	
+
 	return result, nil
 }
 
@@ -513,7 +513,7 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, settingModel.S3Setting, error) {
 	// 检查是否配置了 S3
 	var s3setting settingModel.S3Setting
-	value, err := commonService.keyvalueRepository.GetKeyValue(commonModel.S3SettingKey);
+	value, err := commonService.keyvalueRepository.GetKeyValue(commonModel.S3SettingKey)
 	if err != nil || value == "" {
 		return nil, s3setting, errors.New(commonModel.S3_NOT_CONFIGURED)
 	}

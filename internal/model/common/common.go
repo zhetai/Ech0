@@ -57,11 +57,11 @@ const (
 )
 
 const (
-	AWS S3Provider = "aws"
-	ALIYUN S3Provider = "aliyun"
+	AWS     S3Provider = "aws"
+	ALIYUN  S3Provider = "aliyun"
 	TENCENT S3Provider = "tencent"
-	MINIO S3Provider = "minio"
-	OTHER S3Provider = "other"
+	MINIO   S3Provider = "minio"
+	OTHER   S3Provider = "other"
 )
 
 // key value表
