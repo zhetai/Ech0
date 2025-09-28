@@ -38,7 +38,7 @@ import Hello from '@/components/icons/hello.vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 import { fetchGetStatus, fetchHelloEch0 } from '@/service/api'
-import { useSettingStore } from '@/stores/settting'
+import { useSettingStore } from '@/stores/setting'
 import { getApiUrl } from '@/service/request/shared'
 import { theToast } from '@/utils/toast'
 

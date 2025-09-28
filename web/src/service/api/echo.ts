@@ -104,6 +104,6 @@ export function fetchGetPresignedUrl(fileName: string, contentType?: string) {
     data: {
       file_name: fileName,
       content_type: contentType,
-    }
+    },
   })
 }

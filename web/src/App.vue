@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 import { onMounted } from 'vue'
 import { watch } from 'vue'
-import { useSettingStore } from '@/stores/settting'
+import { useSettingStore } from '@/stores/setting'
 import { storeToRefs } from 'pinia'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'

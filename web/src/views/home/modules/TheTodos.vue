@@ -32,7 +32,7 @@ import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
 import { onMounted } from 'vue'
 import { useTodoStore } from '@/stores/todo'
 import { useUserStore } from '@/stores/user'
-import { useSettingStore } from '@/stores/settting'
+import { useSettingStore } from '@/stores/setting'
 import { storeToRefs } from 'pinia'
 
 const todoStore = useTodoStore()

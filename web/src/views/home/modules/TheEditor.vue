@@ -16,8 +16,8 @@
 
         <!-- ImageMode : TheImageEditor -->
         <div v-if="currentMode === Mode.Image">
-          <h2 class="text-gray-500 font-bold my-2">插入图片（支持直链、本地、S3）</h2>
-          <div class="flex items-center justify-between mb-3">
+          <h2 class="text-gray-500 font-bold my-2">插入图片（支持直链、本地、S3存储）</h2>
+          <div v-if="!ImageUploading" class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="text-gray-500">选择添加方式：</span>
               <!-- 直链 -->
@@ -36,6 +36,7 @@
               />
               <!-- S3 存储 -->
               <BaseButton
+                v-if="S3Setting.enable"
                 :icon="Bucket"
                 class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
                 @click="imageToAdd.image_source = ImageSource.S3"
@@ -54,7 +55,16 @@
           </div>
 
           <div class="text-gray-300 text-sm mb-1">
-            当前上传方式为 <span class="font-bold"> {{ imageToAdd.image_source === ImageSource.URL ? '直链' : imageToAdd.image_source === ImageSource.LOCAL ? '本地存储' : 'S3存储' }}</span>
+            当前上传方式为
+            <span class="font-bold">
+              {{
+                imageToAdd.image_source === ImageSource.URL
+                  ? '直链'
+                  : imageToAdd.image_source === ImageSource.LOCAL
+                    ? '本地存储'
+                    : 'S3存储'
+              }}</span
+            >, {{ !ImageUploading ? '' : '正在上传中...' }}
           </div>
 
           <div class="my-1">
@@ -76,7 +86,12 @@
               <span class="text-gray-400">点击上传</span>
             </BaseButton> -->
 
-            <TheUppy v-if="imageToAdd.image_source !== ImageSource.URL" @uppyUploaded="handleUppyUploaded" @uppy-set-image-source="handleSetImageSource" :TheImageSource="imageToAdd.image_source" />
+            <TheUppy
+              v-if="imageToAdd.image_source !== ImageSource.URL"
+              @uppyUploaded="handleUppyUploaded"
+              @uppy-set-image-source="handleSetImageSource"
+              :TheImageSource="imageToAdd.image_source"
+            />
 
             <!-- 图片直链 -->
             <BaseInput
@@ -154,9 +169,10 @@ import TheUppy from '@/components/advanced/TheUppy.vue'
 
 import { theToast } from '@/utils/toast'
 import { ref, watch } from 'vue'
-import { fetchUploadImage, fetchAddEcho, fetchAddTodo, fetchUpdateEcho } from '@/service/api'
+import { fetchAddEcho, fetchAddTodo, fetchUpdateEcho } from '@/service/api'
 import { useEchoStore } from '@/stores/echo'
 import { useTodoStore } from '@/stores/todo'
+import { useSettingStore } from '@/stores/setting'
 import { storeToRefs } from 'pinia'
 import { Mode, ExtensionType, ImageSource } from '@/enums/enums'
 import { useEditorStore } from '@/stores/editor'
@@ -171,11 +187,15 @@ const handleRefreshAudio = () => {
 /* --------------- 与Pinia相关 ---------------- */
 const echoStore = useEchoStore()
 const todoStore = useTodoStore()
+const settingStore = useSettingStore()
+const editorStore = useEditorStore()
 
 const { setTodoMode, getTodos } = todoStore
 
 const { todoMode } = storeToRefs(todoStore)
 const { echoToUpdate, isUpdateMode } = storeToRefs(echoStore)
+const { S3Setting } = storeToRefs(settingStore)
+const { ImageUploading } = storeToRefs(editorStore)
 
 /* -------------------------------------------- */
 
@@ -222,7 +242,7 @@ const extensionToAdd = ref({
 // 临时图片索引变量
 const imageIndex = ref<number>(0)
 // 临时图片来源变量
-const imageSourceMemory = ref<string>()
+// const imageSourceMemory = ref<string>()
 // 临时图片添加变量
 const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
   image_url: '',
@@ -266,43 +286,43 @@ const handleAddImageMode = () => {
   }
   currentMode.value = Mode.Image
 }
-const fileInput = ref<HTMLInputElement | null>(null)
-const handleTriggerUpload = () => {
-  imageSourceMemory.value = imageToAdd.value.image_source
-  if (fileInput.value) {
-    fileInput.value.click()
-  }
-}
+// const fileInput = ref<HTMLInputElement | null>(null)
+// const handleTriggerUpload = () => {
+//   imageSourceMemory.value = imageToAdd.value.image_source
+//   if (fileInput.value) {
+//     fileInput.value.click()
+//   }
+// }
 
 // 旧版本单图片上传函数
-const handleUploadImage = async (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (!file) return
+// const handleUploadImage = async (event: Event) => {
+//   const target = event.target as HTMLInputElement
+//   const file = target.files?.[0]
+//   if (!file) return
 
-  try {
-    const res = await theToast.promise(fetchUploadImage(file), {
-      loading: '图片上传中...',
-      success: '图片上传成功！',
-      error: '图片上传失败，请重试',
-    })
+//   try {
+//     const res = await theToast.promise(fetchUploadImage(file), {
+//       loading: '图片上传中...',
+//       success: '图片上传成功！',
+//       error: '图片上传失败，请重试',
+//     })
 
-    if (res.code === 1) {
-      imageToAdd.value.image_url = String(res.data)
-      imageToAdd.value.image_source = ImageSource.LOCAL
-      handleAddMoreImage()
+//     if (res.code === 1) {
+//       imageToAdd.value.image_url = String(res.data)
+//       imageToAdd.value.image_source = ImageSource.LOCAL
+//       handleAddMoreImage()
 
-      if (isUpdateMode.value && echoToUpdate.value) {
-        handleAddorUpdateEcho(true)
-      }
-    }
-  } catch (err) {
-    console.error('上传图片出错:', err)
-  } finally {
-    // 重置 input，防止同图重复上传失效
-    target.value = ''
-  }
-}
+//       if (isUpdateMode.value && echoToUpdate.value) {
+//         handleAddorUpdateEcho(true)
+//       }
+//     }
+//   } catch (err) {
+//     console.error('上传图片出错:', err)
+//   } finally {
+//     // 重置 input，防止同图重复上传失效
+//     target.value = ''
+//   }
+// }
 
 const handleSetImageSource = (newSource: string) => {
   imageToAdd.value.image_source = newSource
@@ -440,7 +460,10 @@ const handleAddorUpdateEcho = (justSyncImages: boolean) => {
     return
   }
 
-  console.log('添加Echo:', echoToAdd.value.images.forEach((img) => console.log(img)))
+  console.log(
+    '添加Echo:',
+    echoToAdd.value.images.forEach((img) => console.log(img)),
+  )
   // 不是Echo更新模式，执行添加操作
   fetchAddEcho(echoToAdd.value).then((res) => {
     if (res.code === 1) {

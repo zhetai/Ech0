@@ -1,5 +1,5 @@
 import { useUserStore } from './user'
-import { useSettingStore } from './settting'
+import { useSettingStore } from './setting'
 import { useTodoStore } from './todo'
 
 export async function initStores() {

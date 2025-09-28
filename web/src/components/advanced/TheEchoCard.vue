@@ -290,8 +290,8 @@ onBeforeUnmount(() => {
 }
 
 :deep(p) {
-  white-space: normal;     /* 允许正常换行 */
+  white-space: normal; /* 允许正常换行 */
   overflow-wrap: break-word; /* 单词太长时自动换行 */
-  word-break: normal;      /* 保持单词整体性，不随便拆开 */
+  word-break: normal; /* 保持单词整体性，不随便拆开 */
 }
 </style>

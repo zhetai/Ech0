@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchGetSettings, fetchGetStatus, fetchGetCommentSettings,fetchGetS3Settings } from '@/service/api'
+import {
+  fetchGetSettings,
+  fetchGetStatus,
+  fetchGetCommentSettings,
+  fetchGetS3Settings,
+} from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
 import { useRouter } from 'vue-router'
@@ -29,14 +34,14 @@ export const useSettingStore = defineStore('settingStore', () => {
   const S3Setting = ref<App.Api.Setting.S3Setting>({
     enable: false,
     provider: S3Provider.AWS,
-    endpoint: "",
-    access_key: "",
-    secret_key: "",
-    bucket_name: "",
-    region: "",
+    endpoint: '',
+    access_key: '',
+    secret_key: '',
+    bucket_name: '',
+    region: '',
     use_ssl: false,
-    cdn_url: "",
-    path_prefix: "",
+    cdn_url: '',
+    path_prefix: '',
     public_read: true,
   })
   const loading = ref<boolean>(true)

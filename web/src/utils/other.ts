@@ -1,5 +1,5 @@
 import { getApiUrl } from '@/service/request/shared'
-import { ImageSource, S3Provider } from '@/enums/enums'
+import { ImageSource } from '@/enums/enums'
 // 获取图片链接
 export const getImageUrl = (image: App.Api.Ech0.Image) => {
   if (image.image_source === ImageSource.LOCAL) {

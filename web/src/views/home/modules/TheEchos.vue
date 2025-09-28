@@ -39,7 +39,7 @@
 import TheEchoCard from '@/components/advanced/TheEchoCard.vue'
 import { onMounted } from 'vue'
 import { useEchoStore } from '@/stores/echo'
-import { useSettingStore } from '@/stores/settting'
+import { useSettingStore } from '@/stores/setting'
 import BaseButton from '@/components/common/BaseButton.vue'
 import { storeToRefs } from 'pinia'
 
