@@ -12,14 +12,21 @@
       <Close class="w-4 h-4" />
     </button>
     <div class="rounded-lg overflow-hidden">
-      <a :href="getImageToAddUrl(images[imageIndex])" data-fancybox>
-        <img
-          :src="getImageToAddUrl(images[imageIndex])"
-          alt="Image"
-          class="max-w-full object-cover"
-          loading="lazy"
-        />
-      </a>
+      <template v-for="(img, idx) in images" :key="idx">
+        <a
+          :href="getImageToAddUrl(img)"
+          data-fancybox="gallery"
+          :data-thumb="getImageToAddUrl(img)"
+          :class="{ hidden: idx !== imageIndex }"
+        >
+          <img
+            :src="getImageToAddUrl(img)"
+            alt="Image"
+            class="max-w-full object-cover"
+            loading="lazy"
+          />
+        </a>
+      </template>
     </div>
   </div>
   <!-- 图片切换 -->
