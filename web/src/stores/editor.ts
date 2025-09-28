@@ -8,6 +8,6 @@ export const useEditorStore = defineStore('editorStore', () => {
   const ImageUploading = ref<boolean>(false)
 
   return {
-    ImageUploading
+    ImageUploading,
   }
 })
