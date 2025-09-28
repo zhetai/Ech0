@@ -44,4 +44,7 @@ type CommonServiceInterface interface {
 
 	// PlayMusic 播放音乐
 	PlayMusic(ctx *gin.Context)
+
+	// GetS3PresignURL 获取 S3 预签名 URL
+	GetS3PresignURL(userid uint, s3Dto *model.GetPresignURLDto, method string) (model.PresignDto, error)
 }

@@ -3,11 +3,12 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/lin-snow/ech0/internal/transaction"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/lin-snow/ech0/internal/transaction"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
@@ -23,6 +24,7 @@ import (
 type CommonService struct {
 	txManager        transaction.TransactionManager
 	commonRepository repository.CommonRepositoryInterface
+	objStorage storageUtil.ObjectStorage
 }
 
 func NewCommonService(
@@ -32,6 +34,7 @@ func NewCommonService(
 	return &CommonService{
 		txManager:        tm,
 		commonRepository: commonRepository,
+		objStorage: nil,
 	}
 }
 
@@ -398,4 +401,64 @@ func (commonService *CommonService) PlayMusic(ctx *gin.Context) {
 
 	// 直接写文件内容，Gin 会自动关闭连接，不会长时间占用文件
 	ctx.Data(http.StatusOK, contentType, data)
+}
+
+func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonModel.GetPresignURLDto, method string) (commonModel.PresignDto, error) {
+	var result commonModel.PresignDto
+
+	user, err := commonService.commonRepository.GetUserByUserId(userid)
+	if err != nil {
+		return result, err
+	}
+	if !user.IsAdmin {
+		return result, errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	if s3Dto.FileName == "" {
+		return result, errors.New(commonModel.INVALID_PARAMS)
+	}
+	contentType := s3Dto.ContentType
+	// 如果Content Type为空，调用 MIME 探测
+	if contentType == "" {
+		contentType = http.DetectContentType([]byte(s3Dto.FileName))
+	}
+
+	// 检查Content-Type是否为Image开头
+	if contentType[:5] == "image" {
+		// 检查文件类型是否合法
+		if !storageUtil.IsAllowedType(contentType, config.Config.Upload.AllowedTypes) {
+			return result, errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
+		}
+	} else if contentType[:5] == "audio" {
+		// 检查文件类型是否合法
+		if !storageUtil.IsAllowedType(contentType, config.Config.Upload.AllowedTypes) {
+			return result, errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
+		}
+	} else {
+		return result, errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
+	}
+
+	result.FileName = s3Dto.FileName
+	result.ContentType = contentType
+	
+	// 生成 Object Key (fileName_时间戳)
+	objectKey := fmt.Sprintf("%s_%d", s3Dto.FileName, time.Now().Unix())
+	result.ObjectKey = objectKey
+
+	// 生成预签名 URL
+	// 检查是否配置了 S3
+	if commonService.objStorage == nil {
+		// 获取S3 配置
+		
+		// 初始化 S3 对象存储
+
+	}
+
+	// presignURL, err := commonService.commonRepository.GetS3PresignURL(objectKey, contentType, method)
+	// if err != nil {
+	// 	return result, err
+	// }
+	// result.PresignURL = presignURL
+	
+	return result, nil
 }

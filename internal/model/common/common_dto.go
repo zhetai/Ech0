@@ -17,3 +17,22 @@ type ImageDto struct {
 	URL    string `json:"url" binding:"required"`
 	SOURCE string `json:"source" binding:"required"`
 }
+
+// PresignDto 用于响应 S3 预签名 URL 的请求数据传输对象
+//
+// swagger:model PresignDto
+type PresignDto struct {
+	FileName string `json:"file_name"` // 原始文件名
+	ContentType string `json:"content_type"`
+	ObjectKey string `json:"object_key"` // 预签名的对象存储 Key
+	PresignURL string `json:"presign_url"` // 预签名 URL
+}
+
+
+// GetPresignURLDto 用于请求 S3 预签名 URL 的请求数据传输对象
+//
+// swagger:model GetPresignURLDto
+type GetPresignURLDto struct {
+	FileName    string `json:"file_name" binding:"required"`    // 原始文件名
+	ContentType string `json:"content_type"` // 文件的 MIME 类型
+}

@@ -335,3 +335,41 @@ func (commonHandler *CommonHandler) HelloEch0() gin.HandlerFunc {
 		}
 	})
 }
+
+// GetS3PresignURL 获取 S3 预签名 URL
+//
+// @Summary 获取 S3 预签名 URL
+// @Description 获取用于上传文件到 S3 的预签名 URL
+// @Tags 通用功能
+// @Accept json
+// @Produce json
+// @Param s3Dto body commonModel.S3PresignDto true "S3 预签名请求体"
+// @Success 200 {object} res.Response{data=object} "获取预签名 URL 成功"
+// @Failure 200 {object} res.Response "获取预签名 URL 失败"
+// @Router /s3/presign [put]
+func (commonHandler *CommonHandler) GetS3PresignURL() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		userId := ctx.MustGet("userid").(uint)
+		// 解析请求体中的参数
+		var s3Dto commonModel.GetPresignURLDto
+		if err := ctx.ShouldBindJSON(&s3Dto); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		presignDto, err := commonHandler.commonService.GetS3PresignURL(userId, &s3Dto, "PUT")
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: presignDto,
+			Msg:  commonModel.GET_S3_PRESIGN_URL_SUCCESS,
+		}
+	})
+}

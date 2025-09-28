@@ -1,9 +1,12 @@
 package util
 
 import (
+	"context"
 	"errors"
+	"io"
 	"mime/multipart"
 	"os"
+	"time"
 
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 )
@@ -52,4 +55,25 @@ func createDirIfNotExist(imagePath string) error {
 func FileExists(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return !os.IsNotExist(err)
+}
+
+// ObjectStorage 对象存储接口
+type ObjectStorage interface {
+	// Upload 上传文件到对象存储
+	Upload(ctx context.Context, objectName string, r io.Reader, contentType string) error
+
+	// Download 下载对象存储中的文件
+	Download(ctx context.Context, objectName string) (io.ReadCloser, error)
+
+	// ListObjects 列出对象存储中的文件
+	ListObjects(ctx context.Context, prefix string) ([]string, error)
+
+	// ListObjectStream 列出对象存储中的文件流
+	ListObjectStream(ctx context.Context, prefix string) (<-chan string, error)
+
+	// DeleteObject 删除对象存储中的文件
+	DeleteObject(ctx context.Context, objectName string) error
+
+	// PresignURL 生成对象存储中文件的临时访问链接
+	PresignURL(ctx context.Context, objectName string, expiry time.Duration, method string) (string, error)
 }
