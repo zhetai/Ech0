@@ -310,8 +310,12 @@ func (commonService *CommonService) GenerateRSS(ctx *gin.Context) (string, error
 		if len(msg.Images) > 0 {
 			for _, image := range msg.Images {
 				// 根据图片来源生成链接
-				if image.ImageSource == echoModel.ImageSourceLocal {
+				switch image.ImageSource {
+				case echoModel.ImageSourceLocal:
 					imageURL := fmt.Sprintf("%s://%s/api%s", schema, host, image.ImageURL)
+					renderedContent = append([]byte(fmt.Sprintf("<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />", imageURL)), renderedContent...)
+				case echoModel.ImageSourceS3:
+					imageURL := image.ImageURL
 					renderedContent = append([]byte(fmt.Sprintf("<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />", imageURL)), renderedContent...)
 				}
 			}
