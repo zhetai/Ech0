@@ -11,6 +11,7 @@ import { useUserStore } from '@/stores/user';
 import { theToast } from '@/utils/toast';
 import { storeToRefs } from 'pinia';
 import { ImageSource } from '@/enums/enums';
+import { fetchGetPresignedUrl } from '@/service/api';
 /* --------------- 与Uppy相关 ---------------- */
 import Uppy from '@uppy/core';
 import Dashboard from '@uppy/dashboard';
@@ -20,7 +21,6 @@ import '@uppy/core/css/style.min.css';
 import '@uppy/dashboard/css/style.min.css';
 import zh_CN from '@uppy/locales/lib/zh_CN'
 
-
 let uppy: Uppy | null = null
 
 const props = defineProps<{
@@ -28,7 +28,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(["uppyUploaded"])
 
-const files = ref<{ image_url: string; image_source: string }[]>([]);
+const files = ref<App.Api.Ech0.ImageToAdd[]>([]); // 已上传的文件列表
+const tempFiles = ref<Map<string, string>>(new Map()); // 用于S3临时存储文件回显地址的 Map(key: fileName, value: url)
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore);
@@ -53,9 +54,9 @@ const handlePaste = (e: ClipboardEvent) => {
   }
 }
 
+// 初始化 Uppy 实例
 const initUppy = () => {
-  console.log("TheImageSource", props.TheImageSource)
-
+  // 创建 Uppy 实例
   uppy = new Uppy({
     restrictions: {
       maxNumberOfFiles: 6,
@@ -64,6 +65,7 @@ const initUppy = () => {
     autoProceed: true,
   })
 
+  // 使用 Dashboard 插件
   uppy.use(Dashboard, {
     inline: true,
     target: '#uppy-dashboard',
@@ -90,14 +92,40 @@ const initUppy = () => {
     });
   } else if (props.TheImageSource === ImageSource.S3) {
     uppy.use(AwsS3, {
-      endpoint: 'http://localhost:6277/api/images/s3/get-presigned-url', // 获取预签名URL的接口
+      endpoint: '', // 走自定义的签名接口
+      shouldUseMultipart: false, // 禁用分块上传
+      // 每来一个文件都调用一次该函数，获取签名参数
+      async getUploadParameters(file) {
+        // console.log("Uploading to S3:", file)
+        const fileName = file.name ? file.name : ''
+        const contentType = file.type ? file.type : ''
+        // console.log("fileName, contentType", fileName, contentType)
 
+        const res = await fetchGetPresignedUrl(fileName, contentType)
+        if (res.code !== 1) {
+          throw new Error(res.msg || '获取预签名 URL 失败')
+        }
+        const data = res.data as App.Api.Ech0.PresignResult
+        tempFiles.value.set(data.file_name, data.file_url)
+
+        return {
+          method: 'PUT',
+          url: data.presign_url, // 预签名 URL
+          headers: {
+            // 必须跟签名时的 Content-Type 完全一致
+            'Content-Type': file.type
+          },
+          // PUT 上传没有 fields
+          fields: {}
+        }
+      }
     });
   }
 
+  // 监听粘贴事件
   document.addEventListener("paste", handlePaste)
 
-  // uppy.on("file-added", file => {})
+  // 上传开始前，检查是否登录
   uppy.on("upload", (uploadID, files) => {
     console.log("Upload started", uploadID, files)
     if (!isLogin.value) {
@@ -105,53 +133,63 @@ const initUppy = () => {
       uppy?.cancelAll()
       return
     }
-    theToast.info("正在上传图片，请稍等... ⏳")
+    theToast.info("正在上传图片，请稍等... ⏳", { duration: 1000})
   })
+  // 单个文件上传失败后，显示错误信息
   uppy.on("upload-error", (file, error, response) => {
-    type ResponseBody = {
-      code: number;
-      msg: string;
-      data: any;
-    };
+    if (props.TheImageSource === ImageSource.LOCAL) {
+        type ResponseBody = {
+        code: number;
+        msg: string;
+        data: any;
+      };
 
-    let errorMsg = "上传图片时发生错误 😢";
+      let errorMsg = "上传图片时发生错误 😢";
+      const resp = response as any; // 忽略 TS 类型限制
+      if (resp?.response) {
+        let resObj: ResponseBody;
 
-    const resp = response as any; // 忽略 TS 类型限制
+        if (typeof resp.response === "string") {
+          resObj = JSON.parse(resp.response) as ResponseBody;
+        } else {
+          resObj = resp.response as ResponseBody;
+        }
 
-    if (resp?.response) {
-      let resObj: ResponseBody;
-
-      if (typeof resp.response === "string") {
-        resObj = JSON.parse(resp.response) as ResponseBody;
-      } else {
-        resObj = resp.response as ResponseBody;
+        if (resObj?.msg) {
+          errorMsg = resObj.msg;
+        }
       }
-
-      if (resObj?.msg) {
-        errorMsg = resObj.msg;
-      }
+      theToast.error(errorMsg);
     }
-
-    theToast.error(errorMsg);
   });
-
+  // 单个文件上传成功后，保存文件 URL 到 files 列表
   uppy.on("upload-success", (file, response) => {
     theToast.success(`好耶,上传成功！🎉`)
-    const fileUrl = String(response.body?.data);
-    const item = {
-      image_url: fileUrl,
-      image_source: props.TheImageSource === ImageSource.LOCAL ? ImageSource.LOCAL : ImageSource.S3
+    console.log("Upload success", file, response);
+    // 分两种情况: Local 或者 S3
+    if (props.TheImageSource === ImageSource.LOCAL) {
+      const fileUrl = String(response.body?.data);
+      const item = {
+        image_url: fileUrl,
+        image_source: ImageSource.LOCAL
+      }
+      files.value.push(item);
+    } else if (props.TheImageSource === ImageSource.S3) {
+      const fileUrl = tempFiles.value.get(file?.name || '') || '';
+      if (fileUrl) {
+        const item = {
+          image_url: fileUrl,
+          image_source: ImageSource.S3
+        }
+        files.value.push(item);
+      }
     }
-    files.value.push(item);
   });
+  // 全部文件上传完成后，发射事件到父组件
   uppy.on("complete", () => {
     emit("uppyUploaded", files.value); // 发射事件到父组件
   })
 }
-
-onMounted(() => {
-  initUppy
-})
 
 // 监听 props.TheImageSource 变化
 watch(
@@ -167,6 +205,10 @@ watch(
     }
   }
 );
+
+onMounted(() => {
+  initUppy
+})
 
 onBeforeUnmount(() => {
   document.removeEventListener("paste", handlePaste)

@@ -224,7 +224,7 @@ const imageSourceMemory = ref<string>()
 // 临时图片添加变量
 const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
   image_url: '',
-  image_source: ImageSource.LOCAL,
+  image_source: '',
 })
 // 临时的多张图片数组变量
 const imagesToAdd = ref<App.Api.Ech0.ImageToAdd[]>([])
@@ -296,13 +296,11 @@ const handleUploadImage = async (event: Event) => {
   }
 }
 
-const handleUppyUploaded = (files: {
-  image_url: string
-  image_source: string
-}[]) => {
+const handleUppyUploaded = (files: App.Api.Ech0.ImageToAdd[]) => {
   files.forEach((file) => {
     imageToAdd.value.image_url = file.image_url
     imageToAdd.value.image_source = file.image_source
+    imageToAdd.value.object_key = file.object_key ? file.object_key : ''
     handleAddMoreImage()
   })
 

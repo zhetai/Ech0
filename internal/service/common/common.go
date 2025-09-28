@@ -483,6 +483,11 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 		return result, err
 	}
 	result.PresignURL = presignURL
+	protocal := "http"
+	if s3setting.UseSSL {
+		protocal = "https"
+	}
+	result.FileURL = fmt.Sprintf("%s://%s/%s/%s", protocal, s3setting.Endpoint, s3setting.BucketName, objectKey)
 	
 	return result, nil
 }

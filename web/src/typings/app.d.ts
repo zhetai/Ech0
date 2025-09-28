@@ -81,6 +81,7 @@ declare namespace App {
       type ImageToAdd = {
         image_url: string
         image_source: string
+        object_key?: string // 对象存储的Key (如果是本地存储则为空)
       }
 
       type EchoToAdd = {
@@ -144,6 +145,14 @@ declare namespace App {
         hello: string
         version: string
         github: string
+      }
+
+      type PresignResult = {
+        file_name: string
+        content_type: string
+        object_key: string
+        presign_url: string
+        file_url: string
       }
     }
 
