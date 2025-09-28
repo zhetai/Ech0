@@ -207,6 +207,8 @@ watch(
       files.value = [] // 清空已上传文件列表
       // 初始化新的 Uppy 实例
       initUppy();
+    } else if ((newSource !== oldSource) && (isUploading.value === true)) {
+      theToast.warning("图片正在上传中，请稍后再切换上传方式 😢")
     }
   }
 );
