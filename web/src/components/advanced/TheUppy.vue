@@ -28,6 +28,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(["uppyUploaded"])
 
+const memorySource = ref<string>(""); // 用于记住上传方式
 const isUploading = ref<boolean>(false); // 是否正在上传
 const files = ref<App.Api.Ech0.ImageToAdd[]>([]); // 已上传的文件列表
 const tempFiles = ref<Map<string, string>>(new Map()); // 用于S3临时存储文件回显地址的 Map(key: fileName, value: url)
@@ -128,6 +129,17 @@ const initUppy = () => {
   // 监听粘贴事件
   document.addEventListener("paste", handlePaste)
 
+  // 添加文件时
+  uppy.on("files-added", (files) => {
+    if (!isLogin.value) {
+      theToast.error("请先登录再上传图片 😢")
+      uppy?.cancelAll()
+      uppy?.clear()
+      return
+    }
+    isUploading.value = true;
+    memorySource.value = props.TheImageSource === ImageSource.LOCAL ? ImageSource.LOCAL : ImageSource.S3;
+  })
   // 上传开始前，检查是否登录
   uppy.on("upload", (uploadID, files) => {
     if (!isLogin.value) {
@@ -171,14 +183,14 @@ const initUppy = () => {
     theToast.success(`好耶,上传成功！🎉`)
     // console.log("Upload success", file, response);
     // 分两种情况: Local 或者 S3
-    if (props.TheImageSource === ImageSource.LOCAL) {
+    if (memorySource.value === ImageSource.LOCAL) {
       const fileUrl = String(response.body?.data);
       const item = {
         image_url: fileUrl,
         image_source: ImageSource.LOCAL
       }
       files.value.push(item);
-    } else if (props.TheImageSource === ImageSource.S3) {
+    } else if (memorySource.value === ImageSource.S3) {
       const fileUrl = tempFiles.value.get(file?.name || '') || '';
       if (fileUrl) {
         const item = {
@@ -193,6 +205,10 @@ const initUppy = () => {
   uppy.on("complete", () => {
     isUploading.value = false;
     emit("uppyUploaded", files.value); // 发射事件到父组件
+    // 清空 tempFiles
+    tempFiles.value.clear();
+    // 清空 Uppy 文件列表
+    uppy?.clear()
   })
 }
 
