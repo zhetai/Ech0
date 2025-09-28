@@ -76,12 +76,14 @@ const handleRemoveImage = () => {
     const imageToDel: App.Api.Ech0.ImageToDelete = {
       url: String(images.value[index].image_url),
       source: String(images.value[index].image_source),
+      object_key: images.value[index].object_key,
     }
 
     if (imageToDel.source === ImageSource.LOCAL) {
       fetchDeleteImage({
         url: imageToDel.url,
         source: imageToDel.source,
+        object_key: imageToDel.object_key,
       }).then((res) => {
         if (res.code === 1) {
           // 从数组中删除图片

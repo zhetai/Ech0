@@ -129,6 +129,7 @@ declare namespace App {
       type ImageToDelete = {
         url: string
         source: string
+        object_key?: string // 对象存储的 Key, 用于删除 S3/R2 上的图片
       }
 
       type GithubCardData = {
