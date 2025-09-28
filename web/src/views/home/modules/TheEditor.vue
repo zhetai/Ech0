@@ -307,6 +307,7 @@ const handleUppyUploaded = (files: App.Api.Ech0.ImageToAdd[]) => {
   files.forEach((file) => {
     imageToAdd.value.image_url = file.image_url
     imageToAdd.value.image_source = file.image_source
+    console.log('上传成功的图片:', file.object_key)
     imageToAdd.value.object_key = file.object_key ? file.object_key : ''
     handleAddMoreImage()
   })
@@ -434,6 +435,7 @@ const handleAddorUpdateEcho = (justSyncImages: boolean) => {
     return
   }
 
+  console.log('添加Echo:', echoToAdd.value.images.forEach((img) => console.log(img)))
   // 不是Echo更新模式，执行添加操作
   fetchAddEcho(echoToAdd.value).then((res) => {
     if (res.code === 1) {

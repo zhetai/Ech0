@@ -31,7 +31,7 @@ const emit = defineEmits(["uppyUploaded", "uppySetImageSource"])
 const memorySource = ref<string>(props.TheImageSource); // 用于记住上传方式
 const isUploading = ref<boolean>(false); // 是否正在上传
 const files = ref<App.Api.Ech0.ImageToAdd[]>([]); // 已上传的文件列表
-const tempFiles = ref<Map<string, string>>(new Map()); // 用于S3临时存储文件回显地址的 Map(key: fileName, value: url)
+const tempFiles = ref<Map<string, { url: string; objectKey: string }>>(new Map()); // 用于S3临时存储文件回显地址的 Map(key: fileName, value: {url, objectKey})
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore);
@@ -119,8 +119,7 @@ const initUppy = () => {
         }
         console.log("获取预签名成功!")
         const data = res.data as App.Api.Ech0.PresignResult
-        tempFiles.value.set(data.file_name, data.file_url)
-
+        tempFiles.value.set(data.file_name, { url: data.file_url, objectKey: data.object_key })
         return {
           method: 'PUT',
           url: data.presign_url, // 预签名 URL
@@ -152,8 +151,6 @@ const initUppy = () => {
       theToast.error("请先登录再上传图片 😢")
       return
     }
-    console.log("@@@SOURCE", props.TheImageSource)
-    console.log("Upload started", uploadID, files, props.TheImageSource);
     theToast.info("正在上传图片，请稍等... ⏳", { duration: 500})
     isUploading.value = true;
   })
@@ -192,17 +189,19 @@ const initUppy = () => {
     // 分两种情况: Local 或者 S3
     if (memorySource.value === ImageSource.LOCAL) {
       const fileUrl = String(response.body?.data);
-      const item = {
+      const item: App.Api.Ech0.ImageToAdd = {
         image_url: fileUrl,
-        image_source: ImageSource.LOCAL
+        image_source: ImageSource.LOCAL,
+        object_key: ''
       }
       files.value.push(item);
     } else if (memorySource.value === ImageSource.S3) {
-      const fileUrl = tempFiles.value.get(file?.name || '') || '';
-      if (fileUrl) {
-        const item = {
-          image_url: fileUrl,
-          image_source: ImageSource.S3
+      const uploadedFile = tempFiles.value.get(file?.name || '') || '';
+      if (uploadedFile) {
+        const item: App.Api.Ech0.ImageToAdd = {
+          image_url: uploadedFile.url,
+          image_source: ImageSource.S3,
+          object_key: uploadedFile.objectKey
         }
         files.value.push(item);
       }
