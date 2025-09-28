@@ -33,6 +33,8 @@ const tempFiles = ref<Map<string, string>>(new Map()); // 用于S3临时存储�
 
 const userStore = useUserStore();
 const { isLogin } = storeToRefs(userStore);
+const envURL = import.meta.env.VITE_SERVICE_BASE_URL as string
+const backendURL = envURL.endsWith('/') ? envURL.slice(0, -1) : envURL
 
 // ✨ 监听粘贴事件
 const handlePaste = (e: ClipboardEvent) => {
@@ -83,7 +85,7 @@ const initUppy = () => {
   // 根据 props.TheImageSource 动态切换上传插件
   if (props.TheImageSource === ImageSource.LOCAL) {
     uppy.use(XHRUpload, {
-      endpoint: 'http://localhost:6277/api/images/upload', // 本地上传接口
+      endpoint: `${backendURL}/api/images/upload`, // 本地上传接口
       fieldName: 'file',
       formData: true,
       headers: {
@@ -164,7 +166,7 @@ const initUppy = () => {
   // 单个文件上传成功后，保存文件 URL 到 files 列表
   uppy.on("upload-success", (file, response) => {
     theToast.success(`好耶,上传成功！🎉`)
-    console.log("Upload success", file, response);
+    // console.log("Upload success", file, response);
     // 分两种情况: Local 或者 S3
     if (props.TheImageSource === ImageSource.LOCAL) {
       const fileUrl = String(response.body?.data);
