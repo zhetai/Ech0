@@ -92,6 +92,7 @@ const initUppy = () => {
 
   // 根据 props.TheImageSource 动态切换上传插件
   if (memorySource.value == ImageSource.LOCAL) {
+    console.log("使用本地存储")
     uppy.use(XHRUpload, {
       endpoint: `${backendURL}/api/images/upload`, // 本地上传接口
       fieldName: 'file',
@@ -101,6 +102,7 @@ const initUppy = () => {
       }
     });
   } else if (memorySource.value == ImageSource.S3) {
+    console.log("使用 S3 存储")
     uppy.use(AwsS3, {
       endpoint: '', // 走自定义的签名接口
       shouldUseMultipart: false, // 禁用分块上传
@@ -223,9 +225,11 @@ watch(
     if (newSource !== oldSource){
       console.log("TheImageSource changed:", newSource, oldSource)
       if (!isUploading.value) {
+        memorySource.value = newSource
+        console.log("当前没有上传任务，可以切换上传方式")
         // 销毁旧的 Uppy 实例
         uppy?.destroy()
-        uppy = null
+        uppy?.clear()
         files.value = [] // 清空已上传文件列表
         // 初始化新的 Uppy 实例
         initUppy();

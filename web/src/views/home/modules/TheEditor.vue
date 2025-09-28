@@ -250,10 +250,12 @@ const handleAddMoreImage = () => {
   imagesToAdd.value.push({
     image_url: String(imageToAdd.value.image_url),
     image_source: String(imageToAdd.value.image_source),
+    object_key: imageToAdd.value.object_key ? String(imageToAdd.value.object_key) : '',
   })
 
   imageToAdd.value.image_url = ''
   imageToAdd.value.image_source = ''
+  imageToAdd.value.object_key = ''
 }
 
 const handleAddImageMode = () => {

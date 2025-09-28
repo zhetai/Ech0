@@ -159,19 +159,20 @@ func (commonService *CommonService) DirectDeleteImage(url, source, object_key st
 	case echoModel.ImageSourceURL:
 		// 无需处理
 	case echoModel.ImageSourceS3:
-		_, _, err := commonService.GetS3Client();
+		cli, _, err := commonService.GetS3Client();
+		fmt.Println("S3 Client Error:", err)
 		if err != nil {
 			// 如果没有配置 S3，则无法删除,忽略
 			return nil
 		}
-		
+		fmt.Println("S3 Object Key:", object_key)
 		if object_key == "" {
 			// 如果没有传入 object_key，则无法删除,忽略
 			return nil
 		}
-
+		fmt.Println("Deleting S3 object:", object_key)
 		// 删除 S3 上的图片
-		return commonService.objStorage.DeleteObject(context.Background(), object_key)
+		return cli.DeleteObject(context.Background(), object_key)
 	case echoModel.ImageSourceR2:
 		// TODO: 实现R2图片删除
 	default:
