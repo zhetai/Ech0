@@ -26,9 +26,9 @@ let uppy: Uppy | null = null
 const props = defineProps<{
   TheImageSource: string
 }>()
-const emit = defineEmits(["uppyUploaded"])
+const emit = defineEmits(["uppyUploaded", "uppySetImageSource"])
 
-const memorySource = ref<string>(""); // 用于记住上传方式
+const memorySource = ref<string>(props.TheImageSource); // 用于记住上传方式
 const isUploading = ref<boolean>(false); // 是否正在上传
 const files = ref<App.Api.Ech0.ImageToAdd[]>([]); // 已上传的文件列表
 const tempFiles = ref<Map<string, string>>(new Map()); // 用于S3临时存储文件回显地址的 Map(key: fileName, value: url)
@@ -39,17 +39,23 @@ const envURL = import.meta.env.VITE_SERVICE_BASE_URL as string
 const backendURL = envURL.endsWith('/') ? envURL.slice(0, -1) : envURL
 
 // ✨ 监听粘贴事件
-const handlePaste = (e: ClipboardEvent) => {
+const handlePaste = async (e: ClipboardEvent) => {
   if (!e.clipboardData) return
 
   for (const item of e.clipboardData.items) {
     if (item.type.startsWith("image/")) {
       const file = item.getAsFile()
       if (file) {
-        uppy?.addFile({
-          name: `pasted-${Date.now()}.png`,
+        const uniqueFile = new File([file], file.name, {
           type: file.type,
-          data: file,
+          lastModified: Date.now(), // ✅ 每次都不同
+        })
+
+        uppy?.addFile({
+          id: `pasted-image-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+          name: uniqueFile.name,
+          type: uniqueFile.type,
+          data: uniqueFile,
           source: "PastedImage",
         })
         uppy?.upload()
@@ -85,7 +91,7 @@ const initUppy = () => {
   })
 
   // 根据 props.TheImageSource 动态切换上传插件
-  if (props.TheImageSource === ImageSource.LOCAL) {
+  if (memorySource.value == ImageSource.LOCAL) {
     uppy.use(XHRUpload, {
       endpoint: `${backendURL}/api/images/upload`, // 本地上传接口
       fieldName: 'file',
@@ -94,7 +100,7 @@ const initUppy = () => {
         "Authorization": `${getAuthToken()}`
       }
     });
-  } else if (props.TheImageSource === ImageSource.S3) {
+  } else if (memorySource.value == ImageSource.S3) {
     uppy.use(AwsS3, {
       endpoint: '', // 走自定义的签名接口
       shouldUseMultipart: false, // 禁用分块上传
@@ -103,12 +109,13 @@ const initUppy = () => {
         // console.log("Uploading to S3:", file)
         const fileName = file.name ? file.name : ''
         const contentType = file.type ? file.type : ''
-        // console.log("fileName, contentType", fileName, contentType)
+        console.log("获取预签名fileName, contentType", fileName, contentType)
 
         const res = await fetchGetPresignedUrl(fileName, contentType)
         if (res.code !== 1) {
           throw new Error(res.msg || '获取预签名 URL 失败')
         }
+        console.log("获取预签名成功!")
         const data = res.data as App.Api.Ech0.PresignResult
         tempFiles.value.set(data.file_name, data.file_url)
 
@@ -133,21 +140,19 @@ const initUppy = () => {
   uppy.on("files-added", (files) => {
     if (!isLogin.value) {
       theToast.error("请先登录再上传图片 😢")
-      uppy?.cancelAll()
-      uppy?.clear()
       return
     }
     isUploading.value = true;
-    memorySource.value = props.TheImageSource === ImageSource.LOCAL ? ImageSource.LOCAL : ImageSource.S3;
   })
   // 上传开始前，检查是否登录
   uppy.on("upload", (uploadID, files) => {
     if (!isLogin.value) {
       theToast.error("请先登录再上传图片 😢")
-      uppy?.cancelAll()
       return
     }
-    theToast.info("正在上传图片，请稍等... ⏳", { duration: 1000})
+    console.log("@@@SOURCE", props.TheImageSource)
+    console.log("Upload started", uploadID, files, props.TheImageSource);
+    theToast.info("正在上传图片，请稍等... ⏳", { duration: 500})
     isUploading.value = true;
   })
   // 单个文件上传失败后，显示错误信息
@@ -204,11 +209,10 @@ const initUppy = () => {
   // 全部文件上传完成后，发射事件到父组件
   uppy.on("complete", () => {
     isUploading.value = false;
-    emit("uppyUploaded", files.value); // 发射事件到父组件
-    // 清空 tempFiles
-    tempFiles.value.clear();
-    // 清空 Uppy 文件列表
-    uppy?.clear()
+    const result = [...files.value]
+    emit("uppyUploaded", result)
+    files.value = []
+    tempFiles.value.clear()
   })
 }
 
@@ -216,26 +220,29 @@ const initUppy = () => {
 watch(
   () => props.TheImageSource,
   (newSource, oldSource) => {
-    if ((newSource !== oldSource) && (isUploading.value === false)) {
-      // 销毁旧的 Uppy 实例
-      uppy?.destroy()
-      uppy = null
-      files.value = [] // 清空已上传文件列表
-      // 初始化新的 Uppy 实例
-      initUppy();
-    } else if ((newSource !== oldSource) && (isUploading.value === true)) {
-      theToast.warning("图片正在上传中，请稍后再切换上传方式 😢")
+    if (newSource !== oldSource){
+      console.log("TheImageSource changed:", newSource, oldSource)
+      if (!isUploading.value) {
+        // 销毁旧的 Uppy 实例
+        uppy?.destroy()
+        uppy = null
+        files.value = [] // 清空已上传文件列表
+        // 初始化新的 Uppy 实例
+        initUppy();
+      } else {
+        theToast.error("当前有文件正在上传，请稍后再切换上传方式 😢")
+      }
     }
   }
 );
 
 onMounted(() => {
+  console.log("TheImageSource:", props.TheImageSource)
   initUppy();
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener("paste", handlePaste)
-  uppy?.destroy()
 })
 </script>
 

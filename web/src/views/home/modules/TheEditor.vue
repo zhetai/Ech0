@@ -16,7 +16,7 @@
 
         <!-- ImageMode : TheImageEditor -->
         <div v-if="currentMode === Mode.Image">
-          <h2 class="text-gray-500 font-bold my-2">插入图片</h2>
+          <h2 class="text-gray-500 font-bold my-2">插入图片（支持直链、本地、S3）</h2>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <span class="text-gray-500">选择添加方式：</span>
@@ -39,7 +39,7 @@
                 :icon="Bucket"
                 class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
                 @click="imageToAdd.image_source = ImageSource.S3"
-                title="从S3存储选择图片"
+                title="S3存储图片"
               />
             </div>
             <div>
@@ -53,8 +53,8 @@
             </div>
           </div>
 
-          <div class="text-gray-400 text-sm mb-1">
-            当前为上传方式为 <span class="font-bold"> {{ imageToAdd.image_source === ImageSource.URL ? '直链' : imageToAdd.image_source === ImageSource.LOCAL ? '本地上传' : 'S3存储' }}</span>
+          <div class="text-gray-300 text-sm mb-1">
+            当前上传方式为 <span class="font-bold"> {{ imageToAdd.image_source === ImageSource.URL ? '直链' : imageToAdd.image_source === ImageSource.LOCAL ? '本地存储' : 'S3存储' }}</span>
           </div>
 
           <div class="my-1">
@@ -76,7 +76,7 @@
               <span class="text-gray-400">点击上传</span>
             </BaseButton> -->
 
-            <TheUppy v-if="imageToAdd.image_source !== ImageSource.URL" @uppyUploaded="handleUppyUploaded" :TheImageSource="imageToAdd.image_source" />
+            <TheUppy v-if="imageToAdd.image_source !== ImageSource.URL" @uppyUploaded="handleUppyUploaded" @uppy-set-image-source="handleSetImageSource" :TheImageSource="imageToAdd.image_source" />
 
             <!-- 图片直链 -->
             <BaseInput
@@ -224,7 +224,8 @@ const imageSourceMemory = ref<string>()
 // 临时图片添加变量
 const imageToAdd = ref<App.Api.Ech0.ImageToAdd>({
   image_url: '',
-  image_source: '',
+  image_source: ImageSource.LOCAL,
+  object_key: '',
 })
 // 临时的多张图片数组变量
 const imagesToAdd = ref<App.Api.Ech0.ImageToAdd[]>([])
@@ -296,6 +297,10 @@ const handleUploadImage = async (event: Event) => {
   }
 }
 
+const handleSetImageSource = (newSource: string) => {
+  imageToAdd.value.image_source = newSource
+}
+
 const handleUppyUploaded = (files: App.Api.Ech0.ImageToAdd[]) => {
   files.forEach((file) => {
     imageToAdd.value.image_url = file.image_url
@@ -330,7 +335,8 @@ const handleClear = () => {
   videoURL.value = ''
   imagesToAdd.value = []
   imageToAdd.value.image_url = ''
-  imageToAdd.value.image_source = ''
+  imageToAdd.value.image_source = ImageSource.LOCAL
+  imageToAdd.value.object_key = ''
   imageIndex.value = 0
 }
 
