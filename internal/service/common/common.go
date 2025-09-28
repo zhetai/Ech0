@@ -109,6 +109,20 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source, object
 		// 无需处理
 	case echoModel.ImageSourceS3:
 		// TODO: 实现S3图片删除
+		if object_key == "" {
+			// 如果没有传入 object_key，则无法删除,忽略
+			return nil
+		}
+
+		_, _, err := commonService.GetS3Client();
+		if err != nil {
+			// 如果没有配置 S3，则无法删除,忽略
+			return nil
+		}
+		
+		// 删除 S3 上的图片
+		return commonService.objStorage.DeleteObject(context.Background(), object_key)
+
 	case echoModel.ImageSourceR2:
 		// TODO: 实现R2图片删除
 	default:
@@ -145,7 +159,19 @@ func (commonService *CommonService) DirectDeleteImage(url, source, object_key st
 	case echoModel.ImageSourceURL:
 		// 无需处理
 	case echoModel.ImageSourceS3:
-		// TODO: 实现S3图片删除
+		_, _, err := commonService.GetS3Client();
+		if err != nil {
+			// 如果没有配置 S3，则无法删除,忽略
+			return nil
+		}
+		
+		if object_key == "" {
+			// 如果没有传入 object_key，则无法删除,忽略
+			return nil
+		}
+
+		// 删除 S3 上的图片
+		return commonService.objStorage.DeleteObject(context.Background(), object_key)
 	case echoModel.ImageSourceR2:
 		// TODO: 实现R2图片删除
 	default:
@@ -414,6 +440,7 @@ func (commonService *CommonService) PlayMusic(ctx *gin.Context) {
 	ctx.Data(http.StatusOK, contentType, data)
 }
 
+// GetS3PresignURL 获取 S3 预签名 URL
 func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonModel.GetPresignURLDto, method string) (commonModel.PresignDto, error) {
 	var result commonModel.PresignDto
 
@@ -457,27 +484,13 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	objectKey := fmt.Sprintf("%s_%d", s3Dto.FileName, time.Now().Unix())
 	result.ObjectKey = objectKey
 
-	// 生成预签名 URL
-	// 检查是否配置了 S3
-	var s3setting settingModel.S3Setting
-	value, err := commonService.keyvalueRepository.GetKeyValue(commonModel.S3SettingKey);
-	if err != nil || value == "" {
-		return result, errors.New(commonModel.S3_NOT_CONFIGURED)
-	}
-	if err := jsonUtil.JSONUnmarshal([]byte(value.(string)), &s3setting); err != nil {
-		return result, errors.New(commonModel.S3_CONFIG_ERROR)
-	}
-	if !s3setting.Enable {
-		return result, errors.New(commonModel.S3_NOT_ENABLED)
-	}
-	s3setting.Endpoint = httpUtil.TrimURL(s3setting.Endpoint)
-
-	// 初始化 S3 客户端
-	commonService.objStorage, err = storageUtil.NewMinioStorage(s3setting.Endpoint, s3setting.AccessKey, s3setting.SecretKey, s3setting.BucketName, s3setting.UseSSL)
+	// 获取 S3 配置和客户端
+	_, s3setting, err := commonService.GetS3Client();
 	if err != nil {
-		return result, errors.New(commonModel.S3_CONFIG_ERROR)
+		return result, err
 	}
 
+	// 生成预签名 URL
 	presignURL, err := commonService.objStorage.PresignURL(context.Background(), objectKey, 24*time.Hour, method)
 	if err != nil {
 		return result, err
@@ -490,4 +503,29 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	result.FileURL = fmt.Sprintf("%s://%s/%s/%s", protocal, s3setting.Endpoint, s3setting.BucketName, objectKey)
 	
 	return result, nil
+}
+
+// GetS3Client 获取 S3 客户端和配置信息
+func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, settingModel.S3Setting, error) {
+	// 检查是否配置了 S3
+	var s3setting settingModel.S3Setting
+	value, err := commonService.keyvalueRepository.GetKeyValue(commonModel.S3SettingKey);
+	if err != nil || value == "" {
+		return nil, s3setting, errors.New(commonModel.S3_NOT_CONFIGURED)
+	}
+	if err := jsonUtil.JSONUnmarshal([]byte(value.(string)), &s3setting); err != nil {
+		return nil, s3setting, errors.New(commonModel.S3_CONFIG_ERROR)
+	}
+	if !s3setting.Enable {
+		return nil, s3setting, errors.New(commonModel.S3_NOT_ENABLED)
+	}
+	s3setting.Endpoint = httpUtil.TrimURL(s3setting.Endpoint)
+
+	// 初始化 S3 客户端
+	commonService.objStorage, err = storageUtil.NewMinioStorage(s3setting.Endpoint, s3setting.AccessKey, s3setting.SecretKey, s3setting.BucketName, s3setting.UseSSL)
+	if err != nil {
+		return nil, s3setting, errors.New(commonModel.S3_CONFIG_ERROR)
+	}
+
+	return commonService.objStorage, s3setting, nil
 }
