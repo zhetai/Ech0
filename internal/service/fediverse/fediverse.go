@@ -24,19 +24,19 @@ type FediverseService struct {
 	fediverseRepository repository.FediverseRepositoryInterface
 	userRepository      userRepository.UserRepositoryInterface
 	settingService      settingService.SettingServiceInterface
-	echoService 		echoService.EchoServiceInterface
+	echoService         echoService.EchoServiceInterface
 }
 
-func NewFediverseService(fediverseRepository repository.FediverseRepositoryInterface, 
+func NewFediverseService(fediverseRepository repository.FediverseRepositoryInterface,
 	userRepository userRepository.UserRepositoryInterface,
 	settingService settingService.SettingServiceInterface,
 	echoService echoService.EchoServiceInterface,
-	) FediverseServiceInterface {
+) FediverseServiceInterface {
 	return &FediverseService{
 		fediverseRepository: fediverseRepository,
 		userRepository:      userRepository,
 		settingService:      settingService,
-		echoService:		 echoService,
+		echoService:         echoService,
 	}
 }
 
@@ -94,8 +94,6 @@ func (fediverseService *FediverseService) HandleInbox(username string, activity 
 	// 	return errors.New(commonModel.USER_NOTFOUND)
 	// }
 
-
-
 	// 处理不同类型的 Activity
 	switch activity.Type {
 	case model.ActivityTypeFollow:
@@ -140,7 +138,7 @@ func (fediverseService *FediverseService) HandleOutbox(ctx context.Context, user
 
 	// 查 Echos
 	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
-		Page:    page,
+		Page:     page,
 		PageSize: pageSize,
 	})
 	if err != nil {
@@ -155,21 +153,21 @@ func (fediverseService *FediverseService) HandleOutbox(ctx context.Context, user
 
 	// 拼装 OutboxPage
 	outboxPage := model.OutboxPage{
-		ID: fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page),
-		Type: "OrderedCollectionPage",
-		PartOf: fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
-		Next: fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page+1),
-		Prev: "",
+		ID:           fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page),
+		Type:         "OrderedCollectionPage",
+		PartOf:       fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
+		Next:         fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page+1),
+		Prev:         "",
 		OrderedItems: activities,
 	}
 
 	return model.OutboxResponse{
-		Context: []any{},
-		ID:     outboxPage.ID,
-		Type:   "OrderedCollection",
-		TotalItems: int(echosByPage.Total),
-		First:  &outboxPage,
-		Last:   nil,
+		Context:      []any{},
+		ID:           outboxPage.ID,
+		Type:         "OrderedCollection",
+		TotalItems:   int(echosByPage.Total),
+		First:        &outboxPage,
+		Last:         nil,
 		OrderedItems: nil,
 	}, nil
 }
@@ -190,21 +188,20 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 		Context: []any{
 			"https://www.w3.org/ns/activitystreams",
 		},
-		ID: serverURL + "/users/" + user.Username, // 实例地址拼接 域名 + /users/ + username
-		Type:               "Person", // 固定值
-		Name: user.DisplayName, // 显示名称
-		PreferredUsername: user.Username, // 用户名
-		Summary: "这是" + user.DisplayName + "的 ActivityPub 个人资料。",
-		Inbox: serverURL + "/users/" + user.Username + "/inbox",
-		Outbox: serverURL + "/users/" + user.Username + "/outbox",
+		ID:                serverURL + "/users/" + user.Username, // 实例地址拼接 域名 + /users/ + username
+		Type:              "Person",                              // 固定值
+		Name:              user.DisplayName,                      // 显示名称
+		PreferredUsername: user.Username,                         // 用户名
+		Summary:           "这是" + user.DisplayName + "的 ActivityPub 个人资料。",
+		Inbox:             serverURL + "/users/" + user.Username + "/inbox",
+		Outbox:            serverURL + "/users/" + user.Username + "/outbox",
 		PublicKey: model.PublicKey{
-			ID: 		 serverURL + "/users/" + user.Username + "#main-key",
-			Owner: 	 serverURL + "/users/" + user.Username,
+			ID:           serverURL + "/users/" + user.Username + "#main-key",
+			Owner:        serverURL + "/users/" + user.Username,
 			PublicKeyPem: user.PublicKeyPEM,
 		},
 	}, &setting, nil
 }
-
 
 func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor) model.Activity {
 	return model.Activity{}

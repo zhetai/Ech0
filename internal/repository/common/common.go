@@ -131,5 +131,3 @@ func (commonRepository *CommonRepository) GetAllTempFiles() ([]commonModel.TempF
 func (commonRepository *CommonRepository) UpdateTempFileAccessTime(ctx context.Context, id uint, accessTime int64) error {
 	return commonRepository.getDB(ctx).Model(&commonModel.TempFile{}).Where("id = ?", id).Update("last_accessed_at", accessTime).Error
 }
-
-

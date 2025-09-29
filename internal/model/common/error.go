@@ -72,6 +72,6 @@ const (
 
 // Fediverse 错误相关常量
 const (
-	GET_ACTOR_ERROR = "获取 Actor 信息失败"
+	GET_ACTOR_ERROR       = "获取 Actor 信息失败"
 	ACTIVEPUB_NOT_ENABLED = "ActivityPub 未启用"
 )

@@ -57,21 +57,21 @@ func (backupService *BackupService) ExportBackup(ctx *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	
-	// 设置响应头
-    filename := fmt.Sprintf("ech0-backup-%s.zip", time.Now().Format("2006-01-02-150405"))
-    
-    // 设置响应头的顺序很重要
-    ctx.Writer.Header().Set("Content-Type", "application/zip")
-    ctx.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
-    ctx.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", fileInfo.Size()))
-    ctx.Writer.Header().Set("Accept-Ranges", "bytes")
-    ctx.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-    
-    // ✅ 立即刷新响应头到客户端
-    ctx.Writer.WriteHeader(200)
 
-    // 使用 Gin 的内置方法，支持 Range 请求
-    ctx.File(backupFilePath)
-    return nil
+	// 设置响应头
+	filename := fmt.Sprintf("ech0-backup-%s.zip", time.Now().Format("2006-01-02-150405"))
+
+	// 设置响应头的顺序很重要
+	ctx.Writer.Header().Set("Content-Type", "application/zip")
+	ctx.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
+	ctx.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", fileInfo.Size()))
+	ctx.Writer.Header().Set("Accept-Ranges", "bytes")
+	ctx.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+
+	// ✅ 立即刷新响应头到客户端
+	ctx.Writer.WriteHeader(200)
+
+	// 使用 Gin 的内置方法，支持 Range 请求
+	ctx.File(backupFilePath)
+	return nil
 }

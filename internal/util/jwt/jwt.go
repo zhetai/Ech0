@@ -23,7 +23,7 @@ func CreateClaims(user userModel.User) jwt.Claims {
 			Audience:  jwt.ClaimStrings{config.Config.Auth.Jwt.Audience},
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.Config.Auth.Jwt.Expires) * time.Second)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore:  jwt.NewNumericDate(time.Now().Add(-leeway)),
+			NotBefore: jwt.NewNumericDate(time.Now().Add(-leeway)),
 		},
 	}
 

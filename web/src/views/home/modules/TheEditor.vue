@@ -64,7 +64,8 @@
                     ? '本地存储'
                     : 'S3存储'
               }}</span
-            > {{ !ImageUploading ? '' : '，正在上传中...' }}
+            >
+            {{ !ImageUploading ? '' : '，正在上传中...' }}
           </div>
 
           <div class="my-1">

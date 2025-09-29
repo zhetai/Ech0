@@ -16,16 +16,15 @@ import (
 
 // Handlers 聚合各个模块的Handler
 type Handlers struct {
-	WebHandler     *webHandler.WebHandler
-	UserHandler    *userHandler.UserHandler
-	EchoHandler    *echoHandler.EchoHandler
-	CommonHandler  *commonHandler.CommonHandler
-	SettingHandler *settingHandler.SettingHandler
-	TodoHandler    *todoHandler.TodoHandler
-	ConnectHandler *connectHandler.ConnectHandler
-	BackupHandler  *backupHandler.BackupHandler
+	WebHandler       *webHandler.WebHandler
+	UserHandler      *userHandler.UserHandler
+	EchoHandler      *echoHandler.EchoHandler
+	CommonHandler    *commonHandler.CommonHandler
+	SettingHandler   *settingHandler.SettingHandler
+	TodoHandler      *todoHandler.TodoHandler
+	ConnectHandler   *connectHandler.ConnectHandler
+	BackupHandler    *backupHandler.BackupHandler
 	FediverseHandler *fediverseHandler.FediverseHandler
-
 }
 
 // NewHandlers 创建Handlers实例
@@ -41,14 +40,14 @@ func NewHandlers(
 	fediverseHandler *fediverseHandler.FediverseHandler,
 ) *Handlers {
 	return &Handlers{
-		WebHandler:     webHandler,
-		UserHandler:    userHandler,
-		EchoHandler:    echoHandler,
-		CommonHandler:  commonHandler,
-		SettingHandler: settingHandler,
-		TodoHandler:    todoHandler,
-		ConnectHandler: connectHandler,
-		BackupHandler:  backupHandler,
+		WebHandler:       webHandler,
+		UserHandler:      userHandler,
+		EchoHandler:      echoHandler,
+		CommonHandler:    commonHandler,
+		SettingHandler:   settingHandler,
+		TodoHandler:      todoHandler,
+		ConnectHandler:   connectHandler,
+		BackupHandler:    backupHandler,
 		FediverseHandler: fediverseHandler,
 	}
 }

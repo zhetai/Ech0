@@ -76,8 +76,8 @@ func (h *FediverseHandler) GetActor(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
 			Context: "https://www.w3.org/ns/activitystreams",
 			Type:    "Error",
-			Error: err.Error(),
-			Status: http.StatusNotFound,
+			Error:   err.Error(),
+			Status:  http.StatusNotFound,
 		})
 		return
 	}
@@ -125,12 +125,12 @@ func (h *FediverseHandler) GetOutbox(ctx *gin.Context) {
 	// 查询参数
 	pageStr := ctx.DefaultQuery("page", "1")
 	pageSizeStr := ctx.DefaultQuery("pageSize", "10")
-	
+
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
 		page = 1
 	}
-	
+
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
 		pageSize = 10

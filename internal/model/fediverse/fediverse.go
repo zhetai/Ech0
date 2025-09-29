@@ -36,14 +36,14 @@ type Link struct {
 
 // OutboxResponse 定义 Outbox 的响应格式
 type OutboxResponse struct {
-	Context    interface{}       `json:"@context"`    // 可以是字符串或数组
-	ID         string            `json:"id"`
-	Type       string            `json:"type"`        // "OrderedCollection"
-	TotalItems int               `json:"totalItems"`
-	First      *OutboxPage       `json:"first,omitempty"`
-	Last       *OutboxPage       `json:"last,omitempty"`
+	Context    interface{} `json:"@context"` // 可以是字符串或数组
+	ID         string      `json:"id"`
+	Type       string      `json:"type"` // "OrderedCollection"
+	TotalItems int         `json:"totalItems"`
+	First      *OutboxPage `json:"first,omitempty"`
+	Last       *OutboxPage `json:"last,omitempty"`
 	// 如果不用分页，可以直接用 OrderedItems
-	OrderedItems []Activity      `json:"orderedItems,omitempty"`
+	OrderedItems []Activity `json:"orderedItems,omitempty"`
 }
 
 // OutboxPage 表示分页形式的 Outbox
@@ -55,6 +55,7 @@ type OutboxPage struct {
 	Prev         string     `json:"prev,omitempty"`
 	OrderedItems []Activity `json:"orderedItems"`
 }
+
 // ------------------ 数据库模型 --------------------
 
 type DeliveryStatus string

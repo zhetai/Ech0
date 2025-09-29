@@ -19,7 +19,7 @@ func NewTasker(commonService commonService.CommonServiceInterface) *Tasker {
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
 		logUtil.GetLogger().Error("Failed to create scheduler", zapcore.Field{
-			Key:  "error",
+			Key:    "error",
 			String: err.Error(),
 		})
 	}
@@ -43,12 +43,12 @@ func (t *Tasker) Stop() {
 func (t *Tasker) CleanupTempFilesTask() {
 	// 每三天执行一次
 	_, err := t.scheduler.NewJob(
-		gocron.DurationJob(72 * time.Hour),
+		gocron.DurationJob(72*time.Hour),
 		gocron.NewTask(
 			func() {
 				if err := t.commonService.CleanupTempFiles(); err != nil {
 					logUtil.GetLogger().Error("Failed to clean up temporary files", zapcore.Field{
-						Key:  "error",
+						Key:    "error",
 						String: err.Error(),
 					})
 				}
@@ -57,7 +57,7 @@ func (t *Tasker) CleanupTempFilesTask() {
 	)
 	if err != nil {
 		logUtil.GetLogger().Error("Failed to schedule CleanupTempFilesTask", zapcore.Field{
-			Key:  "error",
+			Key:    "error",
 			String: err.Error(),
 		})
 	}

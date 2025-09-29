@@ -31,7 +31,7 @@ import (
 type Server struct {
 	GinEngine  *gin.Engine
 	httpServer *http.Server // 用于优雅停止服务器
-	tasker *task.Tasker // 任务器
+	tasker     *task.Tasker // 任务器
 }
 
 // New 创建一个新的服务器实例

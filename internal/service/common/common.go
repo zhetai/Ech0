@@ -513,13 +513,13 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	// 保存到临时文件表
 	now := time.Now().Unix()
 	tempFile := commonModel.TempFile{
-		FileName: result.FileName,
-		Storage:  string(commonModel.S3_FILE),
-		FileType: string(commonModel.ImageType),
-		Bucket:   s3setting.BucketName,
-		ObjectKey: result.ObjectKey,
-		Deleted:  false,
-		CreatedAt: now,
+		FileName:       result.FileName,
+		Storage:        string(commonModel.S3_FILE),
+		FileType:       string(commonModel.ImageType),
+		Bucket:         s3setting.BucketName,
+		ObjectKey:      result.ObjectKey,
+		Deleted:        false,
+		CreatedAt:      now,
 		LastAccessedAt: now,
 	}
 	commonService.txManager.Run(func(ctx context.Context) error {
@@ -583,7 +583,7 @@ func (commonService *CommonService) CleanupTempFiles() error {
 			switch file.Storage {
 			case string(commonModel.LOCAL_FILE):
 				//TODO: 删除本地文件
-				
+
 			case string(commonModel.S3_FILE):
 				// 获取 S3 客户端
 				cli, _, err := commonService.GetS3Client()

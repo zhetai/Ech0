@@ -8,7 +8,7 @@ import (
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 )
 
-type FediverseServiceInterface interface{
+type FediverseServiceInterface interface {
 	// BuildActor 构建 Actor 对象
 	BuildActor(user *userModel.User) (model.Actor, *settingModel.SystemSetting, error)
 
@@ -22,5 +22,5 @@ type FediverseServiceInterface interface{
 	HandleInbox(username string, activity *model.Activity) error
 
 	// HandleOutbox 处理 Outbox 消息
-	HandleOutbox(ctx context.Context,username string, page, pageSize int) (model.OutboxResponse, error)
+	HandleOutbox(ctx context.Context, username string, page, pageSize int) (model.OutboxResponse, error)
 }

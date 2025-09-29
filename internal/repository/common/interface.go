@@ -28,7 +28,7 @@ type CommonRepositoryInterface interface {
 	SaveTempFile(ctx context.Context, file model.TempFile) error
 
 	// DeleteTempFile 删除临时文件记录
-	DeleteTempFile(ctx context.Context,id uint) error
+	DeleteTempFile(ctx context.Context, id uint) error
 
 	// DeleteTempFilePermanently 永久删除临时文件记录
 	DeleteTempFilePermanently(ctx context.Context, id uint) error
