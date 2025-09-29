@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	service "github.com/lin-snow/ech0/internal/service/backup"
+	jwtUtil "github.com/lin-snow/ech0/internal/util/jwt"
 )
 
 type BackupHandler struct {
@@ -57,8 +60,25 @@ func (backupHandler *BackupHandler) Backup() gin.HandlerFunc {
 // @Router /backup/export [get]
 func (backupHandler *BackupHandler) ExportBackup() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
-		userId := ctx.MustGet("userid").(uint)
-		if err := backupHandler.backupService.ExportBackup(userId, ctx); err != nil {
+		token := ctx.Query("token")
+		if token == "" {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+			}
+		}
+
+		token = strings.Trim(token, `"`) // 去掉可能的双引号
+
+		// 使用 JWT Util进行处理
+		if _, err := jwtUtil.ParseToken(token); err != nil {
+			return res.Response{
+				Msg: commonModel.TOKEN_NOT_VALID,
+				Err: err,
+			}
+		}
+
+		// userId := ctx.MustGet("userid").(uint)
+		if err := backupHandler.backupService.ExportBackup(ctx); err != nil {
 			return res.Response{
 				Msg: "",
 				Err: err,

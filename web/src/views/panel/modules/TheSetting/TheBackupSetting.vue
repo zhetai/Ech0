@@ -47,7 +47,7 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import CreateBackup from '@/components/icons/createbackup.vue'
 import ExportBackup from '@/components/icons/exportbackup.vue'
 import RestoreBackup from '@/components/icons/restorebackup.vue'
-import { fetchBackup, fetchExportBackup } from '@/service/api'
+import { fetchBackup } from '@/service/api'
 import { theToast } from '@/utils/toast'
 
 const handleBackup = async () => {
@@ -63,24 +63,22 @@ const handleBackupExport = async () => {
     theToast.info('导出中...请稍等', {
       duration: 4000,
     })
-    // 1. 获取文件数据（Blob 对象）
-    const blob = await fetchExportBackup()
 
-    // 2. 创建一个临时的对象 URL
-    const url = window.URL.createObjectURL(blob)
+    // 1. 获取 token
+    const token = localStorage.getItem('token')
 
-    // 3. 创建一个隐藏的 <a> 元素
+    const downloadUrl = `http://localhost:6277/api/backup/export?token=${token}`
+
+    // 创建隐藏的 a 标签触发下载
     const link = document.createElement('a')
-    link.href = url
-    link.download = 'backup-latest.zip' // 指定下载文件名
-
-    // 4. 将元素添加到 DOM 并触发点击
+    link.href = downloadUrl
+    link.style.display = 'none'
     document.body.appendChild(link)
-    link.click() // 这会触发浏览器的下载行为
-
-    // 5. 清理：移除元素和释放内存
+    link.click()
     document.body.removeChild(link)
-    window.URL.revokeObjectURL(url)
+
+    theToast.success('备份导出开始！')
+
   } catch (error) {
     theToast.error('导出失败')
     console.error('导出备份失败:', error)

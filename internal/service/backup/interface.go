@@ -7,7 +7,7 @@ type BackupServiceInterface interface {
 	Backup(userid uint) error
 
 	// ExportBackup 导出备份
-	ExportBackup(userid uint, ctx *gin.Context) error
+	ExportBackup(ctx *gin.Context) error
 
 	// 恢复备份
 	// ImportBackup(userid uint) error
