@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	model "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
@@ -23,20 +25,20 @@ type CommonRepositoryInterface interface {
 	GetHeatMap(startDate, endDate string) ([]model.Heatmap, error)
 
 	// SaveTempFile 保存临时文件记录
-	SaveTempFile(file model.TempFile) error
+	SaveTempFile(ctx context.Context, file model.TempFile) error
 
 	// DeleteTempFile 删除临时文件记录
-	DeleteTempFile(id uint) error
+	DeleteTempFile(ctx context.Context,id uint) error
 
 	// DeleteTempFilePermanently 永久删除临时文件记录
-	DeleteTempFilePermanently(id uint) error
+	DeleteTempFilePermanently(ctx context.Context, id uint) error
 
 	// DeleteTempFileByObjectKey 根据对象键删除临时文件记录
-	DeleteTempFileByObjectKey(objectKey string) error
+	DeleteTempFileByObjectKey(ctx context.Context, objectKey string) error
 
 	// GetAllTempFiles 获取所有未删除的临时文件
 	GetAllTempFiles() ([]model.TempFile, error)
 
 	// UpdateTempFileAccessTime 更新临时文件的最后访问时间
-	UpdateTempFileAccessTime(id uint, accessTime int64) error
+	UpdateTempFileAccessTime(ctx context.Context, id uint, accessTime int64) error
 }

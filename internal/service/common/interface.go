@@ -55,4 +55,7 @@ type CommonServiceInterface interface {
 
 	// GetS3ObjectURL 获取 S3 对象的访问 URL
 	GetS3ObjectURL(s3setting settingModel.S3Setting, objectKey string) (string, error)
+
+	// CleanupTempFiles 清理过期的临时文件
+	CleanupTempFiles() error
 }

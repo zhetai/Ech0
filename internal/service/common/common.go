@@ -522,9 +522,9 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 		CreatedAt: now,
 		LastAccessedAt: now,
 	}
-	if err := commonService.commonRepository.SaveTempFile(tempFile); err != nil {
-		return result, err
-	}
+	commonService.txManager.Run(func(ctx context.Context) error {
+		return commonService.commonRepository.SaveTempFile(ctx, tempFile)
+	})
 
 	return result, nil
 }
@@ -563,4 +563,53 @@ func (CommonService *CommonService) GetS3ObjectURL(s3Setting settingModel.S3Sett
 	}
 
 	return fmt.Sprintf("%s://%s/%s/%s", protocal, s3Setting.Endpoint, s3Setting.BucketName, objectKey), nil
+}
+
+// CleanupTempFiles 清理过期的临时文件
+func (commonService *CommonService) CleanupTempFiles() error {
+	// 获取所有未删除的临时文件
+	files, err := commonService.commonRepository.GetAllTempFiles()
+	if err != nil {
+		return err
+	}
+
+	// 当前时间戳
+	now := time.Now().Unix()
+
+	for _, file := range files {
+		// 如果最后访问时间超过24小时，则删除
+		if now-file.LastAccessedAt > 24*3600 {
+			// 删除文件
+			switch file.Storage {
+			case string(commonModel.LOCAL_FILE):
+				//TODO: 删除本地文件
+				
+			case string(commonModel.S3_FILE):
+				// 获取 S3 客户端
+				cli, _, err := commonService.GetS3Client()
+				if err != nil {
+					// 如果没有配置 S3，则无法删除,忽略
+					continue
+				}
+				if file.ObjectKey == "" {
+					// 如果没有传入 object_key，则无法删除,忽略
+					continue
+				}
+				// 删除 S3 上的文件
+				if err := cli.DeleteObject(context.Background(), file.ObjectKey); err != nil {
+					// 记录日志，继续处理下一个文件
+					fmt.Printf("删除S3临时文件失败: %s, 错误: %v\n", file.ObjectKey, err)
+				}
+			default:
+				// 未知存储类型，忽略
+			}
+
+			// 从数据库中删除记录(开启事务)
+			commonService.txManager.Run(func(ctx context.Context) error {
+				return commonService.commonRepository.DeleteTempFilePermanently(ctx, file.ID)
+			})
+		}
+	}
+
+	return nil
 }

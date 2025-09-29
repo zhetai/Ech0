@@ -98,23 +98,23 @@ func (commonRepository *CommonRepository) GetHeatMap(startDate, endDate string) 
 }
 
 // SaveTempFile 保存临时文件记录
-func (commonRepository *CommonRepository) SaveTempFile(file commonModel.TempFile) error {
-	return commonRepository.db.Create(&file).Error
+func (commonRepository *CommonRepository) SaveTempFile(ctx context.Context, file commonModel.TempFile) error {
+	return commonRepository.getDB(ctx).Create(&file).Error
 }
 
 // DeleteTempFile 删除临时文件记录
-func (commonRepository *CommonRepository) DeleteTempFile(id uint) error {
-	return commonRepository.db.Model(&commonModel.TempFile{}).Where("id = ?", id).Update("deleted", true).Error
+func (commonRepository *CommonRepository) DeleteTempFile(ctx context.Context, id uint) error {
+	return commonRepository.getDB(ctx).Model(&commonModel.TempFile{}).Where("id = ?", id).Update("deleted", true).Error
 }
 
 // DeleteTempFilePermanently 永久删除临时文件记录
-func (commonRepository *CommonRepository) DeleteTempFilePermanently(id uint) error {
-	return commonRepository.db.Delete(&commonModel.TempFile{}, id).Error
+func (commonRepository *CommonRepository) DeleteTempFilePermanently(ctx context.Context, id uint) error {
+	return commonRepository.getDB(ctx).Delete(&commonModel.TempFile{}, id).Error
 }
 
 // DeleteTempFileByObjectKey 根据对象键删除临时文件记录
-func (commonRepository *CommonRepository) DeleteTempFileByObjectKey(objectKey string) error {
-	return commonRepository.db.Where("object_key = ?", objectKey).Delete(&commonModel.TempFile{}).Error
+func (commonRepository *CommonRepository) DeleteTempFileByObjectKey(ctx context.Context, objectKey string) error {
+	return commonRepository.getDB(ctx).Where("object_key = ?", objectKey).Delete(&commonModel.TempFile{}).Error
 }
 
 // GetAllTempFiles 获取所有未删除的临时文件
@@ -128,8 +128,8 @@ func (commonRepository *CommonRepository) GetAllTempFiles() ([]commonModel.TempF
 }
 
 // UpdateTempFileAccessTime 更新临时文件的最后访问时间
-func (commonRepository *CommonRepository) UpdateTempFileAccessTime(id uint, accessTime int64) error {
-	return commonRepository.db.Model(&commonModel.TempFile{}).Where("id = ?", id).Update("last_accessed_at", accessTime).Error
+func (commonRepository *CommonRepository) UpdateTempFileAccessTime(ctx context.Context, id uint, accessTime int64) error {
+	return commonRepository.getDB(ctx).Model(&commonModel.TempFile{}).Where("id = ?", id).Update("last_accessed_at", accessTime).Error
 }
 
 
