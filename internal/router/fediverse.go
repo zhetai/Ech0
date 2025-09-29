@@ -3,5 +3,24 @@ package router
 import "github.com/lin-snow/ech0/internal/di"
 
 func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
-	
+	// // ActivityPub discovery
+	// appRouterGroup.PublicRouterGroup.GET("/.well-known/webfinger", h.ActivityPubHandler.Webfinger())
+
+	// // Actor
+	// appRouterGroup.PublicRouterGroup.GET("/users/:username", h.ActivityPubHandler.GetActor())
+
+	// // Inbox (接收 ActivityPub 消息)
+	// appRouterGroup.PublicRouterGroup.POST("/users/:username/inbox", h.ActivityPubHandler.PostInbox())
+
+	// // Outbox (发布消息)
+	// appRouterGroup.PublicRouterGroup.GET("/users/:username/outbox", h.ActivityPubHandler.GetOutbox())
+
+	// // Followers list
+	// appRouterGroup.PublicRouterGroup.GET("/users/:username/followers", h.ActivityPubHandler.GetFollowers())
+
+	// // Following list
+	// appRouterGroup.PublicRouterGroup.GET("/users/:username/following", h.ActivityPubHandler.GetFollowing())
+
+	// // Objects (内容对象访问)
+	// appRouterGroup.PublicRouterGroup.GET("/objects/:id", h.ActivityPubHandler.GetObject())
 }
