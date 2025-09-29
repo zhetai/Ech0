@@ -49,7 +49,7 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	echoRepositoryInterface := repository3.NewEchoRepository(db, iCache)
-	echoServiceInterface := service4.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface)
+	echoServiceInterface := service4.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
 	settingHandler := handler5.NewSettingHandler(settingServiceInterface)
