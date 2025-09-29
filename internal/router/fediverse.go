@@ -4,7 +4,7 @@ import "github.com/lin-snow/ech0/internal/di"
 
 func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// // ActivityPub discovery
-	// appRouterGroup.PublicRouterGroup.GET("/.well-known/webfinger", h.ActivityPubHandler.Webfinger())
+	appRouterGroup.PublicRouterGroup.GET("/.well-known/webfinger", h.FediverseHandler.Webfinger)
 
 	// Actor (用户资料)
 	appRouterGroup.ResourceGroup.GET("/users/:username", h.FediverseHandler.GetActor)
@@ -13,7 +13,7 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.PublicRouterGroup.POST("/users/:username/inbox", h.FediverseHandler.PostInbox)
 
 	// // Outbox (发布消息)
-	// appRouterGroup.PublicRouterGroup.GET("/users/:username/outbox", h.ActivityPubHandler.GetOutbox())
+	appRouterGroup.PublicRouterGroup.GET("/users/:username/outbox", h.FediverseHandler.GetOutbox)
 
 	// // Followers list
 	// appRouterGroup.PublicRouterGroup.GET("/users/:username/followers", h.ActivityPubHandler.GetFollowers())
