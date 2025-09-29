@@ -1,14 +1,19 @@
 package service
 
 import (
+	"context"
 	"errors"
+	"fmt"
 
+	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
+	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	repository "github.com/lin-snow/ech0/internal/repository/fediverse"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
+	echoService "github.com/lin-snow/ech0/internal/service/echo"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	"golang.org/x/text/cases"
@@ -19,16 +24,19 @@ type FediverseService struct {
 	fediverseRepository repository.FediverseRepositoryInterface
 	userRepository      userRepository.UserRepositoryInterface
 	settingService      settingService.SettingServiceInterface
+	echoService 		echoService.EchoServiceInterface
 }
 
 func NewFediverseService(fediverseRepository repository.FediverseRepositoryInterface, 
 	userRepository userRepository.UserRepositoryInterface,
 	settingService settingService.SettingServiceInterface,
+	echoService echoService.EchoServiceInterface,
 	) FediverseServiceInterface {
 	return &FediverseService{
 		fediverseRepository: fediverseRepository,
 		userRepository:      userRepository,
 		settingService:      settingService,
+		echoService:		 echoService,
 	}
 }
 
@@ -116,16 +124,54 @@ func (fediverseService *FediverseService) HandleInbox(username string, activity 
 }
 
 // HandleOutbox 处理 Outbox 消息
-func (fediverseService *FediverseService) HandleOutbox(username string) (model.OutboxResponse, error) {
+func (fediverseService *FediverseService) HandleOutbox(ctx context.Context, username string, page, pageSize int) (model.OutboxResponse, error) {
 	// 查询用户，确保用户存在
-	// user, err := fediverseService.userRepository.GetUserByUsername(username)
-	// if err != nil {
-	// 	return model.OutboxResponse{}, errors.New(commonModel.USER_NOTFOUND)
-	// }
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return model.OutboxResponse{}, errors.New(commonModel.USER_NOTFOUND)
+	}
 
-	// TODO
+	// 获取 Actor和 setting
+	_, setting, err := fediverseService.BuildActor(&user)
+	if err != nil {
+		return model.OutboxResponse{}, err
+	}
+	serverURL := httpUtil.TrimURL(setting.ServerURL)
 
-	return model.OutboxResponse{}, nil
+	// 查 Echos
+	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
+		Page:    page,
+		PageSize: pageSize,
+	})
+	if err != nil {
+		return model.OutboxResponse{}, err
+	}
+
+	// 转 Avtivity
+	var activities []model.Activity
+	for i := range echosByPage.Items {
+		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage.Items[i], nil))
+	}
+
+	// 拼装 OutboxPage
+	outboxPage := model.OutboxPage{
+		ID: fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page),
+		Type: "OrderedCollectionPage",
+		PartOf: fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
+		Next: fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page+1),
+		Prev: "",
+		OrderedItems: activities,
+	}
+
+	return model.OutboxResponse{
+		Context: []any{},
+		ID:     outboxPage.ID,
+		Type:   "OrderedCollection",
+		TotalItems: int(echosByPage.Total),
+		First:  &outboxPage,
+		Last:   nil,
+		OrderedItems: nil,
+	}, nil
 }
 
 // BuildActor 构建 Actor 对象
@@ -157,4 +203,9 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 			PublicKeyPem: user.PublicKeyPEM,
 		},
 	}, &setting, nil
+}
+
+
+func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor) model.Activity {
+	return model.Activity{}
 }

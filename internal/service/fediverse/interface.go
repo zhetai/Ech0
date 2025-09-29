@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
@@ -20,5 +22,5 @@ type FediverseServiceInterface interface{
 	HandleInbox(username string, activity *model.Activity) error
 
 	// HandleOutbox 处理 Outbox 消息
-	HandleOutbox(username string) (model.OutboxResponse, error)
+	HandleOutbox(ctx context.Context,username string, page, pageSize int) (model.OutboxResponse, error)
 }
