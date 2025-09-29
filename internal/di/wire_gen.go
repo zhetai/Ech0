@@ -13,6 +13,7 @@ import (
 	handler4 "github.com/lin-snow/ech0/internal/handler/common"
 	handler7 "github.com/lin-snow/ech0/internal/handler/connect"
 	handler3 "github.com/lin-snow/ech0/internal/handler/echo"
+	handler9 "github.com/lin-snow/ech0/internal/handler/fediverse"
 	handler5 "github.com/lin-snow/ech0/internal/handler/setting"
 	handler6 "github.com/lin-snow/ech0/internal/handler/todo"
 	handler2 "github.com/lin-snow/ech0/internal/handler/user"
@@ -20,6 +21,7 @@ import (
 	repository2 "github.com/lin-snow/ech0/internal/repository/common"
 	repository5 "github.com/lin-snow/ech0/internal/repository/connect"
 	repository3 "github.com/lin-snow/ech0/internal/repository/echo"
+	repository6 "github.com/lin-snow/ech0/internal/repository/fediverse"
 	"github.com/lin-snow/ech0/internal/repository/keyvalue"
 	repository4 "github.com/lin-snow/ech0/internal/repository/todo"
 	"github.com/lin-snow/ech0/internal/repository/user"
@@ -27,6 +29,7 @@ import (
 	"github.com/lin-snow/ech0/internal/service/common"
 	service6 "github.com/lin-snow/ech0/internal/service/connect"
 	service4 "github.com/lin-snow/ech0/internal/service/echo"
+	service8 "github.com/lin-snow/ech0/internal/service/fediverse"
 	service2 "github.com/lin-snow/ech0/internal/service/setting"
 	service5 "github.com/lin-snow/ech0/internal/service/todo"
 	service3 "github.com/lin-snow/ech0/internal/service/user"
@@ -62,7 +65,10 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	connectHandler := handler7.NewConnectHandler(connectServiceInterface)
 	backupServiceInterface := service7.NewBackupService(commonServiceInterface)
 	backupHandler := handler8.NewBackupHandler(backupServiceInterface)
-	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler)
+	fediverseRepositoryInterface := repository6.NewFediverseRepository(db)
+	fediverseServiceInterface := service8.NewFediverseService(fediverseRepositoryInterface)
+	fediverseHandler := handler9.NewFediverseHandler(fediverseServiceInterface)
+	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler, fediverseHandler)
 	return handlers, nil
 }
 
@@ -114,3 +120,6 @@ var BackupSet = wire.NewSet(handler8.NewBackupHandler, service7.NewBackupService
 
 // TaskSet 包含了构建 Tasker 所需的所有 Provider
 var TaskSet = wire.NewSet(task.NewTasker)
+
+// FediverseSet 包含了构建 Fediverse 所需的所有 Provider
+var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service8.NewFediverseService, handler9.NewFediverseHandler)

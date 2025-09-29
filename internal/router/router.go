@@ -56,6 +56,9 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 
 	// Setup Connect Routes
 	setupConnectRoutes(appRouterGroup, h)
+
+	// Setup Fediverse Routes
+	setupFediverseRoutes(appRouterGroup, h)
 }
 
 // setupRouterGroup 初始化路由组

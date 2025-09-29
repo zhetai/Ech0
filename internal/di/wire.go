@@ -10,6 +10,7 @@ import (
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
 	echoHandler "github.com/lin-snow/ech0/internal/handler/echo"
+	fediverseHandler "github.com/lin-snow/ech0/internal/handler/fediverse"
 	settingHandler "github.com/lin-snow/ech0/internal/handler/setting"
 	todoHandler "github.com/lin-snow/ech0/internal/handler/todo"
 	userHandler "github.com/lin-snow/ech0/internal/handler/user"
@@ -17,6 +18,7 @@ import (
 	commonRepository "github.com/lin-snow/ech0/internal/repository/common"
 	connectRepository "github.com/lin-snow/ech0/internal/repository/connect"
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
+	fediverseRepository "github.com/lin-snow/ech0/internal/repository/fediverse"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
 	todoRepository "github.com/lin-snow/ech0/internal/repository/todo"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
@@ -24,6 +26,7 @@ import (
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	connectService "github.com/lin-snow/ech0/internal/service/connect"
 	echoService "github.com/lin-snow/ech0/internal/service/echo"
+	fediverseService "github.com/lin-snow/ech0/internal/service/fediverse"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	todoService "github.com/lin-snow/ech0/internal/service/todo"
 	userService "github.com/lin-snow/ech0/internal/service/user"
@@ -49,6 +52,7 @@ func BuildHandlers(
 		TodoSet,
 		ConnectSet,
 		BackupSet,
+		FediverseSet,
 		NewHandlers, // NewHandlers 聚合各个模块的Handler
 	)
 
@@ -137,4 +141,11 @@ var BackupSet = wire.NewSet(
 // TaskSet 包含了构建 Tasker 所需的所有 Provider
 var TaskSet = wire.NewSet(
 	task.NewTasker,
+)
+
+// FediverseSet 包含了构建 Fediverse 所需的所有 Provider
+var FediverseSet = wire.NewSet(
+	fediverseRepository.NewFediverseRepository,
+	fediverseService.NewFediverseService,
+	fediverseHandler.NewFediverseHandler,
 )
