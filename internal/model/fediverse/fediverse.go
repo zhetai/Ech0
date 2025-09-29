@@ -10,6 +10,16 @@ type ActivityPubError struct {
 	Status  int    `json:"status"`   // HTTP 状态码
 }
 
+// ActivityType 定义常见的 ActivityPub 活动类型
+const (
+	ActivityTypeCreate string = "Create"
+	ActivityTypeFollow string = "Follow"
+	ActivityTypeLike   string = "Like"
+	ActivityTypeAccept string = "Accept"
+	ActivityTypeAnnounce string = "Announce"
+	ActivityTypeUndo   string = "Undo"
+)
+
 // ------------------ 数据库模型 --------------------
 
 type DeliveryStatus string

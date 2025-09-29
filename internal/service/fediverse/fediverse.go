@@ -6,9 +6,12 @@ import (
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
+	userModel "github.com/lin-snow/ech0/internal/model/user"
 	repository "github.com/lin-snow/ech0/internal/repository/fediverse"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type FediverseService struct {
@@ -64,4 +67,44 @@ func (fediverseService *FediverseService) GetActorByUsername(username string) (m
 	}
 
 	return actor, nil
+}
+
+// ProcessInbox 处理接收到的 ActivityPub 消息
+func (fediverseService *FediverseService) HandleInbox(username string, activity *model.Activity) error {
+	// 查询用户，确保用户存在
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return errors.New(commonModel.USER_NOTFOUND)
+	}
+
+	// 处理不同类型的 Activity
+	switch activity.Type {
+	case model.ActivityTypeFollow:
+		// 处理关注请求
+		return fediverseService.handleFollowActivity(user, activity)
+
+	case model.ActivityTypeAccept:
+		// 处理关注接受
+
+	case model.ActivityTypeCreate:
+		// 处理创建内容
+
+	case model.ActivityTypeLike:
+		// 处理点赞
+
+	case model.ActivityTypeAnnounce:
+		// 处理转发
+
+	case model.ActivityTypeUndo:
+		// 处理撤销
+
+	default:
+		return errors.New("Unsupported activity type: " + cases.Title(language.English).String(activity.Type))
+	}
+
+	return nil
+}
+
+func (fediverseService *FediverseService) handleFollowActivity(user userModel.User, activity *model.Activity) error {
+	return nil
 }

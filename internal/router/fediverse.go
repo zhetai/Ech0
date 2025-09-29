@@ -9,8 +9,8 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Actor (用户资料)
 	appRouterGroup.ResourceGroup.GET("/users/:username", h.FediverseHandler.GetActor)
 
-	// // Inbox (接收 ActivityPub 消息)
-	// appRouterGroup.PublicRouterGroup.POST("/users/:username/inbox", h.ActivityPubHandler.PostInbox())
+	// Inbox (接收 ActivityPub 消息)
+	appRouterGroup.PublicRouterGroup.POST("/users/:username/inbox", h.FediverseHandler.PostInbox)
 
 	// // Outbox (发布消息)
 	// appRouterGroup.PublicRouterGroup.GET("/users/:username/outbox", h.ActivityPubHandler.GetOutbox())
