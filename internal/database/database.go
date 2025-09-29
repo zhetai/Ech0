@@ -68,6 +68,7 @@ func MigrateDB() error {
 		&commonModel.KeyValue{},
 		&todoModel.Todo{},
 		&connectModel.Connected{},
+		&commonModel.TempFile{},
 	}
 
 	return DB.AutoMigrate(

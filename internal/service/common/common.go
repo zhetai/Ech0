@@ -510,6 +510,22 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	}
 	result.FileURL = fileURL
 
+	// 保存到临时文件表
+	now := time.Now().Unix()
+	tempFile := commonModel.TempFile{
+		FileName: result.FileName,
+		Storage:  string(commonModel.S3_FILE),
+		FileType: string(commonModel.ImageType),
+		Bucket:   s3setting.BucketName,
+		ObjectKey: result.ObjectKey,
+		Deleted:  false,
+		CreatedAt: now,
+		LastAccessedAt: now,
+	}
+	if err := commonService.commonRepository.SaveTempFile(tempFile); err != nil {
+		return result, err
+	}
+
 	return result, nil
 }
 

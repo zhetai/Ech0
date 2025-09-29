@@ -9,6 +9,7 @@ import (
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
+	commonRepository "github.com/lin-snow/ech0/internal/repository/common"
 	repository "github.com/lin-snow/ech0/internal/repository/echo"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
@@ -18,17 +19,20 @@ type EchoService struct {
 	txManager      transaction.TransactionManager
 	commonService  commonService.CommonServiceInterface
 	echoRepository repository.EchoRepositoryInterface
+	commonRepository commonRepository.CommonRepositoryInterface
 }
 
 func NewEchoService(
 	tm transaction.TransactionManager,
 	commonService commonService.CommonServiceInterface,
 	echoRepository repository.EchoRepositoryInterface,
+	commonRepository commonRepository.CommonRepositoryInterface,
 ) EchoServiceInterface {
 	return &EchoService{
 		txManager:      tm,
 		commonService:  commonService,
 		echoRepository: echoRepository,
+		commonRepository: commonRepository,
 	}
 }
 
@@ -74,6 +78,17 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 
 		if newEcho.Content == "" && len(newEcho.Images) == 0 && (newEcho.Extension == "" || newEcho.ExtensionType == "") {
 			return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
+		}
+
+		// 处理临时文件表，防止被当作孤儿文件删除
+		for i := range newEcho.Images {
+			// 只有S3图片且有ObjectKey的才处理
+			if newEcho.Images[i].ImageSource == model.ImageSourceS3 && newEcho.Images[i].ObjectKey != "" {
+				// 直接删除临时文件记录
+				if err := echoService.commonRepository.DeleteTempFileByObjectKey(newEcho.Images[i].ObjectKey); err != nil {
+					return err
+				}
+			}
 		}
 
 		return echoService.echoRepository.CreateEcho(ctx, newEcho)

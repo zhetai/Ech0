@@ -96,3 +96,40 @@ func (commonRepository *CommonRepository) GetHeatMap(startDate, endDate string) 
 
 	return results, nil
 }
+
+// SaveTempFile 保存临时文件记录
+func (commonRepository *CommonRepository) SaveTempFile(file commonModel.TempFile) error {
+	return commonRepository.db.Create(&file).Error
+}
+
+// DeleteTempFile 删除临时文件记录
+func (commonRepository *CommonRepository) DeleteTempFile(id uint) error {
+	return commonRepository.db.Model(&commonModel.TempFile{}).Where("id = ?", id).Update("deleted", true).Error
+}
+
+// DeleteTempFilePermanently 永久删除临时文件记录
+func (commonRepository *CommonRepository) DeleteTempFilePermanently(id uint) error {
+	return commonRepository.db.Delete(&commonModel.TempFile{}, id).Error
+}
+
+// DeleteTempFileByObjectKey 根据对象键删除临时文件记录
+func (commonRepository *CommonRepository) DeleteTempFileByObjectKey(objectKey string) error {
+	return commonRepository.db.Where("object_key = ?", objectKey).Delete(&commonModel.TempFile{}).Error
+}
+
+// GetAllTempFiles 获取所有未删除的临时文件
+func (commonRepository *CommonRepository) GetAllTempFiles() ([]commonModel.TempFile, error) {
+	var files []commonModel.TempFile
+	err := commonRepository.db.Where("deleted = ?", false).Find(&files).Error
+	if err != nil {
+		return nil, err
+	}
+	return files, nil
+}
+
+// UpdateTempFileAccessTime 更新临时文件的最后访问时间
+func (commonRepository *CommonRepository) UpdateTempFileAccessTime(id uint, accessTime int64) error {
+	return commonRepository.db.Model(&commonModel.TempFile{}).Where("id = ?", id).Update("last_accessed_at", accessTime).Error
+}
+
+
