@@ -27,6 +27,7 @@ import (
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	todoService "github.com/lin-snow/ech0/internal/service/todo"
 	userService "github.com/lin-snow/ech0/internal/service/user"
+	"github.com/lin-snow/ech0/internal/task"
 	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
@@ -52,6 +53,21 @@ func BuildHandlers(
 	)
 
 	return &Handlers{}, nil
+}
+
+func BuildTasker(
+	db *gorm.DB,
+	cacheFactory *cache.CacheFactory,
+	tmFactory *transaction.TransactionManagerFactory,
+) (*task.Tasker, error) {
+	wire.Build(
+		CacheSet,
+		TransactionManagerSet,
+		CommonSet,
+		SettingSet,
+		TaskSet,
+	)
+	return &task.Tasker{}, nil
 }
 
 // CacheSet 包含了构建缓存所需的所有 Provider
@@ -116,4 +132,9 @@ var ConnectSet = wire.NewSet(
 var BackupSet = wire.NewSet(
 	backupHandler.NewBackupHandler,
 	backupService.NewBackupService,
+)
+
+// TaskSet 包含了构建 Tasker 所需的所有 Provider
+var TaskSet = wire.NewSet(
+	task.NewTasker,
 )

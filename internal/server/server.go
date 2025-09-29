@@ -11,9 +11,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/lin-snow/ech0/internal/transaction"
 	"net/http"
 	"time"
+
+	"github.com/lin-snow/ech0/internal/task"
+	"github.com/lin-snow/ech0/internal/transaction"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lin-snow/ech0/internal/cache"
@@ -29,6 +31,7 @@ import (
 type Server struct {
 	GinEngine  *gin.Engine
 	httpServer *http.Server // 用于优雅停止服务器
+	tasker *task.Tasker // 任务器
 }
 
 // New 创建一个新的服务器实例
@@ -68,6 +71,15 @@ func (s *Server) Init() {
 
 	// Router
 	router.SetupRouter(s.GinEngine, handlers)
+
+	// Tasker
+	s.tasker, err = di.BuildTasker(database.DB, cacheFactory, transactionManagerFactory)
+	if err != nil {
+		errUtil.HandlePanicError(&commonModel.ServerError{
+			Msg: commonModel.INIT_TASKER_PANIC,
+			Err: err,
+		})
+	}
 }
 
 // Start 异步启动服务器
@@ -80,6 +92,7 @@ func (s *Server) Start() {
 		Handler: s.GinEngine,
 	}
 
+	// 启动服务器
 	go func() {
 		if err := s.httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errUtil.HandlePanicError(&commonModel.ServerError{
@@ -89,6 +102,10 @@ func (s *Server) Start() {
 		}
 	}()
 	fmt.Println("🚀 Ech0 Server已启动，监听端口", port)
+
+	// 启动任务器
+	go s.tasker.Start()
+	fmt.Println("🚀 任务器已启动")
 }
 
 // Stop 优雅停止服务器
@@ -110,6 +127,9 @@ func (s *Server) Stop(ctx context.Context) error {
 	if err := s.httpServer.Shutdown(shutdownCtx); err != nil {
 		return err
 	}
+
+	// 停止任务器
+	s.tasker.Stop()
 
 	return nil
 }

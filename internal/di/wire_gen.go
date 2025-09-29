@@ -30,6 +30,7 @@ import (
 	service2 "github.com/lin-snow/ech0/internal/service/setting"
 	service5 "github.com/lin-snow/ech0/internal/service/todo"
 	service3 "github.com/lin-snow/ech0/internal/service/user"
+	"github.com/lin-snow/ech0/internal/task"
 	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
@@ -63,6 +64,16 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	backupHandler := handler8.NewBackupHandler(backupServiceInterface)
 	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler)
 	return handlers, nil
+}
+
+func BuildTasker(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*task.Tasker, error) {
+	transactionManager := ProvideTransactionManager(tmFactory)
+	commonRepositoryInterface := repository2.NewCommonRepository(db)
+	iCache := ProvideCache(cacheFactory)
+	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db, iCache)
+	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface)
+	tasker := task.NewTasker(commonServiceInterface)
+	return tasker, nil
 }
 
 // wire.go:
@@ -100,3 +111,6 @@ var ConnectSet = wire.NewSet(repository5.NewConnectRepository, service6.NewConne
 
 // BackupSet 包含了构建 BackupHandler 所需的所有 Provider
 var BackupSet = wire.NewSet(handler8.NewBackupHandler, service7.NewBackupService)
+
+// TaskSet 包含了构建 Tasker 所需的所有 Provider
+var TaskSet = wire.NewSet(task.NewTasker)
