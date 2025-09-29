@@ -2,6 +2,24 @@ package model
 
 import "time"
 
+// ActivityPubError 定义 ActivityPub 协议的错误响应格式
+type ActivityPubError struct {
+	Context string `json:"@context"` // ActivityStreams 上下文
+	Type    string `json:"type"`     // 类型，固定为 "Error"
+	Error   string `json:"error"`    // 错误信息
+	Status  int    `json:"status"`   // HTTP 状态码
+}
+
+// ------------------ 数据库模型 --------------------
+
+type DeliveryStatus string
+
+const (
+    DeliveryStatusPending   DeliveryStatus = "pending"
+    DeliveryStatusDelivered DeliveryStatus = "delivered"
+    DeliveryStatusFailed    DeliveryStatus = "failed"
+)
+
 // Activities 活动表
 type Activity struct {
 	ID           uint      `gorm:"primaryKey;autoIncrement" json:"id"`
@@ -48,4 +66,26 @@ type Object struct {
 	UserID     uint      `gorm:"index;not null" json:"user_id"`
 	ObjectJSON string    `gorm:"type:text;not null" json:"object_json"`
 	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
+}
+
+// ---------------- 常用数据模型 --------------------
+
+// PublicKey 公钥信息
+type PublicKey struct {
+	ID           string `json:"id"`
+	Owner        string `json:"owner"`
+	PublicKeyPem string `json:"publicKeyPem"`
+}
+
+// Actor ActivityPub Actor 信息
+type Actor struct {
+	Context           string    `json:"@context"`
+	ID                string    `json:"id"`
+	Type              string    `json:"type"`
+	Name              string    `json:"name"`
+	PreferredUsername string    `json:"preferredUsername"`
+	Summary           string    `json:"summary"`
+	Inbox             string    `json:"inbox"`
+	Outbox            string    `json:"outbox"`
+	PublicKey         PublicKey `json:"publicKey"`
 }

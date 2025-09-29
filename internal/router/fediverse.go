@@ -6,8 +6,8 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// // ActivityPub discovery
 	// appRouterGroup.PublicRouterGroup.GET("/.well-known/webfinger", h.ActivityPubHandler.Webfinger())
 
-	// // Actor
-	// appRouterGroup.PublicRouterGroup.GET("/users/:username", h.ActivityPubHandler.GetActor())
+	// Actor (用户资料)
+	appRouterGroup.ResourceGroup.GET("/users/:username", h.FediverseHandler.GetActor)
 
 	// // Inbox (接收 ActivityPub 消息)
 	// appRouterGroup.PublicRouterGroup.POST("/users/:username/inbox", h.ActivityPubHandler.PostInbox())

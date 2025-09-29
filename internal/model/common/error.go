@@ -69,3 +69,9 @@ const (
 const (
 	NO_SUCH_COMMENT_PROVIDER = "无效的评论服务提供者"
 )
+
+// Fediverse 错误相关常量
+const (
+	GET_ACTOR_ERROR = "获取 Actor 信息失败"
+	ACTIVEPUB_NOT_ENABLED = "ActivityPub 未启用"
+)
