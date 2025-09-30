@@ -20,4 +20,7 @@ type FediverseHandlerInterface interface {
 
 	// GetFollowing 获取关注列表
 	GetFollowing(ctx *gin.Context)
+
+	// GetObject 获取内容对象
+	GetObject(ctx *gin.Context)
 }

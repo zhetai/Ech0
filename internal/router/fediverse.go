@@ -21,6 +21,6 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Following list
 	appRouterGroup.PublicRouterGroup.GET("/users/:username/following", h.FediverseHandler.GetFollowing)
 
-	// // Objects (内容对象访问)
-	// appRouterGroup.PublicRouterGroup.GET("/objects/:id", h.ActivityPubHandler.GetObject())
+	// Objects (内容对象访问)
+	appRouterGroup.PublicRouterGroup.GET("/objects/:id", h.FediverseHandler.GetObject)
 }

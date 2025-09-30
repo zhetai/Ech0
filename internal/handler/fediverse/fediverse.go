@@ -234,3 +234,39 @@ func (h *FediverseHandler) GetFollowing(ctx *gin.Context) {
 	// 返回关注列表
 	ctx.JSON(http.StatusOK, following)
 }
+
+// GetObject 获取内容对象
+func (h *FediverseHandler) GetObject(ctx *gin.Context) {
+	// 从 URL 参数中获取对象 ID
+	id := ctx.Param("id")
+
+	// 将 ID 转换为 uint
+	uintID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, model.ActivityPubError{
+			Context: "https://www.w3.org/ns/activitystreams",
+			Type:    "Error",
+			Error:   "Invalid object ID",
+			Status:  http.StatusBadRequest,
+		})
+		return
+	}
+
+	// 调用服务层获取对象信息
+	object, err := h.service.GetObjectByID(uint(uintID))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
+			Context: "https://www.w3.org/ns/activitystreams",
+			Type:    "Error",
+			Error:   err.Error(),
+			Status:  http.StatusInternalServerError,
+		})
+		return
+	}
+
+	// 设置 Content-Type 为 application/activity+json
+	ctx.Header("Content-Type", "application/activity+json")
+
+	// 返回对象信息
+	ctx.JSON(http.StatusOK, object)
+}
