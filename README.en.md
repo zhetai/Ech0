@@ -1,48 +1,63 @@
 <div align="right">
-  <img src="https://img.shields.io/badge/-English-F54A00?style=for-the-badge" alt="English" />
-  <a title="zh-CN" href="./README.md">  <img src="https://img.shields.io/badge/-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-545759?style=for-the-badge" alt="简体中文"></a>
+  <a title="en" href="./README.en.md"><img src="https://img.shields.io/badge/-English-545759?style=for-the-badge" alt="english"></a>
+  <img src="https://img.shields.io/badge/-简体中文-F54A00?style=for-the-badge" alt="简体中文">
 </div>
 
 <div align="center">
   <img alt="Ech0" src="./docs/imgs/logo.svg" width="150">
 
-  [Live Demo](https://memo.vaaat.com/) | [Official Website](https://echo.soopy.cn/) | [Official Docs](https://echodoc.soopy.cn/) | [Ech0 Hub](https://echohub.soopy.cn/)
+  [Preview](https://memo.vaaat.com/) | [Official Site](https://echo.soopy.cn/) | [Documentation](https://echodoc.soopy.cn/) | [Ech0 Hub](https://echohub.soopy.cn/)
 
   # Ech0
 </div>
 
-> Open source, self-hosted, lightweight publishing platform focused on the flow of ideas
+<div align="center">
 
-Ech0 is a lightweight, self-hosted platform designed for quick sharing of your ideas, texts, and links. With an intuitive interface, you can easily manage your content, ensuring complete data control and seamless connection with the world anytime, anywhere.
+[![GitHub release](https://img.shields.io/github/v/release/lin-snow/Ech0)](https://github.com/lin-snow/Ech0/releases) ![License](https://img.shields.io/github/license/lin-snow/Ech0) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lin-snow/Ech0)
 
-![Screenshot](./docs/imgs/screenshot_mockup.png)
+</div>
+
+> Open-source, self-hosted, lightweight platform for idea sharing
+
+Ech0 is an open-source, self-hosted platform designed for lightweight sharing, allowing you to quickly post and share your thoughts, writings, and links. With a simple and intuitive interface, managing your content becomes effortless, giving you full control over your data while staying connected to the world anytime, anywhere.
+
+![Interface Preview](./docs/imgs/screenshot_mockup.png)
 
 ---
 
-## Core Features
+## Core Advantages
 
-☁️ **Atomic Lightweight**: Uses less than **15MB** RAM, image size under **40MB**, stores data in a single SQLite file  
-🚀 **Fast Deployment**: No configuration needed, just one command from install to use  
-✍️ **Distraction-Free Writing**: Clean online Markdown editor, **supports rich Markdown plugins and preview**  
-📦 **Data Sovereignty**: All content stored locally in SQLite, supports RSS subscription  
-🎉 **Free Forever**: Open-sourced under the AGPL-3.0 license, no tracking / subscription / service dependency  
-🌍 **Cross-Platform**: Fully responsive across mobile, tablet, and desktop browsers  
-👾 **PWA Support**: Can be installed as a web app  
-📝 **Built-in Todo Manager**: Easily manage daily tasks and track progress efficiently  
-🔗 **Ech0 Connect**: Brand-new content aggregation and interconnection system; supports federation, content subscription and sync across multiple instances  
-🎵 **Seamless Music Integration**: Lightweight music player with local audio parsing, immersive background playback and focus mode  
-🎥 **Instant Video Sharing**: Native Bilibili/YouTube video parsing  
-🃏 **Rich Shortcut Cards**: One-click sharing of rich media like website links, GitHub repos, etc. for vivid display  
-⚙️ **Advanced Customization**: Power users can customize styles and scripts for expressive sharing
+☁️ **Ultra Lightweight**: Memory usage under **15MB**, image size under **45MB**, single SQLite file storage  
+🚀 **Blazing Fast Deployment**: No configuration needed, install and use with just one command  
+🧰 **Command-line Power**: Built-in high-availability CLI tools, support one-click backup, restore, and export  
+📟 **TUI Friendly**: Terminal-friendly interactive interface, easily manage Ech0 from TUI  
+✍️ **Distraction-Free Writing**: Clean online Markdown editor with rich plugin support and live preview  
+📦 **Data Ownership**: All content stored locally in SQLite, with RSS feed support  
+🔐 **Secure Backup**: One-click export/backup via Web, TUI, or CLI  
+♻️ **Seamless Restore**: Restore any backup via TUI or CLI, ensuring data safety  
+🎉 **Completely Free**: Open-source under AGPL-3.0, no tracking, subscription, or dependency  
+🌍 **Cross-Device Compatible**: Fully responsive on desktop, tablet, and mobile  
+👾 **PWA Support**: Can be installed as a Web App  
+☁️ **S3 Storage Support**: Native integration with S3-compatible object storage for local or cloud backups  
+🌐 **ActivityPub Federation**: Native ActivityPub support for interoperability with Mastodon, Misskey, Pleroma, etc.  
+📝 **Built-in Todo Management**: Record and track daily tasks efficiently  
+🔗 **Ech0 Connect**: Cross-instance content aggregation, subscription, and synchronization  
+🎵 **Music Integration**: Lightweight audio player for local streaming and immersive background music  
+🎥 **Video Sharing**: Native support for Bilibili/YouTube smart parsing  
+🃏 **Rich Card Support**: Share website links, GitHub projects, and other media-rich content  
+⚙️ **Advanced Customization**: Custom styles and scripts for enhanced content presentation  
+💬 **Comment System**: Integrate Twikoo for lightweight interaction and feedback  
+💻 **Cross-Platform**: Native support for Windows, Linux, and ARM devices like Raspberry Pi  
+🔗 **Official Ech0 Hub Integration**: Submit content to the Ech0 Hub ecosystem easily  
+🌐 **Self-Hosted Ech0 Hub**: Use your Connect list as a content source  
+📦 **Self-contained Binary**: Full frontend resources included, single binary file ready to run  
+🔗 **Rich API Support**: Open API available for integration with other systems  
+🃏 **Content Display**: Supports X (Twitter)-style card display with social interactions  
+👤 **Multi-user and Permissions**: Flexible account and permission management for secure access
 
 ---
 
 ## 3-Second Quick Deployment
-
-<!-- ### 🧙 One-Click Script Deployment (Recommended)
-```shell
-curl -fsSL "http://echo.soopy.cn/install.sh" -o install_ech0.sh && bash install_ech0.sh
-``` -->
 
 ### 🐳 Docker Deployment (Recommended)
 
@@ -50,21 +65,22 @@ curl -fsSL "http://echo.soopy.cn/install.sh" -o install_ech0.sh && bash install_
 docker run -d \
   --name ech0 \
   -p 6277:6277 \
+  -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
-  -e JWT_SECRET="Hello Echos!" \
+  -v /opt/ech0/backup:/app/backup \
+  -e JWT_SECRET="Hello Echos" \
   sn0wl1n/ech0:latest
 ```
 
-> 💡 After deployment, visit `ip:6277` to use
-> 🚷 It is recommended to change `"Hello Echos!"` in `JWT_SECRET` for better security
-> 📍 The first registered account becomes the administrator (currently only admins can publish content)
-> 🎈 Data is stored under `/opt/ech0/data`
+> 💡 After deployment, access `ip:6277` to use  
+> 🚷 It is recommended to change `JWT_SECRET="Hello Echos"` to a secure secret  
+> 📍 The first registered user will be set as administrator  
+> 🎈 Data stored under `/opt/ech0/data`
 
 ### 🐋 Docker Compose Deployment
 
-Create a new directory and put the `docker-compose.yml` file inside it.
-
-Then run the following command in that directory:
+1. Create a new directory and place `docker-compose.yml` inside.  
+2. Run:
 
 ```shell
 docker-compose up -d
@@ -74,170 +90,149 @@ docker-compose up -d
 
 ## How to Update
 
-### 🔄 Update with Docker
+### 🔄 Docker Update
 
 ```shell
-# Stop the current container
 docker stop ech0
-
-# Remove the container
 docker rm ech0
-
-# Pull the latest image
 docker pull sn0wl1n/ech0:latest
-
-# Run the updated container
 docker run -d \
   --name ech0 \
   -p 6277:6277 \
+  -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
+  -v /opt/ech0/backup:/app/backup \
   -e JWT_SECRET="Hello Echos" \
   sn0wl1n/ech0:latest
 ```
 
-### 💎 Update with Docker Compose
+### 💎 Docker Compose Update
 
 ```shell
-# Go to the compose file directory
 cd /path/to/compose
-
-# Pull latest image and restart
 docker-compose pull && \
 docker-compose up -d --force-recreate
-
-# Clean old images
 docker image prune -f
 ```
 
 ---
 
-# ❓ FAQ
+## TUI Mode
 
-1. **What is Ech0?**
-   Ech0 is a lightweight open-source self-hosted platform designed for quick idea sharing. It provides a clean interface and distraction-free writing, with all data stored locally for full control.
+![TUI Mode](./docs/imgs/tui.png)
 
-2. **What is Ech0 not?**
-   Ech0 is not a traditional note-taking tool (like Obsidian or Notion). It functions more like a personal feed or “status update” platform.
-
-3. **Is Ech0 free?**
-   Yes, Ech0 is completely free and open-source under the AGPL-3.0 License. No ads, no tracking, no subscriptions, and no service dependencies.
-
-4. **How to back up and restore data?**
-   All content is stored in a local SQLite file. Simply back up the `/opt/ech0/data` directory. To restore, just copy the backup files back.
-
-5. **Does Ech0 support RSS?**
-   Yes, Ech0 supports RSS subscriptions for content updates.
-
-6. **Why do I get a "contact admin" error when publishing?**
-   Only administrators can publish content. The first registered user becomes the admin. Assign admin rights to others via the settings.
-
-7. **Why isn’t there a full permission system?**
-   Ech0 is designed to be simple and lightweight, avoiding complexity in permission management. Only admin vs non-admin roles exist for now. Simplicity over complexity.
-
-8. **Why can’t others see my Connect avatar?**
-   Make sure you set the `Instance URL` under `System Settings` to your deployment domain, e.g., `https://memo.vaaat.com`. It must include `http` or `https`.
-
-9. **What is the MetingAPI setting for?**
-   This API is used to fetch streaming music links for the music card feature. If unset, the default hosted version will be used (deployed via Vercel).
-
-10. **Why do some Connect entries not show?**
-    The backend fetches data from all connected instances. If one is down or unreachable, it will be excluded from results.
-
-11. **What content is not recommended for Ech0?**
-   Ech0 published content consists of three parts: text, images, and extended content (such as music, video player cards). Ech0 does not recommend publishing dense content that simultaneously includes `text + images + extended content`, as this violates some of Ech0's design principles. Additionally, publishing extended content or lengthy articles is not recommended at any time.
-
-12. **How do I enable the comment feature?**  
-   Go to the settings page and enter your deployed Twikoo backend address in the `Comment API` field to enable comments automatically. Currently, only [Twikoo](https://twikoo.js.org/) is supported.
+1. Run the binary directly (e.g., Windows: double-click `Ech0.exe`)
 
 ---
 
-# 📢 Feedback & Contributions
+## SSH Mode
 
-If you encounter bugs, please report them via [issues](https://github.com/lin-snow/Ech0/issues). For new feature suggestions or improvements, join the discussion in [discussions](https://github.com/lin-snow/Ech0/discussions).
-
----
-
-# 🪅 Project Architecture
-
-![Architecture Diagram](./docs/imgs/Ech0技术架构图.svg)
-
-> by Excalidraw
-
----
-
-# 🛠️ Development
-
-## **Backend Requirements:**
-
-📌 **Go 1.25.1+**
-
-📌 **C Compiler**
-Required for libraries like `go-sqlite3` that use CGO:
-
-* Windows:
-
-  * [MinGW-w64](https://winlibs.com/)
-  * Add `bin` folder to PATH
-* macOS: `brew install gcc`
-* Linux: `sudo apt install build-essential`
-
-📌 **Google Wire**
-Install [wire](https://github.com/google/wire) for dependency injection code generation:
-
-* `go install github.com/google/wire/cmd/wire@latest`
-
-📌 **Golangci-Lint**  
-Install [Golangci-Lint](https://golangci-lint.run/) for linting and formatting:  
-- Run `golangci-lint run` in the project root directory for linting  
-- Run `golangci-lint fmt` in the project root directory for formatting  
-
-## **Frontend Requirements:**
-
-📌  **NodeJS v24.5.0, PNPM v10.17.1**
-
-> Tip: Use [fnm](https://github.com/Schniz/fnm) for managing multiple Node versions.
-
----
-
-## **Start Frontend & Backend Together**
-
-**Step 1: Backend (in Ech0 root directory):**
+1. Connect to the instance via port 6278:
 
 ```shell
-go run cmd/ech0/main.go # Compile and start backend
+ssh -p 6278 ssh.vaaat.com
 ```
 
-> If DI has changed, regenerate `wire_gen.go` in `ech0/internal/di/` using `wire` command.
+---
 
-**Step 2: Frontend (new terminal):**
+## ❓ FAQ
 
+1. **What is Ech0?**  
+   A lightweight, open-source self-hosted platform for quickly sharing thoughts, writings, and links. All content is locally stored.  
+
+2. **What Ech0 is NOT?**  
+   Not a professional note-taking app like Obsidian or Notion; its core function is similar to social feed/microblog.  
+
+3. **Is Ech0 free?**  
+   Yes, fully free and open-source under AGPL-3.0, no ads, tracking, subscription, or service dependency.  
+
+4. **How to backup and restore?**  
+   Backup `/opt/ech0/data` (mapped directory). Restore by replacing files.  
+
+5. **Does Ech0 support RSS?**  
+   Yes, content updates can be subscribed via RSS.  
+
+6. **Why can't I publish content?**  
+   Only administrators can publish. First registered user is admin.  
+
+7. **Why no detailed permission system?**  
+   Ech0 emphasizes simplicity: admin vs non-admin only, for smooth experience.  
+
+8. **Why Connect avatars may not show?**  
+   Set your instance URL in `System Settings - Service URL` (with `http://` or `https://`).  
+
+9. **What is MetingAPI?**  
+   Used to parse music streaming URLs for music cards. If empty, default API provided by Ech0 is used.  
+
+10. **Why not all Connect items show?**  
+    Instances that are offline or unreachable are ignored; only valid instances are displayed.  
+
+11. **What content is not recommended?**  
+    Avoid publishing dense content mixing text + images + extension cards. Long posts or extension cards alone are okay.  
+
+12. **How to enable comments?**  
+    Set up Twikoo backend URL in settings. Only Twikoo is supported.  
+
+13. **How to configure S3?**  
+    Fill in endpoint (without http/https) and bucket with public access.
+
+---
+
+## 📢 Feedback & Improvements
+
+Report bugs in [issues](https://github.com/lin-snow/Ech0/issues), feature requests in [discussions](https://github.com/lin-snow/Ech0/discussions).
+
+---
+
+## 🪅 Architecture
+
+![Architecture Diagram](./docs/imgs/Ech0技术架构图.svg)  
+> by ExcaliDraw
+
+---
+
+## 🛠️ Development
+
+### Backend Requirements
+- Go 1.25.1+  
+- C Compiler for CGO (`go-sqlite3`):
+  - Windows: [MinGW-w64](https://winlibs.com/)  
+  - macOS: `brew install gcc`  
+  - Linux: `sudo apt install build-essential`  
+- Google Wire: `go install github.com/google/wire/cmd/wire@latest`  
+- Golangci-Lint: `golangci-lint run` / `golangci-lint fmt`  
+- Swagger: `swag init -g internal/server/server.go -o internal/swagger`  
+
+### Frontend Requirements
+- NodeJS v24.5.0+, PNPM v10.17.1+  
+- Use [fnm](https://github.com/Schniz/fnm) if multiple Node versions needed
+
+### Start Backend & Frontend
 ```shell
-cd web # Enter frontend folder
+# Backend
+go run cmd/ech0/main.go
 
-pnpm install # Run if dependencies are not installed
-
-pnpm dev # Start frontend preview
+# Frontend
+cd web
+pnpm install
+pnpm dev
 ```
 
-**Step 3: Access:**
-Frontend: [http://localhost:5173](http://localhost:5173)
-Backend: [http://localhost:6277](http://localhost:6277) (default)
+Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
 
 ---
 
-# 🥰 Acknowledgements
+## 🥰 Acknowledgements
 
-* Thanks to [Gin](https://github.com/gin-gonic/gin) for a high-performance backend framework
-* Thanks to [Md-Editor-V3](https://github.com/imzbf/md-editor-v3) for an amazing Markdown editor
-* Thanks to [Figma](https://www.figma.com/) for an easy-to-use design tool
-* Thanks to [VSCode](https://code.visualstudio.com/) and [Jetbrain GoLand](https://www.jetbrains.com/) for excellent developer tools
-* Thanks to community users for valuable feedback and improvements
-* Thanks to my roommate for designing the initial logo
-* Thanks to all contributors and supporters from the open-source community
+- [Gin](https://github.com/gin-gonic/gin)  
+- [Md-Editor-V3](https://github.com/imzbf/md-editor-v3)  
+- [Figma](https://www.figma.com/)  
+- [VSCode](https://code.visualstudio.com/) & [GoLand](https://www.jetbrains.com/go/)  
+- Open-source community contributors
 
 ---
 
-# ✨ growth of Star
+## ✨ Star History
 
 <a href="https://www.star-history.com/#lin-snow/Ech0&Timeline">
  <picture>
@@ -249,24 +244,24 @@ Backend: [http://localhost:6277](http://localhost:6277) (default)
 
 ---
 
-# ☕ Support
+## ☕ Support
 
-🌟 If you like **Ech0**, feel free to star the project! 🚀
+🌟 If you like **Ech0**, please give it a Star! 🚀  
+Ech0 is completely free and open-source. Support helps the project continue improving.  
 
-Ech0 is fully open-source and free. Maintaining and improving it requires community support. If this project helped you, consider donating to support its development. Every bit of encouragement fuels our progress!
-Donate via the QR code and leave your GitHub name as a note—you'll be acknowledged in the main `README.md`.
-
-|                  Platform                  |                         QR Code                        |
-| :----------------------------------------: | :----------------------------------------------------: |
+| Platform | QR Code |
+| :------: | :------ |
 | [**Afdian**](https://afdian.com/a/l1nsn0w) | <img src="./docs/imgs/pay.jpeg" alt="Pay" width="200"> |
 
 ---
 
-```golang
+```cpp
+
 ███████╗     ██████╗    ██╗  ██╗     ██████╗ 
 ██╔════╝    ██╔════╝    ██║  ██║    ██╔═████╗
 █████╗      ██║         ███████║    ██║██╔██║
 ██╔══╝      ██║         ██╔══██║    ████╔╝██║
 ███████╗    ╚██████╗    ██║  ██║    ╚██████╔╝
 ╚══════╝     ╚═════╝    ╚═╝  ╚═╝     ╚═════╝ 
+
 ``` 
