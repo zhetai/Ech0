@@ -62,6 +62,11 @@ func (settingService *SettingService) GetSetting(setting *model.SystemSetting) e
 				return err
 			}
 
+			// 处理 ServerURL
+			if err := settingService.keyvalueRepository.AddKeyValue(ctx, commonModel.ServerURLKey, setting.ServerURL); err != nil {
+				return err
+			}
+
 			return nil
 		}
 
@@ -103,6 +108,11 @@ func (settingService *SettingService) UpdateSetting(userid uint, newSetting *mod
 		// 将字节切片转换为字符串
 		settingToJSONString := string(settingToJSON)
 		if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.SystemSettingsKey, settingToJSONString); err != nil {
+			return err
+		}
+
+		// 更新 ServerURL
+		if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.ServerURLKey, setting.ServerURL); err != nil {
 			return err
 		}
 
