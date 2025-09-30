@@ -25,41 +25,69 @@ Ech0 is an open-source, self-hosted platform designed for lightweight sharing, a
 
 ---
 
-## Core Advantages
+<details>
+   <summary><strong>Table of Contents</strong></summary>
 
-☁️ **Ultra Lightweight**: Memory usage under **15MB**, image size under **45MB**, single SQLite file storage  
-🚀 **Blazing Fast Deployment**: No configuration needed, install and use with just one command  
-🧰 **Command-line Power**: Built-in high-availability CLI tools, support one-click backup, restore, and export  
-📟 **TUI Friendly**: Terminal-friendly interactive interface, easily manage Ech0 from TUI  
-✍️ **Distraction-Free Writing**: Clean online Markdown editor with rich plugin support and live preview  
-📦 **Data Ownership**: All content stored locally in SQLite, with RSS feed support  
-🔐 **Secure Backup**: One-click export/backup via Web, TUI, or CLI  
-♻️ **Seamless Restore**: Restore any backup via TUI or CLI, ensuring data safety  
-🎉 **Completely Free**: Open-source under AGPL-3.0, no tracking, subscription, or dependency  
-🌍 **Cross-Device Compatible**: Fully responsive on desktop, tablet, and mobile  
-👾 **PWA Support**: Can be installed as a Web App  
-☁️ **S3 Storage Support**: Native integration with S3-compatible object storage for local or cloud backups  
-🌐 **ActivityPub Federation**: Native ActivityPub support for interoperability with Mastodon, Misskey, Pleroma, etc.  
-📝 **Built-in Todo Management**: Record and track daily tasks efficiently  
-🔗 **Ech0 Connect**: Cross-instance content aggregation, subscription, and synchronization  
-🎵 **Music Integration**: Lightweight audio player for local streaming and immersive background music  
-🎥 **Video Sharing**: Native support for Bilibili/YouTube smart parsing  
-🃏 **Rich Card Support**: Share website links, GitHub projects, and other media-rich content  
-⚙️ **Advanced Customization**: Custom styles and scripts for enhanced content presentation  
-💬 **Comment System**: Integrate Twikoo for lightweight interaction and feedback  
-💻 **Cross-Platform**: Native support for Windows, Linux, and ARM devices like Raspberry Pi  
-🔗 **Official Ech0 Hub Integration**: Submit content to the Ech0 Hub ecosystem easily  
-🌐 **Self-Hosted Ech0 Hub**: Use your Connect list as a content source  
-📦 **Self-contained Binary**: Full frontend resources included, single binary file ready to run  
-🔗 **Rich API Support**: Open API available for integration with other systems  
-🃏 **Content Display**: Supports X (Twitter)-style card display with social interactions  
-👤 **Multi-user and Permissions**: Flexible account and permission management for secure access
+- [Ech0](#ech0)
+  - [Highlights](#highlights)
+  - [Quick Deployment](#quick-deployment)
+    - [🐳 Docker (Recommended)](#-docker-recommended)
+    - [🐋 Docker Compose](#-docker-compose)
+  - [Upgrading](#upgrading)
+    - [🔄 Docker](#-docker)
+    - [💎 Docker Compose](#-docker-compose-1)
+  - [Access Modes](#access-modes)
+    - [🖥️ TUI Mode](#️-tui-mode)
+    - [🔐 SSH Mode](#-ssh-mode)
+  - [FAQ](#faq)
+  - [Feedback \& Community](#feedback--community)
+  - [Architecture](#architecture)
+  - [Development Guide](#development-guide)
+    - [Backend Requirements](#backend-requirements)
+    - [Frontend Requirements](#frontend-requirements)
+    - [Start Backend \& Frontend](#start-backend--frontend)
+  - [Acknowledgements](#acknowledgements)
+  - [Star History](#star-history)
+  - [Support](#support)
+</details>
 
 ---
 
-## 3-Second Quick Deployment
+## Highlights
 
-### 🐳 Docker Deployment (Recommended)
+- ☁️ **Ultra Lightweight** — Memory usage under **15MB**, image size under **45MB**, single SQLite file storage.
+- 🚀 **Blazing Fast Deployment** — No configuration needed, install and use with just one command.
+- 🧰 **Command-line Power** — Built-in high-availability CLI tools that support one-click backup, restore, and export.
+- 📟 **TUI Friendly** — Terminal-friendly interactive interface to manage Ech0 from the TUI.
+- ✍️ **Distraction-Free Writing** — Clean online Markdown editor with rich plugin support and live preview.
+- 📦 **Data Ownership** — All content stored locally in SQLite, with RSS feed support.
+- 🔐 **Secure Backup** — One-click export/backup via Web, TUI, or CLI.
+- ♻️ **Seamless Restore** — Restore any backup via TUI or CLI to ensure data safety.
+- 🎉 **Completely Free** — Open-source under AGPL-3.0 with no tracking, subscription, or dependency.
+- 🌍 **Cross-Device Compatible** — Fully responsive on desktop, tablet, and mobile.
+- 👾 **PWA Support** — Can be installed as a Web App.
+- ☁️ **S3 Storage Support** — Native integration with S3-compatible object storage for local or cloud backups.
+- 🌐 **ActivityPub Federation** — Native ActivityPub support for interoperability with Mastodon, Misskey, Pleroma, etc.
+- 📝 **Built-in Todo Management** — Record and track daily tasks efficiently.
+- 🔗 **Ech0 Connect** — Cross-instance content aggregation, subscription, and synchronization.
+- 🎵 **Music Integration** — Lightweight audio player for local streaming and immersive background music.
+- 🎥 **Video Sharing** — Native support for Bilibili/YouTube smart parsing.
+- 🃏 **Rich Card Support** — Share website links, GitHub projects, and other media-rich content.
+- ⚙️ **Advanced Customization** — Custom styles and scripts for enhanced content presentation.
+- 💬 **Comment System** — Integrate Twikoo for lightweight interaction and feedback.
+- 💻 **Cross-Platform** — Native support for Windows, Linux, and ARM devices like Raspberry Pi.
+- 🔗 **Official Ech0 Hub Integration** — Submit content to the Ech0 Hub ecosystem easily.
+- 🌐 **Self-Hosted Ech0 Hub** — Use your Connect list as a content source.
+- 📦 **Self-contained Binary** — Full frontend resources included, single binary file ready to run.
+- 🔗 **Rich API Support** — Open API available for integration with other systems.
+- 🃏 **Content Display** — Supports X (Twitter)-style card display with social interactions.
+- 👤 **Multi-user and Permissions** — Flexible account and permission management for secure access.
+
+---
+
+## Quick Deployment
+
+### 🐳 Docker (Recommended)
 
 ```shell
 docker run -d \
@@ -77,7 +105,7 @@ docker run -d \
 > 📍 The first registered user will be set as administrator  
 > 🎈 Data stored under `/opt/ech0/data`
 
-### 🐋 Docker Compose Deployment
+### 🐋 Docker Compose
 
 1. Create a new directory and place `docker-compose.yml` inside.  
 2. Run:
@@ -88,9 +116,9 @@ docker-compose up -d
 
 ---
 
-## How to Update
+## Upgrading
 
-### 🔄 Docker Update
+### 🔄 Docker
 
 ```shell
 docker stop ech0
@@ -106,7 +134,7 @@ docker run -d \
   sn0wl1n/ech0:latest
 ```
 
-### 💎 Docker Compose Update
+### 💎 Docker Compose
 
 ```shell
 cd /path/to/compose
@@ -117,17 +145,17 @@ docker image prune -f
 
 ---
 
-## TUI Mode
+## Access Modes
+
+### 🖥️ TUI Mode
 
 ![TUI Mode](./docs/imgs/tui.png)
 
-1. Run the binary directly (e.g., Windows: double-click `Ech0.exe`)
+Run the binary directly (for example, on Windows double-click `Ech0.exe`).
 
----
+### 🔐 SSH Mode
 
-## SSH Mode
-
-1. Connect to the instance via port 6278:
+Connect to the instance via port 6278:
 
 ```shell
 ssh -p 6278 ssh.vaaat.com
@@ -135,7 +163,7 @@ ssh -p 6278 ssh.vaaat.com
 
 ---
 
-## ❓ FAQ
+## FAQ
 
 1. **What is Ech0?**  
    A lightweight, open-source self-hosted platform for quickly sharing thoughts, writings, and links. All content is locally stored.  
@@ -178,20 +206,21 @@ ssh -p 6278 ssh.vaaat.com
 
 ---
 
-## 📢 Feedback & Improvements
+## Feedback & Community
 
-Report bugs in [issues](https://github.com/lin-snow/Ech0/issues), feature requests in [discussions](https://github.com/lin-snow/Ech0/discussions).
+- Report bugs via [Issues](https://github.com/lin-snow/Ech0/issues).
+- Propose features or share ideas in [Discussions](https://github.com/lin-snow/Ech0/discussions).
 
 ---
 
-## 🪅 Architecture
+## Architecture
 
 ![Architecture Diagram](./docs/imgs/Ech0技术架构图.svg)  
 > by ExcaliDraw
 
 ---
 
-## 🛠️ Development
+## Development Guide
 
 ### Backend Requirements
 - Go 1.25.1+  
@@ -220,9 +249,11 @@ pnpm dev
 
 Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
 
+> When importing layered packages, prefer consistent aliases such as `xxxModel`, `xxxService`, `xxxRepository`, and so on.
+
 ---
 
-## 🥰 Acknowledgements
+## Acknowledgements
 
 - [Gin](https://github.com/gin-gonic/gin)  
 - [Md-Editor-V3](https://github.com/imzbf/md-editor-v3)  
@@ -232,7 +263,7 @@ Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
 
 ---
 
-## ✨ Star History
+## Star History
 
 <a href="https://www.star-history.com/#lin-snow/Ech0&Timeline">
  <picture>
@@ -244,7 +275,7 @@ Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
 
 ---
 
-## ☕ Support
+## Support
 
 🌟 If you like **Ech0**, please give it a Star! 🚀  
 Ech0 is completely free and open-source. Support helps the project continue improving.  
