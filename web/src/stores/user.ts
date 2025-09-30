@@ -5,6 +5,7 @@ import { saveAuthToken } from '@/service/request/shared'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
 import { useRouter } from 'vue-router'
+import { useEchoStore } from './echo'
 
 export const useUserStore = defineStore('userStore', () => {
   /**
@@ -31,6 +32,12 @@ export const useUserStore = defineStore('userStore', () => {
 
         // 登录成功
         theToast.success('登录成功')
+
+        // 清除echo数据
+        const echoStore = useEchoStore()
+        echoStore.clearEchos()
+
+        // 跳转到首页
         router.push({ name: 'home' })
       }
     })
@@ -55,6 +62,10 @@ export const useUserStore = defineStore('userStore', () => {
     // 清除token
     localStg.removeItem('token')
     user.value = null
+
+    // 清除echo数据
+    const echoStore = useEchoStore()
+    echoStore.clearEchos()
 
     // 重新登录
     router.push({ name: 'auth' })

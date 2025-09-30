@@ -68,6 +68,14 @@ export const useEchoStore = defineStore('echoStore', () => {
     getEchosByPage()
   }
 
+  const clearEchos = () => {
+    current.value = 1
+    page.value = 0
+    echoList.value = []
+    echoMap.value.clear()
+    total.value = 0
+  }
+
   const refreshForSearch = () => {
     current.value = 1
     page.value = 0
@@ -90,6 +98,7 @@ export const useEchoStore = defineStore('echoStore', () => {
     isUpdateMode,
     getEchosByPage,
     refreshEchos,
+    clearEchos,
     refreshForSearch,
   }
 })
