@@ -66,8 +66,8 @@ const handleBackupExport = async () => {
 
     // 1. 获取 token
     const token = localStorage.getItem('token')
-
-    const downloadUrl = `/api/backup/export?token=${token}`
+    const baseURL = import.meta.env.VITE_SERVICE_BASE_URL || ''
+    const downloadUrl = `${baseURL}/api/backup/export?token=${token}`
 
     // 创建隐藏的 a 标签触发下载
     const link = document.createElement('a')
