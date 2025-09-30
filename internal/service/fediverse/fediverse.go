@@ -252,16 +252,16 @@ func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.
 	activity := model.Activity{
 		ActivityID: activityID,
 		Type:       model.ActivityTypeCreate,
-		ActorID: actor.ID,
-		ActorURL: actor.ID,
-		ObjectID: obj.ObjectID,
+		ActorID:    actor.ID,
+		ActorURL:   actor.ID,
+		ObjectID:   obj.ObjectID,
 		ObjectType: obj.Type,
-		Published: echo.CreatedAt,
-		To: obj.To,
-		Cc: []string{},
-		Summary: "",
-		Delivered: false,
-		CreatedAt: time.Now(),
+		Published:  echo.CreatedAt,
+		To:         obj.To,
+		Cc:         []string{},
+		Summary:    "",
+		Delivered:  false,
+		CreatedAt:  time.Now(),
 	}
 
 	activityJSON, _ := json.Marshal(activity)
@@ -279,13 +279,13 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 			URL:       fileUtil.GetImageURL(echo.Images[i], serverURL),
 		})
 	}
-	
+
 	return model.Object{
-		ObjectID: fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
-		Type:     "Note",
-		Content: echo.Content,
+		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
+		Type:         "Note",
+		Content:      echo.Content,
 		AttributedTo: fmt.Sprintf("%s/users/%s", serverURL, echo.Username),
-		Published:   echo.CreatedAt,
+		Published:    echo.CreatedAt,
 		To: []string{
 			"https://www.w3.org/ns/activitystreams#Public",
 		},
@@ -310,14 +310,13 @@ func (fediverseService *FediverseService) GetFollowers(username string) (model.F
 	for _, follower := range followers {
 		followerURLs = append(followerURLs, follower.ActorID)
 	}
-	
 
 	return model.FollowersResponse{
-		Context: "https://www.w3.org/ns/activitystreams",
-		ID:      "",
-		Type:    "OrderedCollection",
-		TotalItems: 0,
-		First:   "",
+		Context:      "https://www.w3.org/ns/activitystreams",
+		ID:           "",
+		Type:         "OrderedCollection",
+		TotalItems:   0,
+		First:        "",
 		OrderedItems: followerURLs,
 	}, nil
 }

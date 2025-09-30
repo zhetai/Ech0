@@ -72,7 +72,6 @@ func (webHandler *WebHandler) Templates() gin.HandlerFunc {
 			}
 		}
 
-
 		ctx.Header("Content-Type", getMimeType(fullPath))
 		http.ServeContent(ctx.Writer, ctx.Request, fullPath, stat.ModTime(), f)
 	}

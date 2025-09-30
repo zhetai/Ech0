@@ -75,7 +75,6 @@ func SendRequest(url, method string, customHeader Header, timeout ...time.Durati
 	return body, nil
 }
 
-
 // GetMIMETypeFromFilenameOrURL 根据文件名或 URL 获取 MIME 类型
 func GetMIMETypeFromFilenameOrURL(filenameOrURL string) string {
 	lowerFilename := strings.ToLower(filenameOrURL)

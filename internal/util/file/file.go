@@ -344,4 +344,4 @@ func GetImageURL(image echoModel.Image, serverURL string) string {
 	default:
 		return fmt.Sprintf("%s/images/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
 	}
-} 
+}
