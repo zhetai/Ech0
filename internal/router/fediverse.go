@@ -12,11 +12,11 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Inbox (接收 ActivityPub 消息)
 	appRouterGroup.PublicRouterGroup.POST("/users/:username/inbox", h.FediverseHandler.PostInbox)
 
-	// // Outbox (发布消息)
+	// Outbox (发布消息)
 	appRouterGroup.PublicRouterGroup.GET("/users/:username/outbox", h.FediverseHandler.GetOutbox)
 
-	// // Followers list
-	// appRouterGroup.PublicRouterGroup.GET("/users/:username/followers", h.ActivityPubHandler.GetFollowers())
+	// Followers list
+	appRouterGroup.PublicRouterGroup.GET("/users/:username/followers", h.FediverseHandler.GetFollowers)
 
 	// // Following list
 	// appRouterGroup.PublicRouterGroup.GET("/users/:username/following", h.ActivityPubHandler.GetFollowing())

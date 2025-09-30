@@ -7,6 +7,10 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	httpUtil "github.com/lin-snow/ech0/internal/util/http"
+
+	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 )
 
 // ZipOptions ZIP 压缩选项
@@ -325,3 +329,19 @@ func cleanBackupDir(path string) error {
 
 	return nil
 }
+
+// GetImageURL 获取图片 URL 列表
+func GetImageURL(image echoModel.Image, serverURL string) string {
+	switch image.ImageSource {
+	case echoModel.ImageSourceLocal:
+		return fmt.Sprintf("%s/images/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
+	case echoModel.ImageSourceURL:
+		return image.ImageURL
+	case echoModel.ImageSourceS3:
+		return image.ImageURL
+	case echoModel.ImageSourceR2:
+		return image.ImageURL
+	default:
+		return fmt.Sprintf("%s/images/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
+	}
+} 

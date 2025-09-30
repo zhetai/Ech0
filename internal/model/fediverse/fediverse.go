@@ -54,6 +54,27 @@ type OutboxPage struct {
 	OrderedItems []Activity `json:"orderedItems"`
 }
 
+// FollowersResponse 跟 OutboxResponse 类似
+type FollowersResponse struct {
+	Context    any      `json:"@context"`
+	ID         string   `json:"id"`
+	Type       string   `json:"type"`        // "OrderedCollection"
+	TotalItems int      `json:"totalItems"`
+	First      string    `json:"first,omitempty"`
+	// 如果不分页，可以直接用
+	OrderedItems []string `json:"orderedItems,omitempty"` // 里面是 follower 的 Actor URL
+}
+
+// FollowersPage 如果你要分页的话
+type FollowersPage struct {
+	ID           string   `json:"id"`
+	Type         string   `json:"type"` // "OrderedCollectionPage"
+	PartOf       string   `json:"partOf"`
+	Next         string   `json:"next,omitempty"`
+	Prev         string   `json:"prev,omitempty"`
+	OrderedItems []string `json:"orderedItems"`
+}
+
 // ------------------ 数据库模型 --------------------
 
 type DeliveryStatus string
@@ -64,14 +85,22 @@ const (
 	DeliveryStatusFailed    DeliveryStatus = "failed"
 )
 
-// Activities 活动表 (面向外部的 ActivityPub 活动)
+// Activity 表示 ActivityPub 的 Activity
 type Activity struct {
-	ID           uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	ActorID      uint      `gorm:"index;not null" json:"actor_id"`
-	Type         string    `gorm:"size:64;not null" json:"type"` // Create, Follow, Like, Accept...
-	ActivityJSON string    `gorm:"type:text;not null" json:"activity_json"`
+	ID           uint      `gorm:"primaryKey;autoIncrement" json:"-"` // 数据库主键
+	ActivityID   string    `gorm:"size:512;unique;not null" json:"id"` // Activity URL
+	Type         string    `gorm:"size:64;not null" json:"type"`       // Create, Follow, Like, Accept...
+	ActorID      string    `gorm:"index;not null" json:"actor_id"`     // 关联的用户 ID
+	ActorURL     string    `gorm:"size:512;not null" json:"actor"`     // Actor URL
+	ObjectID     string    `gorm:"size:512;not null" json:"object"`    // 目标对象 URL
+	ObjectType   string    `gorm:"size:64;not null" json:"objectType"` // 目标对象类型
+	Published    time.Time `json:"published"`
+	To           []string  `gorm:"-" json:"to,omitempty"`               // 接收者列表，序列化存储
+	Cc           []string  `gorm:"-" json:"cc,omitempty"`               // 补充接收列表
+	Summary      string    `gorm:"type:text" json:"summary,omitempty"` // 可选描述
+	ActivityJSON string    `gorm:"type:text;not null" json:"activity_json"` // 原始 Activity JSON
+	Delivered    bool      `gorm:"default:false" json:"delivered"`     // 是否投递
 	CreatedAt    time.Time `gorm:"autoCreateTime" json:"created_at"`
-	Delivered    bool      `gorm:"default:false" json:"delivered"`
 }
 
 // OutboxItems 发件记录表 (记录哪些活动发给了哪些用户)
@@ -103,13 +132,39 @@ type DeliveryQueue struct {
 	Status         string    `gorm:"size:32;default:'pending'" json:"status"` // pending, delivered, failed
 }
 
-// Objects 内容对象表
+// Object 内容对象表 (存储 Note, Article, Image 等等)
 type Object struct {
-	ID         uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	ObjectID   string    `gorm:"size:512;unique;not null" json:"object_id"` // 全局唯一 URL
-	UserID     uint      `gorm:"index;not null" json:"user_id"`
-	ObjectJSON string    `gorm:"type:text;not null" json:"object_json"`
-	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
+	ID           uint      `gorm:"primaryKey;autoIncrement" json:"-"`
+	ObjectID     string    `gorm:"size:512;unique;not null" json:"id"`        // 全局唯一 URL
+	Type         string    `gorm:"size:64;not null" json:"type"`               // Note, Article, Image...
+	AttributedTo string    `gorm:"size:512" json:"attributedTo,omitempty"`    // actor URL
+	Content      string    `gorm:"type:text" json:"content,omitempty"` 	  // 主要内容
+	Attachments  []Attachment  `gorm:"-" json:"attachment,omitempty"`              // 附件 URL 列表，序列化存储
+	Published    time.Time `json:"published,omitempty"`
+	To           []string  `gorm:"-" json:"to,omitempty"`                      // 序列化成 JSON 存储
+	Cc           []string  `gorm:"-" json:"cc,omitempty"`                      // 同上
+	ObjectJSON   string    `gorm:"type:text" json:"object_json"`               // 完整 JSON，便于恢复
+	CreatedAt    time.Time `gorm:"autoCreateTime" json:"created_at"`
+}
+
+// Attachment 附件对象
+type Attachment struct {
+    Type      string   `json:"type"`                // "Image"、"Video" 等
+    MediaType string   `json:"mediaType"`           // MIME 类型
+    URL       string   `json:"url"`                 // 媒体 URL
+    Name      string   `json:"name,omitempty"`      // 媒体名称
+    Caption   string   `json:"caption,omitempty"`   // 媒体说明
+    Width     int      `json:"width,omitempty"`     // 宽度
+    Height    int      `json:"height,omitempty"`    // 高度
+    Duration  string   `json:"duration,omitempty"`  // 视频/音频时长
+    Preview   *Preview `json:"preview,omitempty"`   // 预览信息
+}
+
+// Preview 预览对象
+type Preview struct {
+    Type      string `json:"type"`
+    MediaType string `json:"mediaType"`
+    URL       string `json:"url"`
 }
 
 // ---------------- 常用数据模型 --------------------

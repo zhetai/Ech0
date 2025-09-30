@@ -74,3 +74,53 @@ func SendRequest(url, method string, customHeader Header, timeout ...time.Durati
 
 	return body, nil
 }
+
+
+// GetMIMETypeFromFilenameOrURL 根据文件名或 URL 获取 MIME 类型
+func GetMIMETypeFromFilenameOrURL(filenameOrURL string) string {
+	lowerFilename := strings.ToLower(filenameOrURL)
+	switch {
+	case strings.HasSuffix(lowerFilename, ".jpg"), strings.HasSuffix(lowerFilename, ".jpeg"):
+		return "image/jpeg"
+	case strings.HasSuffix(lowerFilename, ".png"):
+		return "image/png"
+	case strings.HasSuffix(lowerFilename, ".gif"):
+		return "image/gif"
+	case strings.HasSuffix(lowerFilename, ".bmp"):
+		return "image/bmp"
+	case strings.HasSuffix(lowerFilename, ".webp"):
+		return "image/webp"
+	case strings.HasSuffix(lowerFilename, ".mp4"):
+		return "video/mp4"
+	case strings.HasSuffix(lowerFilename, ".mov"):
+		return "video/quicktime"
+	case strings.HasSuffix(lowerFilename, ".mp3"):
+		return "audio/mpeg"
+	case strings.HasSuffix(lowerFilename, ".wav"):
+		return "audio/wav"
+	case strings.HasSuffix(lowerFilename, ".ogg"):
+		return "audio/ogg"
+	case strings.HasSuffix(lowerFilename, ".pdf"):
+		return "application/pdf"
+	case strings.HasSuffix(lowerFilename, ".doc"):
+		return "application/msword"
+	case strings.HasSuffix(lowerFilename, ".docx"):
+		return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+	case strings.HasSuffix(lowerFilename, ".xls"):
+		return "application/vnd.ms-excel"
+	case strings.HasSuffix(lowerFilename, ".xlsx"):
+		return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	case strings.HasSuffix(lowerFilename, ".ppt"):
+		return "application/vnd.ms-powerpoint"
+	case strings.HasSuffix(lowerFilename, ".pptx"):
+		return "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+	case strings.HasSuffix(lowerFilename, ".txt"):
+		return "text/plain"
+	case strings.HasSuffix(lowerFilename, ".html"), strings.HasSuffix(lowerFilename, ".htm"):
+		return "text/html"
+	case strings.HasSuffix(lowerFilename, ".csv"):
+		return "text/csv"
+	default:
+		return "application/octet-stream" // 默认二进制流
+	}
+}

@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -15,6 +17,7 @@ import (
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
 	echoService "github.com/lin-snow/ech0/internal/service/echo"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
+	fileUtil "github.com/lin-snow/ech0/internal/util/file"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -130,7 +133,7 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	}
 
 	// 获取 Actor和 setting
-	_, setting, err := fediverseService.BuildActor(&user)
+	actor, setting, err := fediverseService.BuildActor(&user)
 	if err != nil {
 		return model.OutboxPage{}, err
 	}
@@ -148,7 +151,7 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	// 转 Avtivity
 	var activities []model.Activity
 	for i := range echosByPage.Items {
-		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage.Items[i], nil))
+		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage.Items[i], &actor, serverURL))
 	}
 
 	// 拼装 OutboxPage
@@ -240,6 +243,57 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 	}, &setting, nil
 }
 
-func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor) model.Activity {
-	return model.Activity{}
+// ConvertEchoToActivity 将 Echo 转换为 ActivityPub Activity
+func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Activity {
+	obj := fediverseService.ConvertEchoToObject(echo, actor, serverURL)
+
+	activityID := fmt.Sprintf("%s/activities/%d", serverURL, echo.ID)
+
+	activity := model.Activity{
+		ActivityID: activityID,
+		Type:       model.ActivityTypeCreate,
+		ActorID: actor.ID,
+		ActorURL: actor.ID,
+		ObjectID: obj.ObjectID,
+		ObjectType: obj.Type,
+		Published: echo.CreatedAt,
+		To: obj.To,
+		Cc: []string{},
+		Summary: "",
+		Delivered: false,
+		CreatedAt: time.Now(),
+	}
+
+	activityJSON, _ := json.Marshal(activity)
+	activity.ActivityJSON = string(activityJSON)
+	return activity
+}
+
+// ConvertEchoToObject 将 Echo 转换为 ActivityPub Object
+func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Object {
+	var attachments []model.Attachment
+	for i := range echo.Images {
+		attachments = append(attachments, model.Attachment{
+			Type:      "Image",
+			MediaType: httpUtil.GetMIMETypeFromFilenameOrURL(echo.Images[i].ImageURL),
+			URL:       fileUtil.GetImageURL(echo.Images[i], serverURL),
+		})
+	}
+	
+	return model.Object{
+		ObjectID: fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
+		Type:     "Note",
+		Content: echo.Content,
+		AttributedTo: fmt.Sprintf("%s/users/%s", serverURL, echo.Username),
+		Published:   echo.CreatedAt,
+		To: []string{
+			"https://www.w3.org/ns/activitystreams#Public",
+		},
+		Attachments: attachments,
+	}
+}
+
+// GetFollowers 获取粉丝列表
+func (fediverseService *FediverseService) GetFollowers(username string) (model.FollowersResponse, error) {
+	return model.FollowersResponse{}, nil
 }

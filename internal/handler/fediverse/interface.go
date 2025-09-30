@@ -14,4 +14,7 @@ type FediverseHandlerInterface interface {
 
 	// GetOutbox 获取 Outbox 消息
 	GetOutbox(ctx *gin.Context)
+
+	// GetFollowers 获取粉丝列表
+	GetFollowers(ctx *gin.Context)
 }
