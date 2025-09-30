@@ -54,7 +54,25 @@ func (webHandler *WebHandler) Templates() gin.HandlerFunc {
 		}
 		defer func() { _ = f.Close() }()
 
+		// 获取文件信息
 		stat, _ := f.Stat()
+
+		// 适配资源压缩Gzip 算法
+		encoding := ctx.GetHeader("Accept-Encoding")
+		if strings.Contains(encoding, "gzip") {
+			gzPath := fullPath + ".gz"
+			gzFile, err := fileServer.Open(gzPath)
+			if err == nil {
+				defer gzFile.Close()
+				stat, _ := gzFile.Stat()
+				ctx.Header("Content-Encoding", "gzip")
+				ctx.Header("Content-Type", getMimeType(fullPath))
+				http.ServeContent(ctx.Writer, ctx.Request, gzPath, stat.ModTime(), gzFile)
+				return
+			}
+		}
+
+
 		ctx.Header("Content-Type", getMimeType(fullPath))
 		http.ServeContent(ctx.Writer, ctx.Request, fullPath, stat.ModTime(), f)
 	}

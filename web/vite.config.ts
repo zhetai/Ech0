@@ -15,7 +15,7 @@ export default defineConfig({
     vueDevTools(),
     UnoCSS(),
     viteCompression({
-      deleteOriginFile: true,
+      deleteOriginFile: false,
     }),
 
     welcomePlugin() // 欢迎横幅插件
