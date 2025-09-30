@@ -45,7 +45,6 @@ export const useEchoStore = defineStore('echoStore', () => {
       .then((res) => {
         if (res.code === 1) {
           total.value = res.data.total
-          echoList.value = [...echoList.value, ...res.data.items]
 
           // 同步更新 echoMap
           res.data.items.forEach((item: App.Api.Ech0.Echo) => {
