@@ -1,6 +1,6 @@
 <div align="right">
-  <a title="en" href="./README.en.md"><img src="https://img.shields.io/badge/-English-545759?style=for-the-badge" alt="english"></a>
-  <img src="https://img.shields.io/badge/-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-F54A00?style=for-the-badge" alt="简体中文">
+  <a title="en" href="./README.md"><img src="https://img.shields.io/badge/-English-545759?style=for-the-badge" alt="English"></a>
+  <img src="https://img.shields.io/badge/-简体中文-F54A00?style=for-the-badge" alt="简体中文">
 </div>
 
 <div align="center">
@@ -30,17 +30,27 @@ Ech0 是一款专为轻量级分享而设计的开源自托管平台，支持快
 <details>
    <summary><strong>目录</strong></summary>
 
-- [产品亮点](#产品亮点)
-- [极速部署](#极速部署)
-- [版本更新](#版本更新)
-- [访问方式](#访问方式)
-- [常见问题](#常见问题)
-- [反馈与社区](#反馈与社区)
-- [项目架构](#项目架构)
-- [开发指南](#开发指南)
-- [致谢](#致谢)
-- [Star 增长曲线](#star-增长曲线)
-- [支持项目](#支持项目)
+- [Ech0](#ech0)
+  - [产品亮点](#产品亮点)
+  - [极速部署](#极速部署)
+    - [🐳 Docker 部署（推荐）](#-docker-部署推荐)
+    - [🐋 Docker Compose](#-docker-compose)
+  - [版本更新](#版本更新)
+    - [🔄 Docker](#-docker)
+    - [💎 Docker Compose](#-docker-compose-1)
+  - [访问方式](#访问方式)
+    - [🖥️ TUI 模式](#️-tui-模式)
+    - [🔐 SSH 模式](#-ssh-模式)
+  - [常见问题](#常见问题)
+  - [反馈与社区](#反馈与社区)
+  - [项目架构](#项目架构)
+  - [开发指南](#开发指南)
+    - [后端环境要求](#后端环境要求)
+    - [前端环境要求](#前端环境要求)
+    - [启动前后端联调](#启动前后端联调)
+  - [致谢](#致谢)
+  - [Star 增长曲线](#star-增长曲线)
+  - [支持项目](#支持项目)
 </details>
 
 ---
