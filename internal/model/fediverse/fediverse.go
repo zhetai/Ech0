@@ -75,16 +75,6 @@ type FollowersPage struct {
 	OrderedItems []string `json:"orderedItems"`
 }
 
-// ------------------ 数据库模型 --------------------
-
-type DeliveryStatus string
-
-const (
-	DeliveryStatusPending   DeliveryStatus = "pending"
-	DeliveryStatusDelivered DeliveryStatus = "delivered"
-	DeliveryStatusFailed    DeliveryStatus = "failed"
-)
-
 // Activity 表示 ActivityPub 的 Activity
 type Activity struct {
 	ID           uint      `gorm:"primaryKey;autoIncrement" json:"-"` // 数据库主键
@@ -101,35 +91,6 @@ type Activity struct {
 	ActivityJSON string    `gorm:"type:text;not null" json:"activity_json"` // 原始 Activity JSON
 	Delivered    bool      `gorm:"default:false" json:"delivered"`     // 是否投递
 	CreatedAt    time.Time `gorm:"autoCreateTime" json:"created_at"`
-}
-
-// OutboxItems 发件记录表 (记录哪些活动发给了哪些用户)
-type OutboxItem struct {
-	ID          uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	ActivityID  uint      `gorm:"index;not null" json:"activity_id"`
-	UserID      uint      `gorm:"index;not null" json:"user_id"`
-	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
-	DeliveredTo string    `gorm:"type:text" json:"delivered_to"` // 已送达的远端 inbox 地址
-}
-
-// Followers 关注者表
-type Follower struct {
-	ID               uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID           uint      `gorm:"index;not null" json:"user_id"`
-	FollowerActorURL string    `gorm:"size:256;not null" json:"follower_actor_url"`
-	Accepted         bool      `gorm:"default:false" json:"accepted"`
-	CreatedAt        time.Time `gorm:"autoCreateTime" json:"created_at"`
-}
-
-// DeliveryQueue 投递队列表
-type DeliveryQueue struct {
-	ID             uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	ActivityID     uint      `gorm:"index;not null" json:"activity_id"`
-	TargetInboxURL string    `gorm:"size:512;not null" json:"target_inbox_url"`
-	Tries          uint      `gorm:"default:0" json:"tries"`
-	LastError      string    `gorm:"type:text" json:"last_error"`
-	NextTryAt      time.Time `json:"next_try_at"`
-	Status         string    `gorm:"size:32;default:'pending'" json:"status"` // pending, delivered, failed
 }
 
 // Object 内容对象表 (存储 Note, Article, Image 等等)
@@ -167,8 +128,6 @@ type Preview struct {
     URL       string `json:"url"`
 }
 
-// ---------------- 常用数据模型 --------------------
-
 // PublicKey 公钥信息
 type PublicKey struct {
 	ID           string `json:"id"`           // 公钥 ID，通常为 Actor ID + "#main-key"
@@ -188,4 +147,22 @@ type Actor struct {
 	Inbox             string        `json:"inbox"`             // 收件箱 URL
 	Outbox            string        `json:"outbox"`            // 发件箱 URL
 	PublicKey         PublicKey     `json:"publicKey"`         // 公钥信息
+}
+
+// Follow 表：存储关注请求及状态
+type Follow struct {
+    ID         uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+    ActorID    string    `gorm:"size:512;not null;index" json:"actor_id"`   // 发起关注的 Actor URL
+    ObjectID   string    `gorm:"size:512;not null;index" json:"object_id"`  // 被关注的 Actor URL
+    Status     string    `gorm:"size:20;not null" json:"status"`            // pending, accepted, rejected
+    CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
+    UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+}
+
+// Follower 表：存储已接受的关注关系
+type Follower struct {
+    ID         uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+    ActorID    string    `gorm:"size:512;not null;index" json:"actor_id"` // 粉丝 Actor URL
+    UserID     uint      `gorm:"not null;index" json:"user_id"`           // 被关注用户的数据库 ID
+    CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
 }

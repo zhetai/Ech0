@@ -295,5 +295,29 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 
 // GetFollowers 获取粉丝列表
 func (fediverseService *FediverseService) GetFollowers(username string) (model.FollowersResponse, error) {
-	return model.FollowersResponse{}, nil
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return model.FollowersResponse{}, errors.New(commonModel.USER_NOTFOUND)
+	}
+
+	followers, err := fediverseService.fediverseRepository.GetFollowers(user.ID)
+	if err != nil {
+		return model.FollowersResponse{}, err
+	}
+
+	// 构建Actor URL 列表
+	var followerURLs []string
+	for _, follower := range followers {
+		followerURLs = append(followerURLs, follower.ActorID)
+	}
+	
+
+	return model.FollowersResponse{
+		Context: "https://www.w3.org/ns/activitystreams",
+		ID:      "",
+		Type:    "OrderedCollection",
+		TotalItems: 0,
+		First:   "",
+		OrderedItems: followerURLs,
+	}, nil
 }
