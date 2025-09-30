@@ -210,3 +210,27 @@ func (h *FediverseHandler) GetFollowers(ctx *gin.Context) {
 	// 返回粉丝列表
 	ctx.JSON(http.StatusOK, followers)
 }
+
+// GetFollowing 获取关注列表
+func (h *FediverseHandler) GetFollowing(ctx *gin.Context) {
+	// 从 URL 参数中获取用户名
+	username := ctx.Param("username")
+
+	// 调用服务层获取关注列表
+	following, err := h.service.GetFollowing(username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
+			Context: "https://www.w3.org/ns/activitystreams",
+			Type:    "Error",
+			Error:   err.Error(),
+			Status:  http.StatusInternalServerError,
+		})
+		return
+	}
+
+	// 设置 Content-Type 为 application/activity+json
+	ctx.Header("Content-Type", "application/activity+json")
+
+	// 返回关注列表
+	ctx.JSON(http.StatusOK, following)
+}

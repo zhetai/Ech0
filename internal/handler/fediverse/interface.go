@@ -17,4 +17,7 @@ type FediverseHandlerInterface interface {
 
 	// GetFollowers 获取粉丝列表
 	GetFollowers(ctx *gin.Context)
+
+	// GetFollowing 获取关注列表
+	GetFollowing(ctx *gin.Context)
 }

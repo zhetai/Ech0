@@ -22,3 +22,11 @@ func (r *FediverseRepository) GetFollowers(userID uint) ([]model.Follower, error
 	}
 	return followers, nil
 }
+
+func (r *FediverseRepository) GetFollowing(userID uint) ([]model.Follow, error) {
+	var following []model.Follow
+	if err := r.db.Where("user_id = ?", userID).Find(&following).Error; err != nil {
+		return nil, err
+	}
+	return following, nil
+}

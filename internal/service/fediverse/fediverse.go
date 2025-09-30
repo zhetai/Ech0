@@ -320,3 +320,31 @@ func (fediverseService *FediverseService) GetFollowers(username string) (model.F
 		OrderedItems: followerURLs,
 	}, nil
 }
+
+// GetFollowing 获取关注列表
+func (fediverseService *FediverseService) GetFollowing(username string) (model.FollowingResponse, error) {
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return model.FollowingResponse{}, errors.New(commonModel.USER_NOTFOUND)
+	}
+
+	following, err := fediverseService.fediverseRepository.GetFollowing(user.ID)
+	if err != nil {
+		return model.FollowingResponse{}, err
+	}
+
+	// 构建Actor URL 列表
+	var followingURLs []string
+	for _, follow := range following {
+		followingURLs = append(followingURLs, follow.ObjectID)
+	}
+
+	return model.FollowingResponse{
+		Context:      "https://www.w3.org/ns/activitystreams",
+		ID:           "",
+		Type:         "OrderedCollection",
+		TotalItems:   0,
+		First:        "",
+		OrderedItems: followingURLs,
+	}, nil
+}

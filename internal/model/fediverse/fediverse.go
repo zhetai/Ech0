@@ -75,6 +75,27 @@ type FollowersPage struct {
 	OrderedItems []string `json:"orderedItems"`
 }
 
+// FollowingResponse 跟 FollowersResponse 类似
+type FollowingResponse struct {
+	Context    any    `json:"@context"`
+	ID         string `json:"id"`
+	Type       string `json:"type"` // "OrderedCollection"
+	TotalItems int    `json:"totalItems"`
+	First      string `json:"first,omitempty"`
+	// 如果不分页，可以直接用
+	OrderedItems []string `json:"orderedItems,omitempty"` // 里面是 following 的 Actor URL
+}
+
+// FollowingPage 如果你要分页的话
+type FollowingPage struct {
+	ID           string   `json:"id"`
+	Type         string   `json:"type"` // "OrderedCollectionPage"
+	PartOf       string   `json:"partOf"`
+	Next         string   `json:"next,omitempty"`
+	Prev         string   `json:"prev,omitempty"`
+	OrderedItems []string `json:"orderedItems"`
+}
+
 // Activity 表示 ActivityPub 的 Activity
 type Activity struct {
 	ID           uint      `gorm:"primaryKey;autoIncrement" json:"-"`  // 数据库主键
@@ -152,6 +173,7 @@ type Actor struct {
 // Follow 表：存储关注请求及状态
 type Follow struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID   uint      `gorm:"not null;index" json:"user_id"`          // 发起关注的用户数据库 ID
 	ActorID   string    `gorm:"size:512;not null;index" json:"actor_id"`  // 发起关注的 Actor URL
 	ObjectID  string    `gorm:"size:512;not null;index" json:"object_id"` // 被关注的 Actor URL
 	Status    string    `gorm:"size:20;not null" json:"status"`           // pending, accepted, rejected
