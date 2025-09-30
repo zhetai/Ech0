@@ -122,9 +122,28 @@ func (h *FediverseHandler) PostInbox(ctx *gin.Context) {
 func (h *FediverseHandler) GetOutbox(ctx *gin.Context) {
 	// 从 URL 参数中获取用户名
 	username := ctx.Param("username")
-	// 查询参数
-	pageStr := ctx.DefaultQuery("page", "1")
-	pageSizeStr := ctx.DefaultQuery("pageSize", "10")
+
+	var pageStr, pageSizeStr string
+	pageStr = ctx.Query("page")
+	pageSizeStr = ctx.Query("pageSize")
+
+	// 检查是否带有查询参数
+	if pageStr == "" {
+		// 不带查询参数，返回 Outbox 元信息
+		outbox, err := h.service.BuildOutbox(username)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
+				Context: "https://www.w3.org/ns/activitystreams",
+				Type:    "Error",
+				Error:   err.Error(),
+				Status:  http.StatusInternalServerError,
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, outbox)
+		return
+	}
 
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -136,11 +155,21 @@ func (h *FediverseHandler) GetOutbox(ctx *gin.Context) {
 		pageSize = 10
 	}
 
+	// 校验 page 和 pageSize 的合理范围
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	} else if pageSize > 50 {
+		pageSize = 50
+	}
+
 	// 打印分页参数
 	fmt.Printf("Pagination params - page: %d, pageSize: %d\n", page, pageSize)
 
 	// 调用服务层获取 Outbox 信息
-	outbox, err := h.service.HandleOutbox(ctx, username, page, pageSize)
+	outbox, err := h.service.HandleOutboxPage(ctx, username, page, pageSize)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
 			Context: "https://www.w3.org/ns/activitystreams",

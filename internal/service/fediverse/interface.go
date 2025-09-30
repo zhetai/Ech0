@@ -21,6 +21,9 @@ type FediverseServiceInterface interface {
 	// HandleInbox 处理接收到的 ActivityPub 消息
 	HandleInbox(username string, activity *model.Activity) error
 
+	// BuildOutbox 构建 Outbox 元信息
+	BuildOutbox(username string) (model.OutboxResponse, error)
+
 	// HandleOutbox 处理 Outbox 消息
-	HandleOutbox(ctx context.Context, username string, page, pageSize int) (model.OutboxResponse, error)
+	HandleOutboxPage(ctx context.Context, username string, page, pageSize int) (model.OutboxPage, error)
 }

@@ -40,10 +40,8 @@ type OutboxResponse struct {
 	ID         string      `json:"id"`
 	Type       string      `json:"type"` // "OrderedCollection"
 	TotalItems int         `json:"totalItems"`
-	First      *OutboxPage `json:"first,omitempty"`
-	Last       *OutboxPage `json:"last,omitempty"`
-	// 如果不用分页，可以直接用 OrderedItems
-	OrderedItems []Activity `json:"orderedItems,omitempty"`
+	First      string      `json:"first,omitempty"`
+	Last       string      `json:"last,omitempty"`
 }
 
 // OutboxPage 表示分页形式的 Outbox

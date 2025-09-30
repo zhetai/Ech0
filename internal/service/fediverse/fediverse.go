@@ -122,7 +122,58 @@ func (fediverseService *FediverseService) HandleInbox(username string, activity 
 }
 
 // HandleOutbox 处理 Outbox 消息
-func (fediverseService *FediverseService) HandleOutbox(ctx context.Context, username string, page, pageSize int) (model.OutboxResponse, error) {
+func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, username string, page, pageSize int) (model.OutboxPage, error) {
+	// 查询用户，确保用户存在
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return model.OutboxPage{}, errors.New(commonModel.USER_NOTFOUND)
+	}
+
+	// 获取 Actor和 setting
+	_, setting, err := fediverseService.BuildActor(&user)
+	if err != nil {
+		return model.OutboxPage{}, err
+	}
+	serverURL := httpUtil.TrimURL(setting.ServerURL)
+
+	// 查 Echos
+	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
+		Page:     page,
+		PageSize: pageSize,
+	})
+	if err != nil {
+		return model.OutboxPage{}, err
+	}
+
+	// 转 Avtivity
+	var activities []model.Activity
+	for i := range echosByPage.Items {
+		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage.Items[i], nil))
+	}
+
+	// 拼装 OutboxPage
+	outboxPage := model.OutboxPage{
+		ID:           fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page),
+		Type:         "OrderedCollectionPage",
+		PartOf:       fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
+		Next:         "",
+		Prev:         "",
+		OrderedItems: activities,
+	}
+
+	// 计算 Next && Prev
+	if page > 1 {
+		outboxPage.Prev = fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page-1)
+	}
+	if (page * pageSize) < int(echosByPage.Total) {
+		outboxPage.Next = fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page+1)
+	}
+
+	return outboxPage, nil
+}
+
+// BuildOutbox 构建 Outbox 元信息
+func (fediverseService *FediverseService) BuildOutbox(username string) (model.OutboxResponse, error) {
 	// 查询用户，确保用户存在
 	user, err := fediverseService.userRepository.GetUserByUsername(username)
 	if err != nil {
@@ -138,38 +189,24 @@ func (fediverseService *FediverseService) HandleOutbox(ctx context.Context, user
 
 	// 查 Echos
 	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
-		Page:     page,
-		PageSize: pageSize,
+		Page:     1,
+		PageSize: 10,
 	})
 	if err != nil {
 		return model.OutboxResponse{}, err
 	}
 
-	// 转 Avtivity
-	var activities []model.Activity
-	for i := range echosByPage.Items {
-		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage.Items[i], nil))
+	// 拼装 OutboxResponse
+	outbox := model.OutboxResponse{
+		Context:    "https://www.w3.org/ns/activitystreams",
+		ID:         fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
+		Type:       "OrderedCollection",
+		TotalItems: int(echosByPage.Total),
+		First:      fmt.Sprintf("%s/users/%s/outbox?page=1", serverURL, username),
+		Last:       "", // 这里暂时设为空，实际应用中应计算最后一页的链接
 	}
 
-	// 拼装 OutboxPage
-	outboxPage := model.OutboxPage{
-		ID:           fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page),
-		Type:         "OrderedCollectionPage",
-		PartOf:       fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
-		Next:         fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page+1),
-		Prev:         "",
-		OrderedItems: activities,
-	}
-
-	return model.OutboxResponse{
-		Context:      []any{},
-		ID:           outboxPage.ID,
-		Type:         "OrderedCollection",
-		TotalItems:   int(echosByPage.Total),
-		First:        &outboxPage,
-		Last:         nil,
-		OrderedItems: nil,
-	}, nil
+	return outbox, nil
 }
 
 // BuildActor 构建 Actor 对象
