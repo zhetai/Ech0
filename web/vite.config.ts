@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import UnoCSS from 'unocss/vite'
+import viteCompression from 'vite-plugin-compression';
 
 import { welcomePlugin } from './src/plugins/welcome-plugin'
 
@@ -13,6 +14,9 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     UnoCSS(),
+    viteCompression({
+      deleteOriginFile: true,
+    }),
 
     welcomePlugin() // 欢迎横幅插件
   ],

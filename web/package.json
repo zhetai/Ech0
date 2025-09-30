@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
-    "@types/node": "^22.18.6",
+    "@types/node": "^22.18.7",
     "@unocss/preset-wind4": "66.1.0-beta.11",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/eslint-config-prettier": "^10.2.0",
@@ -52,6 +52,7 @@
     "typescript": "~5.8.3",
     "unocss": "66.1.0-beta.11",
     "vite": "^6.3.6",
+    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-vue-devtools": "^7.7.7",
     "vue-tsc": "^2.2.12"
   },
