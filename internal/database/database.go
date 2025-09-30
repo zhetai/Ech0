@@ -7,7 +7,6 @@ import (
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	connectModel "github.com/lin-snow/ech0/internal/model/connect"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
-	fediverseModel "github.com/lin-snow/ech0/internal/model/fediverse"
 	todoModel "github.com/lin-snow/ech0/internal/model/todo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 
@@ -70,13 +69,6 @@ func MigrateDB() error {
 		&todoModel.Todo{},
 		&connectModel.Connected{},
 		&commonModel.TempFile{},
-
-		// Fediverse 相关模型
-		&fediverseModel.Activity{},
-		&fediverseModel.Follower{},
-		&fediverseModel.OutboxItem{},
-		&fediverseModel.DeliveryQueue{},
-		&fediverseModel.Object{},
 	}
 
 	return DB.AutoMigrate(
