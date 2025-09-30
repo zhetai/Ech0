@@ -7,7 +7,7 @@ export const useEchoStore = defineStore('echoStore', () => {
    * state
    */
   const echoList = ref<App.Api.Ech0.Echo[]>([]) // 存储Echo列表
-  const echoMap = ref(new Map<number, App.Api.Ech0.Echo>()) // 存储Echo的Map，便于快速查找
+  const echoIndexMap = ref(new Map<number, number>()) // id -> index
   const isLoading = ref<boolean>(true) // 是否正在加载数据
   const total = ref<number>(0) // 总数据量
   const pageSize = ref<number>(5) // 每页显示的数量
@@ -49,7 +49,13 @@ export const useEchoStore = defineStore('echoStore', () => {
 
           // 同步更新 echoMap
           res.data.items.forEach((item: App.Api.Ech0.Echo) => {
-            echoMap.value.set(item.id, item)
+            const idx = echoIndexMap.value.get(item.id)
+            if (idx !== undefined) {
+              echoList.value[idx] = item // 更新已有数据
+            } else {
+              echoList.value.push(item) // 添加新数据
+              echoIndexMap.value.set(item.id, echoList.value.length - 1)
+            }
           })
 
           page.value += 1
@@ -64,7 +70,7 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
-    echoMap.value.clear()
+    echoIndexMap.value.clear()
     getEchosByPage()
   }
 
@@ -72,7 +78,7 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
-    echoMap.value.clear()
+    echoIndexMap.value.clear()
     total.value = 0
   }
 
@@ -80,12 +86,28 @@ export const useEchoStore = defineStore('echoStore', () => {
     current.value = 1
     page.value = 0
     echoList.value = []
-    echoMap.value.clear()
+    echoIndexMap.value.clear()
+  }
+
+  const updateEcho = (echo: App.Api.Ech0.Echo) => {
+    const idx = echoIndexMap.value.get(echo.id)
+    if (idx !== undefined) {
+      echoList.value[idx] = echo // 更新
+    }
+  }
+
+  const updateLikeCount = (echoId: number, delta: number = 1) => {
+    const idx = echoIndexMap.value.get(echoId)
+    if (idx !== undefined) {
+      const targetEcho = echoList.value[idx]
+      targetEcho.fav_count = (targetEcho.fav_count || 0) + delta
+      echoList.value[idx] = { ...targetEcho } // 保证响应式触发
+    }
   }
 
   return {
     echoList,
-    echoMap,
+    echoIndexMap,
     isLoading,
     total,
     pageSize,
@@ -100,5 +122,7 @@ export const useEchoStore = defineStore('echoStore', () => {
     refreshEchos,
     clearEchos,
     refreshForSearch,
+    updateEcho,
+    updateLikeCount,
   }
 })

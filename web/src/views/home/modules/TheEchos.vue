@@ -59,12 +59,7 @@ const handleRefresh = () => {
 
 // 刷新点赞数据
 const handleUpdateLikeCount = (echoId: number) => {
-  // 通过 echoId 获取对应的 Echo 对象
-  const echo = echoStore.echoMap.get(echoId)
-  if (echo) {
-    // 更新 Echo 的点赞数量
-    echo.fav_count += 1
-  }
+  echoStore.updateLikeCount(echoId, 1)
 }
 
 onMounted(async () => {

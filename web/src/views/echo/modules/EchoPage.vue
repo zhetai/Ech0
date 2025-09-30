@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { fetchGetEchoById } from '@/service/api'
 import { ref } from 'vue'
@@ -34,12 +34,24 @@ import TheEchoDetail from '@/components/advanced/TheEchoDetail.vue'
 import TheComment from '@/components/advanced/TheComment.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import Arrow from '@/components/icons/arrow.vue'
+import { useEchoStore } from '@/stores/echo'
 
 const router = useRouter()
 const route = useRoute()
 const echoId = route.params.echoId as string
-const echo = ref<App.Api.Ech0.Echo | null>(null)
+
+const echoStore = useEchoStore()
 const isLoading = ref(true)
+const echo = ref<App.Api.Ech0.Echo | null>(null)
+
+// 从 echoIndexMap 获取对应的 EchoList索引
+const getEchoFromStore = () => {
+  const idx = echoStore.echoIndexMap.get(Number(echoId))
+  if (idx !== undefined) {
+    return echoStore.echoList[idx]
+  }
+  return null
+}
 
 // 刷新点赞数据
 const handleUpdateLikeCount = () => {
@@ -56,14 +68,18 @@ const goBack = () => {
     router.push({ name: 'home' }) // 没有历史记录则跳首页
   }
 }
+onMounted(async () => {
+  // 先尝试从 store 获取
+  echo.value = getEchoFromStore()
 
-onMounted(() => {
-  // 在这里可以添加获取Echo详情的逻辑
-  fetchGetEchoById(echoId).then((res) => {
+  // 如果 store 里没有，再发请求兜底
+  if (!echo.value) {
+    const res = await fetchGetEchoById(echoId)
     if (res.code === 1) {
       echo.value = res.data
-      isLoading.value = false
     }
-  })
+  }
+  isLoading.value = false
 })
+
 </script>
