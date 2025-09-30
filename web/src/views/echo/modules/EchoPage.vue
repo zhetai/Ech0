@@ -81,5 +81,4 @@ onMounted(async () => {
   }
   isLoading.value = false
 })
-
 </script>
