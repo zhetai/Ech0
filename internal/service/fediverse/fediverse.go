@@ -17,6 +17,7 @@ import (
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
 	echoService "github.com/lin-snow/ech0/internal/service/echo"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
+	"github.com/lin-snow/ech0/internal/transaction"
 	fileUtil "github.com/lin-snow/ech0/internal/util/file"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	"golang.org/x/text/cases"
@@ -24,18 +25,22 @@ import (
 )
 
 type FediverseService struct {
+	txManager           transaction.TransactionManager
 	fediverseRepository repository.FediverseRepositoryInterface
 	userRepository      userRepository.UserRepositoryInterface
 	settingService      settingService.SettingServiceInterface
 	echoService         echoService.EchoServiceInterface
 }
 
-func NewFediverseService(fediverseRepository repository.FediverseRepositoryInterface,
+func NewFediverseService(
+	txManager transaction.TransactionManager,
+	fediverseRepository repository.FediverseRepositoryInterface,
 	userRepository userRepository.UserRepositoryInterface,
 	settingService settingService.SettingServiceInterface,
 	echoService echoService.EchoServiceInterface,
 ) FediverseServiceInterface {
 	return &FediverseService{
+		txManager:           txManager,
 		fediverseRepository: fediverseRepository,
 		userRepository:      userRepository,
 		settingService:      settingService,
@@ -92,30 +97,21 @@ func (fediverseService *FediverseService) GetActorByUsername(username string) (m
 // ProcessInbox 处理接收到的 ActivityPub 消息
 func (fediverseService *FediverseService) HandleInbox(username string, activity *model.Activity) error {
 	// 查询用户，确保用户存在
-	// user, err := fediverseService.userRepository.GetUserByUsername(username)
-	// if err != nil {
-	// 	return errors.New(commonModel.USER_NOTFOUND)
-	// }
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return errors.New(commonModel.USER_NOTFOUND)
+	}
 
 	// 处理不同类型的 Activity
 	switch activity.Type {
 	case model.ActivityTypeFollow:
 		// 处理关注请求
-
-	case model.ActivityTypeAccept:
-		// 处理关注接受
-
-	case model.ActivityTypeCreate:
-		// 处理创建内容
-
-	case model.ActivityTypeLike:
-		// 处理点赞
-
-	case model.ActivityTypeAnnounce:
-		// 处理转发
-
-	case model.ActivityTypeUndo:
-		// 处理撤销
+		fediverseService.txManager.Run(func(ctx context.Context) error {
+			return fediverseService.fediverseRepository.SaveFollower(ctx, &model.Follower{
+				UserID:  user.ID,
+				ActorID: activity.ActorID,
+			})
+		})
 
 	default:
 		return errors.New("Unsupported activity type: " + cases.Title(language.English).String(activity.Type))
@@ -371,4 +367,3 @@ func (fediverseService *FediverseService) GetObjectByID(id uint) (model.Object, 
 	// 转 Object
 	return fediverseService.ConvertEchoToObject(echo, &actor, serverURL), nil
 }
-

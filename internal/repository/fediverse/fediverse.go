@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"context"
+
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
+	"github.com/lin-snow/ech0/internal/transaction"
 	"gorm.io/gorm"
 )
 
@@ -14,6 +17,14 @@ func NewFediverseRepository(db *gorm.DB) FediverseRepositoryInterface {
 		db: db,
 	}
 }
+
+func (r *FediverseRepository) getDB(ctx context.Context) *gorm.DB {
+	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
+		return tx
+	}
+	return r.db
+}
+
 
 func (r *FediverseRepository) GetFollowers(userID uint) ([]model.Follower, error) {
 	var followers []model.Follower
@@ -29,4 +40,8 @@ func (r *FediverseRepository) GetFollowing(userID uint) ([]model.Follow, error) 
 		return nil, err
 	}
 	return following, nil
+}
+
+func (r *FediverseRepository) SaveFollower(ctx context.Context, follower *model.Follower) error {
+	return r.getDB(ctx).Create(follower).Error
 }
