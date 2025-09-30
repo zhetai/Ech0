@@ -315,7 +315,7 @@ func (fediverseService *FediverseService) GetFollowers(username string) (model.F
 		Context:      "https://www.w3.org/ns/activitystreams",
 		ID:           "",
 		Type:         "OrderedCollection",
-		TotalItems:   0,
+		TotalItems:   len(followerURLs),
 		First:        "",
 		OrderedItems: followerURLs,
 	}, nil
@@ -343,7 +343,7 @@ func (fediverseService *FediverseService) GetFollowing(username string) (model.F
 		Context:      "https://www.w3.org/ns/activitystreams",
 		ID:           "",
 		Type:         "OrderedCollection",
-		TotalItems:   0,
+		TotalItems:   len(followingURLs),
 		First:        "",
 		OrderedItems: followingURLs,
 	}, nil
