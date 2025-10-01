@@ -67,6 +67,7 @@ func (fediverseService *FediverseService) Webfinger(username string) (model.WebF
 		Subject: "acct:" + user.Username + "@" + httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL)),
 		Aliases: []string{
 			actor.ID,
+			"acct:" + user.Username + "@" + httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL)),
 		},
 		Links: []model.Link{
 			{
@@ -216,7 +217,7 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 	if err := fediverseService.settingService.GetSetting(&setting); err != nil {
 		return model.Actor{}, nil, err
 	}
-	serverURL := httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL))
+	serverURL := httpUtil.TrimURL(setting.ServerURL)
 	if serverURL == "" {
 		return model.Actor{}, nil, errors.New(commonModel.ACTIVEPUB_NOT_ENABLED)
 	}
@@ -224,6 +225,7 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 	return model.Actor{
 		Context: []any{
 			"https://www.w3.org/ns/activitystreams",
+			"https://w3id.org/security/v1",
 		},
 		ID:                serverURL + "/users/" + user.Username, // 实例地址拼接 域名 + /users/ + username
 		Type:              "Person",                              // 固定值

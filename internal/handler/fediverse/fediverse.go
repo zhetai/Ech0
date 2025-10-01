@@ -68,8 +68,8 @@ func (h *FediverseHandler) Webfinger(ctx *gin.Context) {
 		return
 	}
 
-	// 设置 Content-Type 为 application/activity+json
-	ctx.Header("Content-Type", "application/activity+json")
+	// 设置 Content-Type 为 application/jrd+json
+	ctx.Header("Content-Type", "application/jrd+json")
 
 	// 返回 Actor 信息
 	ctx.JSON(http.StatusOK, webfingerRes)
