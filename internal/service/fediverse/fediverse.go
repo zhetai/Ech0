@@ -222,7 +222,12 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 		return model.Actor{}, nil, errors.New(commonModel.ACTIVEPUB_NOT_ENABLED)
 	}
 	// 构建头像信息 (域名 + /api + 头像路径)
-	avatarURL := serverURL + "/api" + user.Avatar
+	if user.Avatar == "" {
+		user.Avatar = "/favicon.svg" // 默认头像路径
+	} else {
+		user.Avatar = "/api" + user.Avatar
+	}
+	avatarURL := serverURL + user.Avatar
 	avatarMIME := httpUtil.GetMIMETypeFromFilenameOrURL(avatarURL)
 
 	// 构建 Actor 对象
