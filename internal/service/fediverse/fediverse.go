@@ -168,7 +168,6 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	return outboxPage, nil
 }
 
-
 // ConvertEchoToActivity 将 Echo 转换为 ActivityPub Activity
 func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Activity {
 	obj := fediverseService.ConvertEchoToObject(echo, actor, serverURL)
@@ -226,6 +225,11 @@ func (fediverseService *FediverseService) GetFollowers(username string) (model.F
 		return model.FollowersResponse{}, errors.New(commonModel.USER_NOTFOUND)
 	}
 
+	actor, _, err := fediverseService.BuildActor(&user)
+	if err != nil {
+		return model.FollowersResponse{}, err
+	}
+
 	followers, err := fediverseService.fediverseRepository.GetFollowers(user.ID)
 	if err != nil {
 		return model.FollowersResponse{}, err
@@ -239,10 +243,9 @@ func (fediverseService *FediverseService) GetFollowers(username string) (model.F
 
 	return model.FollowersResponse{
 		Context:      "https://www.w3.org/ns/activitystreams",
-		ID:           "",
+		ID:           actor.Followers,
 		Type:         "OrderedCollection",
 		TotalItems:   len(followerURLs),
-		First:        "",
 		OrderedItems: followerURLs,
 	}, nil
 }
@@ -299,34 +302,34 @@ func (fediverseService *FediverseService) GetObjectByID(id uint) (model.Object, 
 }
 
 func (fediverseService *FediverseService) fetchRemoteActorInbox(actorURL string) (string, error) {
-    if actorURL == "" {
-        return "", errors.New("remote actor url is empty")
-    }
+	if actorURL == "" {
+		return "", errors.New("remote actor url is empty")
+	}
 
-    body, err := httpUtil.SendRequest(actorURL, http.MethodGet, httpUtil.Header{
-        Header:  "Accept",
-        Content: "application/activity+json",
-    })
-    if err != nil {
-        return "", err
-    }
+	body, err := httpUtil.SendRequest(actorURL, http.MethodGet, httpUtil.Header{
+		Header:  "Accept",
+		Content: "application/activity+json",
+	})
+	if err != nil {
+		return "", err
+	}
 
-    var resp struct {
-        Inbox     string `json:"inbox"`
-        Endpoints struct {
-            SharedInbox string `json:"sharedInbox"`
-        } `json:"endpoints"`
-    }
-    if err := json.Unmarshal(body, &resp); err != nil {
-        return "", err
-    }
+	var resp struct {
+		Inbox     string `json:"inbox"`
+		Endpoints struct {
+			SharedInbox string `json:"sharedInbox"`
+		} `json:"endpoints"`
+	}
+	if err := json.Unmarshal(body, &resp); err != nil {
+		return "", err
+	}
 
-    if resp.Inbox != "" {
-        return resp.Inbox, nil
-    }
-    if resp.Endpoints.SharedInbox != "" {
-        return resp.Endpoints.SharedInbox, nil
-    }
+	if resp.Inbox != "" {
+		return resp.Inbox, nil
+	}
+	if resp.Endpoints.SharedInbox != "" {
+		return resp.Endpoints.SharedInbox, nil
+	}
 
-    return "", errors.New("remote actor inbox not found")
+	return "", errors.New("remote actor inbox not found")
 }
