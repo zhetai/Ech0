@@ -144,9 +144,6 @@ func DoTui() {
 	tui.PrintCLIBanner()
 
 	for {
-		// 输出一行空行
-		fmt.Println()
-
 		var action string
 		var options []huh.Option[string]
 

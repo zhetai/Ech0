@@ -105,7 +105,7 @@ func (s *Server) Start() {
 
 	// 启动任务器
 	go s.tasker.Start()
-	fmt.Println("🚀 任务器已启动")
+	// fmt.Println("🚀 任务器已启动")
 }
 
 // Stop 优雅停止服务器
