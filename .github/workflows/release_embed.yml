@@ -21,8 +21,8 @@ jobs:
             goarch: amd64
           - goos: linux
             goarch: arm64
-          - goos: windows
-            goarch: amd64
+          # - goos: windows
+          #   goarch: amd64
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -125,12 +125,12 @@ jobs:
           find ./backend-artifacts -name "*.tar.gz" -exec tar -xzvf {} -C dist/ \;
 
       # ✅ 创建 GitHub Release
+      # 暂时忽略 ./backend-artifacts/*.exe
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ./backend-artifacts/*.tar.gz
-            ./backend-artifacts/*.exe
           draft: true
           prerelease: false
         env:
