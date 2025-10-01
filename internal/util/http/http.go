@@ -29,6 +29,24 @@ func TrimURL(url string) string {
 	return url
 }
 
+// ExtractDomain 从 URL 中提取域名
+func ExtractDomain(url string) string {
+	// 去除协议部分
+	if strings.HasPrefix(url, "http://") {
+		url = strings.TrimPrefix(url, "http://")
+	} else if strings.HasPrefix(url, "https://") {
+		url = strings.TrimPrefix(url, "https://")
+	}
+
+	// 提取域名部分 (到第一个斜杠为止)
+	slashIndex := strings.Index(url, "/")
+	if slashIndex != -1 {
+		url = url[:slashIndex]
+	}
+
+	return url
+}
+
 // Header 自定义请求头结构体
 type Header struct {
 	Header  string

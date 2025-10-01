@@ -64,7 +64,7 @@ func (fediverseService *FediverseService) Webfinger(username string) (model.WebF
 	}
 
 	return model.WebFingerResponse{
-		Subject: "acct:" + user.Username + "@" + httpUtil.TrimURL(setting.ServerURL),
+		Subject: "acct:" + user.Username + "@" + httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL)),
 		Aliases: []string{
 			actor.ID,
 		},
@@ -134,7 +134,7 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	if err != nil {
 		return model.OutboxPage{}, err
 	}
-	serverURL := httpUtil.TrimURL(setting.ServerURL)
+	serverURL := httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL))
 
 	// 查 Echos
 	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
@@ -185,7 +185,7 @@ func (fediverseService *FediverseService) BuildOutbox(username string) (model.Ou
 	if err != nil {
 		return model.OutboxResponse{}, err
 	}
-	serverURL := httpUtil.TrimURL(setting.ServerURL)
+	serverURL := httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL))
 
 	// 查 Echos
 	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
@@ -216,7 +216,7 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 	if err := fediverseService.settingService.GetSetting(&setting); err != nil {
 		return model.Actor{}, nil, err
 	}
-	serverURL := httpUtil.TrimURL(setting.ServerURL)
+	serverURL := httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL))
 	if serverURL == "" {
 		return model.Actor{}, nil, errors.New(commonModel.ACTIVEPUB_NOT_ENABLED)
 	}
@@ -363,7 +363,7 @@ func (fediverseService *FediverseService) GetObjectByID(id uint) (model.Object, 
 	if err != nil {
 		return model.Object{}, err
 	}
-	serverURL := httpUtil.TrimURL(setting.ServerURL)
+	serverURL := httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL))
 
 	// 转 Object
 	return fediverseService.ConvertEchoToObject(echo, &actor, serverURL), nil
