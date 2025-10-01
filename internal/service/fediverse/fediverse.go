@@ -14,6 +14,7 @@ import (
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	repository "github.com/lin-snow/ech0/internal/repository/fediverse"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
+	commonService "github.com/lin-snow/ech0/internal/service/common"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	"github.com/lin-snow/ech0/internal/transaction"
 	fileUtil "github.com/lin-snow/ech0/internal/util/file"
@@ -28,6 +29,7 @@ type FediverseService struct {
 	userRepository      userRepository.UserRepositoryInterface
 	settingService      settingService.SettingServiceInterface
 	echoRepository     echoRepository.EchoRepositoryInterface
+	commonService  commonService.CommonServiceInterface
 }
 
 func NewFediverseService(
@@ -36,6 +38,7 @@ func NewFediverseService(
 	userRepository userRepository.UserRepositoryInterface,
 	settingService settingService.SettingServiceInterface,
 	echoRepository echoRepository.EchoRepositoryInterface,
+	commonService commonService.CommonServiceInterface,
 ) FediverseServiceInterface {
 	return &FediverseService{
 		txManager:           txManager,
@@ -43,6 +46,7 @@ func NewFediverseService(
 		userRepository:      userRepository,
 		settingService:      settingService,
 		echoRepository:      echoRepository,
+		commonService:       commonService,
 	}
 }
 
@@ -140,6 +144,9 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	// 转 Avtivity
 	var activities []model.Activity
 	for i := range echosByPage {
+		// 处理图片 URL
+		fediverseService.RefreshEchoImageURL(&echosByPage[i])
+		// 转换为 Activity
 		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage[i], &actor, serverURL))
 	}
 

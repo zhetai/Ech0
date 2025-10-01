@@ -131,7 +131,7 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 
 	// 处理echosByPage中的图片URL
 	for i := range result.Items {
-		echoService.RefreshEchoImageURL(userid, &result.Items[i])
+		echoService.RefreshEchoImageURL(&result.Items[i])
 	}
 
 	// 返回结果
@@ -195,7 +195,7 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 
 	// 处理todayEchos中的图片URL
 	for i := range todayEchos {
-		echoService.RefreshEchoImageURL(userid, &todayEchos[i])
+		echoService.RefreshEchoImageURL(&todayEchos[i])
 	}
 
 	return todayEchos, nil
@@ -295,14 +295,14 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 	}
 
 	// 刷新图片URL
-	echoService.RefreshEchoImageURL(userId, echo)
+	echoService.RefreshEchoImageURL(echo)
 
 	// 返回Echo
 	return echo, nil
 }
 
 // RefreshEchoImageURL 刷新Echo中的图片URL
-func (s *EchoService) RefreshEchoImageURL(userid uint, echo *model.Echo) {
+func (s *EchoService) RefreshEchoImageURL(echo *model.Echo) {
 	_, s3setting, err := s.commonService.GetS3Client()
 	if err != nil {
 		return

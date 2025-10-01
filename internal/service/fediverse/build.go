@@ -1,12 +1,15 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
+	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
@@ -118,4 +121,36 @@ func normalizeServerURL(raw string) (string, error) {
 		trimmed = "https://" + trimmed
 	}
 	return strings.TrimRight(trimmed, "/"), nil
+}
+
+func (fediverseService *FediverseService) RefreshEchoImageURL(echo *echoModel.Echo) {
+	_, s3setting, err := fediverseService.commonService.GetS3Client()
+	if err != nil {
+		return
+	}
+
+	// 用 channel 或 waitGroup 并发刷新 URL
+	var wg sync.WaitGroup
+	mu := sync.Mutex{}
+
+	for i := range echo.Images {
+		if echo.Images[i].ImageSource == echoModel.ImageSourceS3 && echo.Images[i].ObjectKey != "" {
+			wg.Add(1)
+			go func(i int) {
+				defer wg.Done()
+				if newURL, err := fediverseService.commonService.GetS3ObjectURL(s3setting, echo.Images[i].ObjectKey); err == nil {
+					mu.Lock()
+					echo.Images[i].ImageURL = newURL
+					mu.Unlock()
+				}
+			}(i)
+		}
+	}
+
+	wg.Wait()
+
+	// 所有 URL 都拿到了，再一次性更新 DB
+	_ = fediverseService.txManager.Run(func(ctx context.Context) error {
+		return fediverseService.echoRepository.UpdateEcho(ctx, echo)
+	})
 }
