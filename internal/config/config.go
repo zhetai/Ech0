@@ -21,6 +21,12 @@ var Config AppConfig
 // JWT_SECRET 用于JWT签名的密钥
 var JWT_SECRET []byte
 
+// RSA_PRIVATE_KEY 用于联邦架构的私钥
+var RSA_PRIVATE_KEY []byte
+
+// RSA_PUBLIC_KEY 用于联邦架构的公钥
+var RSA_PUBLIC_KEY []byte
+
 // AppConfig 应用程序配置结构体
 type AppConfig struct {
 	Server struct {
@@ -66,10 +72,6 @@ type AppConfig struct {
 		Host string `yaml:"host"` // SSH 主机地址
 		Key  string `yaml:"key"`  // SSH 私钥路径
 	} `yaml:"ssh"`
-	Federation struct {
-		PrivateKey string `yaml:"privatekey"` // RSA 私钥
-		PublicKey  string `yaml:"publickey"`  // RSA 公钥
-	} `yaml:"federation"`
 }
 
 //go:embed config.yaml
@@ -129,41 +131,61 @@ func GenSecretKey() {
 		}
 	}
 
-	if _, err := os.Stat(keyDir + "/" + privateKey); err == nil {
-		log.Println("Private key already exists, skipping generation.")
-		return
+	genFlag := false
+	if _, err := os.Stat(keyDir + "/" + privateKey); err != nil {
+		log.Println("Private key not found, generating new key pair.")
+		genFlag = true
 	}
 
-	if _, err := os.Stat(keyDir + "/" + publicKey); err == nil {
-		log.Println("Public key already exists, skipping generation.")
-		return
+	if _, err := os.Stat(keyDir + "/" + publicKey); err != nil {
+		log.Println("Public key not found, generating new key pair.")
+		genFlag = true
 	}
 
-	//  2048 位 RSA 私钥
-	priv, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		log.Fatalf("Failed to generate private key: %v", err)
+	if genFlag {
+		//  2048 位 RSA 私钥
+		priv, err := rsa.GenerateKey(rand.Reader, 2048)
+		if err != nil {
+			log.Fatalf("Failed to generate private key: %v", err)
+		}
+
+		// 保存私钥到文件
+		privBytes := x509.MarshalPKCS1PrivateKey(priv)
+		privPem := pem.EncodeToMemory(&pem.Block{
+			Type:  "RSA PRIVATE KEY",
+			Bytes: privBytes,
+		})
+		os.WriteFile(keyDir+"/"+privateKey, privPem, 0600)
+
+		// 保存公钥到文件
+		pub := &priv.PublicKey
+		pubBytes, err := x509.MarshalPKIXPublicKey(pub)
+		if err != nil {
+			log.Fatalf("Failed to marshal public key: %v", err)
+		}
+		pubPem := pem.EncodeToMemory(&pem.Block{
+			Type:  "PUBLIC KEY",
+			Bytes: pubBytes,
+		})
+		os.WriteFile(keyDir+"/"+publicKey, pubPem, 0644)
+
+		log.Println("Generated RSA key pair and saved to private.pem and public.pem")
+		RSA_PRIVATE_KEY = privPem
+		RSA_PUBLIC_KEY = pubPem
+	} else {
+		// 读取现有的密钥文件
+		privPem, err := os.ReadFile(keyDir + "/" + privateKey)
+		if err == nil {
+			RSA_PRIVATE_KEY = privPem
+		} else {
+			log.Println("Private key not found, generating new key pair.")
+		}
+		// 读取公钥文件
+		pubPem, err := os.ReadFile(keyDir + "/" + publicKey)
+		if err == nil {
+			RSA_PUBLIC_KEY = pubPem
+		} else {
+			log.Println("Public key not found, generating new key pair.")
+		}
 	}
-
-	// 保存私钥到文件
-	privBytes := x509.MarshalPKCS1PrivateKey(priv)
-	privPem := pem.EncodeToMemory(&pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: privBytes,
-	})
-	os.WriteFile(keyDir+"/"+privateKey, privPem, 0600)
-
-	// 保存公钥到文件
-	pub := &priv.PublicKey
-	pubBytes, err := x509.MarshalPKIXPublicKey(pub)
-	if err != nil {
-		log.Fatalf("Failed to marshal public key: %v", err)
-	}
-	pubPem := pem.EncodeToMemory(&pem.Block{
-		Type:  "PUBLIC KEY",
-		Bytes: pubBytes,
-	})
-	os.WriteFile(keyDir+"/"+publicKey, pubPem, 0644)
-
-	log.Println("Generated RSA key pair and saved to private.pem and public.pem")
 }
