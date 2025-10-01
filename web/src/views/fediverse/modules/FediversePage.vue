@@ -9,13 +9,16 @@
         </BaseButton>
       </div> -->
 
-      <h1 class="text-4xl text-center font-bold text-gray-400">欢迎来到联邦宇宙</h1>
+      <h1 class="text-4xl text-center font-bold text-gray-400">Ech0 Fediverse</h1>
 
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import { theToast } from '@/utils/toast';
+
 // import { useRouter, useRoute } from 'vue-router'
 // import BaseButton from '@/components/common/BaseButton.vue'
 // import Arrow from '@/components/icons/arrow.vue'
@@ -29,5 +32,9 @@
 //     router.push({ name: 'home' }) // 没有历史记录则跳首页
 //   }
 // }
+
+onMounted(() => {
+  theToast.info('欢迎来到联邦宇宙！🎉', { duration: 3000 })
+})
 
 </script>
