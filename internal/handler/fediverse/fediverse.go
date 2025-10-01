@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
@@ -33,11 +34,8 @@ func (h *FediverseHandler) Webfinger(ctx *gin.Context) {
 		return
 	}
 
-	// 这里只处理 user 类型的 resource，格式为 acct:username@domain
-	// 提取用户名
-	var username string
-	_, err := fmt.Sscanf(resource, "acct:%s@%*s", &username)
-	if err != nil {
+	// 解析 resource，格式应为 acct:username@domain
+	if !strings.HasPrefix(resource, "acct:") {
 		ctx.JSON(http.StatusBadRequest, model.ActivityPubError{
 			Context: "https://www.w3.org/ns/activitystreams",
 			Type:    "Error",
@@ -46,6 +44,17 @@ func (h *FediverseHandler) Webfinger(ctx *gin.Context) {
 		})
 		return
 	}
+	parts := strings.SplitN(resource[5:], "@", 2)
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		ctx.JSON(http.StatusBadRequest, model.ActivityPubError{
+			Context: "https://www.w3.org/ns/activitystreams",
+			Type:    "Error",
+			Error:   "Invalid resource format",
+			Status:  http.StatusBadRequest,
+		})
+		return
+	}
+	username := parts[0]
 
 	// 调用服务层获取 Actor 信息
 	webfingerRes, err := h.service.Webfinger(username)
