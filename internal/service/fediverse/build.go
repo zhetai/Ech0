@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/lin-snow/ech0/internal/config"
-	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
@@ -34,19 +33,16 @@ func (fediverseService *FediverseService) BuildOutbox(username string) (model.Ou
 	}
 
 	// 查 Echos
-	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
-		Page:     1,
-		PageSize: 10,
-	})
+	_, total := fediverseService.echoRepository.GetEchosByPage(1, 10, "", false)
 	if err != nil {
 		return model.OutboxResponse{}, err
 	}
 
 	firstPage := fmt.Sprintf("%s?page=1", actor.Outbox)
 	lastPage := ""
-	if echosByPage.Total > 0 {
-		totalPages := int(echosByPage.Total)/10
-		if echosByPage.Total%10 != 0 {
+	if total > 0 {
+		totalPages := int(total)/10
+		if total%10 != 0 {
 			totalPages++
 		}
 		lastPage = fmt.Sprintf("%s?page=%d", actor.Outbox, totalPages)
@@ -56,7 +52,7 @@ func (fediverseService *FediverseService) BuildOutbox(username string) (model.Ou
 		Context:    "https://www.w3.org/ns/activitystreams",
 		ID:         fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
 		Type:       "OrderedCollection",
-		TotalItems: int(echosByPage.Total),
+		TotalItems: int(total),
 		First:      firstPage,
 		Last:       lastPage,
 	}, nil

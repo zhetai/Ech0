@@ -66,7 +66,7 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	backupServiceInterface := service7.NewBackupService(commonServiceInterface)
 	backupHandler := handler8.NewBackupHandler(backupServiceInterface)
 	fediverseRepositoryInterface := repository6.NewFediverseRepository(db)
-	fediverseServiceInterface := service8.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoServiceInterface)
+	fediverseServiceInterface := service8.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface)
 	fediverseHandler := handler9.NewFediverseHandler(fediverseServiceInterface)
 	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler, fediverseHandler)
 	return handlers, nil

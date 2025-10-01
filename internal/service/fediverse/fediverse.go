@@ -8,13 +8,12 @@ import (
 	"net/http"
 	"time"
 
-	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
+	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	repository "github.com/lin-snow/ech0/internal/repository/fediverse"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
-	echoService "github.com/lin-snow/ech0/internal/service/echo"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	"github.com/lin-snow/ech0/internal/transaction"
 	fileUtil "github.com/lin-snow/ech0/internal/util/file"
@@ -28,7 +27,7 @@ type FediverseService struct {
 	fediverseRepository repository.FediverseRepositoryInterface
 	userRepository      userRepository.UserRepositoryInterface
 	settingService      settingService.SettingServiceInterface
-	echoService         echoService.EchoServiceInterface
+	echoRepository     echoRepository.EchoRepositoryInterface
 }
 
 func NewFediverseService(
@@ -36,14 +35,14 @@ func NewFediverseService(
 	fediverseRepository repository.FediverseRepositoryInterface,
 	userRepository userRepository.UserRepositoryInterface,
 	settingService settingService.SettingServiceInterface,
-	echoService echoService.EchoServiceInterface,
+	echoRepository echoRepository.EchoRepositoryInterface,
 ) FediverseServiceInterface {
 	return &FediverseService{
 		txManager:           txManager,
 		fediverseRepository: fediverseRepository,
 		userRepository:      userRepository,
 		settingService:      settingService,
-		echoService:         echoService,
+		echoRepository:      echoRepository,
 	}
 }
 
@@ -136,18 +135,15 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	}
 
 	// 查 Echos
-	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
-		Page:     page,
-		PageSize: pageSize,
-	})
+	echosByPage, total := fediverseService.echoRepository.GetEchosByPage(page, pageSize, "", false)
 	if err != nil {
 		return model.OutboxPage{}, err
 	}
 
 	// 转 Avtivity
 	var activities []model.Activity
-	for i := range echosByPage.Items {
-		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage.Items[i], &actor, serverURL))
+	for i := range echosByPage {
+		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage[i], &actor, serverURL))
 	}
 
 	// 拼装 OutboxPage
@@ -165,7 +161,7 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	if page > 1 {
 		outboxPage.Prev = fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page-1)
 	}
-	if (page * pageSize) < int(echosByPage.Total) {
+	if (page * pageSize) < int(total) {
 		outboxPage.Next = fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page+1)
 	}
 
@@ -287,8 +283,8 @@ func (fediverseService *FediverseService) GetFollowing(username string) (model.F
 // GetObjectByID 通过 ID 获取内容对象
 func (fediverseService *FediverseService) GetObjectByID(id uint) (model.Object, error) {
 	// 获取 Echo
-	echo, err := fediverseService.echoService.GetEchoById(authModel.NO_USER_LOGINED, id)
-	if err != nil {
+	echo, err := fediverseService.echoRepository.GetEchosById(id)
+	if err != nil || echo.Private {
 		return model.Object{}, err
 	}
 
