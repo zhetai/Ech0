@@ -334,7 +334,7 @@ func cleanBackupDir(path string) error {
 func GetImageURL(image echoModel.Image, serverURL string) string {
 	switch image.ImageSource {
 	case echoModel.ImageSourceLocal:
-		return fmt.Sprintf("%s/images/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
+		return fmt.Sprintf("%s/api/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
 	case echoModel.ImageSourceURL:
 		return image.ImageURL
 	case echoModel.ImageSourceS3:
@@ -342,6 +342,6 @@ func GetImageURL(image echoModel.Image, serverURL string) string {
 	case echoModel.ImageSourceR2:
 		return image.ImageURL
 	default:
-		return fmt.Sprintf("%s/images/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
+		return fmt.Sprintf("%s/api/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
 	}
 }
