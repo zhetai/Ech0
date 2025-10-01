@@ -13,6 +13,7 @@ import (
 	commonRepository "github.com/lin-snow/ech0/internal/repository/common"
 	repository "github.com/lin-snow/ech0/internal/repository/echo"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
+	fediverseService "github.com/lin-snow/ech0/internal/service/fediverse"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 )
 
@@ -21,6 +22,7 @@ type EchoService struct {
 	commonService    commonService.CommonServiceInterface
 	echoRepository   repository.EchoRepositoryInterface
 	commonRepository commonRepository.CommonRepositoryInterface
+	fediverseService fediverseService.FediverseServiceInterface
 }
 
 func NewEchoService(
@@ -28,12 +30,14 @@ func NewEchoService(
 	commonService commonService.CommonServiceInterface,
 	echoRepository repository.EchoRepositoryInterface,
 	commonRepository commonRepository.CommonRepositoryInterface,
+	fediverseService fediverseService.FediverseServiceInterface,
 ) EchoServiceInterface {
 	return &EchoService{
 		txManager:        tm,
 		commonService:    commonService,
 		echoRepository:   echoRepository,
 		commonRepository: commonRepository,
+		fediverseService: fediverseService,
 	}
 }
 
@@ -90,6 +94,11 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 					return echoService.commonRepository.DeleteTempFileByObjectKey(ctx, newEcho.Images[i].ObjectKey)
 				})
 			}
+		}
+
+		// 推送到联邦
+		if err := echoService.fediverseService.PushEchoToFediverse(userid, *newEcho); err != nil {
+			// 失败不影响正常发布
 		}
 
 		return echoService.echoRepository.CreateEcho(ctx, newEcho)

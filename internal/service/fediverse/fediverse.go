@@ -28,8 +28,8 @@ type FediverseService struct {
 	fediverseRepository repository.FediverseRepositoryInterface
 	userRepository      userRepository.UserRepositoryInterface
 	settingService      settingService.SettingServiceInterface
-	echoRepository     echoRepository.EchoRepositoryInterface
-	commonService  commonService.CommonServiceInterface
+	echoRepository      echoRepository.EchoRepositoryInterface
+	commonService       commonService.CommonServiceInterface
 }
 
 func NewFediverseService(
@@ -341,4 +341,48 @@ func (fediverseService *FediverseService) fetchRemoteActorInbox(actorURL string)
 	}
 
 	return "", errors.New("remote actor inbox not found")
+}
+
+// PushEchoToFediverse 将 Echo 推送到联邦网络
+func (fediverseService *FediverseService) PushEchoToFediverse(userId uint, echo echoModel.Echo) error {
+	// 获取用户
+	user, err := fediverseService.commonService.CommonGetUserByUserId(userId)
+	if err != nil {
+		return err
+	}
+
+	// 获取粉丝列表
+	followers, err := fediverseService.fediverseRepository.GetFollowers(user.ID)
+	if err != nil {
+		return err
+	}
+	if len(followers) == 0 {
+		return nil
+	}
+
+	// 获取 Actor 和 setting
+	actor, _, err := fediverseService.BuildActor(&user)
+	if err != nil {
+		return err
+	}
+
+	echoByte, err := json.Marshal(echo)
+	if err != nil {
+		return err
+	}
+
+	// 推送到每个粉丝的Inbox
+	for _, follower := range followers {
+		inboxURL, err := fediverseService.fetchRemoteActorInbox(follower.ActorID)
+		if err != nil {
+			return err
+		}
+
+		// 发送消息
+		if err := httpUtil.PostActivity(echoByte, inboxURL, actor.ID); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

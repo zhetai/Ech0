@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
@@ -35,4 +36,7 @@ type FediverseServiceInterface interface {
 
 	// GetObjectByID 通过 ID 获取内容对象
 	GetObjectByID(id uint) (model.Object, error)
+
+	// PushEchoToFediverse 将 Echo 推送到联邦网络
+	PushEchoToFediverse(userId uint, echo echoModel.Echo) error
 }
