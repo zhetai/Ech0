@@ -43,6 +43,9 @@ func (fediverseService *FediverseService) handleFollowActivity(user *userModel.U
 		return err
 	}
 
+	// 保存粉丝记录
+	fmt.Printf("Saving follower: userID=%d, actor=%s\n", user.ID, followerActor)
+
 	return fediverseService.txManager.Run(func(ctx context.Context) error {
 		return fediverseService.fediverseRepository.SaveFollower(ctx, &model.Follower{
 			UserID:  user.ID,
