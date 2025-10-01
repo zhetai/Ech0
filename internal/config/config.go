@@ -22,9 +22,11 @@ var Config AppConfig
 var JWT_SECRET []byte
 
 // RSA_PRIVATE_KEY 用于联邦架构的私钥
+var RSA_PRIVATE *rsa.PrivateKey
 var RSA_PRIVATE_KEY []byte
 
 // RSA_PUBLIC_KEY 用于联邦架构的公钥
+var RSA_PUBLIC *rsa.PublicKey
 var RSA_PUBLIC_KEY []byte
 
 // AppConfig 应用程序配置结构体
@@ -171,11 +173,22 @@ func GenSecretKey() {
 
 		log.Println("Generated RSA key pair and saved to private.pem and public.pem")
 		RSA_PRIVATE_KEY = privPem
+		RSA_PRIVATE = priv
 		RSA_PUBLIC_KEY = pubPem
+		RSA_PUBLIC = pub
 	} else {
 		// 读取现有的密钥文件
 		privPem, err := os.ReadFile(keyDir + "/" + privateKey)
 		if err == nil {
+			block, _ := pem.Decode(privPem)
+			if block == nil || block.Type != "RSA PRIVATE KEY" {
+				log.Fatal("Failed to decode PEM block containing private key")
+			}
+			priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+			if err != nil {
+				log.Fatalf("Failed to parse private key: %v", err)
+			}
+			RSA_PRIVATE = priv
 			RSA_PRIVATE_KEY = privPem
 		} else {
 			log.Println("Private key not found, generating new key pair.")
@@ -183,6 +196,19 @@ func GenSecretKey() {
 		// 读取公钥文件
 		pubPem, err := os.ReadFile(keyDir + "/" + publicKey)
 		if err == nil {
+			block, _ := pem.Decode(pubPem)
+			if block == nil || block.Type != "PUBLIC KEY" {
+				log.Fatal("Failed to decode PEM block containing public key")
+			}
+			pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+			if err != nil {
+				log.Fatalf("Failed to parse public key: %v", err)
+			}
+			rsaPub, ok := pub.(*rsa.PublicKey)
+			if !ok {
+				log.Fatal("Public key is not an RSA public key")
+			}
+			RSA_PUBLIC = rsaPub
 			RSA_PUBLIC_KEY = pubPem
 		} else {
 			log.Println("Public key not found, generating new key pair.")

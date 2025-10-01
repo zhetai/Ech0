@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/lin-snow/ech0/internal/config"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
@@ -234,7 +235,7 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 		PublicKey: model.PublicKey{
 			ID:           serverURL + "/users/" + user.Username + "#main-key",
 			Owner:        serverURL + "/users/" + user.Username,
-			PublicKeyPem: user.PublicKeyPEM,
+			PublicKeyPem: string(config.RSA_PUBLIC_KEY),
 		},
 	}, &setting, nil
 }
