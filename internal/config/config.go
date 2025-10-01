@@ -3,8 +3,11 @@ package config
 import (
 	"bytes"
 	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
 	_ "embed"
 	"encoding/hex"
+	"encoding/pem"
 	"log"
 	"os"
 
@@ -63,6 +66,10 @@ type AppConfig struct {
 		Host string `yaml:"host"` // SSH 主机地址
 		Key  string `yaml:"key"`  // SSH 私钥路径
 	} `yaml:"ssh"`
+	Federation struct {
+		PrivateKey string `yaml:"privatekey"` // RSA 私钥
+		PublicKey  string `yaml:"publickey"`  // RSA 公钥
+	} `yaml:"federation"`
 }
 
 //go:embed config.yaml
@@ -84,7 +91,11 @@ func LoadAppConfig() {
 		panic(model.READ_CONFIG_PANIC + ":" + err.Error())
 	}
 
+	// 初始化 JWT_SECRET
 	JWT_SECRET = GetJWTSecret()
+
+	// 初始化 RSA 密钥对
+	GenSecretKey()
 }
 
 // GetJWTSecret 加载JWT密钥
@@ -101,4 +112,58 @@ func GetJWTSecret() []byte {
 	}
 
 	return []byte(secret)
+}
+
+// GenSecretKey 生成用于联邦架构的密钥对，并保存到本地文件
+func GenSecretKey() {
+	const (
+		keyDir     = "data/keys"
+		privateKey = "private.pem"
+		publicKey  = "public.pem"
+	)
+	// 检查密钥文件是否已经存在
+	if _, err := os.Stat(keyDir); os.IsNotExist(err) {
+		// 创建存放密钥的目录
+		if err := os.Mkdir(keyDir, 0700); err != nil {
+			log.Fatalf("Failed to create key directory: %v", err)
+		}
+	}
+
+	if _, err := os.Stat(keyDir + "/" + privateKey); err == nil {
+		log.Println("Private key already exists, skipping generation.")
+		return
+	}
+
+	if _, err := os.Stat(keyDir + "/" + publicKey); err == nil {
+		log.Println("Public key already exists, skipping generation.")
+		return
+	}
+
+	//  2048 位 RSA 私钥
+	priv, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		log.Fatalf("Failed to generate private key: %v", err)
+	}
+
+	// 保存私钥到文件
+	privBytes := x509.MarshalPKCS1PrivateKey(priv)
+	privPem := pem.EncodeToMemory(&pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: privBytes,
+	})
+	os.WriteFile(keyDir+"/"+privateKey, privPem, 0600)
+
+	// 保存公钥到文件
+	pub := &priv.PublicKey
+	pubBytes, err := x509.MarshalPKIXPublicKey(pub)
+	if err != nil {
+		log.Fatalf("Failed to marshal public key: %v", err)
+	}
+	pubPem := pem.EncodeToMemory(&pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: pubBytes,
+	})
+	os.WriteFile(keyDir+"/"+publicKey, pubPem, 0644)
+
+	log.Println("Generated RSA key pair and saved to private.pem and public.pem")
 }
