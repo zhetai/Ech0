@@ -179,7 +179,10 @@ func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.
 	activityID := fmt.Sprintf("%s/activities/%d", serverURL, echo.ID)
 
 	activity := model.Activity{
-		Context:    "https://www.w3.org/ns/activitystreams",
+		Context: []any{
+			"https://www.w3.org/ns/activitystreams",
+			"https://w3id.org/security/v1",
+		},
 		ActivityID: activityID,
 		Type:       model.ActivityTypeCreate,
 		ActorID:    actor.ID,
@@ -188,7 +191,7 @@ func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.
 		ObjectType: obj.Type,
 		Published:  echo.CreatedAt,
 		To:         obj.To,
-		Cc:         []string{},
+		Cc:         []string{actor.Followers},
 		Summary:    "",
 		Delivered:  false,
 		CreatedAt:  time.Now(),
@@ -211,7 +214,9 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 	}
 
 	return model.Object{
-		Context:      "https://www.w3.org/ns/activitystreams",
+		Context: []any{
+			"https://www.w3.org/ns/activitystreams",
+		},
 		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
 		Type:         "Note",
 		Content:      echo.Content,
@@ -361,27 +366,60 @@ func (fediverseService *FediverseService) PushEchoToFediverse(userId uint, echo 
 	}
 
 	// 获取 Actor 和 setting
-	actor, _, err := fediverseService.BuildActor(&user)
+	actor, setting, err := fediverseService.BuildActor(&user)
 	if err != nil {
 		return err
 	}
 
-	echoByte, err := json.Marshal(echo)
+	serverURL, err := normalizeServerURL(setting.ServerURL)
 	if err != nil {
 		return err
 	}
 
+	activity := fediverseService.ConvertEchoToActivity(&echo, &actor, serverURL)
+	object := fediverseService.ConvertEchoToObject(&echo, &actor, serverURL)
+
+	activityMap := map[string]any{}
+	activityBytes, err := json.Marshal(activity)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(activityBytes, &activityMap); err != nil {
+		return err
+	}
+
+	objectMap := map[string]any{}
+	objectBytes, err := json.Marshal(object)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(objectBytes, &objectMap); err != nil {
+		return err
+	}
+
+	activityMap["object"] = objectMap
+
+	payloadBytes, err := json.Marshal(activityMap)
+	if err != nil {
+		return err
+	}
+
+	var errs []error
 	// 推送到每个粉丝的Inbox
 	for _, follower := range followers {
 		inboxURL, err := fediverseService.fetchRemoteActorInbox(follower.ActorID)
 		if err != nil {
-			return err
+			errs = append(errs, fmt.Errorf("fetch inbox for %s: %w", follower.ActorID, err))
+			continue
 		}
 
-		// 发送消息
-		if err := httpUtil.PostActivity(echoByte, inboxURL, actor.ID); err != nil {
-			return err
+		if err := httpUtil.PostActivity(payloadBytes, inboxURL, actor.ID); err != nil {
+			errs = append(errs, fmt.Errorf("post activity to %s: %w", inboxURL, err))
 		}
+	}
+
+	if len(errs) > 0 {
+		return errors.Join(errs...)
 	}
 
 	return nil
