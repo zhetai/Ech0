@@ -151,6 +151,10 @@ func (h *FediverseHandler) GetOutbox(ctx *gin.Context) {
 			return
 		}
 
+		// 设置 Content-Type 为 application/activity+json
+		ctx.Header("Content-Type", "application/activity+json")
+
+		// 返回 Outbox 元信息
 		ctx.JSON(http.StatusOK, outbox)
 		return
 	}

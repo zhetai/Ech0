@@ -13,6 +13,8 @@ import (
 )
 
 func (fediverseService *FediverseService) handleFollowActivity(user *userModel.User, activity *model.Activity) error {
+	fmt.Println("Handling follow activity:", activity)
+
 	followerActor := activity.ActorURL
 	if followerActor == "" {
 		followerActor = activity.ActorID
