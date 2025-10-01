@@ -204,6 +204,9 @@ ssh -p 6278 ssh.vaaat.com
 13. **How to configure S3?**  
     Fill in endpoint (without http/https) and bucket with public access.
 
+14. **How to join the Fediverse?**  
+  You need to bind Ech0 to a domain name and fill in the domain in the server address field in the settings page. Once set, Ech0 will automatically join the Fediverse. Example: `https://memo.vaaat.com`
+
 ---
 
 ## Feedback & Community
