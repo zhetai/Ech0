@@ -165,6 +165,10 @@ type Actor struct {
 	Name              string        `json:"name"`              // 显示名称
 	PreferredUsername string        `json:"preferredUsername"` // 用户名
 	Summary           string        `json:"summary"`           // 简短介绍
+	Icon              Preview   `json:"icon,omitempty"`    // 头像信息
+	Image             Preview   `json:"image,omitempty"`   // 封面图片
+	Followers        string        `json:"followers"`        // 粉丝列表 URL
+	Following        string        `json:"following"`        // 关注列表 URL
 	Inbox             string        `json:"inbox"`             // 收件箱 URL
 	Outbox            string        `json:"outbox"`            // 发件箱 URL
 	PublicKey         PublicKey     `json:"publicKey"`         // 公钥信息
