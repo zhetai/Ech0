@@ -34,9 +34,6 @@ func (fediverseService *FediverseService) BuildOutbox(username string) (model.Ou
 
 	// 查 Echos
 	_, total := fediverseService.echoRepository.GetEchosByPage(1, 10, "", false)
-	if err != nil {
-		return model.OutboxResponse{}, err
-	}
 
 	firstPage := fmt.Sprintf("%s?page=1", actor.Outbox)
 	lastPage := ""
