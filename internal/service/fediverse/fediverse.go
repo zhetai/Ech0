@@ -136,9 +136,6 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 
 	// 查 Echos
 	echosByPage, total := fediverseService.echoRepository.GetEchosByPage(page, pageSize, "", false)
-	if err != nil {
-		return model.OutboxPage{}, err
-	}
 
 	// 转 Avtivity
 	var activities []model.Activity
