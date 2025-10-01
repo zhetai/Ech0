@@ -44,7 +44,7 @@ func NewEchoService(
 
 // PostEcho 创建新的Echo
 func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error {
-	return echoService.txManager.Run(func(ctx context.Context) error {
+	err := echoService.txManager.Run(func(ctx context.Context) error {
 		newEcho.UserID = userid
 
 		user, err := echoService.commonService.CommonGetUserByUserId(userid)
@@ -97,15 +97,26 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 			}
 		}
 
-		// 推送到联邦
-		if err := echoService.fediverseService.PushEchoToFediverse(userid, *newEcho); err != nil {
-			// 失败不影响正常发布
-			fmt.Println("Failed to push Echo to Fediverse:", err)
-		}
-
 		return echoService.echoRepository.CreateEcho(ctx, newEcho)
 	})
 
+	if err != nil {
+		return err
+	}
+
+	// 事务提交成功后再推送，确保已拿到持久化 ID
+	savedEcho, fetchErr := echoService.echoRepository.GetEchosById(newEcho.ID)
+	if fetchErr != nil {
+		return fetchErr
+	}
+	if savedEcho != nil {
+		if pushErr := echoService.fediverseService.PushEchoToFediverse(userid, *savedEcho); pushErr != nil {
+			// 推送失败不影响发布
+			fmt.Println("Error pushing Echo to Fediverse:", pushErr)
+		}
+	}
+
+	return nil
 }
 
 // GetEchosByPage 获取Echo列表，支持分页
