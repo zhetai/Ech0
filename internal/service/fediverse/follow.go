@@ -31,15 +31,18 @@ func (fediverseService *FediverseService) handleFollowActivity(user *userModel.U
 
 	acceptPayload, err := fediverseService.buildAcceptActivityPayload(&actor, activity, followerActor, serverURL)
 	if err != nil {
+		fmt.Printf("Error building accept activity payload: %v\n", err)
 		return err
 	}
 
 	inboxURL, err := fediverseService.fetchRemoteActorInbox(followerActor)
 	if err != nil {
+		fmt.Printf("Error fetching follower inbox: %v\n", err)
 		return err
 	}
 
 	if err := httpUtil.PostActivity(acceptPayload, inboxURL, actor.ID); err != nil {
+		fmt.Printf("Error posting accept activity: %v\n", err)
 		return err
 	}
 
