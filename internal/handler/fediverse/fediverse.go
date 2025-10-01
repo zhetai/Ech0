@@ -34,8 +34,9 @@ func (h *FediverseHandler) Webfinger(ctx *gin.Context) {
 	}
 
 	// 这里只处理 user 类型的 resource，格式为 acct:username@domain
+	// 提取用户名
 	var username string
-	_, err := fmt.Sscanf(resource, "acct:%s", &username)
+	_, err := fmt.Sscanf(resource, "acct:%s@%*s", &username)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, model.ActivityPubError{
 			Context: "https://www.w3.org/ns/activitystreams",
