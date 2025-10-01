@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/lin-snow/ech0/internal/transaction"
@@ -99,6 +100,7 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		// 推送到联邦
 		if err := echoService.fediverseService.PushEchoToFediverse(userid, *newEcho); err != nil {
 			// 失败不影响正常发布
+			fmt.Println("Failed to push Echo to Fediverse:", err)
 		}
 
 		return echoService.echoRepository.CreateEcho(ctx, newEcho)
