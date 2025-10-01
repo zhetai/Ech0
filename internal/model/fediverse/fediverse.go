@@ -103,17 +103,17 @@ type Activity struct {
 	Context      any       `gorm:"type:text;not null" json:"@context"`      // ActivityStreams 上下文，可以是字符串或数组
 	ActivityID   string    `gorm:"size:512;unique;not null" json:"id"`      // Activity URL
 	Type         string    `gorm:"size:64;not null" json:"type"`            // Create, Follow, Like, Accept...
-	ActorID      string    `gorm:"index;not null" json:"actor_id"`          // 关联的用户 ID
+	ActorID      string    `gorm:"index;not null" json:"-"`          // 关联的用户 ID
 	ActorURL     string    `gorm:"size:512;not null" json:"actor"`          // Actor URL
 	ObjectID     string    `gorm:"size:512;not null" json:"object"`         // 目标对象 URL
-	ObjectType   string    `gorm:"size:64;not null" json:"objectType"`      // 目标对象类型
+	ObjectType   string    `gorm:"size:64;not null" json:"-"`      // 目标对象类型
 	Published    time.Time `json:"published"`                               // 发布时间
 	To           []string  `gorm:"type:text" json:"to,omitempty"`           // 接收者列表，序列化存储
 	Cc           []string  `gorm:"type:text" json:"cc,omitempty"`           // 补充接收列表
 	Summary      string    `gorm:"type:text" json:"summary,omitempty"`      // 可选描述
-	ActivityJSON string    `gorm:"type:text;not null" json:"activity_json"` // 原始 Activity JSON
-	Delivered    bool      `gorm:"default:false" json:"delivered"`          // 是否投递
-	CreatedAt    time.Time `gorm:"autoCreateTime" json:"created_at"`        // 创建时间
+	ActivityJSON string    `gorm:"type:text;not null" json:"-"` // 原始 Activity JSON
+	Delivered    bool      `gorm:"default:false" json:"-"`          // 是否投递
+	CreatedAt    time.Time `gorm:"autoCreateTime" json:"-"`        // 创建时间
 }
 
 // Object 内容对象表 (存储 Note, Article, Image 等等)
@@ -128,8 +128,8 @@ type Object struct {
 	Published    time.Time    `json:"published,omitempty"`
 	To           []string     `gorm:"-" json:"to,omitempty"`        // 序列化成 JSON 存储
 	Cc           []string     `gorm:"-" json:"cc,omitempty"`        // 同上
-	ObjectJSON   string       `gorm:"type:text" json:"object_json"` // 完整 JSON，便于恢复
-	CreatedAt    time.Time    `gorm:"autoCreateTime" json:"created_at"`
+	ObjectJSON   string       `gorm:"type:text" json:"-"` // 完整 JSON，便于恢复
+	CreatedAt    time.Time    `gorm:"autoCreateTime" json:"-"`
 }
 
 // Attachment 附件对象
