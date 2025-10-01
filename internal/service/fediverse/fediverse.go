@@ -223,7 +223,7 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 	}
 	// 构建头像信息 (域名 + /api + 头像路径)
 	if user.Avatar == "" {
-		user.Avatar = "/favicon.svg" // 默认头像路径
+		user.Avatar = "/Ech0.png" // 默认头像路径
 	} else {
 		user.Avatar = "/api" + user.Avatar
 	}
