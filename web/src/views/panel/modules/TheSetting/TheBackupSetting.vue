@@ -51,12 +51,16 @@ import { fetchBackup } from '@/service/api'
 import { theToast } from '@/utils/toast'
 
 const handleBackup = async () => {
-  fetchBackup().then((res) => {
-    if (res.code === 1) {
-      theToast.success('备份成功')
+  await theToast.promise(
+    fetchBackup(),
+    {
+      loading: '备份中...',
+      success: (res) => (res.code === 1 ? '备份成功' : '备份失败'),
+      error: '备份失败',
     }
-  })
+  )
 }
+
 
 const handleBackupExport = async () => {
   try {
