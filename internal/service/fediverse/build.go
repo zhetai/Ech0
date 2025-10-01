@@ -111,6 +111,7 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 			ID:           serverURL + "/users/" + user.Username + "#main-key",
 			Owner:        serverURL + "/users/" + user.Username,
 			PublicKeyPem: string(config.RSA_PUBLIC_KEY),
+			Type: "Key",
 		},
 	}, &setting, nil
 }
