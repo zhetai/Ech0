@@ -130,7 +130,10 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	if err != nil {
 		return model.OutboxPage{}, err
 	}
-	serverURL := httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL))
+	serverURL, err := normalizeServerURL(setting.ServerURL)
+	if err != nil {
+		return model.OutboxPage{}, err
+	}
 
 	// 查 Echos
 	echosByPage, err := fediverseService.echoService.GetEchosByPage(authModel.NO_USER_LOGINED, commonModel.PageQueryDto{
@@ -149,6 +152,7 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 
 	// 拼装 OutboxPage
 	outboxPage := model.OutboxPage{
+		Context:      "https://www.w3.org/ns/activitystreams",
 		ID:           fmt.Sprintf("%s/users/%s/outbox?page=%d", serverURL, username, page),
 		Type:         "OrderedCollectionPage",
 		PartOf:       fmt.Sprintf("%s/users/%s/outbox", serverURL, username),
@@ -175,6 +179,7 @@ func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.
 	activityID := fmt.Sprintf("%s/activities/%d", serverURL, echo.ID)
 
 	activity := model.Activity{
+		Context:    "https://www.w3.org/ns/activitystreams",
 		ActivityID: activityID,
 		Type:       model.ActivityTypeCreate,
 		ActorID:    actor.ID,
@@ -206,10 +211,11 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 	}
 
 	return model.Object{
+		Context:      "https://www.w3.org/ns/activitystreams",
 		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
 		Type:         "Note",
 		Content:      echo.Content,
-		AttributedTo: fmt.Sprintf("%s/users/%s", serverURL, echo.Username),
+		AttributedTo: actor.ID,
 		Published:    echo.CreatedAt,
 		To: []string{
 			"https://www.w3.org/ns/activitystreams#Public",
@@ -295,7 +301,10 @@ func (fediverseService *FediverseService) GetObjectByID(id uint) (model.Object, 
 	if err != nil {
 		return model.Object{}, err
 	}
-	serverURL := httpUtil.ExtractDomain(httpUtil.TrimURL(setting.ServerURL))
+	serverURL, err := normalizeServerURL(setting.ServerURL)
+	if err != nil {
+		return model.Object{}, err
+	}
 
 	// 转 Object
 	return fediverseService.ConvertEchoToObject(echo, &actor, serverURL), nil

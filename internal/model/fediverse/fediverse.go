@@ -46,6 +46,7 @@ type OutboxResponse struct {
 
 // OutboxPage 表示分页形式的 Outbox
 type OutboxPage struct {
+	Context      any        `json:"@context,omitempty"`
 	ID           string     `json:"id"`
 	Type         string     `json:"type"` // "OrderedCollectionPage"
 	PartOf       string     `json:"partOf"`
@@ -117,6 +118,7 @@ type Activity struct {
 
 // Object 内容对象表 (存储 Note, Article, Image 等等)
 type Object struct {
+	Context      any          `gorm:"-" json:"@context,omitempty"`
 	ID           uint         `gorm:"primaryKey;autoIncrement" json:"-"`
 	ObjectID     string       `gorm:"size:512;unique;not null" json:"id"`     // 全局唯一 URL
 	Type         string       `gorm:"size:64;not null" json:"type"`           // Note, Article, Image...
