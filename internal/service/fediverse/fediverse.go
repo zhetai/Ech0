@@ -227,9 +227,9 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 		},
 		ID:                serverURL + "/users/" + user.Username, // 实例地址拼接 域名 + /users/ + username
 		Type:              "Person",                              // 固定值
-		Name:              user.DisplayName,                      // 显示名称
+		Name:              user.Username,                      // 显示名称
 		PreferredUsername: user.Username,                         // 用户名
-		Summary:           "这是" + user.DisplayName + "的 ActivityPub 个人资料。",
+		Summary:           "这是" + user.Username + "的 ActivityPub 个人资料。",
 		Inbox:             serverURL + "/users/" + user.Username + "/inbox",
 		Outbox:            serverURL + "/users/" + user.Username + "/outbox",
 		PublicKey: model.PublicKey{
