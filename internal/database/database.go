@@ -2,6 +2,7 @@ package database
 
 import (
 	"os"
+	"sync/atomic"
 
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -20,6 +21,21 @@ import (
 
 // DB 全局数据库连接变量
 var DB *gorm.DB
+
+// 使用 atomic.Value 来存储 *gorm.DB，确保线程安全和支持热更新
+var db atomic.Value // 用于存储 *gorm.DB
+
+func GetDB() *gorm.DB {
+	return db.Load().(*gorm.DB)
+}
+
+func SetDB(newDB *gorm.DB) {
+	db.Store(newDB)
+}
+
+func DBProvider() func() *gorm.DB {
+	return GetDB
+}
 
 // InitDatabase 初始化数据库连接
 func InitDatabase() {
@@ -47,6 +63,7 @@ func InitDatabase() {
 				Err: err,
 			})
 		}
+		SetDB(DB)
 	}
 
 	if err := MigrateDB(); err != nil {

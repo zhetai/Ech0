@@ -9,12 +9,12 @@ import (
 )
 
 type FediverseRepository struct {
-	db *gorm.DB
+	db func() *gorm.DB
 }
 
-func NewFediverseRepository(db *gorm.DB) FediverseRepositoryInterface {
+func NewFediverseRepository(dbProvider func() *gorm.DB) FediverseRepositoryInterface {
 	return &FediverseRepository{
-		db: db,
+		db: dbProvider,
 	}
 }
 
@@ -22,12 +22,12 @@ func (r *FediverseRepository) getDB(ctx context.Context) *gorm.DB {
 	if tx, ok := ctx.Value(transaction.TxKey).(*gorm.DB); ok {
 		return tx
 	}
-	return r.db
+	return r.db()
 }
 
 func (r *FediverseRepository) GetFollowers(userID uint) ([]model.Follower, error) {
 	var followers []model.Follower
-	if err := r.db.Where("user_id = ?", userID).Find(&followers).Error; err != nil {
+	if err := r.db().Where("user_id = ?", userID).Find(&followers).Error; err != nil {
 		return nil, err
 	}
 	return followers, nil
@@ -35,7 +35,7 @@ func (r *FediverseRepository) GetFollowers(userID uint) ([]model.Follower, error
 
 func (r *FediverseRepository) GetFollowing(userID uint) ([]model.Follow, error) {
 	var following []model.Follow
-	if err := r.db.Where("user_id = ?", userID).Find(&following).Error; err != nil {
+	if err := r.db().Where("user_id = ?", userID).Find(&following).Error; err != nil {
 		return nil, err
 	}
 	return following, nil

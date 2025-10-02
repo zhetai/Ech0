@@ -37,7 +37,7 @@ import (
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
 func BuildHandlers(
-	db *gorm.DB,
+	dbProvider func() *gorm.DB,
 	cacheFactory *cache.CacheFactory,
 	tmFactory *transaction.TransactionManagerFactory,
 ) (*Handlers, error) {
@@ -60,7 +60,7 @@ func BuildHandlers(
 }
 
 func BuildTasker(
-	db *gorm.DB,
+	dbProvider func() *gorm.DB,
 	cacheFactory *cache.CacheFactory,
 	tmFactory *transaction.TransactionManagerFactory,
 ) (*task.Tasker, error) {

@@ -58,10 +58,10 @@ func (s *Server) Init() {
 	cacheFactory := cache.NewCacheFactory()
 
 	// TransactionManagerFactory
-	transactionManagerFactory := transaction.NewTransactionManagerFactory(database.DB)
+	transactionManagerFactory := transaction.NewTransactionManagerFactory(database.GetDB)
 
 	// Handlers
-	handlers, err := di.BuildHandlers(database.DB, cacheFactory, transactionManagerFactory)
+	handlers, err := di.BuildHandlers(database.GetDB, cacheFactory, transactionManagerFactory)
 	if err != nil {
 		errUtil.HandlePanicError(&commonModel.ServerError{
 			Msg: commonModel.INIT_HANDLERS_PANIC,
@@ -73,7 +73,7 @@ func (s *Server) Init() {
 	router.SetupRouter(s.GinEngine, handlers)
 
 	// Tasker
-	s.tasker, err = di.BuildTasker(database.DB, cacheFactory, transactionManagerFactory)
+	s.tasker, err = di.BuildTasker(database.GetDB, cacheFactory, transactionManagerFactory)
 	if err != nil {
 		errUtil.HandlePanicError(&commonModel.ServerError{
 			Msg: commonModel.INIT_TASKER_PANIC,

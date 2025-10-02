@@ -41,28 +41,28 @@ import (
 // Injectors from wire.go:
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
-func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*Handlers, error) {
+func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*Handlers, error) {
 	webHandler := handler.NewWebHandler()
 	transactionManager := ProvideTransactionManager(tmFactory)
 	iCache := ProvideCache(cacheFactory)
-	userRepositoryInterface := repository.NewUserRepository(db, iCache)
-	commonRepositoryInterface := repository2.NewCommonRepository(db)
-	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db, iCache)
-	echoRepositoryInterface := repository3.NewEchoRepository(db, iCache)
+	userRepositoryInterface := repository.NewUserRepository(dbProvider, iCache)
+	commonRepositoryInterface := repository2.NewCommonRepository(dbProvider)
+	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(dbProvider, iCache)
+	echoRepositoryInterface := repository3.NewEchoRepository(dbProvider, iCache)
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface)
 	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface)
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
-	fediverseRepositoryInterface := repository4.NewFediverseRepository(db)
+	fediverseRepositoryInterface := repository4.NewFediverseRepository(dbProvider)
 	fediverseServiceInterface := service4.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface, commonServiceInterface)
 	echoServiceInterface := service5.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface, fediverseServiceInterface)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
 	settingHandler := handler5.NewSettingHandler(settingServiceInterface)
-	todoRepositoryInterface := repository5.NewTodoRepository(db, iCache)
+	todoRepositoryInterface := repository5.NewTodoRepository(dbProvider, iCache)
 	todoServiceInterface := service6.NewTodoService(transactionManager, todoRepositoryInterface, commonServiceInterface)
 	todoHandler := handler6.NewTodoHandler(todoServiceInterface)
-	connectRepositoryInterface := repository6.NewConnectRepository(db)
+	connectRepositoryInterface := repository6.NewConnectRepository(dbProvider)
 	connectServiceInterface := service7.NewConnectService(transactionManager, connectRepositoryInterface, echoRepositoryInterface, commonServiceInterface, settingServiceInterface)
 	connectHandler := handler7.NewConnectHandler(connectServiceInterface)
 	backupServiceInterface := service8.NewBackupService(commonServiceInterface)
@@ -72,12 +72,12 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	return handlers, nil
 }
 
-func BuildTasker(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*task.Tasker, error) {
+func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*task.Tasker, error) {
 	transactionManager := ProvideTransactionManager(tmFactory)
-	commonRepositoryInterface := repository2.NewCommonRepository(db)
+	commonRepositoryInterface := repository2.NewCommonRepository(dbProvider)
 	iCache := ProvideCache(cacheFactory)
-	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db, iCache)
-	echoRepositoryInterface := repository3.NewEchoRepository(db, iCache)
+	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(dbProvider, iCache)
+	echoRepositoryInterface := repository3.NewEchoRepository(dbProvider, iCache)
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface)
 	tasker := task.NewTasker(commonServiceInterface)
 	return tasker, nil
