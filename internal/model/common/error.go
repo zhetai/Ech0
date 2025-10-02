@@ -72,9 +72,9 @@ const (
 
 // Backup 错误相关常量
 const (
-	SNAPSHOT_UPLOAD_FAILED      = "快照上传失败"
-	SNAPSHOT_RESTORE_FAILED     = "快照恢复失败"
-	DATABASE_CLOSE_FAILED		= "数据库关闭失败"
+	SNAPSHOT_UPLOAD_FAILED  = "快照上传失败"
+	SNAPSHOT_RESTORE_FAILED = "快照恢复失败"
+	DATABASE_CLOSE_FAILED   = "数据库关闭失败"
 )
 
 // Fediverse 错误相关常量

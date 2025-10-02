@@ -122,7 +122,7 @@ func (backupHandler *BackupHandler) ImportBackup() gin.HandlerFunc {
 				Err: err,
 			}
 		}
-		
+
 		return res.Response{
 			Msg: commonModel.IMPORT_BACKUP_SUCCESS,
 		}
