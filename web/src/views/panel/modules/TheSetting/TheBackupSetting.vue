@@ -101,8 +101,11 @@ const handleBackupRestore = async () => {
         fetchImportBackup(file),
         {
           loading: '导入中,请不要关闭页面...',
-          success: (res) => (res.code === 1 ? '导入成功' : `导入失败: ${res.msg}`),
+          success: (res) => (res.code === 1 ? '快照恢复成功🎉' : `导入失败: ${res.msg}`),
           error: '导入失败',
+        },
+        {
+          duration: 5000,
         }
       )
     }
