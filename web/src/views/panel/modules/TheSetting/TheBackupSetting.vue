@@ -102,7 +102,7 @@ const handleBackupRestore = async () => {
         {
           loading: '导入中,请不要关闭页面...',
           success: (res) => (res.code === 1 ? '快照恢复成功🎉' : `导入失败: ${res.msg}`),
-          error: '导入失败',
+          error: '导入失败,请尝试重新导入或使用TUI模式进行恢复',
         },
         {
           duration: 5000,
