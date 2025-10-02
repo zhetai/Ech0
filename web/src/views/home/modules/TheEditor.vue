@@ -1,18 +1,12 @@
 <template>
-  <div
-    class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
-  >
+  <div class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md">
     <div class="mx-auto w-full px-3 py-4">
       <!-- The Title && Nav -->
       <TheTitleAndNav />
 
       <!-- The Editor -->
       <div class="rounded-lg p-2 sm:p-3 mb-1">
-        <TheMdEditor
-          v-model="echoToAdd.content"
-          class="rounded-lg"
-          v-if="currentMode === Mode.ECH0"
-        />
+        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="currentMode === Mode.ECH0" />
 
         <!-- ImageMode : TheImageEditor -->
         <div v-if="currentMode === Mode.Image">
@@ -21,36 +15,18 @@
             <div class="flex items-center gap-2">
               <span class="text-gray-500">选择添加方式：</span>
               <!-- 直链 -->
-              <BaseButton
-                :icon="Url"
-                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="imageToAdd.image_source = ImageSource.URL"
-                title="插入图片链接"
-              />
+              <BaseButton :icon="Url" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.URL" title="插入图片链接" />
               <!-- 上传本地 -->
-              <BaseButton
-                :icon="Upload"
-                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="imageToAdd.image_source = ImageSource.LOCAL"
-                title="上传本地图片"
-              />
+              <BaseButton :icon="Upload" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.LOCAL" title="上传本地图片" />
               <!-- S3 存储 -->
-              <BaseButton
-                v-if="S3Setting.enable"
-                :icon="Bucket"
-                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="imageToAdd.image_source = ImageSource.S3"
-                title="S3存储图片"
-              />
+              <BaseButton v-if="S3Setting.enable" :icon="Bucket" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.S3" title="S3存储图片" />
             </div>
             <div>
-              <BaseButton
-                v-if="imageToAdd.image_url != ''"
-                :icon="Addmore"
-                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="handleAddMoreImage"
-                title="添加更多图片"
-              />
+              <BaseButton v-if="imageToAdd.image_url != ''" :icon="Addmore" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="handleAddMoreImage" title="添加更多图片" />
             </div>
           </div>
 
@@ -63,8 +39,7 @@
                   : imageToAdd.image_source === ImageSource.LOCAL
                     ? '本地存储'
                     : 'S3存储'
-              }}</span
-            >
+              }}</span>
             {{ !ImageUploading ? '' : '，正在上传中...' }}
           </div>
 
@@ -87,20 +62,12 @@
               <span class="text-gray-400">点击上传</span>
             </BaseButton> -->
 
-            <TheUppy
-              v-if="imageToAdd.image_source !== ImageSource.URL"
-              @uppyUploaded="handleUppyUploaded"
-              @uppy-set-image-source="handleSetImageSource"
-              :TheImageSource="imageToAdd.image_source"
-            />
+            <TheUppy v-if="imageToAdd.image_source !== ImageSource.URL" @uppyUploaded="handleUppyUploaded"
+              @uppy-set-image-source="handleSetImageSource" :TheImageSource="imageToAdd.image_source" />
 
             <!-- 图片直链 -->
-            <BaseInput
-              v-if="imageToAdd.image_source === ImageSource.URL"
-              v-model="imageToAdd.image_url"
-              class="rounded-lg h-auto w-full"
-              placeholder="请输入图片链接..."
-            />
+            <BaseInput v-if="imageToAdd.image_source === ImageSource.URL" v-model="imageToAdd.image_url"
+              class="rounded-lg h-auto w-full" placeholder="请输入图片链接..." />
           </div>
         </div>
 
@@ -111,40 +78,23 @@
         <TheMusicModeEditor @refresh-audio="handleRefreshAudio" :current-mode="currentMode" />
 
         <!-- The Mode Panel -->
-        <TheModePanel
-          v-if="currentMode === Mode.Panel"
-          v-model:mode="currentMode"
-          v-model:extension-type="currentExtensionType"
-          v-model:extension-to-add="extensionToAdd"
-        />
+        <TheModePanel v-if="currentMode === Mode.Panel" v-model:mode="currentMode"
+          v-model:extension-type="currentExtensionType" v-model:extension-to-add="extensionToAdd" />
 
         <!-- ExtensionMode: TheExtensionEditor -->
-        <TheExtensionEditor
-          v-model:current-mode="currentMode"
-          v-model:current-extension-type="currentExtensionType"
-          v-model:extension-to-add="extensionToAdd"
-          v-model:video-u-r-l="videoURL"
-          v-model:website-to-add="websiteToAdd"
-        />
+        <TheExtensionEditor v-model:current-mode="currentMode" v-model:current-extension-type="currentExtensionType"
+          v-model:extension-to-add="extensionToAdd" v-model:video-u-r-l="videoURL"
+          v-model:website-to-add="websiteToAdd" />
       </div>
 
       <!-- Editor Buttons -->
-      <TheEditorButtons
-        :echo-to-add="echoToAdd"
-        :current-mode="currentMode"
-        @handle-addor-update="handleAddorUpdate"
-        @handle-change-mode="handleChangeMode"
-        @handle-add-image-mode="handleAddImageMode"
-        @handle-exit-update-mode="handleExitUpdateMode"
-        @handle-private="handlePrivate"
-      />
+      <TheEditorButtons :echo-to-add="echoToAdd" :current-mode="currentMode" @handle-addor-update="handleAddorUpdate"
+        @handle-change-mode="handleChangeMode" @handle-add-image-mode="handleAddImageMode"
+        @handle-exit-update-mode="handleExitUpdateMode" @handle-private="handlePrivate" />
 
       <!-- Editor Image -->
-      <TheEditorImage
-        :imagesToAdd="imagesToAdd"
-        :current-mode="currentMode"
-        @handleAddorUpdateEcho="handleAddorUpdateEcho"
-      />
+      <TheEditorImage :imagesToAdd="imagesToAdd" :current-mode="currentMode"
+        @handleAddorUpdateEcho="handleAddorUpdateEcho" />
     </div>
   </div>
 </template>
@@ -225,6 +175,7 @@ const handleChangeMode = () => {
 /* ----------------------------------------------------- */
 
 /* --------------- 与各种编辑器输入相关的变量 ---------------- */
+const isSubmitting = ref(false)
 // 临时网站链接变量
 const websiteToAdd = ref<{
   title: string
@@ -370,81 +321,86 @@ const handleClear = () => {
 }
 
 // 处理Echo的添加或更新
-const handleAddorUpdateEcho = (justSyncImages: boolean) => {
-  echoToAdd.value.images = imagesToAdd.value // 将图片数组添加到Echo中
+const handleAddorUpdateEcho = async (justSyncImages: boolean) => {
+  if (isSubmitting.value) return // 防止重复提交
+  isSubmitting.value = true
 
-  // 检查是否有外部链接分享
-  if (extensionToAdd.value.extension_type === ExtensionType.WEBSITE) {
-    // 检查是否存在网站链接
-    if (websiteToAdd.value.title.length > 0 && websiteToAdd.value.site.length === 0) {
-      theToast.error('网站链接不能为空！')
-      return
+  try {
+    echoToAdd.value.images = imagesToAdd.value // 将图片数组添加到Echo中
+
+    // 检查是否有外部链接分享
+    if (extensionToAdd.value.extension_type === ExtensionType.WEBSITE) {
+      // 检查是否存在网站链接
+      if (websiteToAdd.value.title.length > 0 && websiteToAdd.value.site.length === 0) {
+        theToast.error('网站链接不能为空！')
+        return
+      }
+
+      // 检查是否存在网站标题
+      if (websiteToAdd.value.title.length === 0 && websiteToAdd.value.site.length > 0) {
+        websiteToAdd.value.title = '外部链接'
+      }
+
+      // 检查网站标题和链接是否都存在
+      if (websiteToAdd.value.title.length > 0 && websiteToAdd.value.site.length > 0) {
+        // 将网站标题和链接添加到扩展中 (序列化为json)
+        extensionToAdd.value.extension = JSON.stringify({
+          title: websiteToAdd.value.title,
+          site: websiteToAdd.value.site,
+        })
+      } else {
+        extensionToAdd.value.extension = ''
+        extensionToAdd.value.extension_type = ''
+      }
     }
 
-    // 检查是否存在网站标题
-    if (websiteToAdd.value.title.length === 0 && websiteToAdd.value.site.length > 0) {
-      websiteToAdd.value.title = '外部链接'
-    }
-
-    // 检查网站标题和链接是否都存在
-    if (websiteToAdd.value.title.length > 0 && websiteToAdd.value.site.length > 0) {
-      // 将网站标题和链接添加到扩展中 (序列化为json)
-      extensionToAdd.value.extension = JSON.stringify({
-        title: websiteToAdd.value.title,
-        site: websiteToAdd.value.site,
-      })
+    // 检查最终的Extension模块是否有内容
+    if (extensionToAdd.value.extension.length > 0 && extensionToAdd.value.extension_type.length > 0) {
+      echoToAdd.value.extension = extensionToAdd.value.extension
+      echoToAdd.value.extension_type = extensionToAdd.value.extension_type
     } else {
-      extensionToAdd.value.extension = ''
-      extensionToAdd.value.extension_type = ''
+      echoToAdd.value.extension = null
+      echoToAdd.value.extension_type = null
     }
-  }
 
-  // 检查最终的Extension模块是否有内容
-  if (extensionToAdd.value.extension.length > 0 && extensionToAdd.value.extension_type.length > 0) {
-    echoToAdd.value.extension = extensionToAdd.value.extension
-    echoToAdd.value.extension_type = extensionToAdd.value.extension_type
-  } else {
-    echoToAdd.value.extension = null
-    echoToAdd.value.extension_type = null
-  }
+    // 检查Echo是否为空
+    if (
+      !echoToAdd.value.content &&
+      (!echoToAdd.value.images || echoToAdd.value.images.length === 0) &&
+      !echoToAdd.value.extension &&
+      !echoToAdd.value.extension_type
+    ) {
+      if (isUpdateMode.value) {
+        theToast.error('待更新的Echo不能为空！')
+        return
+      } else {
+        theToast.error('待添加的Echo不能为空！')
+        return
+      }
+    }
 
-  // 检查Echo是否为空
-  if (
-    !echoToAdd.value.content &&
-    (!echoToAdd.value.images || echoToAdd.value.images.length === 0) &&
-    !echoToAdd.value.extension &&
-    !echoToAdd.value.extension_type
-  ) {
+    // if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
+    //   echoToAdd.value.image_source = null
+    // }
+
+    // === 更新模式 ===
+    // 检查是否处于更新模式
     if (isUpdateMode.value) {
-      theToast.error('待更新的Echo不能为空！')
-      return
-    } else {
-      theToast.error('待添加的Echo不能为空！')
-      return
-    }
-  }
+      // 处于更新模式，执行更新操作
+      if (!echoToUpdate.value) {
+        theToast.error('没有待更新的Echo！')
+        return
+      }
 
-  // if (!echoToAdd.value.image_url || echoToAdd.value.image_url.length === 0) {
-  //   echoToAdd.value.image_source = null
-  // }
+      // 回填 echoToUpdate
+      echoToUpdate.value.content = echoToAdd.value.content
+      echoToUpdate.value.private = echoToAdd.value.private
+      echoToUpdate.value.images = echoToAdd.value.images
+      echoToUpdate.value.extension = echoToAdd.value.extension
+      echoToUpdate.value.extension_type = echoToAdd.value.extension_type
 
-  // 检查是否处于更新模式
-  if (isUpdateMode.value) {
-    // 处于更新模式，执行更新操作
-    if (!echoToUpdate.value) {
-      theToast.error('没有待更新的Echo！')
-      return
-    }
-
-    // 回填 echoToUpdate
-    echoToUpdate.value.content = echoToAdd.value.content
-    echoToUpdate.value.private = echoToAdd.value.private
-    echoToUpdate.value.images = echoToAdd.value.images
-    echoToUpdate.value.extension = echoToAdd.value.extension
-    echoToUpdate.value.extension_type = echoToAdd.value.extension_type
-
-    // 更新Echo
-    fetchUpdateEcho(echoToUpdate.value).then((res) => {
+      // 更新Echo
+      const res = await fetchUpdateEcho(echoToUpdate.value)
       if (res.code === 1 && !justSyncImages) {
         theToast.success('更新成功！')
         handleClear()
@@ -457,23 +413,22 @@ const handleAddorUpdateEcho = (justSyncImages: boolean) => {
       } else {
         theToast.error('更新失败，请稍后再试！')
       }
-    })
-    return
-  }
+      isSubmitting.value = false
+      return
+    }
 
-  console.log(
-    '添加Echo:',
-    echoToAdd.value.images.forEach((img) => console.log(img)),
-  )
-  // 不是Echo更新模式，执行添加操作
-  fetchAddEcho(echoToAdd.value).then((res) => {
+    // === 添加模式 ===
+    // 不是Echo更新模式，执行添加操作
+    const res = await fetchAddEcho(echoToAdd.value)
     if (res.code === 1) {
       theToast.success('发布成功！')
       handleClear()
       echoStore.refreshEchos()
       currentMode.value = Mode.ECH0
     }
-  })
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 // 处理Todo的添加
