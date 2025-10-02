@@ -70,6 +70,13 @@ const (
 	NO_SUCH_COMMENT_PROVIDER = "无效的评论服务提供者"
 )
 
+// Backup 错误相关常量
+const (
+	SNAPSHOT_UPLOAD_FAILED      = "快照上传失败"
+	SNAPSHOT_RESTORE_FAILED     = "快照恢复失败"
+	DATABASE_CLOSE_FAILED		= "数据库关闭失败"
+)
+
 // Fediverse 错误相关常量
 const (
 	GET_ACTOR_ERROR       = "获取 Actor 信息失败"

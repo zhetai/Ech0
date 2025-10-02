@@ -1,8 +1,11 @@
 package database
 
 import (
+	"errors"
 	"os"
+	"runtime"
 	"sync/atomic"
+	"time"
 
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -20,7 +23,7 @@ import (
 )
 
 // DB 全局数据库连接变量
-var DB *gorm.DB
+// var DB *gorm.DB
 
 // 使用 atomic.Value 来存储 *gorm.DB，确保线程安全和支持热更新
 var db atomic.Value // 用于存储 *gorm.DB
@@ -56,14 +59,14 @@ func InitDatabase() {
 		// pragma := config.Config.Database.Pragma // 从配置读取
 		// dsn := dbPath + "?" + pragma
 		var err error
-		DB, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+		SQLiteDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 		if err != nil {
 			util.HandlePanicError(&commonModel.ServerError{
 				Msg: commonModel.INIT_DATABASE_PANIC,
 				Err: err,
 			})
 		}
-		SetDB(DB)
+		SetDB(SQLiteDB)
 	}
 
 	if err := MigrateDB(); err != nil {
@@ -93,7 +96,50 @@ func MigrateDB() error {
 		&fediverseModel.Follower{},
 	}
 
-	return DB.AutoMigrate(
+	return GetDB().AutoMigrate(
 		models...,
 	)
+}
+
+// HotChangeDatabase 热切换数据库连接
+func HotChangeDatabase(newDBPath string) error {
+    oldDB := GetDB()
+
+    // 彻底关闭旧连接
+    if oldDB != nil {
+        if err := CloseDatabaseFully(oldDB); err != nil {
+			return err
+		}
+    }
+
+    // 打开新连接
+    newDB, err := gorm.Open(sqlite.Open(newDBPath), &gorm.Config{})
+    if err != nil {
+        return err
+    }
+
+    SetDB(newDB)
+    return nil
+}
+
+// CloseDatabaseFully 彻底关闭数据库连接，释放资源
+func CloseDatabaseFully(db *gorm.DB) error {
+	if db != nil {
+		sqlDB, err := db.DB()
+		if err != nil {
+			return err
+		}
+		if err := sqlDB.Close(); err != nil {
+			return err
+		}
+		SetDB(nil)
+
+		// 强制 GC 回收
+		runtime.GC()
+		time.Sleep(100 * time.Millisecond)
+
+		return nil
+	} 
+
+	return errors.New(commonModel.DATABASE_CLOSE_FAILED)
 }

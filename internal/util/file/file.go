@@ -313,6 +313,113 @@ func FileExists(path string) bool {
 	return err == nil
 }
 
+// CopyDirectory 复制整个目录到目标路径（会清空目标目录后再复制）
+func CopyDirectory(src, dest string) error {
+	if src == "" || dest == "" {
+		return fmt.Errorf("源目录和目标目录不能为空")
+	}
+
+	// 检查源目录
+	srcInfo, err := os.Stat(src)
+	if err != nil {
+		return fmt.Errorf("无法访问源目录 %s: %w", src, err)
+	}
+	if !srcInfo.IsDir() {
+		return fmt.Errorf("源路径 %s 不是目录", src)
+	}
+
+	// 防止把源复制到自身
+	srcAbs, err := filepath.Abs(src)
+	if err != nil {
+		return fmt.Errorf("获取源目录绝对路径失败: %w", err)
+	}
+	destAbs, err := filepath.Abs(dest)
+	if err != nil {
+		return fmt.Errorf("获取目标目录绝对路径失败: %w", err)
+	}
+	if srcAbs == destAbs {
+		return fmt.Errorf("源目录和目标目录不能相同: %s", srcAbs)
+	}
+	if strings.HasPrefix(destAbs, srcAbs+string(os.PathSeparator)) {
+		return fmt.Errorf("目标目录 %s 不能位于源目录 %s 内", destAbs, srcAbs)
+	}
+
+	// 清空目标目录
+	if err := os.RemoveAll(destAbs); err != nil {
+		return fmt.Errorf("清空目标目录失败: %w", err)
+	}
+
+	if err := os.MkdirAll(destAbs, srcInfo.Mode()); err != nil {
+		return fmt.Errorf("创建目标目录失败: %w", err)
+	}
+
+	return filepath.Walk(srcAbs, func(path string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil {
+			return fmt.Errorf("遍历目录 %s 时出错: %w", path, walkErr)
+		}
+
+		relPath, err := filepath.Rel(srcAbs, path)
+		if err != nil {
+			return fmt.Errorf("计算相对路径失败: %w", err)
+		}
+		if relPath == "." {
+			return nil
+		}
+
+		targetPath := filepath.Join(destAbs, relPath)
+
+		if info.IsDir() {
+			if err := os.MkdirAll(targetPath, info.Mode()); err != nil {
+				return fmt.Errorf("创建目录 %s 失败: %w", targetPath, err)
+			}
+			return nil
+		}
+
+		if info.Mode()&os.ModeSymlink != 0 {
+			linkTarget, err := os.Readlink(path)
+			if err != nil {
+				return fmt.Errorf("读取符号链接 %s 失败: %w", path, err)
+			}
+			if err := os.Symlink(linkTarget, targetPath); err != nil {
+				return fmt.Errorf("创建符号链接 %s -> %s 失败: %w", targetPath, linkTarget, err)
+			}
+			return nil
+		}
+
+		if err := copyFile(path, targetPath, info.Mode()); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func copyFile(src, dest string, perm os.FileMode) error {
+	if err := os.MkdirAll(filepath.Dir(dest), 0755); err != nil {
+		return fmt.Errorf("创建文件目录失败: %w", err)
+	}
+
+	in, err := os.Open(src)
+	if err != nil {
+		return fmt.Errorf("打开源文件 %s 失败: %w", src, err)
+	}
+	defer in.Close()
+
+	out, err := os.OpenFile(dest, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, perm)
+	if err != nil {
+		return fmt.Errorf("创建目标文件 %s 失败: %w", dest, err)
+	}
+	defer func() {
+		_ = out.Close()
+	}()
+
+	if _, err := io.Copy(out, in); err != nil {
+		return fmt.Errorf("复制文件到 %s 失败: %w", dest, err)
+	}
+
+	return nil
+}
+
 // cleanBackupDir 清理备份目录
 func cleanBackupDir(path string) error {
 	entries, err := os.ReadDir(path)
