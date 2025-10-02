@@ -5,7 +5,7 @@
       class="rounded-md shadow-sm hover:shadow-md ring-1 ring-gray-200 ring-inset bg-white p-4"
     >
       <h2 class="text-gray-600 font-bold text-lg mb-2 flex items-center">
-        <Connect class="mr-2" />连接到的Ech0:
+        <Connect class="mr-2" />我的连接:
       </h2>
       <div v-if="!loading">
         <div v-if="!connectsInfo.length" class="text-gray-500 text-sm mb-2">当前暂无连接</div>

@@ -28,7 +28,7 @@
     </div>
     <div v-else>
       <p class="text-gray-600 font-bold text-lg flex items-center">
-        <Busy class="mr-1" /> 正忙着的事情：
+        <Busy class="mr-1" /> 待办事项：
       </p>
     </div>
     <!-- 具体内容 -->
