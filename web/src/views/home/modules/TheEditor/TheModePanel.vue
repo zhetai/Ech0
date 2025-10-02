@@ -92,7 +92,7 @@ const handleTodo = () => {
 }
 
 const handlePlayMusic = () => {
-  theToast.info('音乐播放功能维护中，敬请期待！')
+  theToast.info('音乐播放器模式维护中，敬请期待！')
   // mode.value = Mode.PlayMusic
 }
 </script>

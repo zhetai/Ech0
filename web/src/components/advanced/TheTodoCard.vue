@@ -32,13 +32,16 @@
       </p>
     </div>
     <!-- 具体内容 -->
-    <div v-if="!loading">
+    <div v-if="!loading && props.todo">
       <p class="text-gray-500 text-sm whitespace-pre-wrap">
         {{ props.todo.content }}
       </p>
     </div>
-    <div v-else>
+    <div v-if="loading">
       <p class="text-gray-500 text-sm">加载中...</p>
+    </div>
+    <div v-else>
+      <p class="text-gray-500 text-sm">今日无事🎉</p>
     </div>
   </div>
   </div>

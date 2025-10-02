@@ -18,7 +18,7 @@
           <p>
             <span class="">当前登录用户:</span>
             <span class="ml-2">
-              {{ userStore?.user?.username ? userStore.user.username : '当前未登录' }}
+              {{ userStore?.user?.username ? userStore.user.username : '未登录' }}
             </span>
           </p>
         </div>

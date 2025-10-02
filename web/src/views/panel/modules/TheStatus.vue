@@ -6,12 +6,12 @@
     </div>
 
     <!-- 系统状态 -->
-    <div class="justify-center mt-1">
+    <div class="justify-center my-1">
       <TheStatusCard />
     </div>
 
     <!-- 当前在忙 -->
-    <div class="justify-center my-2 px-9 md:px-11">
+    <div v-if="isLogin" class="justify-center my-2 px-9 md:px-11">
       <TheTodoCard :todo="todos[0]" :index="0" :operative="false" @refresh="getTodos" />
     </div>
 
@@ -29,8 +29,11 @@ import TheStatusCard from '@/components/advanced/TheStatusCard.vue';
 import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
 
 import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/user';
 import { useTodoStore } from '@/stores/todo';
 const todoStore = useTodoStore();
+const userStore = useUserStore();
+const { isLogin } = storeToRefs(userStore)
 const { getTodos } = useTodoStore();
 const { todos } = storeToRefs(todoStore)
 </script>
