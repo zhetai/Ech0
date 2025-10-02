@@ -346,11 +346,6 @@ func CopyDirectory(src, dest string) error {
 		return fmt.Errorf("目标目录 %s 不能位于源目录 %s 内", destAbs, srcAbs)
 	}
 
-	// 清空目标目录
-	if err := removeAllWithRetry(destAbs, 5, 200*time.Millisecond); err != nil {
-		return fmt.Errorf("清空目标目录失败: %w", err)
-	}
-
 	if err := os.MkdirAll(destAbs, srcInfo.Mode()); err != nil {
 		return fmt.Errorf("创建目标目录失败: %w", err)
 	}
@@ -378,6 +373,9 @@ func CopyDirectory(src, dest string) error {
 		}
 
 		if info.Mode()&os.ModeSymlink != 0 {
+			if err := ensureRemoved(targetPath); err != nil {
+				return err
+			}
 			linkTarget, err := os.Readlink(path)
 			if err != nil {
 				return fmt.Errorf("读取符号链接 %s 失败: %w", path, err)
@@ -388,12 +386,30 @@ func CopyDirectory(src, dest string) error {
 			return nil
 		}
 
+		if err := ensureDir(filepath.Dir(targetPath)); err != nil {
+			return err
+		}
+
 		if err := copyFile(path, targetPath, info.Mode()); err != nil {
 			return err
 		}
 
 		return nil
 	})
+}
+
+func ensureDir(dir string) error {
+	return os.MkdirAll(dir, 0755)
+}
+
+func ensureRemoved(path string) error {
+	if _, err := os.Lstat(path); err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return fmt.Errorf("检查路径 %s 失败: %w", path, err)
+	}
+	return os.RemoveAll(path)
 }
 
 func copyFile(src, dest string, perm os.FileMode) error {
