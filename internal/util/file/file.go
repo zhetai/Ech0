@@ -6,7 +6,9 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"time"
 
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 
@@ -345,7 +347,7 @@ func CopyDirectory(src, dest string) error {
 	}
 
 	// 清空目标目录
-	if err := os.RemoveAll(destAbs); err != nil {
+	if err := removeAllWithRetry(destAbs, 5, 200*time.Millisecond); err != nil {
 		return fmt.Errorf("清空目标目录失败: %w", err)
 	}
 
@@ -418,6 +420,35 @@ func copyFile(src, dest string, perm os.FileMode) error {
 	}
 
 	return nil
+}
+
+func removeAllWithRetry(path string, retries int, delay time.Duration) error {
+	for attempt := 0; attempt <= retries; attempt++ {
+		if err := os.RemoveAll(path); err != nil {
+			if !shouldRetrySharingViolation(err) || attempt == retries {
+				return err
+			}
+			time.Sleep(delay)
+			continue
+		}
+		return nil
+	}
+	return nil
+}
+
+func shouldRetrySharingViolation(err error) bool {
+	if runtime.GOOS != "windows" {
+		return false
+	}
+	if pathErr, ok := err.(*os.PathError); ok {
+		if pathErr.Err != nil && strings.Contains(strings.ToLower(pathErr.Err.Error()), "used by another process") {
+			return true
+		}
+	}
+	if err != nil && strings.Contains(strings.ToLower(err.Error()), "used by another process") {
+		return true
+	}
+	return false
 }
 
 // cleanBackupDir 清理备份目录

@@ -47,7 +47,7 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import CreateBackup from '@/components/icons/createbackup.vue'
 import ExportBackup from '@/components/icons/exportbackup.vue'
 import RestoreBackup from '@/components/icons/restorebackup.vue'
-import { fetchBackup } from '@/service/api'
+import { fetchBackup, fetchImportBackup } from '@/service/api'
 import { theToast } from '@/utils/toast'
 
 const handleBackup = async () => {
@@ -89,8 +89,24 @@ const handleBackupExport = async () => {
 }
 
 const handleBackupRestore = async () => {
-  theToast.info('功能开发中，请使用TUI/CLI模式执行恢复', {
-    duration: 3000,
-  })
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.zip'
+  input.onchange = async (event: Event) => {
+    const target = event.target as HTMLInputElement
+    if (target.files && target.files.length > 0) {
+      const file = target.files[0]
+
+      await theToast.promise(
+        fetchImportBackup(file),
+        {
+          loading: '导入中,请不要关闭页面...',
+          success: (res) => (res.code === 1 ? '导入成功' : `导入失败: ${res.msg}`),
+          error: '导入失败',
+        }
+      )
+    }
+  }
+  input.click()
 }
 </script>

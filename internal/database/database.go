@@ -28,6 +28,8 @@ import (
 // 使用 atomic.Value 来存储 *gorm.DB，确保线程安全和支持热更新
 var db atomic.Value // 用于存储 *gorm.DB
 
+var writeLocked atomic.Bool
+
 func GetDB() *gorm.DB {
 	return db.Load().(*gorm.DB)
 }
@@ -38,6 +40,26 @@ func SetDB(newDB *gorm.DB) {
 
 func DBProvider() func() *gorm.DB {
 	return GetDB
+}
+
+// EnableWriteLock 启用写锁，阻止新的写操作
+func EnableWriteLock() {
+	writeLocked.Store(true)
+}
+
+// DisableWriteLock 关闭写锁，允许写操作
+func DisableWriteLock() {
+	writeLocked.Store(false)
+}
+
+// SetWriteLock 手动设置写锁状态
+func SetWriteLock(enabled bool) {
+	writeLocked.Store(enabled)
+}
+
+// IsWriteLocked 判断当前是否启用了写锁
+func IsWriteLocked() bool {
+	return writeLocked.Load()
 }
 
 // InitDatabase 初始化数据库连接
@@ -103,23 +125,24 @@ func MigrateDB() error {
 
 // HotChangeDatabase 热切换数据库连接
 func HotChangeDatabase(newDBPath string) error {
-    oldDB := GetDB()
+	// 获取当前数据库连接
+	oldDB := GetDB()
 
-    // 彻底关闭旧连接
-    if oldDB != nil {
-        if err := CloseDatabaseFully(oldDB); err != nil {
+	// 彻底关闭旧连接
+	if oldDB != nil {
+		if err := CloseDatabaseFully(oldDB); err != nil {
 			return err
 		}
-    }
+	}
 
-    // 打开新连接
-    newDB, err := gorm.Open(sqlite.Open(newDBPath), &gorm.Config{})
-    if err != nil {
-        return err
-    }
+	// 打开新连接
+	newDB, err := gorm.Open(sqlite.Open(newDBPath), &gorm.Config{})
+	if err != nil {
+		return err
+	}
 
-    SetDB(newDB)
-    return nil
+	SetDB(newDB)
+	return nil
 }
 
 // CloseDatabaseFully 彻底关闭数据库连接，释放资源
@@ -139,7 +162,7 @@ func CloseDatabaseFully(db *gorm.DB) error {
 		time.Sleep(100 * time.Millisecond)
 
 		return nil
-	} 
+	}
 
 	return errors.New(commonModel.DATABASE_CLOSE_FAILED)
 }
