@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sync"
 
 	"github.com/lin-snow/ech0/internal/transaction"
 
@@ -153,7 +152,7 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 
 	// 处理echosByPage中的图片URL
 	for i := range result.Items {
-		echoService.RefreshEchoImageURL(&result.Items[i])
+		echoService.commonService.RefreshEchoImageURL(&result.Items[i])
 	}
 
 	// 返回结果
@@ -217,7 +216,7 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 
 	// 处理todayEchos中的图片URL
 	for i := range todayEchos {
-		echoService.RefreshEchoImageURL(&todayEchos[i])
+		echoService.commonService.RefreshEchoImageURL(&todayEchos[i])
 	}
 
 	return todayEchos, nil
@@ -317,41 +316,8 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 	}
 
 	// 刷新图片URL
-	echoService.RefreshEchoImageURL(echo)
+	echoService.commonService.RefreshEchoImageURL(echo)
 
 	// 返回Echo
 	return echo, nil
-}
-
-// RefreshEchoImageURL 刷新Echo中的图片URL
-func (s *EchoService) RefreshEchoImageURL(echo *model.Echo) {
-	_, s3setting, err := s.commonService.GetS3Client()
-	if err != nil {
-		return
-	}
-
-	// 用 channel 或 waitGroup 并发刷新 URL
-	var wg sync.WaitGroup
-	mu := sync.Mutex{}
-
-	for i := range echo.Images {
-		if echo.Images[i].ImageSource == model.ImageSourceS3 && echo.Images[i].ObjectKey != "" {
-			wg.Add(1)
-			go func(i int) {
-				defer wg.Done()
-				if newURL, err := s.commonService.GetS3ObjectURL(s3setting, echo.Images[i].ObjectKey); err == nil {
-					mu.Lock()
-					echo.Images[i].ImageURL = newURL
-					mu.Unlock()
-				}
-			}(i)
-		}
-	}
-
-	wg.Wait()
-
-	// 所有 URL 都拿到了，再一次性更新 DB
-	_ = s.txManager.Run(func(ctx context.Context) error {
-		return s.echoRepository.UpdateEcho(ctx, echo)
-	})
 }

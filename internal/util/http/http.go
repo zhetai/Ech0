@@ -188,7 +188,7 @@ func PostActivity(activity []byte, inboxURL string, actorID string) error {
 
 // SignRequest 对请求进行签名
 func SignRequest(req *http.Request, priv *rsa.PrivateKey, keyID string, body []byte) error {
-	// 1. Digest 
+	// 1. Digest
 	digest := sha256.Sum256(body)
 	digestBase64 := base64.StdEncoding.EncodeToString(digest[:])
 	req.Header.Set("Digest", "SHA-256="+digestBase64)
@@ -219,6 +219,6 @@ func SignRequest(req *http.Request, priv *rsa.PrivateKey, keyID string, body []b
 		sigBase64,
 	)
 	req.Header.Set("Signature", signatureHeader)
-	
+
 	return nil
 }

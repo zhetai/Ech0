@@ -145,7 +145,7 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	var activities []model.Activity
 	for i := range echosByPage {
 		// 处理图片 URL
-		fediverseService.RefreshEchoImageURL(&echosByPage[i])
+		fediverseService.commonService.RefreshEchoImageURL(&echosByPage[i])
 		// 转换为 Activity
 		activities = append(activities, fediverseService.ConvertEchoToActivity(&echosByPage[i], &actor, serverURL))
 	}

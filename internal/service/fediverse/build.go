@@ -1,15 +1,12 @@
 package service
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
-	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
@@ -41,7 +38,7 @@ func (fediverseService *FediverseService) BuildOutbox(username string) (model.Ou
 	firstPage := fmt.Sprintf("%s?page=1", actor.Outbox)
 	lastPage := ""
 	if total > 0 {
-		totalPages := int(total)/10
+		totalPages := int(total) / 10
 		if total%10 != 0 {
 			totalPages++
 		}
@@ -84,11 +81,11 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 			"https://www.w3.org/ns/activitystreams",
 			"https://w3id.org/security/v1",
 		},
-		ID:                serverURL + "/users/" + user.Username,         // 实例地址拼接 域名 + /users/ + username
-		Type:              "Person",                                      // 固定值
-		Name:              setting.ServerName,                             // 显示名称
-		PreferredUsername: user.Username,                                  // 用户名
-		Summary:           "你好呀!👋 我是来自Ech0的" + user.Username, // 简介
+		ID:                serverURL + "/users/" + user.Username, // 实例地址拼接 域名 + /users/ + username
+		Type:              "Person",                              // 固定值
+		Name:              setting.ServerName,                    // 显示名称
+		PreferredUsername: user.Username,                         // 用户名
+		Summary:           "你好呀!👋 我是来自Ech0的" + user.Username,     // 简介
 		Icon: model.Preview{
 			Type:      "Image",
 			MediaType: avatarMIME,
@@ -107,7 +104,7 @@ func (fediverseService *FediverseService) BuildActor(user *userModel.User) (mode
 			ID:           serverURL + "/users/" + user.Username + "#main-key",
 			Owner:        serverURL + "/users/" + user.Username,
 			PublicKeyPem: string(config.RSA_PUBLIC_KEY),
-			Type: "Key",
+			Type:         "Key",
 		},
 	}, &setting, nil
 }
@@ -121,36 +118,4 @@ func normalizeServerURL(raw string) (string, error) {
 		trimmed = "https://" + trimmed
 	}
 	return strings.TrimRight(trimmed, "/"), nil
-}
-
-func (fediverseService *FediverseService) RefreshEchoImageURL(echo *echoModel.Echo) {
-	_, s3setting, err := fediverseService.commonService.GetS3Client()
-	if err != nil {
-		return
-	}
-
-	// 用 channel 或 waitGroup 并发刷新 URL
-	var wg sync.WaitGroup
-	mu := sync.Mutex{}
-
-	for i := range echo.Images {
-		if echo.Images[i].ImageSource == echoModel.ImageSourceS3 && echo.Images[i].ObjectKey != "" {
-			wg.Add(1)
-			go func(i int) {
-				defer wg.Done()
-				if newURL, err := fediverseService.commonService.GetS3ObjectURL(s3setting, echo.Images[i].ObjectKey); err == nil {
-					mu.Lock()
-					echo.Images[i].ImageURL = newURL
-					mu.Unlock()
-				}
-			}(i)
-		}
-	}
-
-	wg.Wait()
-
-	// 所有 URL 都拿到了，再一次性更新 DB
-	_ = fediverseService.txManager.Run(func(ctx context.Context) error {
-		return fediverseService.echoRepository.UpdateEcho(ctx, echo)
-	})
 }

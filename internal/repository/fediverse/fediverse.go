@@ -25,7 +25,6 @@ func (r *FediverseRepository) getDB(ctx context.Context) *gorm.DB {
 	return r.db
 }
 
-
 func (r *FediverseRepository) GetFollowers(userID uint) ([]model.Follower, error) {
 	var followers []model.Follower
 	if err := r.db.Where("user_id = ?", userID).Find(&followers).Error; err != nil {

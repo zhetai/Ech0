@@ -48,11 +48,11 @@ func BuildHandlers(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *tra
 	userRepositoryInterface := repository.NewUserRepository(db, iCache)
 	commonRepositoryInterface := repository2.NewCommonRepository(db)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db, iCache)
-	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface)
+	echoRepositoryInterface := repository3.NewEchoRepository(db, iCache)
+	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface)
 	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface)
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
-	echoRepositoryInterface := repository3.NewEchoRepository(db, iCache)
 	fediverseRepositoryInterface := repository4.NewFediverseRepository(db)
 	fediverseServiceInterface := service4.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface, commonServiceInterface)
 	echoServiceInterface := service5.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface, fediverseServiceInterface)
@@ -77,7 +77,8 @@ func BuildTasker(db *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *trans
 	commonRepositoryInterface := repository2.NewCommonRepository(db)
 	iCache := ProvideCache(cacheFactory)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(db, iCache)
-	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface)
+	echoRepositoryInterface := repository3.NewEchoRepository(db, iCache)
+	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface)
 	tasker := task.NewTasker(commonServiceInterface)
 	return tasker, nil
 }
