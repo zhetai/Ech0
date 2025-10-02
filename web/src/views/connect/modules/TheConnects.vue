@@ -1,5 +1,5 @@
 <template>
-  <div class="px-11">
+  <div class="px-9 md:px-11">
     <!-- 列出所有连接（列出每个连接的头像） -->
     <div
       class="rounded-md shadow-sm hover:shadow-md ring-1 ring-gray-200 ring-inset bg-white p-4 mb-4"

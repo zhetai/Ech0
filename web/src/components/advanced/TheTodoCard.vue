@@ -1,6 +1,7 @@
 <template>
-  <div
-    class="w-full flex flex-col gap-2 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
+  <div>
+    <div
+    class="flex flex-col gap-2 p-4 bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
   >
     <!-- 顶部id + 按钮 -->
     <div v-if="props.operative" class="flex justify-between items-center">
@@ -39,6 +40,7 @@
     <div v-else>
       <p class="text-gray-500 text-sm">加载中...</p>
     </div>
+  </div>
   </div>
 </template>
 
