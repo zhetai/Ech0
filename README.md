@@ -61,7 +61,7 @@ Ech0 is an open-source, self-hosted platform designed for lightweight sharing, a
 - 📟 **TUI Friendly** — Terminal-friendly interactive interface to manage Ech0 from the TUI.
 - ✍️ **Distraction-Free Writing** — Clean online Markdown editor with rich plugin support and live preview.
 - 📦 **Data Ownership** — All content stored locally in SQLite, with RSS feed support.
-- 🔐 **Secure Backup** — One-click export/backup via Web, TUI, or CLI.
+- 🔐 **Secure Backup** — One-click export/backup/import via Web, TUI, or CLI.
 - ♻️ **Seamless Restore** — Restore any backup via TUI or CLI to ensure data safety.
 - 🎉 **Completely Free** — Open-source under AGPL-3.0 with no tracking, subscription, or dependency.
 - 🌍 **Cross-Device Compatible** — Fully responsive on desktop, tablet, and mobile.
