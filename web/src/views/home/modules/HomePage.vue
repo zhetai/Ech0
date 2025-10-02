@@ -17,9 +17,9 @@
       <div v-if="isLogin && todos.length > 0" class="mb-2 px-11">
         <TheTodoCard :todo="todos[0]" :index="0" :operative="false" @refresh="getTodos" />
       </div>
-      <div class="px-11">
+      <!-- <div class="px-11">
         <TheAudioCard ref="theAudioCard" />
-      </div>
+      </div> -->
       <TheConnects />
     </div>
 
