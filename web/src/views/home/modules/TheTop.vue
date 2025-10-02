@@ -64,8 +64,4 @@ const handleSearch = () => {
     getEchosByPage()
   }
 }
-
-// const notDeveloper = () => {
-//   theToast.info('该功能正在开发中，请耐心等待！')
-// }
 </script>
