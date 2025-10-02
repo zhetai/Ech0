@@ -5,7 +5,7 @@
         <StatusInfo class="mr-2" />系统状态:
       </h2>
 
-      <div class="text-gray-500 text-sm">
+      <div v-if="!isLoading" class="text-gray-500 text-sm">
         <!-- 系统管理员 -->
         <!-- <div>
           <h1>
@@ -31,6 +31,9 @@
           </p>
         </div>
       </div>
+      <div v-else>
+        <div class="text-gray-500 text-sm">加载中...</div>
+      </div>
     </div>
   </div>
 
@@ -44,10 +47,12 @@ import StatusInfo from '../icons/statusinfo.vue'
 
 const status = ref<App.Api.Ech0.Status>()
 const userStore = useUserStore()
+const isLoading = ref<boolean>(true)
 
 onMounted(() => {
   fetchGetStatus().then((res) => {
     status.value = res.data
+    isLoading.value = false
   })
 })
 </script>
