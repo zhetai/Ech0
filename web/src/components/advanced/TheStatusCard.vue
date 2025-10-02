@@ -27,7 +27,7 @@
           <p>
             <span class="">已发布Echos:</span>
             <span class="ml-2">{{ status?.total_echos }}</span>
-            <span class=" ml-2">条</span>
+            <span class="ml-2">条</span>
           </p>
         </div>
       </div>
@@ -36,7 +36,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup lang="ts">

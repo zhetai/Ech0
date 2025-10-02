@@ -51,16 +51,12 @@ import { fetchBackup, fetchImportBackup } from '@/service/api'
 import { theToast } from '@/utils/toast'
 
 const handleBackup = async () => {
-  await theToast.promise(
-    fetchBackup(),
-    {
-      loading: '备份中...',
-      success: (res) => (res.code === 1 ? '备份成功' : '备份失败'),
-      error: '备份失败',
-    }
-  )
+  await theToast.promise(fetchBackup(), {
+    loading: '备份中...',
+    success: (res) => (res.code === 1 ? '备份成功' : '备份失败'),
+    error: '备份失败',
+  })
 }
-
 
 const handleBackupExport = async () => {
   try {
@@ -70,7 +66,10 @@ const handleBackupExport = async () => {
 
     // 1. 获取 token
     const token = localStorage.getItem('token')
-    const baseURL = import.meta.env.VITE_SERVICE_BASE_URL === "/" ? window.location.origin : import.meta.env.VITE_SERVICE_BASE_URL
+    const baseURL =
+      import.meta.env.VITE_SERVICE_BASE_URL === '/'
+        ? window.location.origin
+        : import.meta.env.VITE_SERVICE_BASE_URL
     const downloadUrl = `${baseURL}/api/backup/export?token=${token}`
 
     // 创建隐藏的 a 标签触发下载
@@ -106,7 +105,7 @@ const handleBackupRestore = async () => {
         },
         {
           duration: 5000,
-        }
+        },
       )
     }
   }

@@ -25,15 +25,15 @@
 <script setup lang="ts">
 import TheHeatMap from '@/components/advanced/TheHeatMap.vue'
 import TheConnects from '@/views/connect/modules/TheConnects.vue'
-import TheStatusCard from '@/components/advanced/TheStatusCard.vue';
+import TheStatusCard from '@/components/advanced/TheStatusCard.vue'
 import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
 
 import { storeToRefs } from 'pinia'
-import { useUserStore } from '@/stores/user';
-import { useTodoStore } from '@/stores/todo';
-const todoStore = useTodoStore();
-const userStore = useUserStore();
+import { useUserStore } from '@/stores/user'
+import { useTodoStore } from '@/stores/todo'
+const todoStore = useTodoStore()
+const userStore = useUserStore()
 const { isLogin } = storeToRefs(userStore)
-const { getTodos } = useTodoStore();
+const { getTodos } = useTodoStore()
 const { todos } = storeToRefs(todoStore)
 </script>

@@ -1,11 +1,24 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 36 36">
     <!-- Icon from Clarity by VMware - https://github.com/vmware/clarity-assets/blob/master/LICENSE -->
-    <path fill="#888888" stroke="#888888" stroke-width="0.5" d="M6 22h24v2H6z" class="clr-i-outline clr-i-outline-path-1" />
-    <path fill="#888888" stroke="#888888" stroke-width="0.5" d="M26 26h4v2h-4z" class="clr-i-outline clr-i-outline-path-2" />
     <path
       fill="#888888"
-      stroke="#888888" stroke-width="0.5"
+      stroke="#888888"
+      stroke-width="0.5"
+      d="M6 22h24v2H6z"
+      class="clr-i-outline clr-i-outline-path-1"
+    />
+    <path
+      fill="#888888"
+      stroke="#888888"
+      stroke-width="0.5"
+      d="M26 26h4v2h-4z"
+      class="clr-i-outline clr-i-outline-path-2"
+    />
+    <path
+      fill="#888888"
+      stroke="#888888"
+      stroke-width="0.5"
       d="M13 9.92L17 6v13a1 1 0 1 0 2 0V6l4 3.95a1 1 0 1 0 1.38-1.45L18 2.16L11.61 8.5A1 1 0 0 0 13 9.92"
       class="clr-i-outline clr-i-outline-path-3"
     />
