@@ -5,7 +5,7 @@
         <StatusInfo class="mr-2" />系统状态:
       </h2>
 
-      <div class="text-gray-500 text-md">
+      <div class="text-gray-500 text-sm">
         <!-- 系统管理员 -->
         <!-- <div>
           <h1>
@@ -15,20 +15,20 @@
         </div> -->
         <!-- 当前登录用户 -->
         <div>
-          <h1>
-            <span class="font-bold">当前登录用户:</span>
+          <p>
+            <span class="">当前登录用户:</span>
             <span class="ml-2">
               {{ userStore?.user?.username ? userStore.user.username : '当前未登录' }}
             </span>
-          </h1>
+          </p>
         </div>
         <!-- 当前共有Ech0 -->
         <div>
-          <h1>
-            <span class="font-bold">已发布Echos:</span>
+          <p>
+            <span class="">已发布Echos:</span>
             <span class="ml-2">{{ status?.total_echos }}</span>
-            <span class="font-bold ml-2">条</span>
-          </h1>
+            <span class=" ml-2">条</span>
+          </p>
         </div>
       </div>
     </div>
