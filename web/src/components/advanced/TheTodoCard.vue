@@ -40,7 +40,7 @@
       <div v-if="loading">
         <p class="text-gray-500 text-sm">加载中...</p>
       </div>
-      <div v-else>
+      <div v-if="!loading && !props.todo">
         <p class="text-gray-500 text-sm">今日无事🎉</p>
       </div>
     </div>
