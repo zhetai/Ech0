@@ -17,9 +17,9 @@
 
 </div>
 
-> Open-source, self-hosted, lightweight platform for idea sharing
+> A next-generation open-source, self-hosted, lightweight federated publishing platform focused on personal idea sharing.
 
-Ech0 is an open-source, self-hosted platform designed for lightweight sharing, allowing you to quickly post and share your thoughts, writings, and links. With a simple and intuitive interface, managing your content becomes effortless, giving you full control over your data while staying connected to the world anytime, anywhere.
+Ech0 is a new-generation open-source self-hosted platform designed for individual users. It is ultra-lightweight and low-cost, supporting the ActivityPub protocol to let you easily publish and share ideas, writings, and links. With a clean, intuitive interface and powerful command-line tools, content management becomes simple and flexible. Your data is fully owned and controlled by you, always connected to the world, building your own network of thoughts.
 
 ![Interface Preview](./docs/imgs/screenshot_mockup.png)
 
