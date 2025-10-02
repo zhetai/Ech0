@@ -11,6 +11,10 @@
 
       <h1 class="text-4xl text-center font-bold text-gray-400">Ech0 Fediverse</h1>
 
+      <p class="text-center font-bold text-gray-500 mt-6">
+        具体内容正在建设中，敬请期待！🚀
+      </p>
+
     </div>
   </div>
 </template>
