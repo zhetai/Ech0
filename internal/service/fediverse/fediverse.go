@@ -246,19 +246,99 @@ func (fediverseService *FediverseService) GetFollowers(username string) (model.F
 		return model.FollowersResponse{}, err
 	}
 
-	// 构建Actor URL 列表
-	var followerURLs []string
-	for _, follower := range followers {
-		followerURLs = append(followerURLs, follower.ActorID)
-	}
+	followerURLs := uniqueFollowerActorIDs(followers)
+
+	firstPage := fmt.Sprintf("%s?page=1", actor.Followers)
 
 	return model.FollowersResponse{
-		Context:      "https://www.w3.org/ns/activitystreams",
-		ID:           actor.Followers,
-		Type:         "OrderedCollection",
-		TotalItems:   len(followerURLs),
-		OrderedItems: followerURLs,
+		Context:    "https://www.w3.org/ns/activitystreams",
+		ID:         actor.Followers,
+		Type:       "OrderedCollection",
+		TotalItems: len(followerURLs),
+		First:      firstPage,
 	}, nil
+}
+
+func (fediverseService *FediverseService) GetFollowersPage(username string, page, pageSize int) (model.FollowersPage, error) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 20
+	} else if pageSize > 80 {
+		pageSize = 80
+	}
+
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return model.FollowersPage{}, errors.New(commonModel.USER_NOTFOUND)
+	}
+
+	actor, _, err := fediverseService.BuildActor(&user)
+	if err != nil {
+		return model.FollowersPage{}, err
+	}
+
+	followers, err := fediverseService.fediverseRepository.GetFollowers(user.ID)
+	if err != nil {
+		return model.FollowersPage{}, err
+	}
+
+	followerURLs := uniqueFollowerActorIDs(followers)
+
+	total := len(followerURLs)
+	start := (page - 1) * pageSize
+	if start > total {
+		start = total
+	}
+	end := start + pageSize
+	if end > total {
+		end = total
+	}
+
+	orderedItems := followerURLs[start:end]
+
+	pageID := fmt.Sprintf("%s?page=%d", actor.Followers, page)
+	next := ""
+	if end < total {
+		next = fmt.Sprintf("%s?page=%d", actor.Followers, page+1)
+	}
+	prev := ""
+	if page > 1 && start > 0 {
+		prev = fmt.Sprintf("%s?page=%d", actor.Followers, page-1)
+	} else if page > 1 && start == 0 {
+		prev = fmt.Sprintf("%s?page=%d", actor.Followers, page-1)
+	}
+
+	return model.FollowersPage{
+		Context:      "https://www.w3.org/ns/activitystreams",
+		ID:           pageID,
+		Type:         "OrderedCollectionPage",
+		PartOf:       actor.Followers,
+		Next:         next,
+		Prev:         prev,
+		OrderedItems: orderedItems,
+	}, nil
+}
+
+func uniqueFollowerActorIDs(followers []model.Follower) []string {
+	if len(followers) == 0 {
+		return []string{}
+	}
+
+	seen := make(map[string]struct{}, len(followers))
+	unique := make([]string, 0, len(followers))
+	for _, follower := range followers {
+		if follower.ActorID == "" {
+			continue
+		}
+		if _, ok := seen[follower.ActorID]; ok {
+			continue
+		}
+		seen[follower.ActorID] = struct{}{}
+		unique = append(unique, follower.ActorID)
+	}
+	return unique
 }
 
 // GetFollowing 获取关注列表

@@ -68,6 +68,7 @@ type FollowersResponse struct {
 
 // FollowersPage 如果你要分页的话
 type FollowersPage struct {
+	Context      any      `json:"@context,omitempty"`
 	ID           string   `json:"id"`
 	Type         string   `json:"type"` // "OrderedCollectionPage"
 	PartOf       string   `json:"partOf"`

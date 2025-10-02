@@ -31,6 +31,9 @@ type FediverseServiceInterface interface {
 	// GetFollowers 获取粉丝列表
 	GetFollowers(username string) (model.FollowersResponse, error)
 
+	// GetFollowersPage 获取粉丝列表分页内容
+	GetFollowersPage(username string, page, pageSize int) (model.FollowersPage, error)
+
 	// GetFollowing 获取关注列表
 	GetFollowing(username string) (model.FollowingResponse, error)
 
