@@ -31,9 +31,16 @@ import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { useTodoStore } from '@/stores/todo'
+import { onMounted } from 'vue'
 const todoStore = useTodoStore()
 const userStore = useUserStore()
 const { isLogin } = storeToRefs(userStore)
 const { getTodos } = useTodoStore()
 const { todos } = storeToRefs(todoStore)
+
+onMounted(() => {
+  if (isLogin.value) {
+    getTodos()
+  }
+})
 </script>
