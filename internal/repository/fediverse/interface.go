@@ -15,4 +15,7 @@ type FediverseRepositoryInterface interface {
 
 	// 存储新的粉丝
 	SaveFollower(ctx context.Context, follower *model.Follower) error
+
+	// 检查粉丝记录是否存在
+	FollowerExists(ctx context.Context, userID uint, actor string) (bool, error)
 }

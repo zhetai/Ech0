@@ -49,12 +49,24 @@ func (fediverseService *FediverseService) handleFollowActivity(user *userModel.U
 	// 保存粉丝记录
 	fmt.Printf("Saving follower: userID=%d, actor=%s\n", user.ID, followerActor)
 
-	return fediverseService.txManager.Run(func(ctx context.Context) error {
-		return fediverseService.fediverseRepository.SaveFollower(ctx, &model.Follower{
-			UserID:  user.ID,
-			ActorID: followerActor,
+	// 检查是否已经存在该粉丝记录
+	exists, err := fediverseService.fediverseRepository.FollowerExists(context.Background(), user.ID, followerActor)
+	if err != nil {
+		fmt.Printf("Error checking if follower exists: %v\n", err)
+		return err
+	}
+
+	// 如果不存在，则保存
+	if !exists {
+		return fediverseService.txManager.Run(func(ctx context.Context) error {
+			return fediverseService.fediverseRepository.SaveFollower(ctx, &model.Follower{
+				UserID:  user.ID,
+				ActorID: followerActor,
+			})
 		})
-	})
+	} else {
+		return nil
+	}
 }
 
 func (fediverseService *FediverseService) buildAcceptActivityPayload(actor *model.Actor, follow *model.Activity, followerActor, serverURL string) ([]byte, error) {
