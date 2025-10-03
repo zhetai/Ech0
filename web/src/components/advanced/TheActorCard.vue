@@ -59,7 +59,11 @@ type ActivityPubActor = {
 }
 
 // 组件 Props 定义
-const props = defineProps<{ actor: ActivityPubActor; followLoading?: boolean; followSuccess?: boolean }>()
+const props = defineProps<{
+  actor: ActivityPubActor
+  followLoading?: boolean
+  followSuccess?: boolean
+}>()
 
 const actor = computed(() => props.actor ?? {})
 const displayName = computed(() => actor.value.name || actor.value.preferredUsername || '未知用户')
@@ -88,4 +92,3 @@ const sanitizedSummary = computed(() => {
   return summary
 })
 </script>
-
