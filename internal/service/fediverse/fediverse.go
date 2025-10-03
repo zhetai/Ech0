@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"time"
 
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
@@ -17,7 +16,6 @@ import (
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	"github.com/lin-snow/ech0/internal/transaction"
-	fileUtil "github.com/lin-snow/ech0/internal/util/file"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -177,63 +175,6 @@ func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, 
 	return outboxPage, nil
 }
 
-// ConvertEchoToActivity 将 Echo 转换为 ActivityPub Activity
-func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Activity {
-	obj := fediverseService.ConvertEchoToObject(echo, actor, serverURL)
-
-	activityID := fmt.Sprintf("%s/activities/%d", serverURL, echo.ID)
-
-	activity := model.Activity{
-		Context: []any{
-			"https://www.w3.org/ns/activitystreams",
-			"https://w3id.org/security/v1",
-		},
-		ActivityID: activityID,
-		Type:       model.ActivityTypeCreate,
-		ActorID:    actor.ID,
-		ActorURL:   actor.ID,
-		ObjectID:   obj.ObjectID,
-		ObjectType: obj.Type,
-		Published:  echo.CreatedAt,
-		To:         obj.To,
-		Cc:         []string{actor.Followers},
-		Summary:    "",
-		Delivered:  false,
-		CreatedAt:  time.Now(),
-	}
-
-	activityJSON, _ := json.Marshal(activity)
-	activity.ActivityJSON = string(activityJSON)
-	return activity
-}
-
-// ConvertEchoToObject 将 Echo 转换为 ActivityPub Object
-func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Object {
-	var attachments []model.Attachment
-	for i := range echo.Images {
-		attachments = append(attachments, model.Attachment{
-			Type:      "Image",
-			MediaType: httpUtil.GetMIMETypeFromFilenameOrURL(echo.Images[i].ImageURL),
-			URL:       fileUtil.GetImageURL(echo.Images[i], serverURL),
-		})
-	}
-
-	return model.Object{
-		Context: []any{
-			"https://www.w3.org/ns/activitystreams",
-		},
-		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
-		Type:         "Note",
-		Content:      echo.Content,
-		AttributedTo: actor.ID,
-		Published:    echo.CreatedAt,
-		To: []string{
-			"https://www.w3.org/ns/activitystreams#Public",
-		},
-		Attachments: attachments,
-	}
-}
-
 // GetObjectByID 通过 ID 获取内容对象
 func (fediverseService *FediverseService) GetObjectByID(id uint) (model.Object, error) {
 	// 获取 Echo
@@ -260,6 +201,7 @@ func (fediverseService *FediverseService) GetObjectByID(id uint) (model.Object, 
 	return fediverseService.ConvertEchoToObject(echo, &actor, serverURL), nil
 }
 
+// fetchRemoteActorInbox 获取远程 Actor 的 Inbox URL
 func (fediverseService *FediverseService) fetchRemoteActorInbox(actorURL string) (string, error) {
 	if actorURL == "" {
 		return "", errors.New("remote actor url is empty")
