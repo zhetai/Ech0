@@ -271,8 +271,44 @@ func (h *FediverseHandler) GetFollowing(ctx *gin.Context) {
 	// 从 URL 参数中获取用户名
 	username := ctx.Param("username")
 
-	// 调用服务层获取关注列表
-	following, err := h.service.GetFollowing(username)
+	pageParam := ctx.Query("page")
+	pageSizeParam := ctx.Query("pageSize")
+
+	// 如果没有分页参数或显式请求 false，则返回集合摘要
+	if pageParam == "" || strings.EqualFold(pageParam, "false") {
+		following, err := h.service.GetFollowing(username)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
+				Context: "https://www.w3.org/ns/activitystreams",
+				Type:    "Error",
+				Error:   err.Error(),
+				Status:  http.StatusInternalServerError,
+			})
+			return
+		}
+
+		ctx.Header("Content-Type", "application/activity+json")
+		ctx.JSON(http.StatusOK, following)
+		return
+	}
+
+	page := 1
+	if strings.EqualFold(pageParam, "true") {
+		page = 1
+	} else {
+		if parsedPage, err := strconv.Atoi(pageParam); err == nil && parsedPage > 0 {
+			page = parsedPage
+		}
+	}
+
+	pageSize := 20
+	if pageSizeParam != "" {
+		if parsedSize, err := strconv.Atoi(pageSizeParam); err == nil {
+			pageSize = parsedSize
+		}
+	}
+
+	followingPage, err := h.service.GetFollowingPage(username, page, pageSize)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
 			Context: "https://www.w3.org/ns/activitystreams",
@@ -283,11 +319,8 @@ func (h *FediverseHandler) GetFollowing(ctx *gin.Context) {
 		return
 	}
 
-	// 设置 Content-Type 为 application/activity+json
 	ctx.Header("Content-Type", "application/activity+json")
-
-	// 返回关注列表
-	ctx.JSON(http.StatusOK, following)
+	ctx.JSON(http.StatusOK, followingPage)
 }
 
 // GetObject 获取内容对象

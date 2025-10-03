@@ -37,6 +37,9 @@ type FediverseServiceInterface interface {
 	// GetFollowing 获取关注列表
 	GetFollowing(username string) (model.FollowingResponse, error)
 
+	// GetFollowingPage 获取关注列表分页内容
+	GetFollowingPage(username string, page, pageSize int) (model.FollowingPage, error)
+
 	// GetObjectByID 通过 ID 获取内容对象
 	GetObjectByID(id uint) (model.Object, error)
 

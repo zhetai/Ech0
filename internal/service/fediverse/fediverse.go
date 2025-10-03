@@ -32,6 +32,11 @@ type FediverseService struct {
 	commonService       commonService.CommonServiceInterface
 }
 
+const (
+	defaultCollectionPageSize = 20
+	maxCollectionPageSize     = 80
+)
+
 func NewFediverseService(
 	txManager transaction.TransactionManager,
 	fediverseRepository repository.FediverseRepositoryInterface,
@@ -231,24 +236,12 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 
 // GetFollowers 获取粉丝列表
 func (fediverseService *FediverseService) GetFollowers(username string) (model.FollowersResponse, error) {
-	user, err := fediverseService.userRepository.GetUserByUsername(username)
-	if err != nil {
-		return model.FollowersResponse{}, errors.New(commonModel.USER_NOTFOUND)
-	}
-
-	actor, _, err := fediverseService.BuildActor(&user)
+	actor, followerURLs, err := fediverseService.loadFollowersData(username)
 	if err != nil {
 		return model.FollowersResponse{}, err
 	}
 
-	followers, err := fediverseService.fediverseRepository.GetFollowers(user.ID)
-	if err != nil {
-		return model.FollowersResponse{}, err
-	}
-
-	followerURLs := uniqueFollowerActorIDs(followers)
-
-	firstPage := fmt.Sprintf("%s?page=1", actor.Followers)
+	firstPage := buildFollowersPage(&actor, followerURLs, 1, defaultCollectionPageSize)
 
 	return model.FollowersResponse{
 		Context:    "https://www.w3.org/ns/activitystreams",
@@ -260,65 +253,14 @@ func (fediverseService *FediverseService) GetFollowers(username string) (model.F
 }
 
 func (fediverseService *FediverseService) GetFollowersPage(username string, page, pageSize int) (model.FollowersPage, error) {
-	if page < 1 {
-		page = 1
-	}
-	if pageSize < 1 {
-		pageSize = 20
-	} else if pageSize > 80 {
-		pageSize = 80
-	}
+	page, pageSize = normalizePageParams(page, pageSize)
 
-	user, err := fediverseService.userRepository.GetUserByUsername(username)
-	if err != nil {
-		return model.FollowersPage{}, errors.New(commonModel.USER_NOTFOUND)
-	}
-
-	actor, _, err := fediverseService.BuildActor(&user)
+	actor, followerURLs, err := fediverseService.loadFollowersData(username)
 	if err != nil {
 		return model.FollowersPage{}, err
 	}
 
-	followers, err := fediverseService.fediverseRepository.GetFollowers(user.ID)
-	if err != nil {
-		return model.FollowersPage{}, err
-	}
-
-	followerURLs := uniqueFollowerActorIDs(followers)
-
-	total := len(followerURLs)
-	start := (page - 1) * pageSize
-	if start > total {
-		start = total
-	}
-	end := start + pageSize
-	if end > total {
-		end = total
-	}
-
-	orderedItems := followerURLs[start:end]
-
-	pageID := fmt.Sprintf("%s?page=%d", actor.Followers, page)
-	next := ""
-	if end < total {
-		next = fmt.Sprintf("%s?page=%d", actor.Followers, page+1)
-	}
-	prev := ""
-	if page > 1 && start > 0 {
-		prev = fmt.Sprintf("%s?page=%d", actor.Followers, page-1)
-	} else if page > 1 && start == 0 {
-		prev = fmt.Sprintf("%s?page=%d", actor.Followers, page-1)
-	}
-
-	return model.FollowersPage{
-		Context:      "https://www.w3.org/ns/activitystreams",
-		ID:           pageID,
-		Type:         "OrderedCollectionPage",
-		PartOf:       actor.Followers,
-		Next:         next,
-		Prev:         prev,
-		OrderedItems: orderedItems,
-	}, nil
+	return buildFollowersPage(&actor, followerURLs, page, pageSize), nil
 }
 
 func uniqueFollowerActorIDs(followers []model.Follower) []string {
@@ -341,32 +283,171 @@ func uniqueFollowerActorIDs(followers []model.Follower) []string {
 	return unique
 }
 
-// GetFollowing 获取关注列表
-func (fediverseService *FediverseService) GetFollowing(username string) (model.FollowingResponse, error) {
+func (fediverseService *FediverseService) loadFollowersData(username string) (model.Actor, []string, error) {
 	user, err := fediverseService.userRepository.GetUserByUsername(username)
 	if err != nil {
-		return model.FollowingResponse{}, errors.New(commonModel.USER_NOTFOUND)
+		return model.Actor{}, nil, errors.New(commonModel.USER_NOTFOUND)
+	}
+
+	actor, _, err := fediverseService.BuildActor(&user)
+	if err != nil {
+		return model.Actor{}, nil, err
+	}
+
+	followers, err := fediverseService.fediverseRepository.GetFollowers(user.ID)
+	if err != nil {
+		return model.Actor{}, nil, err
+	}
+
+	return actor, uniqueFollowerActorIDs(followers), nil
+}
+
+func normalizePageParams(page, pageSize int) (int, int) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = defaultCollectionPageSize
+	} else if pageSize > maxCollectionPageSize {
+		pageSize = maxCollectionPageSize
+	}
+	return page, pageSize
+}
+
+func buildFollowersPage(actor *model.Actor, followerURLs []string, page, pageSize int) model.FollowersPage {
+	total := len(followerURLs)
+	start := (page - 1) * pageSize
+	if start > total {
+		start = total
+	}
+	end := start + pageSize
+	if end > total {
+		end = total
+	}
+
+	pageID := fmt.Sprintf("%s?page=%d", actor.Followers, page)
+	next := ""
+	if end < total {
+		next = fmt.Sprintf("%s?page=%d", actor.Followers, page+1)
+	}
+	prev := ""
+	if page > 1 {
+		prev = fmt.Sprintf("%s?page=%d", actor.Followers, page-1)
+	}
+
+	orderedItems := followerURLs[start:end]
+
+	return model.FollowersPage{
+		Context:      "https://www.w3.org/ns/activitystreams",
+		ID:           pageID,
+		Type:         "OrderedCollectionPage",
+		PartOf:       actor.Followers,
+		Next:         next,
+		Prev:         prev,
+		OrderedItems: orderedItems,
+	}
+}
+
+func uniqueFollowingObjectIDs(following []model.Follow) []string {
+	if len(following) == 0 {
+		return []string{}
+	}
+
+	seen := make(map[string]struct{}, len(following))
+	unique := make([]string, 0, len(following))
+	for _, follow := range following {
+		if follow.ObjectID == "" {
+			continue
+		}
+		if _, ok := seen[follow.ObjectID]; ok {
+			continue
+		}
+		seen[follow.ObjectID] = struct{}{}
+		unique = append(unique, follow.ObjectID)
+	}
+	return unique
+}
+
+func (fediverseService *FediverseService) loadFollowingData(username string) (model.Actor, []string, error) {
+	user, err := fediverseService.userRepository.GetUserByUsername(username)
+	if err != nil {
+		return model.Actor{}, nil, errors.New(commonModel.USER_NOTFOUND)
+	}
+
+	actor, _, err := fediverseService.BuildActor(&user)
+	if err != nil {
+		return model.Actor{}, nil, err
 	}
 
 	following, err := fediverseService.fediverseRepository.GetFollowing(user.ID)
 	if err != nil {
+		return model.Actor{}, nil, err
+	}
+
+	return actor, uniqueFollowingObjectIDs(following), nil
+}
+
+func buildFollowingPage(actor *model.Actor, followingURLs []string, page, pageSize int) model.FollowingPage {
+	total := len(followingURLs)
+	start := (page - 1) * pageSize
+	if start > total {
+		start = total
+	}
+	end := start + pageSize
+	if end > total {
+		end = total
+	}
+
+	pageID := fmt.Sprintf("%s?page=%d", actor.Following, page)
+	next := ""
+	if end < total {
+		next = fmt.Sprintf("%s?page=%d", actor.Following, page+1)
+	}
+	prev := ""
+	if page > 1 {
+		prev = fmt.Sprintf("%s?page=%d", actor.Following, page-1)
+	}
+
+	orderedItems := followingURLs[start:end]
+
+	return model.FollowingPage{
+		Context:      "https://www.w3.org/ns/activitystreams",
+		ID:           pageID,
+		Type:         "OrderedCollectionPage",
+		PartOf:       actor.Following,
+		Next:         next,
+		Prev:         prev,
+		OrderedItems: orderedItems,
+	}
+}
+
+// GetFollowing 获取关注列表
+func (fediverseService *FediverseService) GetFollowing(username string) (model.FollowingResponse, error) {
+	actor, followingURLs, err := fediverseService.loadFollowingData(username)
+	if err != nil {
 		return model.FollowingResponse{}, err
 	}
 
-	// 构建Actor URL 列表
-	var followingURLs []string
-	for _, follow := range following {
-		followingURLs = append(followingURLs, follow.ObjectID)
-	}
+	firstPage := buildFollowingPage(&actor, followingURLs, 1, defaultCollectionPageSize)
 
 	return model.FollowingResponse{
-		Context:      "https://www.w3.org/ns/activitystreams",
-		ID:           "",
-		Type:         "OrderedCollection",
-		TotalItems:   len(followingURLs),
-		First:        "",
-		OrderedItems: followingURLs,
+		Context:    "https://www.w3.org/ns/activitystreams",
+		ID:         actor.Following,
+		Type:       "OrderedCollection",
+		TotalItems: len(followingURLs),
+		First:      firstPage,
 	}, nil
+}
+
+func (fediverseService *FediverseService) GetFollowingPage(username string, page, pageSize int) (model.FollowingPage, error) {
+	page, pageSize = normalizePageParams(page, pageSize)
+
+	actor, followingURLs, err := fediverseService.loadFollowingData(username)
+	if err != nil {
+		return model.FollowingPage{}, err
+	}
+
+	return buildFollowingPage(&actor, followingURLs, page, pageSize), nil
 }
 
 // GetObjectByID 通过 ID 获取内容对象

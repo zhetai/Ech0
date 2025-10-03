@@ -61,7 +61,7 @@ type FollowersResponse struct {
 	ID         string `json:"id"`
 	Type       string `json:"type"` // "OrderedCollection"
 	TotalItems int    `json:"totalItems"`
-	First      string `json:"first,omitempty"`
+	First      any    `json:"first,omitempty"`
 	// 如果不分页，可以直接用
 	OrderedItems []string `json:"orderedItems,omitempty"` // 里面是 follower 的 Actor URL
 }
@@ -83,13 +83,14 @@ type FollowingResponse struct {
 	ID         string `json:"id"`
 	Type       string `json:"type"` // "OrderedCollection"
 	TotalItems int    `json:"totalItems"`
-	First      string `json:"first,omitempty"`
+	First      any    `json:"first,omitempty"`
 	// 如果不分页，可以直接用
 	OrderedItems []string `json:"orderedItems,omitempty"` // 里面是 following 的 Actor URL
 }
 
 // FollowingPage 如果你要分页的话
 type FollowingPage struct {
+	Context      any      `json:"@context,omitempty"`
 	ID           string   `json:"id"`
 	Type         string   `json:"type"` // "OrderedCollectionPage"
 	PartOf       string   `json:"partOf"`
