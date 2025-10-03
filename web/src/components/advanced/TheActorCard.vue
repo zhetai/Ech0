@@ -3,7 +3,9 @@
     class="relative flex flex-col gap-3 rounded-md bg-white px-5 py-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
   >
     <header class="flex items-center gap-3">
-      <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-inset ring-1 ring-gray-200 bg-amber-50">
+      <div
+        class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-inset ring-1 ring-gray-200 bg-amber-50"
+      >
         <img
           v-if="avatarUrl"
           :src="avatarUrl"
@@ -22,7 +24,7 @@
 
       <BaseButton
         v-if="actor.id"
-        class="shrink-0 rounded-md border-dashed shadow-none border-amber-500 bg-transparent px-3 py-1 text-sm font-medium text-amber-600 transition  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        class="shrink-0 rounded-md border-dashed shadow-none border-amber-500 bg-transparent px-3 py-1 text-sm font-medium text-amber-600 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         :disabled="isFollowDisabled"
         @click="handleFollowClick"
       >
@@ -38,7 +40,9 @@
 
     <footer class="flex flex-wrap items-center gap-0.5 text-xs text-stone-500">
       <span v-if="actor.type">类型: {{ actor.type }}</span>
-      <span v-if="actor.inbox">收件箱: <span class="text-amber-600">{{ actor.inbox }}</span></span>
+      <span v-if="actor.inbox"
+        >收件箱: <span class="text-amber-600">{{ actor.inbox }}</span></span
+      >
     </footer>
   </article>
 </template>
@@ -46,13 +50,20 @@
 <script setup lang="ts">
 import { computed, withDefaults } from 'vue'
 import BaseButton from '@/components/common/BaseButton.vue'
+import { FollowStatus } from '@/enums/enums'
 
+//====================================================
+// Actor 相关
+//====================================================
+
+// ActivityPub Actor 和 Media 类型定义
 type ActivityPubMedia = {
   type?: string
   mediaType?: string
   url?: string
 }
 
+// 简化的 ActivityPub Actor 类型
 type ActivityPubActor = {
   id?: string
   type?: string
@@ -64,26 +75,9 @@ type ActivityPubActor = {
   inbox?: string
 }
 
-const props = withDefaults(
-  defineProps<{ actor: ActivityPubActor; followLoading?: boolean; followSuccess?: boolean }>(),
-  {
-    followLoading: false,
-    followSuccess: false,
-  },
-)
-
-const emit = defineEmits<{
-  (e: 'follow', actor: ActivityPubActor): void
-}>()
-
 const actor = computed(() => props.actor ?? {})
-const followLoading = computed(() => props.followLoading ?? false)
-const followSuccess = computed(() => props.followSuccess ?? false)
-const isFollowDisabled = computed(() => followLoading.value || followSuccess.value)
-
 const displayName = computed(() => actor.value.name || actor.value.preferredUsername || '未知用户')
 const username = computed(() => actor.value.preferredUsername || actor.value.name || '')
-
 const avatarUrl = computed(() => {
   const icon = actor.value.icon ?? actor.value.image
   if (!icon) return ''
@@ -93,7 +87,7 @@ const avatarUrl = computed(() => {
   }
   return icon.url ?? ''
 })
-
+// 计算用户头像的首字母
 const initials = computed(() => {
   const name = displayName.value.trim()
   if (!name) return 'AP'
@@ -101,12 +95,33 @@ const initials = computed(() => {
   if (words.length === 1) return words[0].charAt(0).toUpperCase()
   return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase()
 })
-
+// 简单处理 summary，去除多余空白
 const sanitizedSummary = computed(() => {
   const summary = actor.value.summary?.trim()
   if (!summary) return ''
   return summary
 })
+
+//====================================================
+// 关注相关
+//====================================================
+
+// 组件 Props 定义
+const props = withDefaults(
+  defineProps<{ actor: ActivityPubActor; followLoading?: boolean; followSuccess?: boolean }>(),
+  {
+    followLoading: false, // 关注操作加载状态
+    followSuccess: false, // 关注操作成功状态
+  },
+)
+
+const emit = defineEmits<{
+  (e: 'follow', actor: ActivityPubActor): void
+}>()
+
+const followLoading = computed(() => props.followLoading ?? false)
+const followSuccess = computed(() => props.followSuccess ?? false)
+const isFollowDisabled = computed(() => followLoading.value || followSuccess.value)
 
 const handleFollowClick = () => {
   if (isFollowDisabled.value) return

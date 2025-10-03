@@ -9,7 +9,6 @@
           <Arrow class="w-7 h-7 rotate-180 mx-auto" />
         </BaseButton>
 
-
         <!-- Actor搜索框 && NotificationBox -->
         <div class="flex items-center gap-1">
           <!-- Actor 搜索框 -->
@@ -65,14 +64,16 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import Arrow from '@/components/icons/arrow.vue'
 import InBox from '@/components/icons/inbox.vue'
-import Search from '@/components/icons/search.vue'
 import { fetchSearchFediverseActor, fetchFollowFediverseActor } from '@/service/api/fediverse'
 import TheActorCard from '@/components/advanced/TheActorCard.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
+const userStore = useUserStore()
+const { isLogin } = storeToRefs(userStore)
 const router = useRouter()
 
+// 返回首页
 const goBack = () => {
   if (window.history.length > 2) {
     window.history.back()
@@ -81,26 +82,22 @@ const goBack = () => {
   }
 }
 
-const userStore = useUserStore()
-const { isLogin } = storeToRefs(userStore)
+//================================================
+// 搜索相关
+//================================================
 
 const searchTerm = ref('')
 const hasSearched = ref(false)
 const searchLoading = ref(false)
 const searchError = ref('')
 const searchResult = ref<App.Api.Fediverse.Actor | null>(null)
-const followLoading = ref(false)
-const followSuccess = ref(false)
 
-const resetFollowState = () => {
-  followLoading.value = false
-  followSuccess.value = false
-}
-
+// 是否显示搜索结果区域
 const shouldShowResults = computed(
   () => hasSearched.value || searchLoading.value || Boolean(searchError.value),
 )
 
+// 监听搜索词变化，清除状态
 watch(
   () => searchTerm.value,
   (value) => {
@@ -117,6 +114,7 @@ watch(
   },
 )
 
+// 处理搜索
 const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
   if (!isLogin.value) {
     theToast.error('请先登录以使用联邦宇宙功能')
@@ -128,6 +126,7 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
     target?.blur()
   }
 
+  // 去除前后空格
   const term = searchTerm.value.trim()
   if (!term) {
     hasSearched.value = false
@@ -138,6 +137,7 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
     return
   }
 
+  // 重置状态
   resetFollowState()
   hasSearched.value = true
   searchLoading.value = true
@@ -145,6 +145,7 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
   searchResult.value = null
 
   try {
+    // 调用搜索接口
     const response = await fetchSearchFediverseActor(term)
     searchLoading.value = false
 
@@ -161,6 +162,20 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
   }
 }
 
+//================================================
+// 关注相关
+//================================================
+
+const followLoading = ref(false)
+const followSuccess = ref(false)
+
+// 重置关注状态
+const resetFollowState = () => {
+  followLoading.value = false
+  followSuccess.value = false
+}
+
+// 处理关注
 const handleFollow = async (actor: App.Api.Fediverse.Actor) => {
   if (followLoading.value) return
 

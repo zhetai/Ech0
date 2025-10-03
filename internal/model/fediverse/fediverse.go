@@ -25,6 +25,12 @@ const (
 	MaxCollectionPageSize     = 80
 )
 
+const (
+	FollowStatusPending  = "pending"
+	FollowStatusAccepted = "accepted"
+	FollowStatusRejected = "rejected"
+)
+
 // WebFingerResponse 是 WebFinger 返回的标准结构
 type WebFingerResponse struct {
 	Subject string   `json:"subject"`           // 用户标识，例如 acct:alice@domain.com

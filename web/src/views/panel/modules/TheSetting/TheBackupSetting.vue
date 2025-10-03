@@ -65,7 +65,7 @@ const handleBackup = async () => {
 
 const handleBackupExport = async () => {
   if (!isLogin.value) {
-    theToast.info('请登录后使用', {duration: 3000})
+    theToast.info('请登录后使用', { duration: 3000 })
     return
   }
 
@@ -99,7 +99,7 @@ const handleBackupExport = async () => {
 
 const handleBackupRestore = async () => {
   if (!isLogin.value) {
-    theToast.info('请登录后使用', {duration: 3000})
+    theToast.info('请登录后使用', { duration: 3000 })
     return
   }
 

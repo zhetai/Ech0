@@ -1,12 +1,18 @@
 <template>
-  <div class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md">
+  <div
+    class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
+  >
     <div class="mx-auto w-full px-3 py-4">
       <!-- The Title && Nav -->
       <TheTitleAndNav />
 
       <!-- The Editor -->
       <div class="rounded-lg p-2 sm:p-3 mb-1">
-        <TheMdEditor v-model="echoToAdd.content" class="rounded-lg" v-if="currentMode === Mode.ECH0" />
+        <TheMdEditor
+          v-model="echoToAdd.content"
+          class="rounded-lg"
+          v-if="currentMode === Mode.ECH0"
+        />
 
         <!-- ImageMode : TheImageEditor -->
         <div v-if="currentMode === Mode.Image">
@@ -15,18 +21,36 @@
             <div class="flex items-center gap-2">
               <span class="text-gray-500">选择添加方式：</span>
               <!-- 直链 -->
-              <BaseButton :icon="Url" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="imageToAdd.image_source = ImageSource.URL" title="插入图片链接" />
+              <BaseButton
+                :icon="Url"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.URL"
+                title="插入图片链接"
+              />
               <!-- 上传本地 -->
-              <BaseButton :icon="Upload" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="imageToAdd.image_source = ImageSource.LOCAL" title="上传本地图片" />
+              <BaseButton
+                :icon="Upload"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.LOCAL"
+                title="上传本地图片"
+              />
               <!-- S3 存储 -->
-              <BaseButton v-if="S3Setting.enable" :icon="Bucket" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="imageToAdd.image_source = ImageSource.S3" title="S3存储图片" />
+              <BaseButton
+                v-if="S3Setting.enable"
+                :icon="Bucket"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="imageToAdd.image_source = ImageSource.S3"
+                title="S3存储图片"
+              />
             </div>
             <div>
-              <BaseButton v-if="imageToAdd.image_url != ''" :icon="Addmore" class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
-                @click="handleAddMoreImage" title="添加更多图片" />
+              <BaseButton
+                v-if="imageToAdd.image_url != ''"
+                :icon="Addmore"
+                class="w-7 h-7 sm:w-7 sm:h-7 rounded-md"
+                @click="handleAddMoreImage"
+                title="添加更多图片"
+              />
             </div>
           </div>
 
@@ -39,7 +63,8 @@
                   : imageToAdd.image_source === ImageSource.LOCAL
                     ? '本地存储'
                     : 'S3存储'
-              }}</span>
+              }}</span
+            >
             {{ !ImageUploading ? '' : '，正在上传中...' }}
           </div>
 
@@ -62,12 +87,20 @@
               <span class="text-gray-400">点击上传</span>
             </BaseButton> -->
 
-            <TheUppy v-if="imageToAdd.image_source !== ImageSource.URL" @uppyUploaded="handleUppyUploaded"
-              @uppy-set-image-source="handleSetImageSource" :TheImageSource="imageToAdd.image_source" />
+            <TheUppy
+              v-if="imageToAdd.image_source !== ImageSource.URL"
+              @uppyUploaded="handleUppyUploaded"
+              @uppy-set-image-source="handleSetImageSource"
+              :TheImageSource="imageToAdd.image_source"
+            />
 
             <!-- 图片直链 -->
-            <BaseInput v-if="imageToAdd.image_source === ImageSource.URL" v-model="imageToAdd.image_url"
-              class="rounded-lg h-auto w-full" placeholder="请输入图片链接..." />
+            <BaseInput
+              v-if="imageToAdd.image_source === ImageSource.URL"
+              v-model="imageToAdd.image_url"
+              class="rounded-lg h-auto w-full"
+              placeholder="请输入图片链接..."
+            />
           </div>
         </div>
 
@@ -78,23 +111,40 @@
         <TheMusicModeEditor @refresh-audio="handleRefreshAudio" :current-mode="currentMode" />
 
         <!-- The Mode Panel -->
-        <TheModePanel v-if="currentMode === Mode.Panel" v-model:mode="currentMode"
-          v-model:extension-type="currentExtensionType" v-model:extension-to-add="extensionToAdd" />
+        <TheModePanel
+          v-if="currentMode === Mode.Panel"
+          v-model:mode="currentMode"
+          v-model:extension-type="currentExtensionType"
+          v-model:extension-to-add="extensionToAdd"
+        />
 
         <!-- ExtensionMode: TheExtensionEditor -->
-        <TheExtensionEditor v-model:current-mode="currentMode" v-model:current-extension-type="currentExtensionType"
-          v-model:extension-to-add="extensionToAdd" v-model:video-u-r-l="videoURL"
-          v-model:website-to-add="websiteToAdd" />
+        <TheExtensionEditor
+          v-model:current-mode="currentMode"
+          v-model:current-extension-type="currentExtensionType"
+          v-model:extension-to-add="extensionToAdd"
+          v-model:video-u-r-l="videoURL"
+          v-model:website-to-add="websiteToAdd"
+        />
       </div>
 
       <!-- Editor Buttons -->
-      <TheEditorButtons :echo-to-add="echoToAdd" :current-mode="currentMode" @handle-addor-update="handleAddorUpdate"
-        @handle-change-mode="handleChangeMode" @handle-add-image-mode="handleAddImageMode"
-        @handle-exit-update-mode="handleExitUpdateMode" @handle-private="handlePrivate" />
+      <TheEditorButtons
+        :echo-to-add="echoToAdd"
+        :current-mode="currentMode"
+        @handle-addor-update="handleAddorUpdate"
+        @handle-change-mode="handleChangeMode"
+        @handle-add-image-mode="handleAddImageMode"
+        @handle-exit-update-mode="handleExitUpdateMode"
+        @handle-private="handlePrivate"
+      />
 
       <!-- Editor Image -->
-      <TheEditorImage :imagesToAdd="imagesToAdd" :current-mode="currentMode"
-        @handleAddorUpdateEcho="handleAddorUpdateEcho" />
+      <TheEditorImage
+        :imagesToAdd="imagesToAdd"
+        :current-mode="currentMode"
+        @handleAddorUpdateEcho="handleAddorUpdateEcho"
+      />
     </div>
   </div>
 </template>
@@ -355,7 +405,10 @@ const handleAddorUpdateEcho = async (justSyncImages: boolean) => {
     }
 
     // 检查最终的Extension模块是否有内容
-    if (extensionToAdd.value.extension.length > 0 && extensionToAdd.value.extension_type.length > 0) {
+    if (
+      extensionToAdd.value.extension.length > 0 &&
+      extensionToAdd.value.extension_type.length > 0
+    ) {
       echoToAdd.value.extension = extensionToAdd.value.extension
       echoToAdd.value.extension_type = extensionToAdd.value.extension_type
     } else {
