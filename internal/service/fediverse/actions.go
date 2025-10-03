@@ -2,13 +2,10 @@ package service
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -17,6 +14,11 @@ import (
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 )
 
+//==========================================================
+//	处理前端的 Actor 搜索请求
+//==========================================================
+
+// SearchActorByActorID 根据 Actor ID (URL) 搜索远端 Actor 信息
 func (fediverseService *FediverseService) SearchActorByActorID(actorID string) (map[string]any, error) {
 	actorID = strings.TrimSpace(actorID)
 	if actorID == "" {
@@ -47,64 +49,11 @@ func (fediverseService *FediverseService) SearchActorByActorID(actorID string) (
 	return actor, nil
 }
 
-func resolveActorURL(input string) (string, error) {
-	trimmed := strings.TrimSpace(input)
-	if trimmed == "" {
-		return "", errors.New(commonModel.FEDIVERSE_INVALID_INPUT)
-	}
+//==========================================================
+//	处理前端的 Follow 请求
+//==========================================================
 
-	if strings.HasPrefix(trimmed, "http://") || strings.HasPrefix(trimmed, "https://") {
-		return trimmed, nil
-	}
-
-	resource := trimmed
-	if after, ok := strings.CutPrefix(resource, "acct:"); ok {
-		resource = after
-	}
-	resource = strings.TrimPrefix(resource, "@")
-
-	if !strings.Contains(resource, "@") {
-		return "", errors.New(commonModel.GET_ACTOR_ERROR)
-	}
-
-	parts := strings.SplitN(resource, "@", 2)
-	username := strings.TrimSpace(parts[0])
-	domain := strings.TrimSpace(parts[1])
-	if username == "" || domain == "" {
-		return "", errors.New(commonModel.GET_ACTOR_ERROR)
-	}
-
-	webfingerURL := fmt.Sprintf("https://%s/.well-known/webfinger?resource=%s", domain, url.QueryEscape("acct:"+username+"@"+domain))
-	body, err := httpUtil.SendRequest(webfingerURL, http.MethodGet, httpUtil.Header{
-		Header:  "Accept",
-		Content: "application/jrd+json, application/json",
-	}, 5*time.Second)
-	if err != nil {
-		return "", fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
-	}
-
-	var resp struct {
-		Links []struct {
-			Rel  string `json:"rel"`
-			Type string `json:"type"`
-			Href string `json:"href"`
-		} `json:"links"`
-	}
-	if err := json.Unmarshal(body, &resp); err != nil {
-		return "", fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
-	}
-
-	for _, link := range resp.Links {
-		if link.Rel == "self" && link.Href != "" {
-			if link.Type == "application/activity+json" || link.Type == "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"" || link.Type == "" {
-				return link.Href, nil
-			}
-		}
-	}
-
-	return "", errors.New(commonModel.GET_ACTOR_ERROR)
-}
-
+// FollowActor 发送关注请求
 func (fediverseService *FediverseService) FollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error) {
 	target := strings.TrimSpace(req.TargetActor)
 	if target == "" {
@@ -161,6 +110,11 @@ func (fediverseService *FediverseService) FollowActor(userID uint, req model.Fol
 	}, nil
 }
 
+//==========================================================
+//	处理前端的 Unfollow 请求
+//==========================================================
+
+// UnfollowActor 发送取消关注请求
 func (fediverseService *FediverseService) UnfollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error) {
 	target := strings.TrimSpace(req.TargetActor)
 	if target == "" {
@@ -219,6 +173,11 @@ func (fediverseService *FediverseService) UnfollowActor(userID uint, req model.F
 	}, nil
 }
 
+//==========================================================
+//	处理前端的 Like 请求
+//==========================================================
+
+// LikeObject 发送点赞请求
 func (fediverseService *FediverseService) LikeObject(userID uint, req model.LikeActionRequest) (map[string]string, error) {
 	targetActor := strings.TrimSpace(req.TargetActor)
 	object := strings.TrimSpace(req.Object)
@@ -263,6 +222,11 @@ func (fediverseService *FediverseService) LikeObject(userID uint, req model.Like
 	}, nil
 }
 
+//==========================================================
+//	处理前端的 Undo Like 请求
+//==========================================================
+
+// UndoLikeObject 发送取消点赞请求
 func (fediverseService *FediverseService) UndoLikeObject(userID uint, req model.LikeActionRequest) (map[string]string, error) {
 	targetActor := strings.TrimSpace(req.TargetActor)
 	object := strings.TrimSpace(req.Object)
@@ -307,116 +271,4 @@ func (fediverseService *FediverseService) UndoLikeObject(userID uint, req model.
 		"activityId":     undoID,
 		"likeActivityId": likeID,
 	}, nil
-}
-
-func buildFollowActivityPayload(actor *model.Actor, targetActor string, activityID string, published time.Time) ([]byte, error) {
-	if actor == nil {
-		return nil, errors.New("actor is nil")
-	}
-	if activityID == "" {
-		return nil, errors.New("activity id is empty")
-	}
-	if targetActor == "" {
-		return nil, errors.New("target actor is empty")
-	}
-
-	payload := map[string]any{
-		"@context":  []any{"https://www.w3.org/ns/activitystreams"},
-		"id":        activityID,
-		"type":      model.ActivityTypeFollow,
-		"actor":     actor.ID,
-		"object":    targetActor,
-		"to":        []string{targetActor},
-		"published": published.Format(time.RFC3339),
-	}
-
-	return json.Marshal(payload)
-}
-
-func buildUndoFollowActivityPayload(actor *model.Actor, targetActor string, undoID string, followActivityID string, published time.Time) ([]byte, error) {
-	if actor == nil {
-		return nil, errors.New("actor is nil")
-	}
-	if undoID == "" || followActivityID == "" {
-		return nil, errors.New("activity id is empty")
-	}
-	if targetActor == "" {
-		return nil, errors.New("target actor is empty")
-	}
-
-	payload := map[string]any{
-		"@context": []any{"https://www.w3.org/ns/activitystreams"},
-		"id":       undoID,
-		"type":     model.ActivityTypeUndo,
-		"actor":    actor.ID,
-		"object": map[string]any{
-			"id":     followActivityID,
-			"type":   model.ActivityTypeFollow,
-			"actor":  actor.ID,
-			"object": targetActor,
-		},
-		"to":        []string{targetActor},
-		"published": published.Format(time.RFC3339),
-	}
-
-	return json.Marshal(payload)
-}
-
-func buildLikeActivityPayload(actor *model.Actor, targetActor string, object string, activityID string, published time.Time) ([]byte, error) {
-	if actor == nil {
-		return nil, errors.New("actor is nil")
-	}
-	if activityID == "" {
-		return nil, errors.New("activity id is empty")
-	}
-	if targetActor == "" || object == "" {
-		return nil, errors.New("target actor or object is empty")
-	}
-
-	payload := map[string]any{
-		"@context":  []any{"https://www.w3.org/ns/activitystreams"},
-		"id":        activityID,
-		"type":      model.ActivityTypeLike,
-		"actor":     actor.ID,
-		"object":    object,
-		"to":        []string{targetActor},
-		"published": published.Format(time.RFC3339),
-	}
-
-	return json.Marshal(payload)
-}
-
-func buildUndoLikeActivityPayload(actor *model.Actor, targetActor string, object string, likeActivityID string, undoID string, published time.Time) ([]byte, error) {
-	if actor == nil {
-		return nil, errors.New("actor is nil")
-	}
-	if likeActivityID == "" || undoID == "" {
-		return nil, errors.New("activity id is empty")
-	}
-	if targetActor == "" || object == "" {
-		return nil, errors.New("target actor or object is empty")
-	}
-
-	payload := map[string]any{
-		"@context": []any{"https://www.w3.org/ns/activitystreams"},
-		"id":       undoID,
-		"type":     model.ActivityTypeUndo,
-		"actor":    actor.ID,
-		"object": map[string]any{
-			"id":     likeActivityID,
-			"type":   model.ActivityTypeLike,
-			"actor":  actor.ID,
-			"object": object,
-		},
-		"to":        []string{targetActor},
-		"published": published.Format(time.RFC3339),
-	}
-
-	return json.Marshal(payload)
-}
-
-func generateDeterministicActivityID(serverURL, username, prefix, key string) string {
-	hash := sha256.Sum256([]byte(strings.ToLower(key)))
-	short := hex.EncodeToString(hash[:16])
-	return fmt.Sprintf("%s/activities/%s/%s/%s", serverURL, username, prefix, short)
 }

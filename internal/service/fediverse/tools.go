@@ -1,10 +1,13 @@
 package service
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -17,6 +20,166 @@ import (
 	fileUtil "github.com/lin-snow/ech0/internal/util/file"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 )
+
+//==============================================================================
+//	normalize or resolve or generate
+//==============================================================================
+
+// normalizeServerURL 标准化服务器 URL，确保有协议头且无尾部斜杠
+func normalizeServerURL(raw string) (string, error) {
+	trimmed := strings.TrimSpace(raw)
+	if trimmed == "" {
+		return "", errors.New(commonModel.ACTIVEPUB_NOT_ENABLED)
+	}
+	if !strings.HasPrefix(trimmed, "http://") && !strings.HasPrefix(trimmed, "https://") {
+		trimmed = "https://" + trimmed
+	}
+	return strings.TrimRight(trimmed, "/"), nil
+}
+
+// normalizePageParams 标准化分页参数
+func normalizePageParams(page, pageSize int) (int, int) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = model.DefaultCollectionPageSize
+	} else if pageSize > model.MaxCollectionPageSize {
+		pageSize = model.MaxCollectionPageSize
+	}
+	return page, pageSize
+}
+
+// resolveActorURL 解析输入，返回 Actor URL
+func resolveActorURL(input string) (string, error) {
+	trimmed := strings.TrimSpace(input)
+	if trimmed == "" {
+		return "", errors.New(commonModel.FEDIVERSE_INVALID_INPUT)
+	}
+
+	if strings.HasPrefix(trimmed, "http://") || strings.HasPrefix(trimmed, "https://") {
+		return trimmed, nil
+	}
+
+	resource := trimmed
+	if after, ok := strings.CutPrefix(resource, "acct:"); ok {
+		resource = after
+	}
+	resource = strings.TrimPrefix(resource, "@")
+
+	if !strings.Contains(resource, "@") {
+		return "", errors.New(commonModel.GET_ACTOR_ERROR)
+	}
+
+	parts := strings.SplitN(resource, "@", 2)
+	username := strings.TrimSpace(parts[0])
+	domain := strings.TrimSpace(parts[1])
+	if username == "" || domain == "" {
+		return "", errors.New(commonModel.GET_ACTOR_ERROR)
+	}
+
+	webfingerURL := fmt.Sprintf("https://%s/.well-known/webfinger?resource=%s", domain, url.QueryEscape("acct:"+username+"@"+domain))
+	body, err := httpUtil.SendRequest(webfingerURL, http.MethodGet, httpUtil.Header{
+		Header:  "Accept",
+		Content: "application/jrd+json, application/json",
+	}, 5*time.Second)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
+	}
+
+	var resp struct {
+		Links []struct {
+			Rel  string `json:"rel"`
+			Type string `json:"type"`
+			Href string `json:"href"`
+		} `json:"links"`
+	}
+	if err := json.Unmarshal(body, &resp); err != nil {
+		return "", fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
+	}
+
+	for _, link := range resp.Links {
+		if link.Rel == "self" && link.Href != "" {
+			if link.Type == "application/activity+json" || link.Type == "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"" || link.Type == "" {
+				return link.Href, nil
+			}
+		}
+	}
+
+	return "", errors.New(commonModel.GET_ACTOR_ERROR)
+}
+
+// generateDeterministicActivityID 生成确定性的 Activity ID
+func generateDeterministicActivityID(serverURL, username, prefix, key string) string {
+	hash := sha256.Sum256([]byte(strings.ToLower(key)))
+	short := hex.EncodeToString(hash[:16])
+	return fmt.Sprintf("%s/activities/%s/%s/%s", serverURL, username, prefix, short)
+}
+
+//==============================================================================
+//	Convert
+//==============================================================================
+
+// ConvertEchoToActivity 将 Echo 转换为 ActivityPub Activity
+func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Activity {
+	obj := fediverseService.ConvertEchoToObject(echo, actor, serverURL)
+
+	activityID := fmt.Sprintf("%s/activities/%d", serverURL, echo.ID)
+
+	activity := model.Activity{
+		Context: []any{
+			"https://www.w3.org/ns/activitystreams",
+			"https://w3id.org/security/v1",
+		},
+		ActivityID: activityID,
+		Type:       model.ActivityTypeCreate,
+		ActorID:    actor.ID,
+		ActorURL:   actor.ID,
+		ObjectID:   obj.ObjectID,
+		ObjectType: obj.Type,
+		Published:  echo.CreatedAt,
+		To:         obj.To,
+		Cc:         []string{actor.Followers},
+		Summary:    "",
+		Delivered:  false,
+		CreatedAt:  time.Now(),
+	}
+
+	activityJSON, _ := json.Marshal(activity)
+	activity.ActivityJSON = string(activityJSON)
+	return activity
+}
+
+// ConvertEchoToObject 将 Echo 转换为 ActivityPub Object
+func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Object {
+	var attachments []model.Attachment
+	for i := range echo.Images {
+		attachments = append(attachments, model.Attachment{
+			Type:      "Image",
+			MediaType: httpUtil.GetMIMETypeFromFilenameOrURL(echo.Images[i].ImageURL),
+			URL:       fileUtil.GetImageURL(echo.Images[i], serverURL),
+		})
+	}
+
+	return model.Object{
+		Context: []any{
+			"https://www.w3.org/ns/activitystreams",
+		},
+		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
+		Type:         "Note",
+		Content:      echo.Content,
+		AttributedTo: actor.ID,
+		Published:    echo.CreatedAt,
+		To: []string{
+			"https://www.w3.org/ns/activitystreams#Public",
+		},
+		Attachments: attachments,
+	}
+}
+
+//==============================================================================
+// Build
+//==============================================================================
 
 // BuildActor 构建 Actor 对象
 func (fediverseService *FediverseService) BuildActor(user *userModel.User) (model.Actor, *settingModel.SystemSetting, error) {
@@ -114,74 +277,151 @@ func (fediverseService *FediverseService) BuildOutbox(username string) (model.Ou
 	}, nil
 }
 
-// normalizeServerURL 标准化服务器 URL，确保有协议头且无尾部斜杠
-func normalizeServerURL(raw string) (string, error) {
-	trimmed := strings.TrimSpace(raw)
-	if trimmed == "" {
-		return "", errors.New(commonModel.ACTIVEPUB_NOT_ENABLED)
+// buildAcceptActivityPayload 构建 Accept Activity 的 JSON Payload
+func (fediverseService *FediverseService) buildAcceptActivityPayload(actor *model.Actor, follow *model.Activity, followerActor, serverURL string) ([]byte, error) {
+	if follow.ActivityID == "" {
+		return nil, errors.New("follow activity missing id")
 	}
-	if !strings.HasPrefix(trimmed, "http://") && !strings.HasPrefix(trimmed, "https://") {
-		trimmed = "https://" + trimmed
+
+	target := follow.ObjectID
+	if target == "" {
+		target = actor.ID
 	}
-	return strings.TrimRight(trimmed, "/"), nil
+
+	now := time.Now().UTC()
+	acceptID := fmt.Sprintf("%s/activities/%s/accept/%d", serverURL, actor.PreferredUsername, now.UnixNano())
+
+	payload := map[string]any{
+		"@context": []any{"https://www.w3.org/ns/activitystreams"},
+		"id":       acceptID,
+		"type":     model.ActivityTypeAccept,
+		"actor":    actor.ID,
+		"object": map[string]any{
+			"id":     follow.ActivityID,
+			"type":   model.ActivityTypeFollow,
+			"actor":  followerActor,
+			"object": target,
+		},
+		"to":        []string{followerActor},
+		"published": now.Format(time.RFC3339),
+	}
+
+	return json.Marshal(payload)
 }
 
-// ConvertEchoToActivity 将 Echo 转换为 ActivityPub Activity
-func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Activity {
-	obj := fediverseService.ConvertEchoToObject(echo, actor, serverURL)
-
-	activityID := fmt.Sprintf("%s/activities/%d", serverURL, echo.ID)
-
-	activity := model.Activity{
-		Context: []any{
-			"https://www.w3.org/ns/activitystreams",
-			"https://w3id.org/security/v1",
-		},
-		ActivityID: activityID,
-		Type:       model.ActivityTypeCreate,
-		ActorID:    actor.ID,
-		ActorURL:   actor.ID,
-		ObjectID:   obj.ObjectID,
-		ObjectType: obj.Type,
-		Published:  echo.CreatedAt,
-		To:         obj.To,
-		Cc:         []string{actor.Followers},
-		Summary:    "",
-		Delivered:  false,
-		CreatedAt:  time.Now(),
+// buildFollowActivityPayload 构建 Follow Activity 的 JSON Payload
+func buildFollowActivityPayload(actor *model.Actor, targetActor string, activityID string, published time.Time) ([]byte, error) {
+	if actor == nil {
+		return nil, errors.New("actor is nil")
+	}
+	if activityID == "" {
+		return nil, errors.New("activity id is empty")
+	}
+	if targetActor == "" {
+		return nil, errors.New("target actor is empty")
 	}
 
-	activityJSON, _ := json.Marshal(activity)
-	activity.ActivityJSON = string(activityJSON)
-	return activity
+	payload := map[string]any{
+		"@context":  []any{"https://www.w3.org/ns/activitystreams"},
+		"id":        activityID,
+		"type":      model.ActivityTypeFollow,
+		"actor":     actor.ID,
+		"object":    targetActor,
+		"to":        []string{targetActor},
+		"published": published.Format(time.RFC3339),
+	}
+
+	return json.Marshal(payload)
 }
 
-// ConvertEchoToObject 将 Echo 转换为 ActivityPub Object
-func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Object {
-	var attachments []model.Attachment
-	for i := range echo.Images {
-		attachments = append(attachments, model.Attachment{
-			Type:      "Image",
-			MediaType: httpUtil.GetMIMETypeFromFilenameOrURL(echo.Images[i].ImageURL),
-			URL:       fileUtil.GetImageURL(echo.Images[i], serverURL),
-		})
+// buildUndoFollowActivityPayload 构建 Undo Follow Activity 的 JSON Payload
+func buildUndoFollowActivityPayload(actor *model.Actor, targetActor string, undoID string, followActivityID string, published time.Time) ([]byte, error) {
+	if actor == nil {
+		return nil, errors.New("actor is nil")
+	}
+	if undoID == "" || followActivityID == "" {
+		return nil, errors.New("activity id is empty")
+	}
+	if targetActor == "" {
+		return nil, errors.New("target actor is empty")
 	}
 
-	return model.Object{
-		Context: []any{
-			"https://www.w3.org/ns/activitystreams",
+	payload := map[string]any{
+		"@context": []any{"https://www.w3.org/ns/activitystreams"},
+		"id":       undoID,
+		"type":     model.ActivityTypeUndo,
+		"actor":    actor.ID,
+		"object": map[string]any{
+			"id":     followActivityID,
+			"type":   model.ActivityTypeFollow,
+			"actor":  actor.ID,
+			"object": targetActor,
 		},
-		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
-		Type:         "Note",
-		Content:      echo.Content,
-		AttributedTo: actor.ID,
-		Published:    echo.CreatedAt,
-		To: []string{
-			"https://www.w3.org/ns/activitystreams#Public",
-		},
-		Attachments: attachments,
+		"to":        []string{targetActor},
+		"published": published.Format(time.RFC3339),
 	}
+
+	return json.Marshal(payload)
 }
+
+// buildLikeActivityPayload 构建 Like Activity 的 JSON Payload
+func buildLikeActivityPayload(actor *model.Actor, targetActor string, object string, activityID string, published time.Time) ([]byte, error) {
+	if actor == nil {
+		return nil, errors.New("actor is nil")
+	}
+	if activityID == "" {
+		return nil, errors.New("activity id is empty")
+	}
+	if targetActor == "" || object == "" {
+		return nil, errors.New("target actor or object is empty")
+	}
+
+	payload := map[string]any{
+		"@context":  []any{"https://www.w3.org/ns/activitystreams"},
+		"id":        activityID,
+		"type":      model.ActivityTypeLike,
+		"actor":     actor.ID,
+		"object":    object,
+		"to":        []string{targetActor},
+		"published": published.Format(time.RFC3339),
+	}
+
+	return json.Marshal(payload)
+}
+
+// buildUndoLikeActivityPayload 构建 Undo Like Activity 的 JSON Payload
+func buildUndoLikeActivityPayload(actor *model.Actor, targetActor string, object string, likeActivityID string, undoID string, published time.Time) ([]byte, error) {
+	if actor == nil {
+		return nil, errors.New("actor is nil")
+	}
+	if likeActivityID == "" || undoID == "" {
+		return nil, errors.New("activity id is empty")
+	}
+	if targetActor == "" || object == "" {
+		return nil, errors.New("target actor or object is empty")
+	}
+
+	payload := map[string]any{
+		"@context": []any{"https://www.w3.org/ns/activitystreams"},
+		"id":       undoID,
+		"type":     model.ActivityTypeUndo,
+		"actor":    actor.ID,
+		"object": map[string]any{
+			"id":     likeActivityID,
+			"type":   model.ActivityTypeLike,
+			"actor":  actor.ID,
+			"object": object,
+		},
+		"to":        []string{targetActor},
+		"published": published.Format(time.RFC3339),
+	}
+
+	return json.Marshal(payload)
+}
+
+//==============================================================================
+//	Fetch or Push
+//==============================================================================
 
 // fetchRemoteActorInbox 获取远程 Actor 的 Inbox URL
 func (fediverseService *FediverseService) fetchRemoteActorInbox(actorURL string) (string, error) {
@@ -296,49 +536,4 @@ func (fediverseService *FediverseService) PushEchoToFediverse(userId uint, echo 
 	}
 
 	return nil
-}
-
-// buildAcceptActivityPayload 构建 Accept Activity 的 JSON Payload
-func (fediverseService *FediverseService) buildAcceptActivityPayload(actor *model.Actor, follow *model.Activity, followerActor, serverURL string) ([]byte, error) {
-	if follow.ActivityID == "" {
-		return nil, errors.New("follow activity missing id")
-	}
-
-	target := follow.ObjectID
-	if target == "" {
-		target = actor.ID
-	}
-
-	now := time.Now().UTC()
-	acceptID := fmt.Sprintf("%s/activities/%s/accept/%d", serverURL, actor.PreferredUsername, now.UnixNano())
-
-	payload := map[string]any{
-		"@context": []any{"https://www.w3.org/ns/activitystreams"},
-		"id":       acceptID,
-		"type":     model.ActivityTypeAccept,
-		"actor":    actor.ID,
-		"object": map[string]any{
-			"id":     follow.ActivityID,
-			"type":   model.ActivityTypeFollow,
-			"actor":  followerActor,
-			"object": target,
-		},
-		"to":        []string{followerActor},
-		"published": now.Format(time.RFC3339),
-	}
-
-	return json.Marshal(payload)
-}
-
-// normalizePageParams 标准化分页参数
-func normalizePageParams(page, pageSize int) (int, int) {
-	if page < 1 {
-		page = 1
-	}
-	if pageSize < 1 {
-		pageSize = model.DefaultCollectionPageSize
-	} else if pageSize > model.MaxCollectionPageSize {
-		pageSize = model.MaxCollectionPageSize
-	}
-	return page, pageSize
 }
