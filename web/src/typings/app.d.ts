@@ -213,29 +213,29 @@ declare namespace App {
         targetActor: string
       }
 
-      type LikeActionRequest = {
-        targetActor: string
-        object: string
-        objectType?: string
-      }
-
       type FollowResponse = {
         activityId: string
       }
 
-      type UnfollowResponse = {
-        activityId: string
-        followActivityId?: string
-      }
+      // type LikeActionRequest = {
+      //   targetActor: string
+      //   object: string
+      //   objectType?: string
+      // }
 
-      type LikeResponse = {
-        activityId: string
-      }
+      // type UnfollowResponse = {
+      //   activityId: string
+      //   followActivityId?: string
+      // }
 
-      type UndoLikeResponse = {
-        activityId: string
-        likeActivityId?: string
-      }
+      // type LikeResponse = {
+      //   activityId: string
+      // }
+
+      // type UndoLikeResponse = {
+      //   activityId: string
+      //   likeActivityId?: string
+      // }
     }
 
     namespace Todo {

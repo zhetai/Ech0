@@ -21,17 +21,6 @@
         </p>
         <p v-if="username" class="truncate text-sm text-stone-500">@{{ username }}</p>
       </div>
-
-      <BaseButton
-        v-if="actor.id"
-        class="shrink-0 rounded-md border-dashed shadow-none border-amber-500 bg-transparent px-3 py-1 text-sm font-medium text-amber-600 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-        :disabled="isFollowDisabled"
-        @click="handleFollowClick"
-      >
-        <span v-if="followSuccess">等待接收</span>
-        <span v-else-if="followLoading">关注中...</span>
-        <span v-else>关注</span>
-      </BaseButton>
     </header>
 
     <section v-if="sanitizedSummary" class="prose prose-amber max-w-none text-sm text-stone-600">
@@ -75,6 +64,9 @@ type ActivityPubActor = {
   inbox?: string
 }
 
+// 组件 Props 定义
+const props = defineProps<{ actor: ActivityPubActor; followLoading?: boolean; followSuccess?: boolean }>()
+
 const actor = computed(() => props.actor ?? {})
 const displayName = computed(() => actor.value.name || actor.value.preferredUsername || '未知用户')
 const username = computed(() => actor.value.preferredUsername || actor.value.name || '')
@@ -101,41 +93,5 @@ const sanitizedSummary = computed(() => {
   if (!summary) return ''
   return summary
 })
-
-//====================================================
-// 关注相关
-//====================================================
-
-// 组件 Props 定义
-const props = withDefaults(
-  defineProps<{ actor: ActivityPubActor; followLoading?: boolean; followSuccess?: boolean }>(),
-  {
-    followLoading: false, // 关注操作加载状态
-    followSuccess: false, // 关注操作成功状态
-  },
-)
-
-const emit = defineEmits<{
-  (e: 'follow', actor: ActivityPubActor): void
-}>()
-
-const followLoading = computed(() => props.followLoading ?? false)
-const followSuccess = computed(() => props.followSuccess ?? false)
-const isFollowDisabled = computed(() => followLoading.value || followSuccess.value)
-
-const handleFollowClick = () => {
-  if (isFollowDisabled.value) return
-  emit('follow', actor.value)
-}
 </script>
 
-<style scoped>
-.prose :deep(a) {
-  color: rgb(217 119 6);
-  text-decoration: underline;
-}
-
-.prose :deep(a:hover) {
-  color: rgb(180 83 9);
-}
-</style>

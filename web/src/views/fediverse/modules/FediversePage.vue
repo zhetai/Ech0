@@ -38,9 +38,6 @@
         <TheActorCard
           v-else-if="searchResult"
           :actor="searchResult"
-          :follow-loading="followLoading"
-          :follow-success="followSuccess"
-          @follow="handleFollow"
         />
         <p v-else class="text-sm text-gray-500">未找到相关 Actor，试试其他关键词吧。</p>
       </div>
@@ -106,10 +103,6 @@ watch(
       searchLoading.value = false
       searchError.value = ''
       searchResult.value = null
-      resetFollowState()
-    }
-    if (value.trim()) {
-      followSuccess.value = false
     }
   },
 )
@@ -133,12 +126,10 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
     searchLoading.value = false
     searchError.value = ''
     searchResult.value = null
-    resetFollowState()
     return
   }
 
   // 重置状态
-  resetFollowState()
   hasSearched.value = true
   searchLoading.value = true
   searchError.value = ''
@@ -159,53 +150,6 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
     searchLoading.value = false
     searchResult.value = null
     searchError.value = error instanceof Error ? error.message : '搜索失败，请稍后再试'
-  }
-}
-
-//================================================
-// 关注相关
-//================================================
-
-const followLoading = ref(false)
-const followSuccess = ref(false)
-
-// 重置关注状态
-const resetFollowState = () => {
-  followLoading.value = false
-  followSuccess.value = false
-}
-
-// 处理关注
-const handleFollow = async (actor: App.Api.Fediverse.Actor) => {
-  if (followLoading.value) return
-
-  if (!isLogin.value) {
-    theToast.error('请先登录以使用联邦宇宙功能')
-    return
-  }
-
-  const targetActor = typeof actor === 'object' ? (actor?.id as string | undefined) : undefined
-  if (!targetActor) {
-    theToast.error('未找到可用的 Actor 标识，无法发起关注')
-    return
-  }
-
-  followLoading.value = true
-  followSuccess.value = false
-
-  try {
-    const response = await fetchFollowFediverseActor({ targetActor })
-    if (response.code === 1) {
-      followSuccess.value = true
-      theToast.success('关注请求已发送')
-    } else {
-      followSuccess.value = false
-    }
-  } catch (error) {
-    followSuccess.value = false
-    theToast.error(error instanceof Error ? error.message : '关注失败，请稍后再试')
-  } finally {
-    followLoading.value = false
   }
 }
 
