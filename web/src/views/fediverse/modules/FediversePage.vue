@@ -27,7 +27,7 @@
             class="h-full w-full text-gray-600 rounded-md flex items-center justify-center"
             title="消息通知"
             :icon="InBox"
-            @click="$router.push({ name: 'notifications' })"
+            @click="theToast.info('消息通知功能开发中，敬请期待！')"
           />
         </div>
       </div>
@@ -50,7 +50,7 @@
         v-else
         class="mt-6 rounded-lg border border-dashed border-gray-700/60 px-4 py-8 text-center text-gray-500"
       >
-        尚未搜索，未来这里将展示你关注的联邦好友动态。
+        功能开发中，敬请期待！
       </div>
     </div>
   </div>
@@ -195,6 +195,6 @@ const handleFollow = async (actor: App.Api.Fediverse.Actor) => {
 }
 
 onMounted(() => {
-  theToast.info('欢迎来到联邦宇宙！🎉', { duration: 3000 })
+  theToast.info('欢迎来到联邦宇宙！🎉', { duration: 5000 })
 })
 </script>
