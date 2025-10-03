@@ -62,6 +62,8 @@ import InBox from '@/components/icons/inbox.vue'
 import Search from '@/components/icons/search.vue'
 import { fetchSearchFediverseActor } from '@/service/api/fediverse'
 import TheActorCard from '@/components/advanced/TheActorCard.vue'
+import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 
@@ -72,6 +74,9 @@ const goBack = () => {
     router.push({ name: 'home' }) // 没有历史记录则跳首页
   }
 }
+
+const userStore = useUserStore()
+const { isLogin } = storeToRefs(userStore)
 
 const searchTerm = ref('')
 const hasSearched = ref(false)
@@ -96,6 +101,11 @@ watch(
 )
 
 const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
+  if (!isLogin.value) {
+    theToast.error('请先登录以使用联邦宇宙功能')
+    return
+  }
+
   if (event && 'target' in event) {
     const target = event.target as HTMLElement | null
     target?.blur()
