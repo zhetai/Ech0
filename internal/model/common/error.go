@@ -79,6 +79,8 @@ const (
 
 // Fediverse 错误相关常量
 const (
-	GET_ACTOR_ERROR       = "获取 Actor 信息失败"
-	ACTIVEPUB_NOT_ENABLED = "ActivityPub 未启用"
+	GET_ACTOR_ERROR         = "获取 Actor 信息失败"
+	ACTIVEPUB_NOT_ENABLED   = "ActivityPub 未启用"
+	FEDIVERSE_INVALID_INPUT = "无效的联邦参数"
+	FOLLOW_RELATION_MISSING = "未找到关注关系"
 )

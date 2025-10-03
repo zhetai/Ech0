@@ -181,13 +181,14 @@ type Actor struct {
 
 // Follow 表：存储关注请求及状态
 type Follow struct {
-	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID    uint      `gorm:"not null;index" json:"user_id"`            // 发起关注的用户数据库 ID
-	ActorID   string    `gorm:"size:512;not null;index" json:"actor_id"`  // 发起关注的 Actor URL
-	ObjectID  string    `gorm:"size:512;not null;index" json:"object_id"` // 被关注的 Actor URL
-	Status    string    `gorm:"size:20;not null" json:"status"`           // pending, accepted, rejected
-	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	ID         uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID     uint      `gorm:"not null;index" json:"user_id"`            // 发起关注的用户数据库 ID
+	ActorID    string    `gorm:"size:512;not null;index" json:"actor_id"`  // 发起关注的 Actor URL
+	ObjectID   string    `gorm:"size:512;not null;index" json:"object_id"` // 被关注的 Actor URL
+	ActivityID string    `gorm:"size:512" json:"activity_id"`              // Follow 活动 ID，便于撤销
+	Status     string    `gorm:"size:20;not null" json:"status"`           // pending, accepted, rejected
+	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 // Follower 表：存储已接受的关注关系
@@ -197,3 +198,5 @@ type Follower struct {
 	UserID    uint      `gorm:"not null;index" json:"user_id"`           // 被关注用户的数据库 ID
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
+
+

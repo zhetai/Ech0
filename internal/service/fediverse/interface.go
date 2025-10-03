@@ -45,4 +45,19 @@ type FediverseServiceInterface interface {
 
 	// PushEchoToFediverse 将 Echo 推送到联邦网络
 	PushEchoToFediverse(userId uint, echo echoModel.Echo) error
+
+	// SearchActorByActorID 根据 Actor URL 搜索远端 Actor
+	SearchActorByActorID(actorID string) (map[string]any, error)
+
+	// FollowActor 发送关注请求
+	FollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error)
+
+	// UnfollowActor 发送取消关注请求
+	UnfollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error)
+
+	// LikeObject 发送点赞请求
+	LikeObject(userID uint, req model.LikeActionRequest) (map[string]string, error)
+
+	// UndoLikeObject 发送取消点赞请求
+	UndoLikeObject(userID uint, req model.LikeActionRequest) (map[string]string, error)
 }
