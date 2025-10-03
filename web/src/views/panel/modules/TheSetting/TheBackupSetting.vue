@@ -49,6 +49,11 @@ import ExportBackup from '@/components/icons/exportbackup.vue'
 import RestoreBackup from '@/components/icons/restorebackup.vue'
 import { fetchBackup, fetchImportBackup } from '@/service/api'
 import { theToast } from '@/utils/toast'
+import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
+
+const userStore = useUserStore()
+const { isLogin } = storeToRefs(userStore)
 
 const handleBackup = async () => {
   await theToast.promise(fetchBackup(), {
@@ -59,6 +64,11 @@ const handleBackup = async () => {
 }
 
 const handleBackupExport = async () => {
+  if (!isLogin.value) {
+    theToast.info('请登录后使用', {duration: 3000})
+    return
+  }
+
   try {
     theToast.info('导出中...请稍等', {
       duration: 4000,
@@ -88,6 +98,11 @@ const handleBackupExport = async () => {
 }
 
 const handleBackupRestore = async () => {
+  if (!isLogin.value) {
+    theToast.info('请登录后使用', {duration: 3000})
+    return
+  }
+
   const input = document.createElement('input')
   input.type = 'file'
   input.accept = '.zip'
