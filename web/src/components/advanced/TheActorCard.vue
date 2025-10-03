@@ -26,7 +26,7 @@
         :disabled="isFollowDisabled"
         @click="handleFollowClick"
       >
-        <span v-if="followSuccess">已发出关注</span>
+        <span v-if="followSuccess">等待接收</span>
         <span v-else-if="followLoading">关注中...</span>
         <span v-else>关注</span>
       </BaseButton>
