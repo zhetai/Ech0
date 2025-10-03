@@ -36,7 +36,13 @@
       <div v-if="shouldShowResults" class="mt-6 space-y-4">
         <p v-if="searchLoading" class="text-sm text-gray-400">正在召唤联邦宇宙的朋友们…</p>
         <p v-else-if="searchError" class="text-sm text-red-400">{{ searchError }}</p>
-        <TheActorCard v-else-if="searchResult" :actor="searchResult" />
+        <TheActorCard
+          v-else-if="searchResult"
+          :actor="searchResult"
+          :follow-loading="followLoading"
+          :follow-success="followSuccess"
+          @follow="handleFollow"
+        />
         <p v-else class="text-sm text-gray-500">未找到相关 Actor，试试其他关键词吧。</p>
       </div>
       <!-- 未搜索时显示已关注的 Actor 的动态 -->
@@ -60,7 +66,7 @@ import BaseInput from '@/components/common/BaseInput.vue'
 import Arrow from '@/components/icons/arrow.vue'
 import InBox from '@/components/icons/inbox.vue'
 import Search from '@/components/icons/search.vue'
-import { fetchSearchFediverseActor } from '@/service/api/fediverse'
+import { fetchSearchFediverseActor, fetchFollowFediverseActor } from '@/service/api/fediverse'
 import TheActorCard from '@/components/advanced/TheActorCard.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
@@ -83,6 +89,13 @@ const hasSearched = ref(false)
 const searchLoading = ref(false)
 const searchError = ref('')
 const searchResult = ref<App.Api.Fediverse.Actor | null>(null)
+const followLoading = ref(false)
+const followSuccess = ref(false)
+
+const resetFollowState = () => {
+  followLoading.value = false
+  followSuccess.value = false
+}
 
 const shouldShowResults = computed(
   () => hasSearched.value || searchLoading.value || Boolean(searchError.value),
@@ -96,6 +109,10 @@ watch(
       searchLoading.value = false
       searchError.value = ''
       searchResult.value = null
+      resetFollowState()
+    }
+    if (value.trim()) {
+      followSuccess.value = false
     }
   },
 )
@@ -117,9 +134,11 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
     searchLoading.value = false
     searchError.value = ''
     searchResult.value = null
+    resetFollowState()
     return
   }
 
+  resetFollowState()
   hasSearched.value = true
   searchLoading.value = true
   searchError.value = ''
@@ -139,6 +158,39 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
     searchLoading.value = false
     searchResult.value = null
     searchError.value = error instanceof Error ? error.message : '搜索失败，请稍后再试'
+  }
+}
+
+const handleFollow = async (actor: App.Api.Fediverse.Actor) => {
+  if (followLoading.value) return
+
+  if (!isLogin.value) {
+    theToast.error('请先登录以使用联邦宇宙功能')
+    return
+  }
+
+  const targetActor = typeof actor === 'object' ? (actor?.id as string | undefined) : undefined
+  if (!targetActor) {
+    theToast.error('未找到可用的 Actor 标识，无法发起关注')
+    return
+  }
+
+  followLoading.value = true
+  followSuccess.value = false
+
+  try {
+    const response = await fetchFollowFediverseActor({ targetActor })
+    if (response.code === 1) {
+      followSuccess.value = true
+      theToast.success('关注请求已发送')
+    } else {
+      followSuccess.value = false
+    }
+  } catch (error) {
+    followSuccess.value = false
+    theToast.error(error instanceof Error ? error.message : '关注失败，请稍后再试')
+  } finally {
+    followLoading.value = false
   }
 }
 

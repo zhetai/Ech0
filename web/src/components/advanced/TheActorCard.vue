@@ -12,21 +12,24 @@
         />
         <span v-else class="text-lg font-semibold text-amber-600">{{ initials }}</span>
       </div>
+
       <div class="min-w-0 flex-1">
         <p class="truncate text-lg font-semibold text-stone-800">
           {{ displayName }}
         </p>
         <p v-if="username" class="truncate text-sm text-stone-500">@{{ username }}</p>
       </div>
-      <a
+
+      <BaseButton
         v-if="actor.id"
-        :href="actor.id"
-        class="shrink-0 rounded-md border border-dashed border-amber-400 px-3 py-1 text-sm font-medium text-amber-500 transition hover:border-amber-500 hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-        target="_blank"
-        rel="noopener noreferrer"
+        class="shrink-0 rounded-md border-dashed shadow-none border-amber-500 bg-transparent px-3 py-1 text-sm font-medium text-amber-600 transition  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        :disabled="isFollowDisabled"
+        @click="handleFollowClick"
       >
-        查看
-      </a>
+        <span v-if="followSuccess">已发出关注</span>
+        <span v-else-if="followLoading">关注中...</span>
+        <span v-else>关注</span>
+      </BaseButton>
     </header>
 
     <section v-if="sanitizedSummary" class="prose prose-amber max-w-none text-sm text-stone-600">
@@ -41,7 +44,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, withDefaults } from 'vue'
+import BaseButton from '@/components/common/BaseButton.vue'
 
 type ActivityPubMedia = {
   type?: string
@@ -60,9 +64,22 @@ type ActivityPubActor = {
   inbox?: string
 }
 
-const props = defineProps<{ actor: ActivityPubActor }>()
+const props = withDefaults(
+  defineProps<{ actor: ActivityPubActor; followLoading?: boolean; followSuccess?: boolean }>(),
+  {
+    followLoading: false,
+    followSuccess: false,
+  },
+)
+
+const emit = defineEmits<{
+  (e: 'follow', actor: ActivityPubActor): void
+}>()
 
 const actor = computed(() => props.actor ?? {})
+const followLoading = computed(() => props.followLoading ?? false)
+const followSuccess = computed(() => props.followSuccess ?? false)
+const isFollowDisabled = computed(() => followLoading.value || followSuccess.value)
 
 const displayName = computed(() => actor.value.name || actor.value.preferredUsername || '未知用户')
 const username = computed(() => actor.value.preferredUsername || actor.value.name || '')
@@ -90,6 +107,11 @@ const sanitizedSummary = computed(() => {
   if (!summary) return ''
   return summary
 })
+
+const handleFollowClick = () => {
+  if (isFollowDisabled.value) return
+  emit('follow', actor.value)
+}
 </script>
 
 <style scoped>
