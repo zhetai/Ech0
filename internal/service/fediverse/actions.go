@@ -35,12 +35,12 @@ func (fediverseService *FediverseService) SearchActorByActorID(actorID string) (
 		Content: "application/activity+json",
 	}, 5*time.Second)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
+		return nil, fmt.Errorf("%s", commonModel.GET_ACTOR_ERROR)
 	}
 
 	var actor map[string]any
 	if err := json.Unmarshal(body, &actor); err != nil {
-		return nil, fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
+		return nil, fmt.Errorf("%s", commonModel.GET_ACTOR_ERROR)
 	}
 	if len(actor) == 0 {
 		return nil, errors.New(commonModel.GET_ACTOR_ERROR)
