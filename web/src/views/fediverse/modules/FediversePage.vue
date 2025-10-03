@@ -18,7 +18,7 @@
             type="text"
             v-model="searchTerm"
             placeholder="搜索 Actor..."
-            class="w-50 sm:w-55 h-9"
+            class="w-50 sm:w-55 h-10"
             @keyup.enter="$event.target.blur()"
             @blur="handleSearch"
           />

@@ -58,7 +58,7 @@ func resolveActorURL(input string) (string, error) {
 	}
 
 	resource := trimmed
-	if after, ok :=strings.CutPrefix(resource, "acct:"); ok  {
+	if after, ok := strings.CutPrefix(resource, "acct:"); ok {
 		resource = after
 	}
 	resource = strings.TrimPrefix(resource, "@")

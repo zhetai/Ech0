@@ -39,11 +39,11 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.AuthRouterGroup.POST("/follow", h.FediverseHandler.PostFollow)
 
 	// Unfollow (取消关注请求)
-	appRouterGroup.AuthRouterGroup.POST("/unfollow", h.FediverseHandler.PostUnfollow)
+	// appRouterGroup.AuthRouterGroup.POST("/unfollow", h.FediverseHandler.PostUnfollow)
 
 	// Post Like (点赞请求)
-	appRouterGroup.AuthRouterGroup.POST("/like", h.FediverseHandler.PostLike)
+	// appRouterGroup.AuthRouterGroup.POST("/like", h.FediverseHandler.PostLike)
 
 	// Post Undo Like (取消点赞请求)
-	appRouterGroup.AuthRouterGroup.POST("/undo-like", h.FediverseHandler.PostUndoLike)
+	// appRouterGroup.AuthRouterGroup.POST("/undo-like", h.FediverseHandler.PostUndoLike)
 }

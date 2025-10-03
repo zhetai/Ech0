@@ -20,6 +20,11 @@ const (
 	ActivityTypeUndo     string = "Undo"
 )
 
+const (
+	DefaultCollectionPageSize = 20
+	MaxCollectionPageSize     = 80
+)
+
 // WebFingerResponse 是 WebFinger 返回的标准结构
 type WebFingerResponse struct {
 	Subject string   `json:"subject"`           // 用户标识，例如 acct:alice@domain.com
@@ -198,5 +203,3 @@ type Follower struct {
 	UserID    uint      `gorm:"not null;index" json:"user_id"`           // 被关注用户的数据库 ID
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
-
-
