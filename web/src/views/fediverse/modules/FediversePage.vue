@@ -195,6 +195,6 @@ const handleFollow = async (actor: App.Api.Fediverse.Actor) => {
 }
 
 onMounted(() => {
-  theToast.info('欢迎来到联邦宇宙！🎉', { duration: 5000 })
+  theToast.info('欢迎来到联邦宇宙！🎉', { duration: 3000 })
 })
 </script>
