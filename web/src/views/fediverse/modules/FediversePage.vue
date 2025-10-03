@@ -34,12 +34,10 @@
       <!-- 在搜索时板块显示搜索结果 -->
       <div v-if="shouldShowResults" class="mt-6 space-y-4">
         <p v-if="searchLoading" class="text-sm text-gray-400">正在召唤联邦宇宙的朋友们…</p>
-        <p v-else-if="searchError" class="text-sm text-red-400">{{ searchError }}</p>
         <TheActorCard
           v-else-if="searchResult"
           :actor="searchResult"
         />
-        <p v-else class="text-sm text-gray-500">未找到相关 Actor，试试其他关键词吧。</p>
       </div>
       <!-- 未搜索时显示已关注的 Actor 的动态 -->
       <div
@@ -86,12 +84,12 @@ const goBack = () => {
 const searchTerm = ref('')
 const hasSearched = ref(false)
 const searchLoading = ref(false)
-const searchError = ref('')
+
 const searchResult = ref<App.Api.Fediverse.Actor | null>(null)
 
 // 是否显示搜索结果区域
 const shouldShowResults = computed(
-  () => hasSearched.value || searchLoading.value || Boolean(searchError.value),
+  () => hasSearched.value || searchLoading.value,
 )
 
 // 监听搜索词变化，清除状态
@@ -101,7 +99,6 @@ watch(
     if (!value.trim()) {
       hasSearched.value = false
       searchLoading.value = false
-      searchError.value = ''
       searchResult.value = null
     }
   },
@@ -124,7 +121,6 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
   if (!term) {
     hasSearched.value = false
     searchLoading.value = false
-    searchError.value = ''
     searchResult.value = null
     return
   }
@@ -132,7 +128,6 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
   // 重置状态
   hasSearched.value = true
   searchLoading.value = true
-  searchError.value = ''
   searchResult.value = null
 
   try {
@@ -144,12 +139,10 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
       searchResult.value = response.data
     } else {
       searchResult.value = null
-      searchError.value = response.msg || '未找到对应的 Actor'
     }
   } catch (error) {
     searchLoading.value = false
     searchResult.value = null
-    searchError.value = error instanceof Error ? error.message : '搜索失败，请稍后再试'
   }
 }
 

@@ -27,7 +27,7 @@ func (fediverseService *FediverseService) SearchActorByActorID(actorID string) (
 
 	resolvedActorURL, err := resolveActorURL(actorID)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(commonModel.GET_ACTOR_ERROR)
 	}
 
 	body, err := httpUtil.SendRequest(resolvedActorURL, http.MethodGet, httpUtil.Header{

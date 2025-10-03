@@ -37,13 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, withDefaults } from 'vue'
-import BaseButton from '@/components/common/BaseButton.vue'
-import { FollowStatus } from '@/enums/enums'
-
-//====================================================
-// Actor 相关
-//====================================================
+import { computed } from 'vue'
 
 // ActivityPub Actor 和 Media 类型定义
 type ActivityPubMedia = {
