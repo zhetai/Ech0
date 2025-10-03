@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -22,7 +23,12 @@ func (fediverseService *FediverseService) SearchActorByActorID(actorID string) (
 		return nil, errors.New(commonModel.FEDIVERSE_INVALID_INPUT)
 	}
 
-	body, err := httpUtil.SendRequest(actorID, http.MethodGet, httpUtil.Header{
+	resolvedActorURL, err := resolveActorURL(actorID)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := httpUtil.SendRequest(resolvedActorURL, http.MethodGet, httpUtil.Header{
 		Header:  "Accept",
 		Content: "application/activity+json",
 	}, 5*time.Second)
@@ -39,6 +45,64 @@ func (fediverseService *FediverseService) SearchActorByActorID(actorID string) (
 	}
 
 	return actor, nil
+}
+
+func resolveActorURL(input string) (string, error) {
+	trimmed := strings.TrimSpace(input)
+	if trimmed == "" {
+		return "", errors.New(commonModel.FEDIVERSE_INVALID_INPUT)
+	}
+
+	if strings.HasPrefix(trimmed, "http://") || strings.HasPrefix(trimmed, "https://") {
+		return trimmed, nil
+	}
+
+	resource := trimmed
+	if strings.HasPrefix(resource, "acct:") {
+		resource = strings.TrimPrefix(resource, "acct:")
+	}
+	resource = strings.TrimPrefix(resource, "@")
+
+	if !strings.Contains(resource, "@") {
+		return "", errors.New(commonModel.GET_ACTOR_ERROR)
+	}
+
+	parts := strings.SplitN(resource, "@", 2)
+	username := strings.TrimSpace(parts[0])
+	domain := strings.TrimSpace(parts[1])
+	if username == "" || domain == "" {
+		return "", errors.New(commonModel.GET_ACTOR_ERROR)
+	}
+
+	webfingerURL := fmt.Sprintf("https://%s/.well-known/webfinger?resource=%s", domain, url.QueryEscape("acct:"+username+"@"+domain))
+	body, err := httpUtil.SendRequest(webfingerURL, http.MethodGet, httpUtil.Header{
+		Header:  "Accept",
+		Content: "application/jrd+json, application/json",
+	}, 5*time.Second)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
+	}
+
+	var resp struct {
+		Links []struct {
+			Rel  string `json:"rel"`
+			Type string `json:"type"`
+			Href string `json:"href"`
+		} `json:"links"`
+	}
+	if err := json.Unmarshal(body, &resp); err != nil {
+		return "", fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
+	}
+
+	for _, link := range resp.Links {
+		if link.Rel == "self" && link.Href != "" {
+			if link.Type == "application/activity+json" || link.Type == "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"" || link.Type == "" {
+				return link.Href, nil
+			}
+		}
+	}
+
+	return "", errors.New(commonModel.GET_ACTOR_ERROR)
 }
 
 func (fediverseService *FediverseService) FollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error) {

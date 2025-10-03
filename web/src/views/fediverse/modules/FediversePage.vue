@@ -1,38 +1,136 @@
 <template>
-  <div class="px-3 pb-4 py-2 mt-4 sm:mt-6 mb-10 mx-auto flex justify-center items-center">
+  <div class="max-w-sm px-3 pb-4 py-2 mt-4 sm:mt-6 mb-10 mx-auto flex justify-center items-center">
     <div class="w-full sm:max-w-lg mx-auto">
-      <!-- 返回上一页 -->
-      <!-- <div class="mx-auto max-w-sm">
-        <BaseButton @click="goBack"
-          class="text-gray-600 rounded-md !shadow-none !border-none !ring-0 !bg-transparent group" title="返回首页">
-          <Arrow class="w-9 h-9 rotate-180 transition-transform duration-200 group-hover:-translate-x-1" />
+      <h1 class="text-5xl text-center font-bold text-gray-200 mt-2 mb-4">Ech0 Fediverse</h1>
+
+      <div class="flex items-center justify-between">
+        <!-- 返回上一页 -->
+        <BaseButton @click="goBack" class="w-10 h-10 text-gray-600 rounded-md group" title="返回首页">
+          <Arrow class="w-6 h-6 rotate-180" />
         </BaseButton>
-      </div> -->
 
-      <h1 class="text-4xl text-center font-bold text-gray-400">Ech0 Fediverse</h1>
 
-      <p class="text-center font-bold text-gray-500 mt-6">具体内容正在建设中...</p>
+        <!-- Actor搜索框 && NotificationBox -->
+        <div class="flex items-center gap-1">
+          <!-- Actor 搜索框 -->
+          <BaseInput
+            title="搜索"
+            type="text"
+            v-model="searchTerm"
+            placeholder="搜索 Actor..."
+            class="w-55 sm:w-65 h-10"
+            @keyup.enter="$event.target.blur()"
+            @blur="handleSearch"
+          />
+          <!-- NotificationBox -->
+          <BaseButton
+            class="w-10 h-10 text-gray-600 rounded-md group"
+            title="消息通知"
+            :icon="InBox"
+            @click="$router.push({ name: 'notifications' })"
+          />
+        </div>
+      </div>
+
+      <!-- 在搜索时板块显示搜索结果 -->
+      <div v-if="shouldShowResults" class="mt-6 space-y-4">
+        <p v-if="searchLoading" class="text-sm text-gray-400">正在召唤联邦宇宙的朋友们…</p>
+        <p v-else-if="searchError" class="text-sm text-red-400">{{ searchError }}</p>
+        <TheActorCard v-else-if="searchResult" :actor="searchResult" />
+        <p v-else class="text-sm text-gray-500">未找到相关 Actor，试试其他关键词吧。</p>
+      </div>
+      <!-- 未搜索时显示已关注的 Actor 的动态 -->
+      <div
+        v-else
+        class="mt-6 rounded-lg border border-dashed border-gray-700/60 px-4 py-8 text-center text-gray-500"
+      >
+        尚未搜索，未来这里将展示你关注的联邦好友动态。
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { theToast } from '@/utils/toast'
 
-// import { useRouter, useRoute } from 'vue-router'
-// import BaseButton from '@/components/common/BaseButton.vue'
-// import Arrow from '@/components/icons/arrow.vue'
+import { useRouter } from 'vue-router'
+import BaseButton from '@/components/common/BaseButton.vue'
+import BaseInput from '@/components/common/BaseInput.vue'
+import Arrow from '@/components/icons/arrow.vue'
+import InBox from '@/components/icons/inbox.vue'
+import Search from '@/components/icons/search.vue'
+import { fetchSearchFediverseActor } from '@/service/api/fediverse'
+import TheActorCard from '@/components/advanced/TheActorCard.vue'
 
-// const router = useRouter()
+const router = useRouter()
 
-// const goBack = () => {
-//   if (window.history.length > 2) {
-//     window.history.back()
-//   } else {
-//     router.push({ name: 'home' }) // 没有历史记录则跳首页
-//   }
-// }
+const goBack = () => {
+  if (window.history.length > 2) {
+    window.history.back()
+  } else {
+    router.push({ name: 'home' }) // 没有历史记录则跳首页
+  }
+}
+
+const searchTerm = ref('')
+const hasSearched = ref(false)
+const searchLoading = ref(false)
+const searchError = ref('')
+const searchResult = ref<App.Api.Fediverse.Actor | null>(null)
+
+const shouldShowResults = computed(
+  () => hasSearched.value || searchLoading.value || Boolean(searchError.value),
+)
+
+watch(
+  () => searchTerm.value,
+  (value) => {
+    if (!value.trim()) {
+      hasSearched.value = false
+      searchLoading.value = false
+      searchError.value = ''
+      searchResult.value = null
+    }
+  },
+)
+
+const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
+  if (event && 'target' in event) {
+    const target = event.target as HTMLElement | null
+    target?.blur()
+  }
+
+  const term = searchTerm.value.trim()
+  if (!term) {
+    hasSearched.value = false
+    searchLoading.value = false
+    searchError.value = ''
+    searchResult.value = null
+    return
+  }
+
+  hasSearched.value = true
+  searchLoading.value = true
+  searchError.value = ''
+  searchResult.value = null
+
+  try {
+    const response = await fetchSearchFediverseActor(term)
+    searchLoading.value = false
+
+    if (response.code === 1 && response.data) {
+      searchResult.value = response.data
+    } else {
+      searchResult.value = null
+      searchError.value = response.msg || '未找到对应的 Actor'
+    }
+  } catch (error) {
+    searchLoading.value = false
+    searchResult.value = null
+    searchError.value = error instanceof Error ? error.message : '搜索失败，请稍后再试'
+  }
+}
 
 onMounted(() => {
   theToast.info('欢迎来到联邦宇宙！🎉', { duration: 3000 })
