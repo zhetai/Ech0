@@ -1,12 +1,12 @@
 <template>
   <div class="max-w-sm px-3 pb-4 py-2 mt-4 sm:mt-6 mb-10 mx-auto flex justify-center items-center">
-    <div class="w-full sm:max-w-lg mx-auto">
+    <div class="w-full sm:max-w-lg">
       <h1 class="text-5xl text-center font-bold text-gray-200 mt-2 mb-4">Ech0 Fediverse</h1>
 
       <div class="flex items-center justify-between">
         <!-- 返回上一页 -->
-        <BaseButton @click="goBack" class="w-10 h-10 text-gray-600 rounded-md group" title="返回首页">
-          <Arrow class="w-6 h-6 rotate-180" />
+        <BaseButton @click="goBack" class="w-10 h-10 text-gray-600 rounded-md" title="返回首页">
+          <Arrow class="w-7 h-7 rotate-180 mx-auto" />
         </BaseButton>
 
 
@@ -18,13 +18,13 @@
             type="text"
             v-model="searchTerm"
             placeholder="搜索 Actor..."
-            class="w-50 sm:w-55 h-10"
+            class="w-50 sm:w-55 h-9"
             @keyup.enter="$event.target.blur()"
             @blur="handleSearch"
           />
           <!-- NotificationBox -->
           <BaseButton
-            class="w-10 h-10 text-gray-600 rounded-md group"
+            class="h-full w-full text-gray-600 rounded-md flex items-center justify-center"
             title="消息通知"
             :icon="InBox"
             @click="$router.push({ name: 'notifications' })"

@@ -21,7 +21,7 @@
       <a
         v-if="actor.id"
         :href="actor.id"
-        class="shrink-0 text-sm text-amber-600 transition hover:text-amber-500"
+        class="shrink-0 rounded-md border border-dashed border-amber-400 px-3 py-1 text-sm font-medium text-amber-500 transition hover:border-amber-500 hover:text-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -33,7 +33,7 @@
       <div v-html="sanitizedSummary" />
     </section>
 
-    <footer class="flex flex-wrap items-center gap-3 text-xs text-stone-500">
+    <footer class="flex flex-wrap items-center gap-0.5 text-xs text-stone-500">
       <span v-if="actor.type">类型: {{ actor.type }}</span>
       <span v-if="actor.inbox">收件箱: <span class="text-amber-600">{{ actor.inbox }}</span></span>
     </footer>
