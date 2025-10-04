@@ -82,4 +82,5 @@ const (
 	FEDIVERSE_UNFOLLOW_SUCCESS     = "取消关注请求已发送"
 	FEDIVERSE_LIKE_SUCCESS         = "点赞请求已发送"
 	FEDIVERSE_UNDO_LIKE_SUCCESS    = "取消点赞请求已发送"
+	FEDIVERSE_GET_FOLLOW_STATUS_SUCCESS = "获取关注状态成功"
 )

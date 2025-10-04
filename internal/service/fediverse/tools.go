@@ -50,7 +50,7 @@ func normalizePageParams(page, pageSize int) (int, int) {
 	return page, pageSize
 }
 
-// resolveActorURL 解析输入，返回 Actor URL
+// resolveActorURL 解析输入，返回 Actor URL，格式为 http(s)://domain/users/username
 func resolveActorURL(input string) (string, error) {
 	trimmed := strings.TrimSpace(input)
 	if trimmed == "" {
@@ -61,16 +61,19 @@ func resolveActorURL(input string) (string, error) {
 		return trimmed, nil
 	}
 
+	// 处理 acct:username@domain 或 username@domain 格式
 	resource := trimmed
 	if after, ok := strings.CutPrefix(resource, "acct:"); ok {
 		resource = after
 	}
 	resource = strings.TrimPrefix(resource, "@")
 
+	// 必须包含 '@' 分隔符
 	if !strings.Contains(resource, "@") {
 		return "", errors.New(commonModel.GET_ACTOR_ERROR)
 	}
 
+	// 分割用户名和域名
 	parts := strings.SplitN(resource, "@", 2)
 	username := strings.TrimSpace(parts[0])
 	domain := strings.TrimSpace(parts[1])
@@ -78,6 +81,7 @@ func resolveActorURL(input string) (string, error) {
 		return "", errors.New(commonModel.GET_ACTOR_ERROR)
 	}
 
+	// 通过 WebFinger 获取 Actor URL
 	webfingerURL := fmt.Sprintf("https://%s/.well-known/webfinger?resource=%s", domain, url.QueryEscape("acct:"+username+"@"+domain))
 	body, err := httpUtil.SendRequest(webfingerURL, http.MethodGet, httpUtil.Header{
 		Header:  "Accept",
@@ -98,9 +102,11 @@ func resolveActorURL(input string) (string, error) {
 		return "", fmt.Errorf("%s: %w", commonModel.GET_ACTOR_ERROR, err)
 	}
 
+	// 查找符合条件的 self 链接
 	for _, link := range resp.Links {
 		if link.Rel == "self" && link.Href != "" {
 			if link.Type == "application/activity+json" || link.Type == "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"" || link.Type == "" {
+				// 返回找到的 Actor URL,格式为 http(s)://domain/users/username
 				return link.Href, nil
 			}
 		}

@@ -49,6 +49,9 @@ type FediverseServiceInterface interface {
 	// SearchActorByActorID 根据 Actor URL 搜索远端 Actor
 	SearchActorByActorID(actorID string) (map[string]any, error)
 
+	// GetFollowStatus 获取关注状态
+	GetFollowStatus(userID uint, targetActor string) (string, error)
+
 	// FollowActor 发送关注请求
 	FollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error)
 

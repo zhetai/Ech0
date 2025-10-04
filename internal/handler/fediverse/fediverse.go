@@ -360,6 +360,24 @@ func (h *FediverseHandler) GetObject(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, object)
 }
 
+// GetFollowStatus 获取关注状态
+func (h *FediverseHandler) GetFollowStatus(ctx *gin.Context) {
+	userID := ctx.MustGet("userid").(uint)
+	targetActor := strings.TrimSpace(ctx.Query("actor"))
+	if targetActor == "" {
+		ctx.JSON(http.StatusOK, commonModel.Fail[map[string]any](commonModel.FEDIVERSE_INVALID_INPUT))
+		return
+	}
+
+	followStatus, err := h.service.GetFollowStatus(userID, targetActor)
+	if err != nil {
+		ctx.JSON(http.StatusOK, commonModel.Fail[map[string]any](err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, commonModel.OK(followStatus, commonModel.FEDIVERSE_GET_FOLLOW_STATUS_SUCCESS))
+}
+
 // SearchActorByActorID 根据 Actor URL 搜索远端 Actor
 func (h *FediverseHandler) SearchActorByActorID(ctx *gin.Context) {
 	actorID := strings.TrimSpace(ctx.Query("actor"))

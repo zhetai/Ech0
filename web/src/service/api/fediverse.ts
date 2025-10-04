@@ -8,6 +8,14 @@ export function fetchSearchFediverseActor(actor: string) {
   })
 }
 
+// Get Follow Status (获取关注状态)
+export function fetchGetFollowStatus(targetActor: string) {
+  return request<string>({
+    url: `/follow/status?actor=${encodeURIComponent(targetActor)}`,
+    method: 'GET',
+  })
+}
+
 // Follow (发起关注请求)
 export function fetchFollowFediverseActor(payload: App.Api.Fediverse.FollowActionRequest) {
   return request<App.Api.Fediverse.FollowResponse>({

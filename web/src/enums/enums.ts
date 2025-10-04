@@ -51,6 +51,7 @@ export enum S3Provider {
 
 // Follow Status
 export enum FollowStatus {
+  NONE = 'none',
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',

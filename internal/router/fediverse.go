@@ -35,6 +35,9 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Search Actor By Actor ID
 	appRouterGroup.AuthRouterGroup.GET("/search/actor", h.FediverseHandler.SearchActorByActorID)
 
+	// Get Follow Status (获取关注状态)
+	appRouterGroup.AuthRouterGroup.GET("/follow/status", h.FediverseHandler.GetFollowStatus)
+
 	// Follow (发起关注请求)
 	appRouterGroup.AuthRouterGroup.POST("/follow", h.FediverseHandler.PostFollow)
 

@@ -21,6 +21,16 @@
         </p>
         <p v-if="username" class="truncate text-sm text-stone-500">@{{ username }}</p>
       </div>
+
+      <!-- 关注按钮 （等待接收、已关注、关注） -->
+      <BaseButton
+      class="rounded-md shadow-xs"
+      @click="handleFollow">
+        <template v-if="followStatus === FollowStatus.NONE">关注</template>
+        <template v-else-if="followStatus === FollowStatus.PENDING">等待接受</template>
+        <template v-else-if="followStatus === FollowStatus.ACCEPTED">已关注</template>
+        <template v-else-if="followStatus === FollowStatus.REJECTED">关注被拒</template>
+      </BaseButton>
     </header>
 
     <section v-if="sanitizedSummary" class="prose prose-amber max-w-none text-sm text-stone-600">
@@ -37,7 +47,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import BaseButton from '../common/BaseButton.vue'
+import { fetchGetFollowStatus } from '@/service/api/fediverse'
+import { FollowStatus } from '@/enums/enums'
 
 // ActivityPub Actor 和 Media 类型定义
 type ActivityPubMedia = {
@@ -90,5 +103,69 @@ const sanitizedSummary = computed(() => {
   const summary = actor.value.summary?.trim()
   if (!summary) return ''
   return summary
+})
+
+//================================================
+// 关注相关
+//================================================
+const followStatus = ref<FollowStatus>(FollowStatus.NONE)
+
+const handleFollow = () => {
+  // 根据当前状态执行不同操作
+  switch (followStatus.value) {
+    case FollowStatus.NONE:
+      // 发起关注请求
+      followStatus.value = FollowStatus.PENDING
+      // TODO: 调用关注接口
+      break
+    case FollowStatus.PENDING:
+      // 取消关注请求
+      followStatus.value = FollowStatus.NONE
+      // TODO: 调用取消关注接口
+      break
+    case FollowStatus.ACCEPTED:
+      // 取消关注
+      followStatus.value = FollowStatus.NONE
+      // TODO: 调用取消关注接口
+      break
+    case FollowStatus.REJECTED:
+      // 重新发起关注请求
+      followStatus.value = FollowStatus.PENDING
+      // TODO: 调用关注接口
+      break
+    default:
+      followStatus.value = FollowStatus.NONE
+      break
+  }
+}
+
+onMounted(async () => {
+  // 组件挂载时，说明已经有 Actor 数据
+  // 查看当前Actor的关注状态
+  const currentActor = actor.value
+  if (currentActor && currentActor.id) {
+    const res = await fetchGetFollowStatus(currentActor.id)
+    if (res.code === 1 && res.data) {
+      if (res.data.length > 0) {
+        switch (res.data) {
+          case FollowStatus.NONE:
+            followStatus.value = FollowStatus.NONE
+            break
+          case FollowStatus.PENDING:
+            followStatus.value = FollowStatus.PENDING
+            break
+          case FollowStatus.ACCEPTED:
+            followStatus.value = FollowStatus.ACCEPTED
+            break
+          case FollowStatus.REJECTED:
+            followStatus.value = FollowStatus.REJECTED
+            break
+          default:
+            followStatus.value = FollowStatus.NONE
+            break
+        }
+      }
+    }
+  }
 })
 </script>

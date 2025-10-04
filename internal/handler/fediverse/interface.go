@@ -27,6 +27,9 @@ type FediverseHandlerInterface interface {
 	// SearchActorByActorID 根据 Actor URL 搜索远端 Actor
 	SearchActorByActorID(ctx *gin.Context)
 
+	// GetFollowStatus 获取关注状态
+	GetFollowStatus(ctx *gin.Context)
+
 	// PostFollow 发送关注请求
 	PostFollow(ctx *gin.Context)
 }

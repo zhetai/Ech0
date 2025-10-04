@@ -26,6 +26,7 @@ const (
 )
 
 const (
+	FollowStatusNone     = "none"
 	FollowStatusPending  = "pending"
 	FollowStatusAccepted = "accepted"
 	FollowStatusRejected = "rejected"
@@ -176,7 +177,7 @@ type PublicKey struct {
 // Actor ActivityPub Actor 信息
 type Actor struct {
 	Context           []interface{} `json:"@context"`          // 上下文，可以是字符串或对象的数组
-	ID                string        `json:"id"`                // Actor 的唯一标识 URL
+	ID                string        `json:"id"`                // Actor 的唯一标识 URL，格式通常为 http(s)://domain/users/username
 	Type              string        `json:"type"`              // Actor 类型，通常为 "Person"
 	Name              string        `json:"name"`              // 显示名称
 	PreferredUsername string        `json:"preferredUsername"` // 用户名
@@ -194,8 +195,8 @@ type Actor struct {
 type Follow struct {
 	ID         uint      `gorm:"primaryKey;autoIncrement" json:"id"`
 	UserID     uint      `gorm:"not null;index" json:"user_id"`            // 发起关注的用户数据库 ID
-	ActorID    string    `gorm:"size:512;not null;index" json:"actor_id"`  // 发起关注的 Actor URL
-	ObjectID   string    `gorm:"size:512;not null;index" json:"object_id"` // 被关注的 Actor URL
+	ActorID    string    `gorm:"size:512;not null;index" json:"actor_id"`  // 发起关注的 Actor URL, 格式通常为 http(s)://domain/users/username
+	ObjectID   string    `gorm:"size:512;not null;index" json:"object_id"` // 被关注的 Actor URL, 格式通常为 http(s)://domain/users/username
 	ActivityID string    `gorm:"size:512" json:"activity_id"`              // Follow 活动 ID，便于撤销
 	Status     string    `gorm:"size:20;not null" json:"status"`           // pending, accepted, rejected
 	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
@@ -205,7 +206,7 @@ type Follow struct {
 // Follower 表：存储已接受的关注关系
 type Follower struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	ActorID   string    `gorm:"size:512;not null;index" json:"actor_id"` // 粉丝 Actor URL
+	ActorID   string    `gorm:"size:512;not null;index" json:"actor_id"` // 粉丝 Actor URL, 格式通常为 http(s)://domain/users/username
 	UserID    uint      `gorm:"not null;index" json:"user_id"`           // 被关注用户的数据库 ID
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
