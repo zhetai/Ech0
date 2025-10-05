@@ -478,7 +478,7 @@ const handleAddorUpdateEcho = async (justSyncImages: boolean) => {
     // === 添加模式 ===
     // 不是Echo更新模式，执行添加操作
     theToast.promise(fetchAddEcho(echoToAdd.value), {
-      loading: "发布中...",
+      loading: '发布中...',
       success: (res) => {
         if (res.code === 1) {
           handleClear()

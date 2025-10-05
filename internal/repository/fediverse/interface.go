@@ -33,7 +33,7 @@ type FediverseRepositoryInterface interface {
 
 	// ListInboxStatuses 获取本地收件箱推文
 	ListInboxStatuses(ctx context.Context, userID uint, page, pageSize int) ([]model.InboxStatus, int64, error)
-	
+
 	// UpdateFollowStatusByActivityID 根据 Follow Activity ID 更新关注状态
 	UpdateFollowStatusByActivityID(ctx context.Context, userID uint, activityID, status string) error
 }

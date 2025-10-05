@@ -24,8 +24,9 @@
 
       <!-- 关注按钮 （等待接收、已关注、关注） -->
       <BaseButton
-      class="rounded-md border border-dashed border-orange-400 !bg-transparent !shadow-none !ring-0 text-sm !text-orange-600 hover:!text-orange-400"
-      @click="handleFollow">
+        class="rounded-md border border-dashed border-orange-400 !bg-transparent !shadow-none !ring-0 text-sm !text-orange-600 hover:!text-orange-400"
+        @click="handleFollow"
+      >
         <template v-if="followStatus === FollowStatus.NONE">关注</template>
         <template v-else-if="followStatus === FollowStatus.PENDING">等待接受</template>
         <template v-else-if="followStatus === FollowStatus.ACCEPTED">已关注</template>
@@ -49,7 +50,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import BaseButton from '../common/BaseButton.vue'
-import { fetchGetFollowStatus, fetchFollowFediverseActor, fetchUnfollowFediverseActor } from '@/service/api/fediverse'
+import {
+  fetchGetFollowStatus,
+  fetchFollowFediverseActor,
+  fetchUnfollowFediverseActor,
+} from '@/service/api/fediverse'
 import { FollowStatus } from '@/enums/enums'
 import { theToast } from '@/utils/toast'
 

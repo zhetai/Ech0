@@ -48,7 +48,10 @@
         <!-- 已登录则尝试拉取关注的Actor的动态 -->
         <div v-else class="text-left">
           <TheTimeline :loading="timelineLoading" :error="timelineError" :items="timelineItems" />
-          <div v-if="timelineItems.length" class="mt-4 flex flex-col items-center gap-2 text-sm text-gray-400">
+          <div
+            v-if="timelineItems.length"
+            class="mt-4 flex flex-col items-center gap-2 text-sm text-gray-400"
+          >
             <span v-if="timelineLoadingMore">正在加载更多…</span>
             <span v-else-if="!timelineHasMore && !timelineLoading">已经到底啦～</span>
           </div>
@@ -189,16 +192,24 @@ const observeTimelineSentinel = () => {
     return
   }
 
-  timelineObserver = new IntersectionObserver((entries) => {
-    const shouldLoadMore = entries.some((entry) => entry.isIntersecting)
+  timelineObserver = new IntersectionObserver(
+    (entries) => {
+      const shouldLoadMore = entries.some((entry) => entry.isIntersecting)
 
-    if (shouldLoadMore && !timelineLoadingMore.value && !timelineLoading.value && timelineHasMore.value) {
-      void loadTimeline()
-    }
-  }, {
-    root: null,
-    threshold: 0.1,
-  })
+      if (
+        shouldLoadMore &&
+        !timelineLoadingMore.value &&
+        !timelineLoading.value &&
+        timelineHasMore.value
+      ) {
+        void loadTimeline()
+      }
+    },
+    {
+      root: null,
+      threshold: 0.1,
+    },
+  )
 
   timelineObserver.observe(timelineSentinel.value)
 }
@@ -235,7 +246,10 @@ const loadTimeline = async (options: { reset?: boolean } = {}) => {
   }
 
   try {
-    const response = await fetchFediverseTimeline({ page: currentPage, pageSize: TIMELINE_PAGE_SIZE })
+    const response = await fetchFediverseTimeline({
+      page: currentPage,
+      pageSize: TIMELINE_PAGE_SIZE,
+    })
 
     if (response.code === 1 && response.data) {
       const newItems = response.data.items ?? []
@@ -249,7 +263,9 @@ const loadTimeline = async (options: { reset?: boolean } = {}) => {
       } else if (newItems.length) {
         const existingIds = new Set(timelineItems.value.map((item) => item.id))
         const deduped = newItems.filter((item) => !existingIds.has(item.id))
-        timelineItems.value = deduped.length ? [...timelineItems.value, ...deduped] : timelineItems.value
+        timelineItems.value = deduped.length
+          ? [...timelineItems.value, ...deduped]
+          : timelineItems.value
       }
 
       if (timelineItems.value.length < timelineTotal.value && newItems.length > 0) {

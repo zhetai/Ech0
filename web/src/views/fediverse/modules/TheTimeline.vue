@@ -20,12 +20,16 @@
             </div>
             <div class="flex flex-col">
               <div class="flex items-center gap-1">
-                <h1 class="text-base font-semibold text-black overflow-hidden whitespace-nowrap dark:text-slate-100">
+                <h1
+                  class="text-base font-semibold text-black overflow-hidden whitespace-nowrap dark:text-slate-100"
+                >
                   {{ item.displayName }}
                 </h1>
                 <Verified class="text-sky-500 w-5 h-5" />
               </div>
-              <span class="text-sm text-[#5b7083] dark:text-slate-400 truncate">@ {{ item.actorHandle }}</span>
+              <span class="text-sm text-[#5b7083] dark:text-slate-400 truncate"
+                >@ {{ item.actorHandle }}</span
+              >
             </div>
           </div>
         </header>
@@ -40,14 +44,21 @@
             class="prose prose-sm max-w-none text-slate-700 dark:prose-invert dark:text-slate-200"
             v-html="item.contentHtml"
           ></section>
-          <p v-else-if="item.contentText" class="whitespace-pre-line text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+          <p
+            v-else-if="item.contentText"
+            class="whitespace-pre-line text-sm leading-relaxed text-slate-700 dark:text-slate-200"
+          >
             {{ item.contentText }}
           </p>
         </div>
 
-        <footer class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500 dark:text-slate-400">
+        <footer
+          class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500 dark:text-slate-400"
+        >
           <span>{{ item.timeText }}</span>
-          <span class="text-xs text-slate-400 dark:text-slate-500" :title="item.objectId">来自联邦宇宙</span>
+          <span class="text-xs text-slate-400 dark:text-slate-500" :title="item.objectId"
+            >来自联邦宇宙</span
+          >
         </footer>
       </article>
     </div>
@@ -124,7 +135,12 @@ const extractAttachmentUrls = (raw: unknown, fallbackHtml: string) => {
     }
     const record = extractRecord(candidate)
     if (!record) return
-    const possible = typeof record.url === 'string' ? (record.url as string) : typeof record.href === 'string' ? (record.href as string) : ''
+    const possible =
+      typeof record.url === 'string'
+        ? (record.url as string)
+        : typeof record.href === 'string'
+          ? (record.href as string)
+          : ''
     if (possible) {
       urls.push(possible)
     }
@@ -148,8 +164,12 @@ const extractAttachmentUrls = (raw: unknown, fallbackHtml: string) => {
         if (!attRecord) {
           return true
         }
-        const type = typeof attRecord.type === 'string' ? (attRecord.type as string).toLowerCase() : ''
-        const mediaType = typeof attRecord.mediaType === 'string' ? (attRecord.mediaType as string).toLowerCase() : ''
+        const type =
+          typeof attRecord.type === 'string' ? (attRecord.type as string).toLowerCase() : ''
+        const mediaType =
+          typeof attRecord.mediaType === 'string'
+            ? (attRecord.mediaType as string).toLowerCase()
+            : ''
         if (type && type !== 'image' && !mediaType.startsWith('image/')) {
           return false
         }
@@ -193,7 +213,8 @@ const resolveActorHandle = (item: App.Api.Fediverse.TimelineItem) => {
   try {
     const parsed = new URL(actorUrl)
     const pathSegments = parsed.pathname.split('/').filter(Boolean)
-    const userSlug = item.actorPreferredUsername || pathSegments[pathSegments.length - 1] || parsed.hostname
+    const userSlug =
+      item.actorPreferredUsername || pathSegments[pathSegments.length - 1] || parsed.hostname
     return `${userSlug}@${parsed.hostname}`
   } catch {
     const username = item.actorPreferredUsername || item.actorDisplayName
@@ -232,11 +253,8 @@ const resolvedItems = computed(() =>
       galleryImages,
       objectId: item.objectId,
     }
-  })
+  }),
 )
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
