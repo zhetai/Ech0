@@ -25,7 +25,7 @@
                 </h1>
                 <Verified class="text-sky-500 w-5 h-5" />
               </div>
-              <span class="text-sm text-[#5b7083] dark:text-slate-400">@ {{ item.actorHandle }}</span>
+              <span class="text-sm text-[#5b7083] dark:text-slate-400 truncate">@ {{ item.actorHandle }}</span>
             </div>
           </div>
         </header>

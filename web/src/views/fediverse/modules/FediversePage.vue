@@ -48,6 +48,16 @@
         <!-- 已登录则尝试拉取关注的Actor的动态 -->
         <div v-else class="text-left">
           <TheTimeline :loading="timelineLoading" :error="timelineError" :items="timelineItems" />
+          <div v-if="timelineItems.length" class="mt-4 flex flex-col items-center gap-2 text-sm text-gray-400">
+            <span v-if="timelineLoadingMore">正在加载更多…</span>
+            <span v-else-if="!timelineHasMore && !timelineLoading">已经到底啦～</span>
+          </div>
+          <div
+            v-if="timelineHasMore"
+            ref="timelineSentinel"
+            class="h-1 w-full opacity-0"
+            aria-hidden="true"
+          ></div>
         </div>
       </div>
     </div>
@@ -55,14 +65,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, onUnmounted, ref, computed, watch, nextTick } from 'vue'
 import { theToast } from '@/utils/toast'
 
 import { useRouter } from 'vue-router'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import Arrow from '@/components/icons/arrow.vue'
-import InBox from '@/components/icons/inbox.vue'
 import { fetchSearchFediverseActor, fetchFediverseTimeline } from '@/service/api/fediverse'
 import TheActorCard from '@/components/advanced/TheActorCard.vue'
 import TheTimeline from './TheTimeline.vue'
@@ -151,36 +160,139 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
 
 const timelineItems = ref<App.Api.Fediverse.TimelineItem[]>([])
 const timelineLoading = ref(false)
+const timelineLoadingMore = ref(false)
 const timelineError = ref('')
+const timelinePage = ref(1)
+const timelineTotal = ref(0)
+const timelineSentinel = ref<HTMLElement | null>(null)
 
-const loadTimeline = async () => {
+const TIMELINE_PAGE_SIZE = 10
+let timelineObserver: IntersectionObserver | null = null
+
+const timelineHasMore = computed(() => {
+  if (!timelineTotal.value) {
+    return false
+  }
+  return timelineItems.value.length < timelineTotal.value
+})
+
+const detachTimelineObserver = () => {
+  if (timelineObserver) {
+    timelineObserver.disconnect()
+    timelineObserver = null
+  }
+}
+
+const observeTimelineSentinel = () => {
+  detachTimelineObserver()
+  if (!timelineSentinel.value || !timelineHasMore.value) {
+    return
+  }
+
+  timelineObserver = new IntersectionObserver((entries) => {
+    const shouldLoadMore = entries.some((entry) => entry.isIntersecting)
+
+    if (shouldLoadMore && !timelineLoadingMore.value && !timelineLoading.value && timelineHasMore.value) {
+      void loadTimeline()
+    }
+  }, {
+    root: null,
+    threshold: 0.1,
+  })
+
+  timelineObserver.observe(timelineSentinel.value)
+}
+
+const resetTimelineState = () => {
+  detachTimelineObserver()
+  timelineItems.value = []
+  timelinePage.value = 1
+  timelineTotal.value = 0
+  timelineError.value = ''
+}
+
+const loadTimeline = async (options: { reset?: boolean } = {}) => {
   if (!isLogin.value) {
     return
   }
 
-  timelineLoading.value = true
-  timelineError.value = ''
-
-  const response = await fetchFediverseTimeline()
-  if (response.code === 1 && response.data) {
-    timelineItems.value = response.data.items ?? []
-  } else {
-    timelineItems.value = []
-    timelineError.value = response.msg || '时间线获取失败'
-    theToast.error(timelineError.value)
+  if (timelineLoading.value || timelineLoadingMore.value) {
+    return
   }
 
-  timelineLoading.value = false
+  if (options.reset) {
+    resetTimelineState()
+  }
+
+  const currentPage = timelinePage.value
+  const isInitialLoad = currentPage === 1 && timelineItems.value.length === 0
+
+  if (isInitialLoad) {
+    timelineLoading.value = true
+    timelineError.value = ''
+  } else {
+    timelineLoadingMore.value = true
+  }
+
+  try {
+    const response = await fetchFediverseTimeline({ page: currentPage, pageSize: TIMELINE_PAGE_SIZE })
+
+    if (response.code === 1 && response.data) {
+      const newItems = response.data.items ?? []
+      const total = response.data.total ?? 0
+
+      timelineTotal.value = total
+      timelineError.value = ''
+
+      if (currentPage === 1) {
+        timelineItems.value = newItems
+      } else if (newItems.length) {
+        const existingIds = new Set(timelineItems.value.map((item) => item.id))
+        const deduped = newItems.filter((item) => !existingIds.has(item.id))
+        timelineItems.value = deduped.length ? [...timelineItems.value, ...deduped] : timelineItems.value
+      }
+
+      if (timelineItems.value.length < timelineTotal.value && newItems.length > 0) {
+        timelinePage.value = currentPage + 1
+      }
+
+      if (newItems.length === 0) {
+        timelineTotal.value = timelineItems.value.length
+      }
+    } else {
+      if (currentPage === 1) {
+        timelineItems.value = []
+      }
+      timelineError.value = response.msg || '时间线获取失败'
+      theToast.error(timelineError.value)
+    }
+  } catch (error) {
+    if (currentPage === 1) {
+      timelineItems.value = []
+    }
+    timelineError.value = error instanceof Error ? error.message : '时间线获取失败'
+    theToast.error(timelineError.value)
+  } finally {
+    timelineLoading.value = false
+    timelineLoadingMore.value = false
+
+    void nextTick(() => {
+      if (timelineHasMore.value) {
+        observeTimelineSentinel()
+      } else {
+        detachTimelineObserver()
+      }
+    })
+  }
 }
 
 watch(
   () => isLogin.value,
   (loggedIn) => {
     if (loggedIn) {
-      loadTimeline()
+      void loadTimeline({ reset: true })
     } else {
-      timelineItems.value = []
-      timelineError.value = ''
+      resetTimelineState()
     }
   },
 )
@@ -188,7 +300,11 @@ watch(
 onMounted(() => {
   theToast.info('欢迎来到联邦宇宙！🎉', { duration: 3000 })
   if (isLogin.value) {
-    loadTimeline()
+    void loadTimeline({ reset: true })
   }
+})
+
+onUnmounted(() => {
+  detachTimelineObserver()
 })
 </script>
