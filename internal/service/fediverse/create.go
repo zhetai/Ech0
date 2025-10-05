@@ -12,6 +12,7 @@ import (
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
+	mdUtil "github.com/lin-snow/ech0/internal/util/md"
 )
 
 const inboxFetchTimeout = 5 * time.Second
@@ -46,7 +47,7 @@ func (fediverse *FediverseService) handleCreateActivity(user *userModel.User, ac
 		return errors.New("create activity missing id")
 	}
 
-	content := getStringFromMap(objectMap, "content")
+	content := normalizeActivityContent(getStringFromMap(objectMap, "content"), objectMap)
 	summary := strings.TrimSpace(activity.Summary)
 	if summary == "" {
 		summary = getStringFromMap(objectMap, "summary")
@@ -380,6 +381,68 @@ func extractActorCandidates(value any) []string {
 		}
 	}
 	return candidates
+}
+
+func normalizeActivityContent(content string, objectMap map[string]any) string {
+	trimmed := strings.TrimSpace(content)
+
+	if trimmed != "" && looksLikeHTML(trimmed) {
+		return trimmed
+	}
+
+	if converted := convertSourceToHTML(objectMap["source"]); converted != "" {
+		return converted
+	}
+
+	if trimmed == "" {
+		return ""
+	}
+
+	return string(mdUtil.MdToHTML([]byte(trimmed)))
+}
+
+func convertSourceToHTML(source any) string {
+	if source == nil {
+		return ""
+	}
+
+	switch value := source.(type) {
+	case string:
+		if strings.TrimSpace(value) == "" {
+			return ""
+		}
+		return string(mdUtil.MdToHTML([]byte(value)))
+	case map[string]any:
+		mediaType := strings.ToLower(strings.TrimSpace(getStringFromMap(value, "mediaType")))
+		if mediaType == "" {
+			mediaType = strings.ToLower(strings.TrimSpace(getStringFromMap(value, "type")))
+		}
+
+		data := strings.TrimSpace(getStringFromMap(value, "content"))
+		if data == "" {
+			data = strings.TrimSpace(getStringFromMap(value, "value"))
+		}
+		if data == "" && value["text"] != nil {
+			data = strings.TrimSpace(extractString(value["text"]))
+		}
+		if data == "" {
+			return ""
+		}
+
+		if strings.Contains(mediaType, "markdown") || !looksLikeHTML(data) {
+			return string(mdUtil.MdToHTML([]byte(data)))
+		}
+		return data
+	default:
+		return ""
+	}
+}
+
+func looksLikeHTML(value string) bool {
+	if value == "" {
+		return false
+	}
+	return strings.Contains(value, "<") && strings.Contains(value, ">")
 }
 
 func isLikelyImageURL(value string) bool {
