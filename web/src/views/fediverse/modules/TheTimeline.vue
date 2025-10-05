@@ -6,32 +6,35 @@
       <article
         v-for="item in resolvedItems"
         :key="item.id"
-        class="rounded-xl border border-gray-200/80 bg-white/95 p-5 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/60 dark:bg-gray-900/70"
+        class="w-full max-w-sm bg-white h-auto p-5 shadow rounded-lg border border-slate-200 mx-auto dark:bg-slate-900/80 dark:border-slate-700/60"
       >
-        <header class="mb-4 flex items-start justify-between gap-4">
-          <div class="flex flex-col gap-1">
-            <span class="text-base font-semibold text-slate-900 dark:text-gray-100">
+        <header class="flex flex-col gap-1 mt-2 mb-4">
+          <div class="flex items-center gap-1">
+            <h1 class="text-base font-semibold text-black overflow-hidden whitespace-nowrap dark:text-slate-100">
               {{ item.displayName }}
-            </span>
-            <span class="text-xs text-slate-500 dark:text-gray-400">@ {{ item.actorHandle }}</span>
+            </h1>
           </div>
-          <time class="text-xs text-slate-400 dark:text-gray-500">
-            {{ item.timeText }}
-          </time>
+          <span class="text-sm text-[#5b7083] dark:text-slate-400">@ {{ item.actorHandle }}</span>
         </header>
 
-        <div v-if="item.galleryImages.length" class="mb-4">
-          <TheImageGallery :images="item.galleryImages" />
+        <div class="py-4 space-y-4">
+          <div v-if="item.galleryImages.length">
+            <TheImageGallery :images="item.galleryImages" />
+          </div>
+
+          <section
+            v-if="item.contentHtml"
+            class="prose prose-sm max-w-none text-slate-700 dark:prose-invert dark:text-slate-200"
+            v-html="item.contentHtml"
+          ></section>
+          <p v-else-if="item.contentText" class="whitespace-pre-line text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+            {{ item.contentText }}
+          </p>
         </div>
 
-        <section v-if="item.contentHtml" class="prose prose-sm max-w-none text-slate-700 dark:prose-invert dark:text-gray-200" v-html="item.contentHtml"></section>
-        <p v-else-if="item.contentText" class="whitespace-pre-line text-sm text-slate-700 dark:text-gray-200">
-          {{ item.contentText }}
-        </p>
-
-        <footer class="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 dark:text-gray-500">
-          <span class="truncate" :title="item.objectId">{{ item.objectId }}</span>
-          <span>来自联邦宇宙</span>
+        <footer class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500 dark:text-slate-400">
+          <span>{{ item.timeText }}</span>
+          <span class="text-xs text-slate-400 dark:text-slate-500" :title="item.objectId">来自联邦宇宙</span>
         </footer>
       </article>
     </div>
@@ -206,7 +209,6 @@ const resolvedItems = computed(() =>
       timeText: formatTimelineTime(item.publishedAt || item.createdAt),
       contentHtml: sanitizedHtml,
       contentText,
-      images,
       galleryImages,
       objectId: item.objectId,
     }
