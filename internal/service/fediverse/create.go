@@ -321,13 +321,21 @@ func extractIconURL(container map[string]any, key string) string {
 func extractIconValue(value any) string {
 	switch v := value.(type) {
 	case string:
-		return strings.TrimSpace(v)
+		candidate := strings.TrimSpace(v)
+		if isLikelyImageURL(candidate) {
+			return candidate
+		}
+		return ""
 	case map[string]any:
 		if url := strings.TrimSpace(getStringFromMap(v, "url")); url != "" {
-			return url
+			if isLikelyImageURL(url) {
+				return url
+			}
 		}
 		if href := strings.TrimSpace(getStringFromMap(v, "href")); href != "" {
-			return href
+			if isLikelyImageURL(href) {
+				return href
+			}
 		}
 		if icon := v["icon"]; icon != nil {
 			if nested := extractIconValue(icon); nested != "" {
@@ -372,6 +380,25 @@ func extractActorCandidates(value any) []string {
 		}
 	}
 	return candidates
+}
+
+func isLikelyImageURL(value string) bool {
+	if value == "" {
+		return false
+	}
+	lower := strings.ToLower(value)
+	if strings.HasPrefix(lower, "data:image/") {
+		return true
+	}
+	if strings.HasPrefix(lower, "http://") || strings.HasPrefix(lower, "https://") {
+		extensions := []string{".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".avif"}
+		for _, ext := range extensions {
+			if strings.Contains(lower, ext) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // extractString 将任意值转换为字符串
