@@ -223,10 +223,10 @@ declare namespace App {
       //   objectType?: string
       // }
 
-      // type UnfollowResponse = {
-      //   activityId: string
-      //   followActivityId?: string
-      // }
+      type UnfollowResponse = {
+        activityId: string
+        followActivityId?: string
+      }
 
       // type LikeResponse = {
       //   activityId: string

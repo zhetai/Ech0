@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import BaseButton from '../common/BaseButton.vue'
-import { fetchGetFollowStatus, fetchFollowFediverseActor } from '@/service/api/fediverse'
+import { fetchGetFollowStatus, fetchFollowFediverseActor, fetchUnfollowFediverseActor } from '@/service/api/fediverse'
 import { FollowStatus } from '@/enums/enums'
 import { theToast } from '@/utils/toast'
 
@@ -129,18 +129,42 @@ const handleFollow = () => {
       break
     case FollowStatus.PENDING:
       // 取消关注请求
-      followStatus.value = FollowStatus.NONE
-      // TODO: 调用取消关注接口
+      if (actor.value && actor.value.id) {
+        fetchUnfollowFediverseActor({
+          targetActor: actor.value.id,
+        }).then((res) => {
+          if (res.code === 1) {
+            followStatus.value = FollowStatus.NONE
+            theToast.info('已取消关注请求')
+          }
+        })
+      }
       break
     case FollowStatus.ACCEPTED:
       // 取消关注
-      followStatus.value = FollowStatus.NONE
-      // TODO: 调用取消关注接口
+      if (actor.value && actor.value.id) {
+        fetchUnfollowFediverseActor({
+          targetActor: actor.value.id,
+        }).then((res) => {
+          if (res.code === 1) {
+            followStatus.value = FollowStatus.NONE
+            theToast.info('已取消关注')
+          }
+        })
+      }
       break
     case FollowStatus.REJECTED:
       // 重新发起关注请求
-      followStatus.value = FollowStatus.PENDING
-      // TODO: 调用关注接口
+      if (actor.value && actor.value.id) {
+        fetchFollowFediverseActor({
+          targetActor: actor.value.id,
+        }).then((res) => {
+          if (res.code === 1) {
+            followStatus.value = FollowStatus.PENDING
+            theToast.info('已重新发送关注请求，等待对方接受')
+          }
+        })
+      }
       break
     default:
       followStatus.value = FollowStatus.NONE

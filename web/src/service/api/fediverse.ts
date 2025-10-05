@@ -25,14 +25,14 @@ export function fetchFollowFediverseActor(payload: App.Api.Fediverse.FollowActio
   })
 }
 
-// // Unfollow (取消关注请求)
-// export function fetchUnfollowFediverseActor(payload: App.Api.Fediverse.FollowActionRequest) {
-//   return request<App.Api.Fediverse.UnfollowResponse>({
-//     url: `/unfollow`,
-//     method: 'POST',
-//     data: payload,
-//   })
-// }
+// Unfollow (取消关注请求)
+export function fetchUnfollowFediverseActor(payload: App.Api.Fediverse.FollowActionRequest) {
+  return request<App.Api.Fediverse.UnfollowResponse>({
+    url: `/unfollow`,
+    method: 'POST',
+    data: payload,
+  })
+}
 
 // // Post Like (点赞请求)
 // export function fetchLikeFediverseObject(payload: App.Api.Fediverse.LikeActionRequest) {
