@@ -136,18 +136,19 @@ type Activity struct {
 
 // Object 内容对象表 (存储 Note, Article, Image 等等)
 type Object struct {
-	Context      any          `gorm:"-" json:"@context,omitempty"`
-	ID           uint         `gorm:"primaryKey;autoIncrement" json:"-"`
-	ObjectID     string       `gorm:"size:512;unique;not null" json:"id"`     // 全局唯一 URL
-	Type         string       `gorm:"size:64;not null" json:"type"`           // Note, Article, Image...
-	AttributedTo string       `gorm:"size:512" json:"attributedTo,omitempty"` // actor URL
-	Content      string       `gorm:"type:text" json:"content,omitempty"`     // 主要内容
-	Attachments  []Attachment `gorm:"-" json:"attachment,omitempty"`          // 附件 URL 列表，序列化存储
-	Published    time.Time    `json:"published,omitempty"`
-	To           []string     `gorm:"-" json:"to,omitempty"` // 序列化成 JSON 存储
-	Cc           []string     `gorm:"-" json:"cc,omitempty"` // 同上
-	ObjectJSON   string       `gorm:"type:text" json:"-"`    // 完整 JSON，便于恢复
-	CreatedAt    time.Time    `gorm:"autoCreateTime" json:"-"`
+	Context      any            `gorm:"-" json:"@context,omitempty"`
+	ID           uint           `gorm:"primaryKey;autoIncrement" json:"-"`
+	ObjectID     string         `gorm:"size:512;unique;not null" json:"id"`     // 全局唯一 URL
+	Type         string         `gorm:"size:64;not null" json:"type"`           // Note, Article, Image...
+	AttributedTo string         `gorm:"size:512" json:"attributedTo,omitempty"` // actor URL
+	Content      string         `gorm:"type:text" json:"content,omitempty"`     // 主要内容
+	Source       map[string]any `gorm:"-" json:"source,omitempty"`              // 原始内容，可能包含 mediaType 和 content 字段
+	Attachments  []Attachment   `gorm:"-" json:"attachment,omitempty"`          // 附件 URL 列表，序列化存储
+	Published    time.Time      `json:"published,omitempty"`
+	To           []string       `gorm:"-" json:"to,omitempty"` // 序列化成 JSON 存储
+	Cc           []string       `gorm:"-" json:"cc,omitempty"` // 同上
+	ObjectJSON   string         `gorm:"type:text" json:"-"`    // 完整 JSON，便于恢复
+	CreatedAt    time.Time      `gorm:"autoCreateTime" json:"-"`
 }
 
 // Attachment 附件对象

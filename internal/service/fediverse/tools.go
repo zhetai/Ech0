@@ -173,9 +173,13 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 		Context: []any{
 			"https://www.w3.org/ns/activitystreams",
 		},
-		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
-		Type:         "Note",
-		Content:      string(mdUtil.MdToHTML([]byte(echo.Content))),
+		ObjectID: fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
+		Type:     "Note",
+		Content:  string(mdUtil.MdToHTML([]byte(echo.Content))),
+		Source: map[string]any{
+			"mediaType": "text/markdown",
+			"content":   echo.Content,
+		},
 		AttributedTo: actor.ID,
 		Published:    echo.CreatedAt,
 		To: []string{
