@@ -62,4 +62,5 @@ const metingAPI = computed(() => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
