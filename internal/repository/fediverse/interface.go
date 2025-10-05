@@ -27,4 +27,7 @@ type FediverseRepositoryInterface interface {
 
 	// 删除关注关系
 	DeleteFollow(ctx context.Context, followID uint) error
+
+	// UpsertInboxStatus 存储或更新远端推文到本地收件箱
+	UpsertInboxStatus(ctx context.Context, status *model.InboxStatus) error
 }

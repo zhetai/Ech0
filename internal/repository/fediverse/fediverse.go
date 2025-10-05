@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"time"
 
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	"github.com/lin-snow/ech0/internal/transaction"
@@ -89,4 +90,55 @@ func (r *FediverseRepository) GetFollowByUserAndObject(ctx context.Context, user
 
 func (r *FediverseRepository) DeleteFollow(ctx context.Context, followID uint) error {
 	return r.getDB(ctx).Delete(&model.Follow{}, followID).Error
+}
+
+func (r *FediverseRepository) UpsertInboxStatus(ctx context.Context, status *model.InboxStatus) error {
+	if status == nil {
+		return errors.New("inbox status is nil")
+	}
+
+	if status.ActivityID == "" {
+		return errors.New("activity id is empty")
+	}
+
+	db := r.getDB(ctx)
+
+	var existing model.InboxStatus
+	err := db.Where("user_id = ? AND activity_id = ?", status.UserID, status.ActivityID).First(&existing).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		if status.CreatedAt.IsZero() {
+			status.CreatedAt = time.Now()
+		}
+		if status.UpdatedAt.IsZero() {
+			status.UpdatedAt = status.CreatedAt
+		}
+		return db.Create(status).Error
+	}
+	if err != nil {
+		return err
+	}
+
+	status.ID = existing.ID
+	if status.UpdatedAt.IsZero() {
+		status.UpdatedAt = time.Now()
+	}
+
+	updates := map[string]any{
+		"actor_id":                 status.ActorID,
+		"actor_preferred_username": status.ActorPreferredUsername,
+		"actor_display_name":       status.ActorDisplayName,
+		"object_id":                status.ObjectID,
+		"object_type":              status.ObjectType,
+		"object_attributed_to":     status.ObjectAttributedTo,
+		"summary":                  status.Summary,
+		"content":                  status.Content,
+		"to":                       status.To,
+		"cc":                       status.Cc,
+		"raw_activity":             status.RawActivity,
+		"raw_object":               status.RawObject,
+		"published_at":             status.PublishedAt,
+		"updated_at":               status.UpdatedAt,
+	}
+
+	return db.Model(&existing).Updates(updates).Error
 }

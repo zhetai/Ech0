@@ -141,6 +141,7 @@ func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.
 		Type:       model.ActivityTypeCreate,
 		ActorID:    actor.ID,
 		ActorURL:   actor.ID,
+		Object:     obj.ObjectID,
 		ObjectID:   obj.ObjectID,
 		ObjectType: obj.Type,
 		Published:  echo.CreatedAt,

@@ -19,9 +19,14 @@ func (fediverseService *FediverseService) HandleInbox(username string, activity 
 
 	// 处理不同类型的 Activity
 	switch activity.Type {
+	// 处理关注请求
 	case model.ActivityTypeFollow:
-		// 处理关注请求
 		if err := fediverseService.handleFollowActivity(&user, activity); err != nil {
+			return err
+		}
+	// 处理接收到的推文推送
+	case model.ActivityTypeCreate:
+		if err := fediverseService.handleCreateActivity(&user, activity); err != nil {
 			return err
 		}
 

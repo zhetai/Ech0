@@ -119,7 +119,8 @@ type Activity struct {
 	Type         string    `gorm:"size:64;not null" json:"type"`       // Create, Follow, Like, Accept...
 	ActorID      string    `gorm:"index;not null" json:"-"`            // 关联的用户 ID
 	ActorURL     string    `gorm:"size:512;not null" json:"actor"`     // Actor URL
-	ObjectID     string    `gorm:"size:512;not null" json:"object"`    // 目标对象 URL
+	Object       any       `gorm:"-" json:"object,omitempty"`          // 原始 Object 字段，可能是字符串或对象
+	ObjectID     string    `gorm:"size:512;not null" json:"-"`         // 目标对象 URL
 	ObjectType   string    `gorm:"size:64;not null" json:"-"`          // 目标对象类型
 	Published    time.Time `json:"published"`                          // 发布时间
 	To           []string  `gorm:"type:text" json:"to,omitempty"`      // 接收者列表，序列化存储
@@ -209,4 +210,26 @@ type Follower struct {
 	ActorID   string    `gorm:"size:512;not null;index" json:"actor_id"` // 粉丝 Actor URL, 格式通常为 http(s)://domain/users/username
 	UserID    uint      `gorm:"not null;index" json:"user_id"`           // 被关注用户的数据库 ID
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+}
+
+// InboxStatus 收件箱中存储的远端推文记录，供后续时间线展示使用
+type InboxStatus struct {
+	ID                     uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID                 uint      `gorm:"not null;index:idx_user_activity,priority:1" json:"user_id"` // 本地用户 ID
+	ActivityID             string    `gorm:"size:512;not null;index:idx_user_activity,priority:2" json:"activity_id"`
+	ActorID                string    `gorm:"size:512;not null" json:"actor_id"`        // 发送者 Actor URL
+	ActorPreferredUsername string    `gorm:"size:128" json:"actor_preferred_username"` // 发送者用户名（推断）
+	ActorDisplayName       string    `gorm:"size:255" json:"actor_display_name"`       // 发送者显示名称
+	ObjectID               string    `gorm:"size:512;not null" json:"object_id"`       // Object 的唯一 URL
+	ObjectType             string    `gorm:"size:64" json:"object_type"`               // Object 类型，例如 Note
+	ObjectAttributedTo     string    `gorm:"size:512" json:"object_attributed_to"`     // Object 的 attributedTo 字段
+	Summary                string    `gorm:"type:text" json:"summary"`                 // Activity 或 Object 中的摘要
+	Content                string    `gorm:"type:text" json:"content"`                 // Object 内容，通常为 HTML
+	To                     string    `gorm:"type:text" json:"to"`                      // 接收者列表，JSON 字符串
+	Cc                     string    `gorm:"type:text" json:"cc"`                      // 抄送列表，JSON 字符串
+	RawActivity            string    `gorm:"type:text;not null" json:"raw_activity"`   // 完整的 Activity JSON
+	RawObject              string    `gorm:"type:text" json:"raw_object"`              // 完整的 Object JSON
+	PublishedAt            time.Time `gorm:"index" json:"published_at"`                // 消息发布时间
+	CreatedAt              time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt              time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }

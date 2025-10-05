@@ -41,8 +41,15 @@
         v-else
         class="mt-6 rounded-lg border border-dashed border-gray-700/60 px-4 py-8 text-center text-gray-500"
       >
-        功能开发中，敬请期待！
-      </div>
+        <!-- 未登录时显示登录提示 -->
+        <div v-if="!isLogin">
+          <p class="mb-2">请先登录以使用联邦宇宙功能</p>
+        </div>
+        <!-- 已登录则尝试拉取关注的Actor的动态 -->
+        <div v-else>
+
+        </div>
+    </div>
     </div>
   </div>
 </template>

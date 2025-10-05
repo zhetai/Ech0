@@ -44,6 +44,8 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Unfollow (取消关注请求)
 	appRouterGroup.AuthRouterGroup.POST("/unfollow", h.FediverseHandler.PostUnfollow)
 
+	// Get Memo (获取关注的Actor的推文)
+
 	// Post Like (点赞请求)
 	// appRouterGroup.AuthRouterGroup.POST("/like", h.FediverseHandler.PostLike)
 

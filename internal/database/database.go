@@ -116,6 +116,7 @@ func MigrateDB() error {
 		// Fediverse 相关
 		&fediverseModel.Follow{},
 		&fediverseModel.Follower{},
+		&fediverseModel.InboxStatus{},
 	}
 
 	return GetDB().AutoMigrate(
