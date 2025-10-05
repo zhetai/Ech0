@@ -453,32 +453,44 @@ const handleAddorUpdateEcho = async (justSyncImages: boolean) => {
       echoToUpdate.value.extension_type = echoToAdd.value.extension_type
 
       // 更新Echo
-      const res = await fetchUpdateEcho(echoToUpdate.value)
-      if (res.code === 1 && !justSyncImages) {
-        theToast.success('更新成功！')
-        handleClear()
-        echoStore.refreshEchos()
-        isUpdateMode.value = false
-        echoToUpdate.value = null
-        currentMode.value = Mode.ECH0
-      } else if (res.code === 1 && justSyncImages) {
-        theToast.success('发现图片更改，已自动更新同步Echo！')
-      } else {
-        theToast.error('更新失败，请稍后再试！')
-      }
+      theToast.promise(fetchUpdateEcho(echoToUpdate.value), {
+        loading: justSyncImages ? '同步图片中...' : '更新中...',
+        success: (res) => {
+          if (res.code === 1 && !justSyncImages) {
+            handleClear()
+            echoStore.refreshEchos()
+            isUpdateMode.value = false
+            echoToUpdate.value = null
+            currentMode.value = Mode.ECH0
+            return '更新成功！'
+          } else if (res.code === 1 && justSyncImages) {
+            return '发现图片更改，已自动更新同步Echo！'
+          } else {
+            return '更新失败，请稍后再试！'
+          }
+        },
+        error: '更新失败，请稍后再试！',
+      })
       isSubmitting.value = false
       return
     }
 
     // === 添加模式 ===
     // 不是Echo更新模式，执行添加操作
-    const res = await fetchAddEcho(echoToAdd.value)
-    if (res.code === 1) {
-      theToast.success('发布成功！')
-      handleClear()
-      echoStore.refreshEchos()
-      currentMode.value = Mode.ECH0
-    }
+    theToast.promise(fetchAddEcho(echoToAdd.value), {
+      loading: "发布中...",
+      success: (res) => {
+        if (res.code === 1) {
+          handleClear()
+          echoStore.refreshEchos()
+          currentMode.value = Mode.ECH0
+          return '发布成功！'
+        } else {
+          return '发布失败，请稍后再试！'
+        }
+      },
+      error: '发布失败，请稍后再试！',
+    })
   } finally {
     isSubmitting.value = false
   }
