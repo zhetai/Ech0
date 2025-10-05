@@ -67,7 +67,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 - 🌍 **Cross-Device Compatible** — Fully responsive on desktop, tablet, and mobile.
 - 👾 **PWA Support** — Can be installed as a Web App.
 - ☁️ **S3 Storage Support** — Native integration with S3-compatible object storage for local or cloud backups.
-- 🌐 **ActivityPub Federation** — Native ActivityPub support for interoperability with Mastodon, Misskey, Pleroma, etc.
+- 🌐 **ActivityPub Federation** — Native ActivityPub support for interoperability with Mastodon, Misskey etc.
 - 📝 **Built-in Todo Management** — Record and track daily tasks efficiently.
 - 🔗 **Ech0 Connect** — Cross-instance content aggregation, subscription, and synchronization.
 - 🎵 **Music Integration** — Lightweight audio player for local streaming and immersive background music.
