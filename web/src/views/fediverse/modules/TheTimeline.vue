@@ -23,6 +23,7 @@
                 <h1 class="text-base font-semibold text-black overflow-hidden whitespace-nowrap dark:text-slate-100">
                   {{ item.displayName }}
                 </h1>
+                <Verified class="text-sky-500 w-5 h-5" />
               </div>
               <span class="text-sm text-[#5b7083] dark:text-slate-400">@ {{ item.actorHandle }}</span>
             </div>
@@ -57,6 +58,7 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue'
 import TheImageGallery from '@/components/advanced/TheImageGallery.vue'
+import Verified from '@/components/icons/verified.vue'
 import { ImageSource } from '@/enums/enums'
 
 const props = defineProps<{
