@@ -171,3 +171,32 @@ func (r *FediverseRepository) ListInboxStatuses(ctx context.Context, userID uint
 
 	return statuses, total, nil
 }
+
+func (r *FediverseRepository) UpdateFollowStatusByActivityID(ctx context.Context, userID uint, activityID, status string) error {
+	if activityID == "" {
+		return errors.New("activity id is empty")
+	}
+	if status == "" {
+		return errors.New("status is empty")
+	}
+
+	updates := map[string]any{
+		"status":     status,
+		"updated_at": time.Now(),
+	}
+
+	result := r.getDB(ctx).
+		Model(&model.Follow{}).
+		Where("user_id = ? AND activity_id = ?", userID, activityID).
+		Updates(updates)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
+}

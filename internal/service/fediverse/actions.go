@@ -131,11 +131,6 @@ func (fediverseService *FediverseService) FollowActor(userID uint, req model.Fol
 		return nil, err
 	}
 
-	// 发送 Follow Activity 到目标 Actor 的 Inbox
-	if err := httpUtil.PostActivity(payload, inboxURL, actor.ID); err != nil {
-		return nil, err
-	}
-
 	// 在本地数据库中保存关注关系，状态为 "pending"
 	if err := fediverseService.txManager.Run(func(ctx context.Context) error {
 		follow := &model.Follow{
@@ -149,6 +144,14 @@ func (fediverseService *FediverseService) FollowActor(userID uint, req model.Fol
 	}); err != nil {
 		return nil, err
 	}
+
+	// 异步发送 Follow Activity 到目标 Actor 的 Inbox
+	go func() {
+		// 发送 Follow Activity 到目标 Actor 的 Inbox
+		if err := httpUtil.PostActivity(payload, inboxURL, actor.ID); err != nil {
+			fmt.Printf("Error sending Follow activity: %v\n", err)
+		}
+	}()
 
 	// 返回 Activity ID 给前端
 	return map[string]string{
