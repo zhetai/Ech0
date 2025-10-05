@@ -36,6 +36,7 @@ func convertInboxStatusToTimeline(status model.InboxStatus) model.TimelineItem {
 		ActorID:                status.ActorID,
 		ActorPreferredUsername: status.ActorPreferredUsername,
 		ActorDisplayName:       status.ActorDisplayName,
+		ActorAvatar:            status.ActorAvatar,
 		ObjectID:               status.ObjectID,
 		ObjectType:             status.ObjectType,
 		ObjectAttributedTo:     status.ObjectAttributedTo,

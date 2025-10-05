@@ -206,15 +206,18 @@ func (fediverseService *FediverseService) UnfollowActor(userID uint, req model.F
 		return nil, err
 	}
 
-	if err := httpUtil.PostActivity(payload, inboxURL, actor.ID); err != nil {
-		return nil, err
-	}
-
 	if err := fediverseService.txManager.Run(func(ctx context.Context) error {
 		return fediverseService.fediverseRepository.DeleteFollow(ctx, follow.ID)
 	}); err != nil {
 		return nil, err
 	}
+
+	// 异步发送 Undo Follow Activity 到目标 Actor 的 Inbox
+	go func() {
+		if err := httpUtil.PostActivity(payload, inboxURL, actor.ID); err != nil {
+			fmt.Printf("Error sending Undo Follow activity: %v\n", err)
+		}
+	}()
 
 	return map[string]string{
 		"activityId":       undoID,

@@ -243,6 +243,7 @@ declare namespace App {
         actorId: string
         actorPreferredUsername: string
         actorDisplayName: string
+        actorAvatar: string
         objectId: string
         objectType: string
         objectAttributedTo: string

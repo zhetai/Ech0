@@ -127,6 +127,7 @@ func (r *FediverseRepository) UpsertInboxStatus(ctx context.Context, status *mod
 		"actor_id":                 status.ActorID,
 		"actor_preferred_username": status.ActorPreferredUsername,
 		"actor_display_name":       status.ActorDisplayName,
+		"actor_avatar":             status.ActorAvatar,
 		"object_id":                status.ObjectID,
 		"object_type":              status.ObjectType,
 		"object_attributed_to":     status.ObjectAttributedTo,

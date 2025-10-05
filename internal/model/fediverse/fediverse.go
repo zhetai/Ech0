@@ -223,6 +223,7 @@ type InboxStatus struct {
 	ActorID                string    `gorm:"size:512;not null" json:"actor_id"`        // 发送者 Actor URL
 	ActorPreferredUsername string    `gorm:"size:128" json:"actor_preferred_username"` // 发送者用户名（推断）
 	ActorDisplayName       string    `gorm:"size:255" json:"actor_display_name"`       // 发送者显示名称
+	ActorAvatar            string    `gorm:"size:512" json:"actor_avatar"`             // 发送者头像 URL
 	ObjectID               string    `gorm:"size:512;not null" json:"object_id"`       // Object 的唯一 URL
 	ObjectType             string    `gorm:"size:64" json:"object_type"`               // Object 类型，例如 Note
 	ObjectAttributedTo     string    `gorm:"size:512" json:"object_attributed_to"`     // Object 的 attributedTo 字段
@@ -244,6 +245,7 @@ type TimelineItem struct {
 	ActorID                string          `json:"actorId"`                // 发送者 Actor URL
 	ActorPreferredUsername string          `json:"actorPreferredUsername"` // 发送者用户名
 	ActorDisplayName       string          `json:"actorDisplayName"`       // 发送者显示名称
+	ActorAvatar            string          `json:"actorAvatar"`            // 发送者头像
 	ObjectID               string          `json:"objectId"`               // Object 全局 URL
 	ObjectType             string          `json:"objectType"`             // Object 类型
 	ObjectAttributedTo     string          `json:"objectAttributedTo"`     // Object attributedTo

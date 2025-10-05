@@ -8,13 +8,25 @@
         :key="item.id"
         class="w-full max-w-sm bg-white h-auto p-5 shadow rounded-lg border border-slate-200 mx-auto dark:bg-slate-900/80 dark:border-slate-700/60"
       >
-        <header class="flex flex-col gap-1 mt-2 mb-4">
-          <div class="flex items-center gap-1">
-            <h1 class="text-base font-semibold text-black overflow-hidden whitespace-nowrap dark:text-slate-100">
-              {{ item.displayName }}
-            </h1>
+        <header class="mt-2 mb-4">
+          <div class="flex flex-row items-center gap-2">
+            <div>
+              <img
+                :src="item.avatarUrl"
+                :alt="`${item.displayName} avatar`"
+                class="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-1 ring-gray-200 shadow-sm object-cover dark:ring-slate-700/70"
+                loading="lazy"
+              />
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-1">
+                <h1 class="text-base font-semibold text-black overflow-hidden whitespace-nowrap dark:text-slate-100">
+                  {{ item.displayName }}
+                </h1>
+              </div>
+              <span class="text-sm text-[#5b7083] dark:text-slate-400">@ {{ item.actorHandle }}</span>
+            </div>
           </div>
-          <span class="text-sm text-[#5b7083] dark:text-slate-400">@ {{ item.actorHandle }}</span>
         </header>
 
         <div class="py-4 space-y-4">
@@ -54,6 +66,8 @@ const props = defineProps<{
 }>()
 
 const { loading, error, items } = toRefs(props)
+
+const DEFAULT_AVATAR = '/favicon.svg'
 
 const stripHtml = (value: string) =>
   value
@@ -201,11 +215,15 @@ const resolvedItems = computed(() =>
       image_url: url,
       image_source: ImageSource.URL,
     }))
+    const displayName = item.actorDisplayName || item.actorPreferredUsername || '联邦好友'
+    const avatarCandidate = typeof item.actorAvatar === 'string' ? item.actorAvatar.trim() : ''
+    const avatarUrl = avatarCandidate || DEFAULT_AVATAR
 
     return {
       id: item.id,
-      displayName: item.actorDisplayName || item.actorPreferredUsername || '联邦好友',
+      displayName,
       actorHandle: resolveActorHandle(item),
+      avatarUrl,
       timeText: formatTimelineTime(item.publishedAt || item.createdAt),
       contentHtml: sanitizedHtml,
       contentText,

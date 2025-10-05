@@ -57,6 +57,8 @@ func (fediverse *FediverseService) handleCreateActivity(user *userModel.User, ac
 		actorDisplayName = preferredUsername
 	}
 
+	avatarURL := fediverse.resolveActorAvatar(activity, objectMap)
+
 	publishedAt := fediverse.resolvePublishedAt(activity, objectMap)
 	toJSON := mustMarshalStrings(activity.To)
 	ccJSON := mustMarshalStrings(activity.Cc)
@@ -76,6 +78,7 @@ func (fediverse *FediverseService) handleCreateActivity(user *userModel.User, ac
 		ActorID:                remoteActor,
 		ActorPreferredUsername: preferredUsername,
 		ActorDisplayName:       actorDisplayName,
+		ActorAvatar:            avatarURL,
 		ObjectID:               objectID,
 		ObjectType:             objectType,
 		ObjectAttributedTo:     attributedTo,
@@ -218,6 +221,157 @@ func extractAttributedTo(value any) string {
 		}
 	}
 	return ""
+}
+
+func (fediverse *FediverseService) resolveActorAvatar(activity *model.Activity, objectMap map[string]any) string {
+	if icon := extractIconURL(objectMap, "icon"); icon != "" {
+		return icon
+	}
+	if icon := extractIconURL(objectMap, "image"); icon != "" {
+		return icon
+	}
+	if icon := extractIconURL(map[string]any{"value": objectMap["attributedTo"]}, "value"); icon != "" {
+		return icon
+	}
+	if icon := extractIconURL(map[string]any{"value": objectMap["actor"]}, "value"); icon != "" {
+		return icon
+	}
+
+	checked := make(map[string]struct{})
+	tryFetch := func(candidate string) string {
+		candidate = strings.TrimSpace(candidate)
+		if candidate == "" {
+			return ""
+		}
+		if _, exists := checked[candidate]; exists {
+			return ""
+		}
+		checked[candidate] = struct{}{}
+
+		icon, err := fediverse.fetchActorIcon(candidate)
+		if err != nil {
+			return ""
+		}
+		return icon
+	}
+
+	for _, candidate := range extractActorCandidates(objectMap["attributedTo"]) {
+		if icon := tryFetch(candidate); icon != "" {
+			return icon
+		}
+	}
+
+	for _, candidate := range extractActorCandidates(objectMap["actor"]) {
+		if icon := tryFetch(candidate); icon != "" {
+			return icon
+		}
+	}
+
+	remoteActor := strings.TrimSpace(activity.ActorURL)
+	if remoteActor == "" {
+		remoteActor = strings.TrimSpace(activity.ActorID)
+	}
+	if icon := tryFetch(remoteActor); icon != "" {
+		return icon
+	}
+
+	return ""
+}
+
+func (fediverse *FediverseService) fetchActorIcon(actorURL string) (string, error) {
+	actorURL = strings.TrimSpace(actorURL)
+	if actorURL == "" {
+		return "", errors.New("actor url is empty")
+	}
+
+	body, err := httpUtil.SendRequest(actorURL, http.MethodGet, httpUtil.Header{
+		Header:  "Accept",
+		Content: "application/activity+json",
+	}, inboxFetchTimeout)
+	if err != nil {
+		return "", err
+	}
+
+	var actor map[string]any
+	if err := json.Unmarshal(body, &actor); err != nil {
+		return "", err
+	}
+
+	if icon := extractIconURL(actor, "icon"); icon != "" {
+		return icon, nil
+	}
+	if icon := extractIconURL(actor, "image"); icon != "" {
+		return icon, nil
+	}
+
+	return "", nil
+}
+
+func extractIconURL(container map[string]any, key string) string {
+	if container == nil {
+		return ""
+	}
+	value, ok := container[key]
+	if !ok {
+		return ""
+	}
+	return extractIconValue(value)
+}
+
+func extractIconValue(value any) string {
+	switch v := value.(type) {
+	case string:
+		return strings.TrimSpace(v)
+	case map[string]any:
+		if url := strings.TrimSpace(getStringFromMap(v, "url")); url != "" {
+			return url
+		}
+		if href := strings.TrimSpace(getStringFromMap(v, "href")); href != "" {
+			return href
+		}
+		if icon := v["icon"]; icon != nil {
+			if nested := extractIconValue(icon); nested != "" {
+				return nested
+			}
+		}
+		if image := v["image"]; image != nil {
+			if nested := extractIconValue(image); nested != "" {
+				return nested
+			}
+		}
+	case []any:
+		for _, item := range v {
+			if candidate := extractIconValue(item); candidate != "" {
+				return candidate
+			}
+		}
+	}
+	return ""
+}
+
+func extractActorCandidates(value any) []string {
+	if value == nil {
+		return nil
+	}
+	candidates := make([]string, 0)
+	switch v := value.(type) {
+	case string:
+		if trimmed := strings.TrimSpace(v); trimmed != "" {
+			candidates = append(candidates, trimmed)
+		}
+	case map[string]any:
+		if id := strings.TrimSpace(getStringFromMap(v, "id")); id != "" {
+			candidates = append(candidates, id)
+		}
+		if url := strings.TrimSpace(getStringFromMap(v, "url")); url != "" {
+			candidates = append(candidates, url)
+		}
+	case []any:
+		for _, item := range v {
+			candidates = append(candidates, extractActorCandidates(item)...)
+		}
+	}
+	return candidates
 }
 
 // extractString 将任意值转换为字符串
