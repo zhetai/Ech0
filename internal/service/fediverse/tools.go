@@ -19,6 +19,7 @@ import (
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	fileUtil "github.com/lin-snow/ech0/internal/util/file"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
+	mdUtil "github.com/lin-snow/ech0/internal/util/md"
 )
 
 //==============================================================================
@@ -174,7 +175,7 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 		},
 		ObjectID:     fmt.Sprintf("%s/objects/%d", serverURL, echo.ID),
 		Type:         "Note",
-		Content:      echo.Content,
+		Content:      string(mdUtil.MdToHTML([]byte(echo.Content))),
 		AttributedTo: actor.ID,
 		Published:    echo.CreatedAt,
 		To: []string{
