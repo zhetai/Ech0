@@ -49,8 +49,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import BaseButton from '../common/BaseButton.vue'
-import { fetchGetFollowStatus } from '@/service/api/fediverse'
+import { fetchGetFollowStatus, fetchFollowFediverseActor } from '@/service/api/fediverse'
 import { FollowStatus } from '@/enums/enums'
+import { theToast } from '@/utils/toast'
 
 // ActivityPub Actor 和 Media 类型定义
 type ActivityPubMedia = {
@@ -114,9 +115,17 @@ const handleFollow = () => {
   // 根据当前状态执行不同操作
   switch (followStatus.value) {
     case FollowStatus.NONE:
-      // 发起关注请求
-      followStatus.value = FollowStatus.PENDING
-      // TODO: 调用关注接口
+      // 调用关注接口
+      if (actor.value && actor.value.id) {
+        fetchFollowFediverseActor({
+          targetActor: actor.value.id,
+        }).then((res) => {
+          if (res.code === 1) {
+            followStatus.value = FollowStatus.PENDING
+            theToast.info('已发送关注请求，等待对方接受')
+          }
+        })
+      }
       break
     case FollowStatus.PENDING:
       // 取消关注请求
