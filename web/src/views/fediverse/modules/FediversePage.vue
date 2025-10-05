@@ -47,26 +47,7 @@
         </div>
         <!-- 已登录则尝试拉取关注的Actor的动态 -->
         <div v-else class="text-left">
-          <p v-if="timelineLoading" class="text-sm text-gray-400">正在同步时间线…</p>
-          <p v-else-if="timelineError" class="text-sm text-red-400">时间线获取失败</p>
-          <div v-else-if="timelineItems.length" class="space-y-4">
-            <article
-              v-for="item in timelineItems"
-              :key="item.id"
-              class="rounded-lg border border-gray-700/50 bg-gray-900/40 p-4 shadow-sm"
-            >
-              <div class="mb-2 flex items-center justify-between text-xs text-gray-400">
-                <span class="font-medium text-gray-300">
-                  {{ item.actorDisplayName || item.actorPreferredUsername || item.actorId }}
-                </span>
-                <span>{{ formatTimelineTime(item.publishedAt || item.createdAt) }}</span>
-              </div>
-              <p class="whitespace-pre-line text-sm text-gray-200">
-                {{ getTimelineContent(item) }}
-              </p>
-            </article>
-          </div>
-          <p v-else class="text-sm text-gray-500">关注一些联邦好友，时间线才会热闹起来～</p>
+          <TheTimeline :loading="timelineLoading" :error="timelineError" :items="timelineItems" />
         </div>
       </div>
     </div>
@@ -84,6 +65,7 @@ import Arrow from '@/components/icons/arrow.vue'
 import InBox from '@/components/icons/inbox.vue'
 import { fetchSearchFediverseActor, fetchFediverseTimeline } from '@/service/api/fediverse'
 import TheActorCard from '@/components/advanced/TheActorCard.vue'
+import TheTimeline from './TheTimeline.vue'
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
@@ -170,38 +152,6 @@ const handleSearch = async (event?: KeyboardEvent | MouseEvent) => {
 const timelineItems = ref<App.Api.Fediverse.TimelineItem[]>([])
 const timelineLoading = ref(false)
 const timelineError = ref('')
-
-const stripHtml = (value: string) =>
-  value
-    ? value
-        .replace(/<br\s*\/?>(?=\s|$)/gi, '\n')
-        .replace(/<\/p>/gi, '\n')
-        .replace(/<[^>]*>/g, '')
-        .replace(/\n{3,}/g, '\n\n')
-        .trim()
-    : ''
-
-const getTimelineContent = (item: App.Api.Fediverse.TimelineItem) => {
-  if (item.summary && item.summary.trim()) {
-    return item.summary.trim()
-  }
-  if (item.content && item.content.trim()) {
-    const sanitized = stripHtml(item.content)
-    return sanitized || item.content.trim()
-  }
-  return ''
-}
-
-const formatTimelineTime = (input: string) => {
-  if (!input) {
-    return ''
-  }
-  const date = new Date(input)
-  if (Number.isNaN(date.getTime())) {
-    return ''
-  }
-  return date.toLocaleString()
-}
 
 const loadTimeline = async () => {
   if (!isLogin.value) {
