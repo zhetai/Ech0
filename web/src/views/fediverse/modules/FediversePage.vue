@@ -22,12 +22,12 @@
             @blur="handleSearch"
           />
           <!-- NotificationBox -->
-          <BaseButton
+          <!-- <BaseButton
             class="h-full w-full text-gray-600 rounded-md flex items-center justify-center"
             title="消息通知"
             :icon="InBox"
             @click="theToast.info('消息通知功能开发中，敬请期待！')"
-          />
+          /> -->
         </div>
       </div>
 
