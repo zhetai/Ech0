@@ -34,6 +34,25 @@ export function fetchUnfollowFediverseActor(payload: App.Api.Fediverse.FollowAct
   })
 }
 
+export function fetchFediverseTimeline(params?: { page?: number; pageSize?: number }) {
+  const searchParams = new URLSearchParams()
+
+  if (params?.page && params.page > 0) {
+    searchParams.set('page', String(params.page))
+  }
+
+  if (params?.pageSize && params.pageSize > 0) {
+    searchParams.set('pageSize', String(params.pageSize))
+  }
+
+  const query = searchParams.toString()
+
+  return request<App.Api.Fediverse.TimelineResult>({
+    url: query ? `/timeline?${query}` : `/timeline`,
+    method: 'GET',
+  })
+}
+
 // // Post Like (点赞请求)
 // export function fetchLikeFediverseObject(payload: App.Api.Fediverse.LikeActionRequest) {
 //   return request<App.Api.Fediverse.LikeResponse>({

@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // ActivityPubError 定义 ActivityPub 协议的错误响应格式
 type ActivityPubError struct {
@@ -232,4 +235,25 @@ type InboxStatus struct {
 	PublishedAt            time.Time `gorm:"index" json:"published_at"`                // 消息发布时间
 	CreatedAt              time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt              time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+}
+
+// TimelineItem 联邦时间线条目响应体
+type TimelineItem struct {
+	ID                     uint            `json:"id"`                     // 本地收件箱记录 ID
+	ActivityID             string          `json:"activityId"`             // Activity ID
+	ActorID                string          `json:"actorId"`                // 发送者 Actor URL
+	ActorPreferredUsername string          `json:"actorPreferredUsername"` // 发送者用户名
+	ActorDisplayName       string          `json:"actorDisplayName"`       // 发送者显示名称
+	ObjectID               string          `json:"objectId"`               // Object 全局 URL
+	ObjectType             string          `json:"objectType"`             // Object 类型
+	ObjectAttributedTo     string          `json:"objectAttributedTo"`     // Object attributedTo
+	Summary                string          `json:"summary"`                // 摘要
+	Content                string          `json:"content"`                // HTML 内容
+	To                     []string        `json:"to"`                     // 收件人列表
+	Cc                     []string        `json:"cc"`                     // 抄送列表
+	RawActivity            json.RawMessage `json:"rawActivity,omitempty"`  // 完整 Activity JSON
+	RawObject              json.RawMessage `json:"rawObject,omitempty"`    // 完整 Object JSON
+	PublishedAt            time.Time       `json:"publishedAt"`            // 发布时间
+	CreatedAt              time.Time       `json:"createdAt"`              // 本地记录创建时间
+	UpdatedAt              time.Time       `json:"updatedAt"`              // 本地记录更新时间
 }

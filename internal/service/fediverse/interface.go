@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
@@ -42,6 +43,9 @@ type FediverseServiceInterface interface {
 
 	// GetObjectByID 通过 ID 获取内容对象
 	GetObjectByID(id uint) (model.Object, error)
+
+	// GetTimeline 获取关注人的时间线
+	GetTimeline(userID uint, page, pageSize int) (commonModel.PageQueryResult[[]model.TimelineItem], error)
 
 	// PushEchoToFediverse 将 Echo 推送到联邦网络
 	PushEchoToFediverse(userId uint, echo echoModel.Echo) error

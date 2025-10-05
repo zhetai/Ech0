@@ -30,4 +30,7 @@ type FediverseRepositoryInterface interface {
 
 	// UpsertInboxStatus 存储或更新远端推文到本地收件箱
 	UpsertInboxStatus(ctx context.Context, status *model.InboxStatus) error
+
+	// ListInboxStatuses 获取本地收件箱推文
+	ListInboxStatuses(ctx context.Context, userID uint, page, pageSize int) ([]model.InboxStatus, int64, error)
 }

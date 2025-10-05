@@ -378,6 +378,33 @@ func (h *FediverseHandler) GetFollowStatus(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, commonModel.OK(followStatus, commonModel.FEDIVERSE_GET_FOLLOW_STATUS_SUCCESS))
 }
 
+// GetTimeline 获取关注的 Actor 的推文
+func (h *FediverseHandler) GetTimeline(ctx *gin.Context) {
+	userID := ctx.MustGet("userid").(uint)
+
+	page := 1
+	if pageParam := strings.TrimSpace(ctx.Query("page")); pageParam != "" {
+		if parsed, err := strconv.Atoi(pageParam); err == nil && parsed > 0 {
+			page = parsed
+		}
+	}
+
+	pageSize := 20
+	if pageSizeParam := strings.TrimSpace(ctx.Query("pageSize")); pageSizeParam != "" {
+		if parsed, err := strconv.Atoi(pageSizeParam); err == nil && parsed > 0 {
+			pageSize = parsed
+		}
+	}
+
+	timeline, err := h.service.GetTimeline(userID, page, pageSize)
+	if err != nil {
+		ctx.JSON(http.StatusOK, commonModel.Fail[commonModel.PageQueryResult[[]model.TimelineItem]](err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, commonModel.OK(timeline, commonModel.FEDIVERSE_GET_TIMELINE_SUCCESS))
+}
+
 // SearchActorByActorID 根据 Actor URL 搜索远端 Actor
 func (h *FediverseHandler) SearchActorByActorID(ctx *gin.Context) {
 	actorID := strings.TrimSpace(ctx.Query("actor"))

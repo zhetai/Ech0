@@ -142,3 +142,32 @@ func (r *FediverseRepository) UpsertInboxStatus(ctx context.Context, status *mod
 
 	return db.Model(&existing).Updates(updates).Error
 }
+
+func (r *FediverseRepository) ListInboxStatuses(ctx context.Context, userID uint, page, pageSize int) ([]model.InboxStatus, int64, error) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = int(model.DefaultCollectionPageSize)
+	}
+
+	offset := (page - 1) * pageSize
+
+	query := r.getDB(ctx).Model(&model.InboxStatus{}).Where("user_id = ?", userID)
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	statuses := make([]model.InboxStatus, 0, pageSize)
+	if total == 0 {
+		return statuses, 0, nil
+	}
+
+	if err := query.Order("published_at DESC, id DESC").Offset(offset).Limit(pageSize).Find(&statuses).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return statuses, total, nil
+}

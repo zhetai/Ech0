@@ -236,6 +236,31 @@ declare namespace App {
       //   activityId: string
       //   likeActivityId?: string
       // }
+
+      type TimelineItem = {
+        id: number
+        activityId: string
+        actorId: string
+        actorPreferredUsername: string
+        actorDisplayName: string
+        objectId: string
+        objectType: string
+        objectAttributedTo: string
+        summary: string
+        content: string
+        to: string[]
+        cc: string[]
+        rawActivity?: unknown
+        rawObject?: unknown
+        publishedAt: string
+        createdAt: string
+        updatedAt: string
+      }
+
+      type TimelineResult = {
+        total: number
+        items: TimelineItem[]
+      }
     }
 
     namespace Todo {
