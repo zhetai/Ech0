@@ -56,3 +56,10 @@ export enum FollowStatus {
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
 }
+
+// Online Music Service Provider
+export enum MusicProvider {
+  NETEASE = 'netease', // 网易云音乐
+  QQ = 'tencent', // QQ音乐
+  APPLE = 'apple', // Apple Music
+}

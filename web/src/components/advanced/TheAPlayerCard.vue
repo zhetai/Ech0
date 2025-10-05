@@ -1,5 +1,8 @@
 <template>
-  <div v-if="musicInfo && metingAPI.length > 0 && !loading">
+  <!-- 网易云 / QQ 音乐使用 Meting JS来展示 -->
+  <div
+    v-if="musicInfo && musicInfo.server !== MusicProvider.APPLE && metingAPI.length > 0 && !loading"
+  >
     <meting-js
       :api="metingAPI"
       :server="musicInfo.server"
@@ -8,6 +11,20 @@
       :auto="props.echo.extension"
     >
     </meting-js>
+  </div>
+  <!-- Apple Music 使用官方IFrame -->
+  <div v-else-if="musicInfo && musicInfo.server === MusicProvider.APPLE && musicInfo.id"
+    class="shadow-sm rounded-xl overflow-hidden"
+    >
+    <iframe
+      allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+      frameborder="0"
+      height="175"
+      style="width: 100%; max-width: 660px; overflow: hidden; border-radius: 10px"
+      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+      :src="`https://embed.music.apple.com/cn/${musicInfo.type}/${musicInfo.id}`"
+    >
+    </iframe>
   </div>
   <div
     v-else
@@ -23,7 +40,7 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { parseMusicURL } from '@/utils/other'
 import { useSettingStore } from '@/stores/setting'
-import { ExtensionType } from '@/enums/enums'
+import { ExtensionType, MusicProvider } from '@/enums/enums'
 
 const { SystemSetting, loading } = storeToRefs(useSettingStore())
 type Echo = App.Api.Ech0.Echo

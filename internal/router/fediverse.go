@@ -47,6 +47,9 @@ func setupFediverseRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Get Timeline (获取关注的Actor的推文)
 	appRouterGroup.AuthRouterGroup.GET("/timeline", h.FediverseHandler.GetTimeline)
 
+	// List Following (列出当前关注的所有Actor)
+	// appRouterGroup.AuthRouterGroup.GET("/following", h.FediverseHandler.GetFollowingList)
+
 	// Post Like (点赞请求)
 	// appRouterGroup.AuthRouterGroup.POST("/like", h.FediverseHandler.PostLike)
 

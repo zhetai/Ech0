@@ -2,7 +2,7 @@
   <div v-if="currentMode === Mode.EXTEN">
     <!-- 音乐分享 -->
     <div v-if="currentExtensionType === ExtensionType.MUSIC">
-      <h2 class="text-gray-500 font-bold mb-1">音乐分享（支持网易云/QQ音乐）</h2>
+      <h2 class="text-gray-500 font-bold mb-1">音乐分享（支持网易云/QQ音乐/Apple Music）</h2>
       <p class="text-gray-400 text-sm mb-1">注意：不支持VIP歌曲，建议使用自建API</p>
       <BaseInput
         v-model="extensionToAdd.extension"

@@ -1,5 +1,5 @@
 import { getApiUrl } from '@/service/request/shared'
-import { ImageSource } from '@/enums/enums'
+import { ImageSource, MusicProvider } from '@/enums/enums'
 // 获取图片链接
 export const getImageUrl = (image: App.Api.Ech0.Image) => {
   if (image.image_source === ImageSource.LOCAL) {
@@ -56,14 +56,14 @@ export const formatDate = (dateString: string) => {
   }
 }
 
-// 解析音乐链接（网易云、QQ音乐）
+// 解析音乐链接（网易云、QQ音乐、Apple Music）
 export const parseMusicURL = (url: string) => {
   url = url.trim()
 
   const neteaseMatch = url.match(/music\.163\.com\/(#\/)?(song|playlist|album)(\?id=|\/)(\d+)/)
   if (neteaseMatch) {
     return {
-      server: 'netease',
+      server: MusicProvider.NETEASE,
       type: neteaseMatch[1], // song, playlist, album
       id: neteaseMatch[2],
     }
@@ -73,9 +73,19 @@ export const parseMusicURL = (url: string) => {
   const qqNewSongMatch = url.match(/y\.qq\.com\/n\/ryqq\/songDetail\/([a-zA-Z0-9]+)/)
   if (qqNewSongMatch) {
     return {
-      server: 'tencent',
+      server: MusicProvider.QQ,
       type: 'song',
       id: qqNewSongMatch[1],
+    }
+  }
+
+  // Apple Music
+  const appleMatch = url.match(/music\.apple\.com\/[a-z]{2}\/(song|album)\/[^/]+\/(\d+)/)
+  if (appleMatch) {
+    return {
+      server: MusicProvider.APPLE,
+      type: appleMatch[1], // song / album
+      id: appleMatch[2],
     }
   }
 
