@@ -69,6 +69,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 - ☁️ **S3 Storage Support** — Native integration with S3-compatible object storage for local or cloud backups.
 - 🌐 **ActivityPub Federation** — Native ActivityPub support for interoperability with Mastodon, Misskey etc.
 - 📝 **Built-in Todo Management** — Record and track daily tasks efficiently.
+- 🔑 **OAuth2 Integration** — Full OAuth2 support for secure third-party authentication and API access.
 - 🔗 **Ech0 Connect** — Cross-instance content aggregation, subscription, and synchronization.
 - 🎵 **Music Integration** — Lightweight audio player for local streaming and immersive background music.
 - 🎥 **Video Sharing** — Native support for Bilibili/YouTube smart parsing.
