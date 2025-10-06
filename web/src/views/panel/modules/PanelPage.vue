@@ -93,6 +93,14 @@ const changeShow = () => {
 }
 
 const handleLogout = () => {
+  const url = new URL(window.location.href)
+  const bind = url.searchParams.get('bind')
+  if (bind === 'success') {
+    theToast.success('OAuth2账号绑定成功')
+  } else if (bind === 'failed') {
+    theToast.error('OAuth2账号绑定失败，请重试')
+  }
+
   // 检查是否登录
   if (!userStore.isLogin) {
     theToast.info('当前未登录')

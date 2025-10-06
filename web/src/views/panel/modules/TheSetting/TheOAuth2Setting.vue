@@ -182,7 +182,7 @@
         >
           <div class="flex items-center justify-between">
             <Github class="w-5 h-5" />
-            <span class="text-gray-500 font-bold">前往授权</span>
+            <span class="text-gray-500 font-bold">授权</span>
           </div>
         </BaseButton>
       </div>
@@ -241,7 +241,7 @@ const handleUpdateOAuth2Setting = async () => {
 }
 
 const handleBindOAuth2 = async () => {
-  const res = await fetchBindOAuth2(`${window.location.origin}/oauth`)
+  const res = await fetchBindOAuth2(`${window.location.origin}/panel`)
   if (res.code !== 1) {
     theToast.error(res.msg)
   } else {

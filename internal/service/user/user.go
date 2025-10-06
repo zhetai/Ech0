@@ -542,7 +542,7 @@ func (userService *UserService) HandleGitHubCallback(code string, state string) 
 		})
 
 		// 返回绑定成功的前端 URL
-		return oauthState.Redirect
+		return oauthState.Redirect + "?bind=success"
 
 	default:
 		// 未知操作
