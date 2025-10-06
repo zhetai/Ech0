@@ -280,6 +280,26 @@ func (userHandler *UserHandler) GetUserInfo() gin.HandlerFunc {
 
 }
 
+// BindGitHub 绑定 GitHub 账号
+func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		bingURL, err := userHandler.userService.BindGitHub(userid);
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		ctx.Redirect(302, bingURL)
+		return res.Response{}
+	})
+}
+
+
 // GitHubLogin 处理 GitHub OAuth2 登录请求
 func (userHandler *UserHandler) GitHubLogin() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
@@ -302,24 +322,17 @@ func (userHandler *UserHandler) GitHubLogin() gin.HandlerFunc {
 func (userHandler *UserHandler) GitHubCallback() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		code := ctx.Query("code")
-		if code == "" {
+		state := ctx.Query("state")
+		if code == "" || state == "" {
 			return res.Response{
 				Msg: commonModel.INVALID_PARAMS,
 				Err: nil,
 			}
 		}
 
-		// token, err := userHandler.userService.GitHubCallback(code)
-		// if err != nil {
-		// 	return res.Response{
-		// 		Msg: "",
-		// 		Err: err,
-		// 	}
-		// }
-
-		return res.Response{
-			// Data: token,
-			Msg:  commonModel.LOGIN_SUCCESS,
-		}
+		redirectURL := userHandler.userService.HandleGitHubCallback(code, state)
+		ctx.Redirect(302, redirectURL)
+		return res.Response{}
 	})
 }
+

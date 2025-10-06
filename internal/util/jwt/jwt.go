@@ -9,6 +9,7 @@ import (
 	"github.com/lin-snow/ech0/internal/config"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
+	cryptoUtil "github.com/lin-snow/ech0/internal/util/crypto"
 )
 
 // CreateClaims 创建Claims
@@ -53,4 +54,42 @@ func ParseToken(tokenString string) (*authModel.MyClaims, error) {
 
 	log.Println("unknown claims type, cannot proceed")
 	return nil, errors.New("unknown claims type, cannot proceed")
+}
+
+// GenerateOAuthState 生成 OAuth2 state token
+func GenerateOAuthState(action string, userID uint, redirect string) (string, error) {
+	now := time.Now()
+	expiration := now.Add(10 * time.Minute)
+
+	claims := jwt.MapClaims{
+		"action":   action,
+		"user_id":  userID,
+		"nonce":    cryptoUtil.GenerateRandomString(16),
+		"redirect": redirect,
+		"exp":      expiration.Unix(),
+		"iat":      now.Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(config.JWT_SECRET)
+}
+
+// ParseOAuthState 解析并验证 OAuth2 state token
+func ParseOAuthState(stateStr string) (*authModel.OAuthState, error) {
+	claims := jwt.MapClaims{}
+
+	_, err := jwt.ParseWithClaims(stateStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return config.JWT_SECRET, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &authModel.OAuthState{
+		Action:   claims["action"].(string),
+		UserID:   uint(claims["user_id"].(float64)),
+		Nonce:    claims["nonce"].(string),
+		Redirect: claims["redirect"].(string),
+		Exp:      int64(claims["exp"].(float64)),
+	}, nil
 }

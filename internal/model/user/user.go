@@ -20,3 +20,9 @@ type User struct {
 	// CreatedAt     time.Time `gorm:"autoCreateTime" json:"created_at"` // 创建时间
 	// UpdatedAt     time.Time `gorm:"autoUpdateTime" json:"updated_at"` // 更新时间
 }
+
+type OAuthBinding struct {
+	ID        uint   `gorm:"primaryKey" json:"id"`
+	UserID    uint   `gorm:"not null;index" json:"user_id"`
+	Provider  string `gorm:"size:64;not null;index" json:"provider"` // 例如 "github"
+}

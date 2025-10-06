@@ -29,4 +29,7 @@ type UserHandlerInterface interface {
 
 	// GitHubCallback 处理 GitHub OAuth2 回调
 	GitHubCallback() gin.HandlerFunc
+
+	// BindGitHub 绑定 GitHub 账号
+	BindGitHub() gin.HandlerFunc
 }

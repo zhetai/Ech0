@@ -18,4 +18,5 @@ func setupUserRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.AuthRouterGroup.PUT("/user", h.UserHandler.UpdateUser())
 	appRouterGroup.AuthRouterGroup.DELETE("/user/:id", h.UserHandler.DeleteUser())
 	appRouterGroup.AuthRouterGroup.PUT("/user/admin/:id", h.UserHandler.UpdateUserAdmin())
+	appRouterGroup.AuthRouterGroup.POST("/oauth/github/bind", h.UserHandler.BindGitHub())
 }

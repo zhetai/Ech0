@@ -60,9 +60,10 @@ const (
 	GET_USER_SUCCESS      = "获取用户列表成功"
 	GET_USER_INFO_SUCCESS = "获取用户信息成功"
 	DELETE_USER_SUCCESS   = "删除用户成功"
+	BIND_GITHUB_SUCCESS   = "绑定 GitHub 账号成功"
 )
 
-// Conenct 成功相关常量
+// Connect 成功相关常量
 const (
 	CONNECT_SUCCESS            = "连接成功"
 	ADD_CONNECT_SUCCESS        = "添加连接成功"

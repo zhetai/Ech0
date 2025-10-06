@@ -348,6 +348,63 @@ func (userService *UserService) GetUserByID(userId int) (model.User, error) {
 	return userService.userRepository.GetUserByID(userId)
 }
 
+// BindGitHub 绑定 GitHub 账号
+//
+// 参数:
+//   - userID: 当前用户 ID
+//
+// 返回:
+//   - error: 绑定过程中的错误信息
+func (userService *UserService) BindGitHub(userID uint) (string, error) {
+	// 检查当前用户是否存在
+	user, err := userService.userRepository.GetUserByID(int(userID))
+	if err != nil {
+		return "", err
+	}
+
+	// 检查用户是否为管理员
+	if !user.IsAdmin {
+		return "", errors.New(commonModel.NO_PERMISSION_BINDING)
+	}
+
+	var setting settingModel.OAuth2Setting
+	if err := userService.settingService.GetOAuth2Setting(0, &setting, true); err != nil {
+		return "", err
+	}
+
+	if !setting.Enable {
+		return "", errors.New(commonModel.OAUTH2_NOT_ENABLED)
+	}
+
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+		return "", errors.New(commonModel.OAUTH2_NOT_CONFIGURED)
+	}
+
+	// 生成附带用户 ID 的 state 参数
+	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionBind), userID, "")
+	if err != nil {
+		return "", err
+	}
+
+	// 拼接 scope 参数
+	scope := ""
+	if len(setting.Scopes) > 0 {
+		scope = strings.Join(setting.Scopes, " ")
+	}
+
+	// 拼接 OAuth2 登录 URL
+	bingURL := fmt.Sprintf(
+		"%s?client_id=%s&redirect_uri=%s&scope=%s&state=%s",
+		setting.AuthURL,
+		url.QueryEscape(setting.ClientID),
+		url.QueryEscape(setting.RedirectURI),
+		url.QueryEscape(scope),
+		url.QueryEscape(state),
+	)
+
+	return bingURL, nil
+}
+
 // GetGitHubLoginURL 获取 GitHub 登录 URL
 //
 // 返回:
@@ -385,4 +442,31 @@ func (userService *UserService) GetGitHubLoginURL() (string, error) {
 	)
 
 	return loginURL, nil
+}
+
+// HandleGitHubCallback 处理 GitHub OAuth2 回调
+//
+// 参数:
+//   - code: GitHub 回调返回的授权码
+//   - state: GitHub 回调返回的状态参数
+//
+// 返回:
+//   - string: 重定向的前端 URL，包含登录结果信息
+func (userService *UserService) HandleGitHubCallback(code string, state string) (string) {
+	// 获取 OAuth2 设置
+	var setting settingModel.OAuth2Setting
+	if err := userService.settingService.GetOAuth2Setting(0, &setting, true); err != nil {
+		return ""
+	}
+
+	if !setting.Enable {
+		return ""
+	}
+
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+		return ""
+	}
+
+
+	return ""
 }

@@ -30,6 +30,12 @@ type UserServiceInterface interface {
 	// DeleteUser 删除用户
 	DeleteUser(userid, id uint) error
 
+	// BindGitHub 绑定 GitHub 账号
+	BindGitHub(userID uint) (string, error)
+
 	// 获取 GitHub 登录 URL
 	GetGitHubLoginURL() (string, error)
+
+	// HandleGitHubCallback 处理 GitHub OAuth2 回调
+	HandleGitHubCallback(code string, state string) (string)
 }

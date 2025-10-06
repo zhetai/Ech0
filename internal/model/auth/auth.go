@@ -18,3 +18,21 @@ const (
 	NO_USER_LOGINED = uint(0)
 )
 
+type OAuth2Action string
+
+const (
+	// OAuth2ActionLogin 表示登录操作
+	OAuth2ActionLogin OAuth2Action = "login"
+	// OAuth2ActionRegister 表示注册操作
+	OAuth2ActionRegister OAuth2Action = "register"
+	// OAuth2ActionBind 表示绑定操作
+	OAuth2ActionBind OAuth2Action = "bind"
+)
+
+type OAuthState struct {
+	Action string `json:"action"`
+	UserID uint   `json:"user_id,omitempty"`
+	Nonce  string `json:"nonce"`
+	Redirect string `json:"redirect,omitempty"`
+	Exp int64 `json:"exp"`
+}
