@@ -55,7 +55,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 
 ## Highlights
 
-- ☁️ **Ultra Lightweight** — Memory usage under **15MB**, image size under **45MB**, single SQLite file storage.
+- ☁️ **Ultra Lightweight** — Memory usage under **15MB**, image size under **50MB**, single SQLite file storage.
 - 🚀 **Blazing Fast Deployment** — No configuration needed, install and use with just one command.
 - 🧰 **Command-line Power** — Built-in high-availability CLI tools that support one-click backup, restore, and export.
 - 📟 **TUI Friendly** — Terminal-friendly interactive interface to manage Ech0 from the TUI.
