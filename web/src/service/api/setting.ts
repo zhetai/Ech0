@@ -50,3 +50,20 @@ export function fetchUpdateS3Settings(s3Setting: App.Api.Setting.S3Setting) {
     data: s3Setting,
   })
 }
+
+// 获取 OAuth2 设置
+export function fetchGetOAuth2Settings() {
+  return request<App.Api.Setting.OAuth2Setting>({
+    url: '/oauth2/settings',
+    method: 'GET',
+  })
+}
+
+// 更新 OAuth2 设置
+export function fetchUpdateOAuth2Settings(oauth2Setting: App.Api.Setting.OAuth2Setting) {
+  return request({
+    url: '/oauth2/settings',
+    method: 'PUT',
+    data: oauth2Setting,
+  })
+}

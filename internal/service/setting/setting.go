@@ -282,8 +282,8 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 
 }
 
-// GetOAuthSetting 获取 OAuth 设置
-func (settingService *SettingService) GetOAuthSetting(userid uint, setting *model.OAuth2Setting) error {
+// GetOAuth2Setting 获取 OAuth2 设置
+func (settingService *SettingService) GetOAuth2Setting(userid uint, setting *model.OAuth2Setting) error {
 	return settingService.txManager.Run(func(ctx context.Context) error {
 		user, err := settingService.commonService.CommonGetUserByUserId(userid)
 		if err != nil {
@@ -324,14 +324,14 @@ func (settingService *SettingService) GetOAuthSetting(userid uint, setting *mode
 		if err := jsonUtil.JSONUnmarshal([]byte(oauthSetting.(string)), setting); err != nil {
 			return err
 		}
-		
+
 		return nil
 	})
 
 }
 
-// UpdateOAuthSetting 更新 OAuth 设置
-func (settingService *SettingService) UpdateOAuthSetting(userid uint, newSetting *model.OAuth2SettingDto) error {
+// UpdateOAuth2Setting 更新 OAuth2 设置
+func (settingService *SettingService) UpdateOAuth2Setting(userid uint, newSetting *model.OAuth2SettingDto) error {
 	return settingService.txManager.Run(func(ctx context.Context) error {
 		user, err := settingService.commonService.CommonGetUserByUserId(userid)
 		if err != nil {

@@ -188,6 +188,18 @@ declare namespace App {
         path_prefix: string
         public_read: boolean
       }
+
+      type OAuth2Setting = {
+        enable: boolean
+        provider: string
+        client_id: string
+        client_secret: string
+        redirect_uri: string
+        scopes: string[]
+        auth_url: string
+        token_url: string
+        user_info_url: string
+      }
     }
 
     namespace Connect {

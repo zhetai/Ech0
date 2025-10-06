@@ -21,9 +21,9 @@ type SettingServiceInterface interface {
 	// UpdateS3Setting 更新 S3 存储设置
 	UpdateS3Setting(userid uint, newSetting *model.S3SettingDto) error
 
-	// GetOAuthSetting 获取 OAuth 设置
-	GetOAuthSetting(userid uint, setting *model.OAuth2Setting) error
+	// GetOAuth2Setting 获取 OAuth2 设置
+	GetOAuth2Setting(userid uint, setting *model.OAuth2Setting) error
 
-	// UpdateOAuthSetting 更新 OAuth 设置
-	UpdateOAuthSetting(userid uint, newSetting *model.OAuth2SettingDto) error
+	// UpdateOAuth2Setting 更新 OAuth2 设置
+	UpdateOAuth2Setting(userid uint, newSetting *model.OAuth2SettingDto) error
 }

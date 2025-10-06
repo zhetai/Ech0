@@ -219,23 +219,23 @@ func (settingHandler *SettingHandler) UpdateS3Settings() gin.HandlerFunc {
 	})
 }
 
-// GetOAuthSettings 获取 OAuth 设置
+// GetOAuth2Settings 获取 OAuth2 设置
 //
-// @Summary 获取 OAuth 设置
-// @Description 获取系统的 OAuth 相关设置
+// @Summary 获取 OAuth2 设置
+// @Description 获取系统的 OAuth2 相关设置
 // @Tags 系统设置
 // @Accept json
 // @Produce json
-// @Success 200 {object} res.Response{data=model.OAuthSetting} "获取 OAuth 设置成功"
-// @Failure 200 {object} res.Response "获取 OAuth 设置失败"
-// @Router /oauth/settings [get]
-func (settingHandler *SettingHandler) GetOAuthSettings() gin.HandlerFunc {
+// @Success 200 {object} res.Response{data=model.OAuth2Setting} "获取 OAuth2 设置成功"
+// @Failure 200 {object} res.Response "获取 OAuth2 设置失败"
+// @Router /oauth2/settings [get]
+func (settingHandler *SettingHandler) GetOAuth2Settings() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
 		userid := ctx.MustGet("userid").(uint)
 
 		var oauthSetting model.OAuth2Setting
-		if err := settingHandler.settingService.GetOAuthSetting(userid, &oauthSetting); err != nil {
+		if err := settingHandler.settingService.GetOAuth2Setting(userid, &oauthSetting); err != nil {
 			return res.Response{
 				Msg: "",
 				Err: err,
@@ -249,18 +249,18 @@ func (settingHandler *SettingHandler) GetOAuthSettings() gin.HandlerFunc {
 	})
 }
 
-// UpdateOAuthSettings 更新 OAuth 设置
+// UpdateOAuth2Settings 更新 OAuth2 设置
 //
-// @Summary 更新 OAuth 设置
-// @Description 更新系统的 OAuth 相关设置
+// @Summary 更新 OAuth2 设置
+// @Description 更新系统的 OAuth2 相关设置
 // @Tags 系统设置
 // @Accept json
 // @Produce json
 // @Param oauthSettings body model.OAuth2SettingDto true "新的 OAuth 设置"
 // @Success 200 {object} res.Response "更新 OAuth 设置成功"
 // @Failure 200 {object} res.Response "更新 OAuth 设置失败"
-// @Router /oauth/settings [put]
-func (settingHandler *SettingHandler) UpdateOAuthSettings() gin.HandlerFunc {
+// @Router /oauth2/settings [put]
+func (settingHandler *SettingHandler) UpdateOAuth2Settings() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
 		userid := ctx.MustGet("userid").(uint)
@@ -274,7 +274,7 @@ func (settingHandler *SettingHandler) UpdateOAuthSettings() gin.HandlerFunc {
 			}
 		}
 
-		if err := settingHandler.settingService.UpdateOAuthSetting(userid, &newOAuthSettings); err != nil {
+		if err := settingHandler.settingService.UpdateOAuth2Setting(userid, &newOAuthSettings); err != nil {
 			return res.Response{
 				Msg: "",
 				Err: err,
