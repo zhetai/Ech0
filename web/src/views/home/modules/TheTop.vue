@@ -18,12 +18,11 @@
         </a>
       </div>
       <!-- Fediverse -->
-      <div class="relative mr-1">
+      <!-- <div class="relative mr-1">
         <RouterLink to="/fediverse" title="联邦宇宙">
-          <!-- icon -->
           <Other class="w-8 h-8 text-gray-400" />
         </RouterLink>
-      </div>
+      </div> -->
       <!-- ConnectPage -->
       <!-- <div class="relative mr-2 xl:hidden">
         <RouterLink to="/connect" title="连接">
@@ -44,7 +43,7 @@
 
 <script setup lang="ts">
 import BaseInput from '@/components/common/BaseInput.vue'
-import Other from '@/components/icons/other.vue'
+// import Other from '@/components/icons/other.vue'
 import Panel from '@/components/icons/panel.vue'
 import Rss from '@/components/icons/rss.vue'
 import { RouterLink } from 'vue-router'

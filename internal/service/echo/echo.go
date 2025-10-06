@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/lin-snow/ech0/internal/transaction"
 
@@ -103,17 +102,17 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		return err
 	}
 
-	// 事务提交成功后再推送，确保已拿到持久化 ID
-	savedEcho, fetchErr := echoService.echoRepository.GetEchosById(newEcho.ID)
-	if fetchErr != nil {
-		return fetchErr
-	}
-	if savedEcho != nil {
-		if pushErr := echoService.fediverseService.PushEchoToFediverse(userid, *savedEcho); pushErr != nil {
-			// 推送失败不影响发布
-			fmt.Println("Error pushing Echo to Fediverse:", pushErr)
-		}
-	}
+	// 事务提交成功后再推送，确保已拿到持久化 ID （暂时关闭主动推送至联邦功能，提高响应速度）
+	// savedEcho, fetchErr := echoService.echoRepository.GetEchosById(newEcho.ID)
+	// if fetchErr != nil {
+	// 	return fetchErr
+	// }
+	// if savedEcho != nil {
+	// 	if pushErr := echoService.fediverseService.PushEchoToFediverse(userid, *savedEcho); pushErr != nil {
+	// 		// 推送失败不影响发布
+	// 		fmt.Println("Error pushing Echo to Fediverse:", pushErr)
+	// 	}
+	// }
 
 	return nil
 }

@@ -13,9 +13,10 @@
     </meting-js>
   </div>
   <!-- Apple Music 使用官方IFrame -->
-  <div v-else-if="musicInfo && musicInfo.server === MusicProvider.APPLE && musicInfo.id"
+  <div
+    v-else-if="musicInfo && musicInfo.server === MusicProvider.APPLE && musicInfo.id"
     class="shadow-sm rounded-xl overflow-hidden"
-    >
+  >
     <iframe
       allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
       frameborder="0"
@@ -62,5 +63,4 @@ const metingAPI = computed(() => {
 })
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

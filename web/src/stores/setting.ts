@@ -5,7 +5,7 @@ import {
   fetchGetStatus,
   fetchGetCommentSettings,
   fetchGetS3Settings,
-  fetchGetOAuth2Settings
+  fetchGetOAuth2Settings,
 } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'

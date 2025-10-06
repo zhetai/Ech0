@@ -47,7 +47,7 @@ export function fetchBindOAuth2(redirect_uri: string) {
     url: '/oauth/github/bind',
     method: 'POST',
     data: {
-      "redirect_uri": redirect_uri
+      redirect_uri: redirect_uri,
     },
   })
 }

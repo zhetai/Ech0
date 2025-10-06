@@ -169,17 +169,14 @@
           type="text"
           placeholder="请输入Scopes，多个用逗号分隔"
           class="w-full !py-1"
-          @blur="OAuth2Setting.scopes = scopeString.split(',').map(s => s.trim())"
+          @blur="OAuth2Setting.scopes = scopeString.split(',').map((s) => s.trim())"
         />
       </div>
 
       <div v-if="OAuth2Setting.enable && OAuth2Setting.provider" class="mb-3">
         <h1 class="text-gray-600 font-bold text-lg">账号绑定</h1>
         <p class="text-gray-400 font-bold text-sm">注意：需先配置OAuth2信息</p>
-        <BaseButton
-          class="rounded-md mt-2"
-          @click="handleBindOAuth2()"
-        >
+        <BaseButton class="rounded-md mt-2" @click="handleBindOAuth2()">
           <div class="flex items-center justify-between">
             <Github class="w-5 h-5" />
             <span class="text-gray-500 font-bold">授权</span>
@@ -224,7 +221,8 @@ const handleUpdateOAuth2Setting = async () => {
   // 修改Scopes
   OAuth2Setting.value.scopes = scopeString.value.split(',').map((s) => s.trim())
   // 修改回调地址为当前域名加上固定路径
-  OAuth2Setting.value.redirect_uri = redirect_uri.value || `${window.location.origin}/oauth/github/callback`
+  OAuth2Setting.value.redirect_uri =
+    redirect_uri.value || `${window.location.origin}/oauth/github/callback`
 
   // 提交更新
   await fetchUpdateOAuth2Settings(OAuth2Setting.value)

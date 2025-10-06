@@ -121,5 +121,15 @@ export const useUserStore = defineStore('userStore', () => {
     await autoLogin()
   }
 
-  return { user, isLogin, login, loginWithToken, signup, logout, autoLogin, refreshCurrentUser, init }
+  return {
+    user,
+    isLogin,
+    login,
+    loginWithToken,
+    signup,
+    logout,
+    autoLogin,
+    refreshCurrentUser,
+    init,
+  }
 })

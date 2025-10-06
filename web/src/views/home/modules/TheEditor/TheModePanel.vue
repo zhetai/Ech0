@@ -41,12 +41,12 @@
       <div class="flex flex-row items-center gap-2">
         <!-- 打开Todo模式 -->
         <BaseButton :icon="Todo" @click="handleTodo" class="w-7 h-7 rounded-md" />
-        <BaseButton
+        <!-- <BaseButton
           :icon="Audio"
           class="w-7 h-7 rounded-md"
           title="音乐播放"
           @click="handlePlayMusic"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -59,11 +59,11 @@ import Todo from '@/components/icons/todo.vue'
 import Video from '@/components/icons/video.vue'
 import Githubproj from '@/components/icons/githubproj.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
-import Audio from '@/components/icons/audio.vue'
+// import Audio from '@/components/icons/audio.vue'
 
 import { Mode, ExtensionType } from '@/enums/enums'
 import { useTodoStore } from '@/stores/todo'
-import { theToast } from '@/utils/toast'
+// import { theToast } from '@/utils/toast'
 
 const mode = defineModel<Mode>('mode', {
   required: true,
@@ -91,10 +91,10 @@ const handleTodo = () => {
   mode.value = Mode.TODO
 }
 
-const handlePlayMusic = () => {
-  theToast.info('音乐播放器模式维护中，敬请期待！')
-  // mode.value = Mode.PlayMusic
-}
+// const handlePlayMusic = () => {
+//   theToast.info('音乐播放器模式维护中，敬请期待！')
+//   // mode.value = Mode.PlayMusic
+// }
 </script>
 
 <style scoped></style>

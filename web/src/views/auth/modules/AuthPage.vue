@@ -34,7 +34,7 @@
             <BaseButton
               v-if="oauth2Status && oauth2Status.enabled"
               :icon="github"
-                @click="gotoOAuth2URL"
+              @click="gotoOAuth2URL"
               class="w-9 h-9 rounded-md mr-2"
             />
             <!-- 账号密码登录 -->
@@ -95,9 +95,10 @@ const password = ref<string>('')
 const userStore = useUserStore()
 
 const oauth2Status = ref<App.Api.Setting.OAuth2Status | null>(null)
-const baseURL = import.meta.env.VITE_SERVICE_BASE_URL === '/'
-        ? window.location.origin
-        : import.meta.env.VITE_SERVICE_BASE_URL
+const baseURL =
+  import.meta.env.VITE_SERVICE_BASE_URL === '/'
+    ? window.location.origin
+    : import.meta.env.VITE_SERVICE_BASE_URL
 const oauthURL = ref<string>(`${baseURL}/oauth/github/login`)
 
 const gotoOAuth2URL = () => {
@@ -108,7 +109,10 @@ const getOAuth2Status = async () => {
   const res = await fetchGetOAuth2Status()
   if (res.code === 1) {
     oauth2Status.value = res.data
-    oauthURL.value = res.data.provider === 'github' ? `${baseURL}/oauth/github/login?redirect_uri=${window.location.origin}/auth` : `${baseURL}/auth`
+    oauthURL.value =
+      res.data.provider === 'github'
+        ? `${baseURL}/oauth/github/login?redirect_uri=${window.location.origin}/auth`
+        : `${baseURL}/auth`
   }
 }
 
