@@ -43,6 +43,27 @@ export const useUserStore = defineStore('userStore', () => {
     })
   }
 
+  // 使用token登录（自动登录或OAuth2登录后使用）
+  async function loginWithToken(token: string) {
+    if (token && token.length > 0) {
+      // 保存token到localStorage
+      saveAuthToken(token)
+
+      // 获取当前登录用户信息
+      await refreshCurrentUser()
+
+      // 登录成功
+      theToast.success('登录成功,欢迎回来！🎉')
+
+      // 清除echo数据
+      const echoStore = useEchoStore()
+      echoStore.clearEchos()
+
+      // 跳转到首页
+      router.push({ name: 'home' })
+    }
+  }
+
   // 注册
   async function signup(userInfo: App.Api.Auth.SignupParams) {
     return await fetchSignup(userInfo).then((res) => {
@@ -100,5 +121,5 @@ export const useUserStore = defineStore('userStore', () => {
     await autoLogin()
   }
 
-  return { user, isLogin, login, signup, logout, autoLogin, refreshCurrentUser, init }
+  return { user, isLogin, login, loginWithToken, signup, logout, autoLogin, refreshCurrentUser, init }
 })
