@@ -41,6 +41,8 @@ const (
 	UPDATE_COMMENT_SETTINGS_SUCCESS = "更新评论设置成功！"
 	GET_S3_SETTINGS_SUCCESS         = "获取 S3 存储设置成功！"
 	UPDATE_S3_SETTINGS_SUCCESS      = "更新 S3 存储设置成功！"
+	GET_OAUTH_SETTINGS_SUCCESS	  = "获取 OAuth 设置成功！"
+	UPDATE_OAUTH_SETTINGS_SUCCESS   = "更新 OAuth 设置成功！"
 )
 
 // To do 成功相关常量

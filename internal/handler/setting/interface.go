@@ -20,4 +20,10 @@ type SettingHandlerInterface interface {
 
 	// UpdateS3Settings 更新 S3 存储设置
 	UpdateS3Settings() gin.HandlerFunc
+
+	// GetOAuthSettings 获取 OAuth 设置
+	GetOAuthSettings() gin.HandlerFunc
+
+	// UpdateOAuthSettings 更新 OAuth 设置
+	UpdateOAuthSettings() gin.HandlerFunc
 }

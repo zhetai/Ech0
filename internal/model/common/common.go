@@ -41,6 +41,7 @@ type UploadFileType string
 type FileStorageType string
 type CommentProvider string
 type S3Provider string
+type OAuth2Provider string
 
 const (
 	// ImageType  图片类型
@@ -77,6 +78,11 @@ const (
 	OTHER   S3Provider = "other"
 )
 
+const (
+	OAuth2GITHUB 	OAuth2Provider = "github"
+	OAuth2GOOGLE 	OAuth2Provider = "google"
+)
+
 // key value表
 type KeyValue struct {
 	Key   string `json:"key" gorm:"primaryKey"`
@@ -91,6 +97,8 @@ const (
 	CommentSettingKey = "comment_setting"
 	// S3SettingKey 是 S3 存储设置的键
 	S3SettingKey = "s3_setting"
+	// OAuth2SettingKey 是 OAuth2 设置的键
+	OAuth2SettingKey = "oauth2_setting"
 	// ServerURLKey 是服务器URL设置的键
 	ServerURLKey = "server_url"
 	// MigrationKey 是数据库迁移的标记键

@@ -281,3 +281,88 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 	})
 
 }
+
+// GetOAuthSetting 获取 OAuth 设置
+func (settingService *SettingService) GetOAuthSetting(userid uint, setting *model.OAuth2Setting) error {
+	return settingService.txManager.Run(func(ctx context.Context) error {
+		user, err := settingService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
+		}
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
+		}
+
+		oauthSetting, err := settingService.keyvalueRepository.GetKeyValue(commonModel.OAuth2SettingKey)
+		if err != nil {
+			// 数据库中不存在数据，手动添加初始数据
+			setting.Enable = false
+			setting.Provider = string(commonModel.OAuth2GITHUB)
+			setting.ClientID = ""
+			setting.ClientSecret = ""
+			setting.AuthURL = "https://github.com/login/oauth/authorize"
+			setting.TokenURL = "https://github.com/login/oauth/access_token"
+			setting.UserInfoURL = "https://api.github.com/user"
+			setting.RedirectURI = ""
+			setting.Scopes = []string{
+				"read:user",
+				"user:email",
+			}
+
+			// 序列化为 JSON
+			settingToJSON, err := jsonUtil.JSONMarshal(setting)
+			if err != nil {
+				return err
+			}
+			if err := settingService.keyvalueRepository.AddKeyValue(ctx, commonModel.OAuth2SettingKey, string(settingToJSON)); err != nil {
+				return err
+			}
+
+			return nil
+		}
+
+		if err := jsonUtil.JSONUnmarshal([]byte(oauthSetting.(string)), setting); err != nil {
+			return err
+		}
+		
+		return nil
+	})
+
+}
+
+// UpdateOAuthSetting 更新 OAuth 设置
+func (settingService *SettingService) UpdateOAuthSetting(userid uint, newSetting *model.OAuth2SettingDto) error {
+	return settingService.txManager.Run(func(ctx context.Context) error {
+		user, err := settingService.commonService.CommonGetUserByUserId(userid)
+		if err != nil {
+			return err
+		}
+		if !user.IsAdmin {
+			return errors.New(commonModel.NO_PERMISSION_DENIED)
+		}
+
+		oauthSetting := &model.OAuth2Setting{
+			Enable:       newSetting.Enable,
+			ClientID:     newSetting.ClientID,
+			ClientSecret: newSetting.ClientSecret,
+			AuthURL:      httpUtil.TrimURL(newSetting.AuthURL),
+			TokenURL:     httpUtil.TrimURL(newSetting.TokenURL),
+			UserInfoURL:  httpUtil.TrimURL(newSetting.UserInfoURL),
+			RedirectURI:  httpUtil.TrimURL(newSetting.RedirectURI),
+			Scopes:       newSetting.Scopes,
+		}
+
+		// 序列化为 JSON
+		settingToJSON, err := jsonUtil.JSONMarshal(oauthSetting)
+		if err != nil {
+			return err
+		}
+
+		if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.OAuth2SettingKey, string(settingToJSON)); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+}

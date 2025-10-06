@@ -218,3 +218,71 @@ func (settingHandler *SettingHandler) UpdateS3Settings() gin.HandlerFunc {
 		}
 	})
 }
+
+// GetOAuthSettings 获取 OAuth 设置
+//
+// @Summary 获取 OAuth 设置
+// @Description 获取系统的 OAuth 相关设置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response{data=model.OAuthSetting} "获取 OAuth 设置成功"
+// @Failure 200 {object} res.Response "获取 OAuth 设置失败"
+// @Router /oauth/settings [get]
+func (settingHandler *SettingHandler) GetOAuthSettings() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		var oauthSetting model.OAuth2Setting
+		if err := settingHandler.settingService.GetOAuthSetting(userid, &oauthSetting); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: oauthSetting,
+			Msg:  commonModel.GET_OAUTH_SETTINGS_SUCCESS,
+		}
+	})
+}
+
+// UpdateOAuthSettings 更新 OAuth 设置
+//
+// @Summary 更新 OAuth 设置
+// @Description 更新系统的 OAuth 相关设置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param oauthSettings body model.OAuth2SettingDto true "新的 OAuth 设置"
+// @Success 200 {object} res.Response "更新 OAuth 设置成功"
+// @Failure 200 {object} res.Response "更新 OAuth 设置失败"
+// @Router /oauth/settings [put]
+func (settingHandler *SettingHandler) UpdateOAuthSettings() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 解析请求体中的参数
+		var newOAuthSettings model.OAuth2SettingDto
+		if err := ctx.ShouldBindJSON(&newOAuthSettings); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		if err := settingHandler.settingService.UpdateOAuthSetting(userid, &newOAuthSettings); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.UPDATE_OAUTH_SETTINGS_SUCCESS,
+		}
+	})
+}
