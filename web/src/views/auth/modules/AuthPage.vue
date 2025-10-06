@@ -29,17 +29,16 @@
             :icon="Home"
             class="rounded-md w-9 h-9"
           />
-          <div>
+          <div class="flex items-center">
             <!-- OAuth2 登录 -->
             <BaseButton
               v-if="oauth2Status && oauth2Status.enabled"
-              @click="router.push({ name: 'oauth2', params: { provider: oauth2Status.provider } })"
-              class="rounded-md mr-2"
-            >
-              <span class="text-gray-500">使用 {{ oauth2Status.provider }} 登录</span>
-            </BaseButton>
+              :icon="github"
+                @click="gotoOAuth2URL"
+              class="w-9 h-9 rounded-md mr-2"
+            />
             <!-- 账号密码登录 -->
-            <BaseButton @click="handleLogin" class="rounded-md">
+            <BaseButton @click="handleLogin" class="w-12 h-9 rounded-md">
               <span class="text-gray-500">登录</span>
             </BaseButton>
           </div>
@@ -87,6 +86,7 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import { useUserStore } from '@/stores/user'
 import Arrow from '@/components/icons/arrow.vue'
 import Home from '@/components/icons/home.vue'
+import github from '@/components/icons/github.vue'
 import { fetchGetOAuth2Status } from '@/service/api'
 
 const AuthMode = ref<'login' | 'register'>('login') // login / register
@@ -95,11 +95,20 @@ const password = ref<string>('')
 const userStore = useUserStore()
 
 const oauth2Status = ref<App.Api.Setting.OAuth2Status | null>(null)
+const baseURL = import.meta.env.VITE_SERVICE_BASE_URL === '/'
+        ? window.location.origin
+        : import.meta.env.VITE_SERVICE_BASE_URL
+const oauthURL = ref<string>(`${baseURL}/oauth/github/login`)
+
+const gotoOAuth2URL = () => {
+  window.location.href = oauthURL.value
+}
 
 const getOAuth2Status = async () => {
   const res = await fetchGetOAuth2Status()
   if (res.code === 1) {
     oauth2Status.value = res.data
+    oauthURL.value = res.data.provider === 'github' ? `${baseURL}/oauth/github/login` : `${baseURL}/auth`
   }
 }
 
