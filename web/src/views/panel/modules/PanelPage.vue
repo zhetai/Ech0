@@ -68,7 +68,7 @@ import TheSetting from './TheSetting.vue'
 import TheUser from './TheUser.vue'
 import TheAdvance from './TheAdvance.vue'
 import Logout from '@/components/icons/logout.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { ShowWhichEnum } from '@/enums/enums'
@@ -93,14 +93,6 @@ const changeShow = () => {
 }
 
 const handleLogout = () => {
-  const url = new URL(window.location.href)
-  const bind = url.searchParams.get('bind')
-  if (bind === 'success') {
-    theToast.success('OAuth2账号绑定成功')
-  } else if (bind === 'failed') {
-    theToast.error('OAuth2账号绑定失败，请重试')
-  }
-
   // 检查是否登录
   if (!userStore.isLogin) {
     theToast.info('当前未登录')
@@ -113,4 +105,14 @@ const handleLogout = () => {
     userStore.logout()
   }
 }
+
+onMounted(() => {
+  const url = new URL(window.location.href)
+  const bind = url.searchParams.get('bind')
+  if (bind === 'success') {
+    theToast.success('OAuth2账号绑定成功', { duration: 5000 })
+  } else if (bind === 'failed') {
+    theToast.error('OAuth2账号绑定失败，请重试')
+  }
+})
 </script>
