@@ -150,10 +150,10 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 		Total: total,
 	}
 
-	// 处理echosByPage中的图片URL
-	for i := range result.Items {
-		echoService.commonService.RefreshEchoImageURL(&result.Items[i])
-	}
+	// 处理echosByPage中的图片URL (暂不处理，防止拖慢列表加载速度)
+	// for i := range result.Items {
+	// 	echoService.commonService.RefreshEchoImageURL(&result.Items[i])
+	// }
 
 	// 返回结果
 	return result, nil
@@ -214,10 +214,10 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 	// 获取当日发布的Echos
 	todayEchos := echoService.echoRepository.GetTodayEchos(showPrivate)
 
-	// 处理todayEchos中的图片URL
-	for i := range todayEchos {
-		echoService.commonService.RefreshEchoImageURL(&todayEchos[i])
-	}
+	// 处理todayEchos中的图片URL (暂不处理，防止拖慢列表加载速度)
+	// for i := range todayEchos {
+	// 	echoService.commonService.RefreshEchoImageURL(&todayEchos[i])
+	// }
 
 	return todayEchos, nil
 }
@@ -315,8 +315,8 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 		}
 	}
 
-	// 刷新图片URL
-	echoService.commonService.RefreshEchoImageURL(echo)
+	// 刷新图片URL (暂不处理，防止拖慢详情加载速度)
+	// echoService.commonService.RefreshEchoImageURL(echo)
 
 	// 返回Echo
 	return echo, nil
