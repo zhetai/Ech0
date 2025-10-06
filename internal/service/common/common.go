@@ -113,7 +113,6 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source, object
 	case echoModel.ImageSourceURL:
 		// 无需处理
 	case echoModel.ImageSourceS3:
-		// TODO: 实现S3图片删除
 		if object_key == "" {
 			// 如果没有传入 object_key，则无法删除,忽略
 			return nil
