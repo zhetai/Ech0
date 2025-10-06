@@ -40,7 +40,7 @@
           class="flex flex-row items-center justify-between text-gray-500 gap-3 h-10"
         >
           <div class="flex items-center gap-2 flex-1 min-w-0">
-            <h2 class="font-semibold w-30 flex-shrink-0">Connect {{ index + 1 }}:</h2>
+            <h2 class="font-semibold w-auto flex-shrink-0">Connect {{ index + 1 }}:</h2>
             <span
               class="truncate max-w-full"
               :title="connect.connect_url"

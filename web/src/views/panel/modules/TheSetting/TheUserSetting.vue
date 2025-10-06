@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-2">
-    <!-- 设置 -->
-    <div>
+    <!-- 用户设置 -->
+    <div class="w-full">
       <div class="flex flex-row items-center justify-between mb-3">
         <h1 class="text-gray-600 font-bold text-lg">用户中心</h1>
         <div class="flex flex-row items-center justify-end gap-2 w-14">
