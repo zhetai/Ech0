@@ -22,7 +22,7 @@ type SettingServiceInterface interface {
 	UpdateS3Setting(userid uint, newSetting *model.S3SettingDto) error
 
 	// GetOAuth2Setting 获取 OAuth2 设置
-	GetOAuth2Setting(userid uint, setting *model.OAuth2Setting) error
+	GetOAuth2Setting(userid uint, setting *model.OAuth2Setting, forInternal bool) error
 
 	// UpdateOAuth2Setting 更新 OAuth2 设置
 	UpdateOAuth2Setting(userid uint, newSetting *model.OAuth2SettingDto) error

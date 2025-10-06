@@ -280,6 +280,24 @@ func (userHandler *UserHandler) GetUserInfo() gin.HandlerFunc {
 
 }
 
+// GitHubLogin 处理 GitHub OAuth2 登录请求
+func (userHandler *UserHandler) GitHubLogin() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取重定向 URL
+		redirectURL, err := userHandler.userService.GetGitHubLoginURL()
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.FAILED_TO_GET_GITHUB_LOGIN_URL,
+				Err: err,
+			}
+		}
+
+		// 重定向到 GitHub 登录页面
+		ctx.Redirect(302, redirectURL)
+		return res.Response{}
+	})
+}
+
 // GitHubCallback 处理 GitHub OAuth2 回调
 func (userHandler *UserHandler) GitHubCallback() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {

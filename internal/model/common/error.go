@@ -52,6 +52,9 @@ const (
 // User 错误相关常量
 const (
 	USERNAME_ALREADY_EXISTS = "用户名已存在"
+	FAILED_TO_GET_GITHUB_LOGIN_URL = "获取 GitHub 登录 URL 失败"
+	OAUTH2_NOT_CONFIGURED   = "OAuth2 未配置"
+	OAUTH2_NOT_ENABLED      = "OAuth2 未启用"
 )
 
 // TO DO 错误相关常量

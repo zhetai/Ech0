@@ -4,6 +4,9 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/lin-snow/ech0/internal/transaction"
 
@@ -343,4 +346,43 @@ func (userService *UserService) DeleteUser(userid, id uint) error {
 //   - error: 获取过程中的错误信息
 func (userService *UserService) GetUserByID(userId int) (model.User, error) {
 	return userService.userRepository.GetUserByID(userId)
+}
+
+// GetGitHubLoginURL 获取 GitHub 登录 URL
+//
+// 返回:
+//   - string: GitHub 登录 URL
+//   - error: 获取过程中的错误信息
+func (userService *UserService) GetGitHubLoginURL() (string, error) {
+	var setting settingModel.OAuth2Setting
+	if err := userService.settingService.GetOAuth2Setting(0, &setting, true); err != nil {
+		return "", err
+	}
+
+	if !setting.Enable {
+		return "", errors.New(commonModel.OAUTH2_NOT_ENABLED)
+	}
+
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+		return "", errors.New(commonModel.OAUTH2_NOT_CONFIGURED)
+	}
+
+	// 生成随机的 state 参数，防止 CSRF 攻击
+	state := cryptoUtil.GenerateRandomString(16)
+
+	scope := ""
+	if len(setting.Scopes) > 0 {
+		scope = strings.Join(setting.Scopes, " ")
+	}
+
+	loginURL := fmt.Sprintf(
+		"%s?client_id=%s&redirect_uri=%s&scope=%s&state=%s",
+		setting.AuthURL,
+		url.QueryEscape(setting.ClientID),
+		url.QueryEscape(setting.RedirectURI),
+		url.QueryEscape(scope),
+		url.QueryEscape(state),
+	)
+
+	return loginURL, nil
 }

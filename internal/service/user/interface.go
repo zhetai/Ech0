@@ -29,4 +29,7 @@ type UserServiceInterface interface {
 
 	// DeleteUser 删除用户
 	DeleteUser(userid, id uint) error
+
+	// 获取 GitHub 登录 URL
+	GetGitHubLoginURL() (string, error)
 }

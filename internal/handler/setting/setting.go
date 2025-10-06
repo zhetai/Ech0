@@ -235,7 +235,7 @@ func (settingHandler *SettingHandler) GetOAuth2Settings() gin.HandlerFunc {
 		userid := ctx.MustGet("userid").(uint)
 
 		var oauthSetting model.OAuth2Setting
-		if err := settingHandler.settingService.GetOAuth2Setting(userid, &oauthSetting); err != nil {
+		if err := settingHandler.settingService.GetOAuth2Setting(userid, &oauthSetting, false); err != nil {
 			return res.Response{
 				Msg: "",
 				Err: err,

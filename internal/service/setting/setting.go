@@ -283,14 +283,16 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 }
 
 // GetOAuth2Setting 获取 OAuth2 设置
-func (settingService *SettingService) GetOAuth2Setting(userid uint, setting *model.OAuth2Setting) error {
+func (settingService *SettingService) GetOAuth2Setting(userid uint, setting *model.OAuth2Setting, forInternal bool) error {
 	return settingService.txManager.Run(func(ctx context.Context) error {
-		user, err := settingService.commonService.CommonGetUserByUserId(userid)
-		if err != nil {
-			return err
-		}
-		if !user.IsAdmin {
-			return errors.New(commonModel.NO_PERMISSION_DENIED)
+		if !forInternal {
+			user, err := settingService.commonService.CommonGetUserByUserId(userid)
+			if err != nil {
+				return err
+			}
+			if !user.IsAdmin {
+				return errors.New(commonModel.NO_PERMISSION_DENIED)
+			}
 		}
 
 		oauthSetting, err := settingService.keyvalueRepository.GetKeyValue(commonModel.OAuth2SettingKey)
