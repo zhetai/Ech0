@@ -76,6 +76,9 @@
       </div>
     </div>
 
+    <!-- OAuth2 设置 -->
+    <TheOAuth2Setting />
+
     <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4">
       <div class="flex flex-row items-center justify-between mb-3">
         <h1 class="text-gray-600 font-bold text-lg">用户管理</h1>
@@ -137,6 +140,7 @@ import { theToast } from '@/utils/toast'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { getApiUrl } from '@/service/request/shared'
+import TheOAuth2Setting from './TheSetting/TheOAuth2Setting.vue'
 
 const userStore = useUserStore()
 const { refreshCurrentUser } = userStore

@@ -306,7 +306,6 @@ func (settingService *SettingService) GetOAuth2Setting(userid uint, setting *mod
 			setting.RedirectURI = ""
 			setting.Scopes = []string{
 				"read:user",
-				"user:email",
 			}
 
 			// 序列化为 JSON

@@ -5,11 +5,12 @@ import {
   fetchGetStatus,
   fetchGetCommentSettings,
   fetchGetS3Settings,
+  fetchGetOAuth2Settings
 } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
 import { useRouter } from 'vue-router'
-import { CommentProvider, S3Provider } from '@/enums/enums'
+import { CommentProvider, S3Provider, OAuth2Provider } from '@/enums/enums'
 
 export const useSettingStore = defineStore('settingStore', () => {
   /**
@@ -43,6 +44,17 @@ export const useSettingStore = defineStore('settingStore', () => {
     cdn_url: '',
     path_prefix: '',
     public_read: true,
+  })
+  const OAuth2Setting = ref<App.Api.Setting.OAuth2Setting>({
+    enable: false,
+    provider: OAuth2Provider.GITHUB,
+    client_id: '',
+    client_secret: '',
+    redirect_uri: '',
+    scopes: [],
+    auth_url: '',
+    token_url: '',
+    user_info_url: '',
   })
   const loading = ref<boolean>(true)
   const router = useRouter()
@@ -108,6 +120,14 @@ export const useSettingStore = defineStore('settingStore', () => {
     })
   }
 
+  const getOAuth2Setting = async () => {
+    fetchGetOAuth2Settings().then((res) => {
+      if (res.code === 1) {
+        OAuth2Setting.value = res.data
+      }
+    })
+  }
+
   const setSystemReady = (status: boolean) => {
     isSystemReady.value = status
   }
@@ -119,6 +139,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     getSystemSetting()
     getCommentSetting()
     getS3Setting()
+    getOAuth2Setting()
   }
 
   return {
@@ -126,11 +147,13 @@ export const useSettingStore = defineStore('settingStore', () => {
     SystemSetting,
     CommentSetting,
     S3Setting,
+    OAuth2Setting,
     loading,
     getSystemReady,
     getSystemSetting,
     getCommentSetting,
     getS3Setting,
+    getOAuth2Setting,
     setSystemReady,
     init,
   }

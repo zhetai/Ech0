@@ -49,6 +49,12 @@ export enum S3Provider {
   OTHER = 'other', // 其它默认按照 MINIO 处理
 }
 
+// OAuth2 Provider
+export enum OAuth2Provider {
+  GITHUB = 'github',
+  GOOGLE = 'google',
+}
+
 // Follow Status
 export enum FollowStatus {
   NONE = 'none',
