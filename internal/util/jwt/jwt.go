@@ -57,7 +57,7 @@ func ParseToken(tokenString string) (*authModel.MyClaims, error) {
 }
 
 // GenerateOAuthState 生成 OAuth2 state token
-func GenerateOAuthState(action string, userID uint, redirect string) (string, error) {
+func GenerateOAuthState(action string, userID uint, redirect, provider string) (string, error) {
 	now := time.Now()
 	expiration := now.Add(10 * time.Minute)
 
@@ -68,6 +68,7 @@ func GenerateOAuthState(action string, userID uint, redirect string) (string, er
 		"redirect": redirect,
 		"exp":      expiration.Unix(),
 		"iat":      now.Unix(),
+		"provider": provider,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -91,5 +92,6 @@ func ParseOAuthState(stateStr string) (*authModel.OAuthState, error) {
 		Nonce:    claims["nonce"].(string),
 		Redirect: claims["redirect"].(string),
 		Exp:      int64(claims["exp"].(float64)),
+		Provider: claims["provider"].(string),
 	}, nil
 }

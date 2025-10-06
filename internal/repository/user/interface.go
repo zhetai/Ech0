@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	model "github.com/lin-snow/ech0/internal/model/user"
 )
 
@@ -26,4 +27,10 @@ type UserRepositoryInterface interface {
 
 	// DeleteUser 删除用户
 	DeleteUser(ctx context.Context, id uint) error
+
+	// BindOAuth 绑定 OAuth 账号
+	BindOAuth(ctx context.Context, userID uint, provider, oauthID string) error
+
+	// GetUserByOAuthID 根据 OAuth 提供商和 OAuth ID 获取用户
+	GetUserByOAuthID(ctx context.Context, provider, oauthID string) (model.User, error)
 }

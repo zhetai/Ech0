@@ -30,9 +30,25 @@ const (
 )
 
 type OAuthState struct {
-	Action string `json:"action"`
-	UserID uint   `json:"user_id,omitempty"`
-	Nonce  string `json:"nonce"`
+	Action   string `json:"action"`
+	UserID   uint   `json:"user_id,omitempty"`
+	Nonce    string `json:"nonce"`
 	Redirect string `json:"redirect,omitempty"`
-	Exp int64 `json:"exp"`
+	Exp      int64  `json:"exp"`
+	Provider string `json:"provider,omitempty"`
+}
+
+// GitHubTokenResponse GitHub token 响应结构
+type GitHubTokenResponse struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	Scope       string `json:"scope"`
+}
+
+// GitHubUser GitHub 用户信息
+type GitHubUser struct {
+	ID        int64  `json:"id"`
+	Login     string `json:"login"`
+	Email     string `json:"email"`
+	AvatarURL string `json:"avatar_url"`
 }

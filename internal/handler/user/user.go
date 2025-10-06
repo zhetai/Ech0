@@ -286,7 +286,18 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 		// 获取当前用户 ID
 		userid := ctx.MustGet("userid").(uint)
 
-		bingURL, err := userHandler.userService.BindGitHub(userid);
+		type Req struct {
+			RedirectURI string `json:"redirect_uri"`
+		}
+		var req Req
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		bingURL, err := userHandler.userService.BindGitHub(userid, req.RedirectURI);
 		if err != nil {
 			return res.Response{
 				Msg: "",
@@ -294,8 +305,10 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 			}
 		}
 
-		ctx.Redirect(302, bingURL)
-		return res.Response{}
+		return res.Response{
+			Data: bingURL,
+			Msg:  commonModel.GET_OAUTH_BINGURL_SUCCESS,
+		}
 	})
 }
 
@@ -304,7 +317,9 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 func (userHandler *UserHandler) GitHubLogin() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取重定向 URL
-		redirectURL, err := userHandler.userService.GetGitHubLoginURL()
+		redirect_URI := ctx.Query("redirect_uri")
+
+		redirectURL, err := userHandler.userService.GetGitHubLoginURL(redirect_URI)
 		if err != nil {
 			return res.Response{
 				Msg: commonModel.FAILED_TO_GET_GITHUB_LOGIN_URL,

@@ -157,3 +157,41 @@ func (userRepository *UserRepository) DeleteUser(ctx context.Context, id uint) e
 
 	return nil
 }
+
+// BindOAuth 绑定 OAuth 账号
+func (userRepository *UserRepository) BindOAuth(ctx context.Context, userID uint, provider, oauthID string) error {
+	// 检查是否已绑定
+	var existing model.OAuthBinding
+	err := userRepository.getDB(ctx).Where("user_id = ? AND provider = ?", userID, provider).First(&existing).Error
+	if err == nil {
+		// 已绑定，更新 oauth_id
+		existing.OAuthID = oauthID
+		return userRepository.getDB(ctx).Save(&existing).Error
+	}
+	if err != gorm.ErrRecordNotFound {
+		return err
+	}
+
+	// 未绑定，创建新记录
+	newBinding := model.OAuthBinding{
+		UserID:   userID,
+		Provider: provider,
+		OAuthID:  oauthID,
+	}
+	if err := userRepository.getDB(ctx).Create(&newBinding).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetUserByOAuthID 根据 OAuth 提供商和 OAuth ID 获取用户
+func (userRepository *UserRepository) GetUserByOAuthID(ctx context.Context, provider, oauthID string) (model.User, error) {
+	var binding model.OAuthBinding
+	err := userRepository.getDB(ctx).Where("provider = ? AND o_auth_id = ?", provider, oauthID).First(&binding).Error
+	if err != nil {
+		return model.User{}, err
+	}
+
+	return userRepository.GetUserByID(int(binding.UserID))
+}

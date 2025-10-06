@@ -112,6 +112,7 @@ func MigrateDB() error {
 		&todoModel.Todo{},
 		&connectModel.Connected{},
 		&commonModel.TempFile{},
+		&userModel.OAuthBinding{},
 
 		// Fediverse 相关
 		&fediverseModel.Follow{},

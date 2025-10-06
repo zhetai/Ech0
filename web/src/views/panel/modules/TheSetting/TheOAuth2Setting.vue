@@ -173,7 +173,19 @@
         />
       </div>
 
-
+      <div v-if="OAuth2Setting.enable && OAuth2Setting.provider" class="mb-3">
+        <h1 class="text-gray-600 font-bold text-lg">账号绑定</h1>
+        <p class="text-gray-400 font-bold text-sm">注意：需先配置OAuth2信息</p>
+        <BaseButton
+          class="rounded-md mt-2"
+          @click="handleBindOAuth2()"
+        >
+          <div class="flex items-center justify-between">
+            <Github class="w-5 h-5" />
+            <span class="text-gray-500 font-bold">前往授权</span>
+          </div>
+        </BaseButton>
+      </div>
     </div>
   </div>
 </template>
@@ -182,6 +194,7 @@
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseSwitch from '@/components/common/BaseSwitch.vue'
 import BaseSelect from '@/components/common/BaseSelect.vue'
+import BaseButton from '@/components/common/BaseButton.vue'
 import Edit from '@/components/icons/edit.vue'
 import Close from '@/components/icons/close.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
@@ -189,11 +202,13 @@ import { ref, onMounted } from 'vue'
 import { useSettingStore } from '@/stores/setting'
 import { theToast } from '@/utils/toast'
 import { OAuth2Provider } from '@/enums/enums'
-import { fetchUpdateOAuth2Settings } from '@/service/api'
+import { fetchUpdateOAuth2Settings, fetchBindOAuth2 } from '@/service/api'
+import Github from '@/components/icons/github.vue'
+import { storeToRefs } from 'pinia'
 
 const settingStore = useSettingStore()
 const { getOAuth2Setting } = settingStore
-const { OAuth2Setting } = settingStore
+const { OAuth2Setting } = storeToRefs(settingStore)
 
 const oauth2EditMode = ref(false)
 
@@ -207,12 +222,12 @@ const scopeString = ref('read:user')
 
 const handleUpdateOAuth2Setting = async () => {
   // 修改Scopes
-  OAuth2Setting.scopes = scopeString.value.split(',').map((s) => s.trim())
+  OAuth2Setting.value.scopes = scopeString.value.split(',').map((s) => s.trim())
   // 修改回调地址为当前域名加上固定路径
-  OAuth2Setting.redirect_uri = redirect_uri.value || `${window.location.origin}/oauth/github/callback`
+  OAuth2Setting.value.redirect_uri = redirect_uri.value || `${window.location.origin}/oauth/github/callback`
 
   // 提交更新
-  await fetchUpdateOAuth2Settings(OAuth2Setting)
+  await fetchUpdateOAuth2Settings(OAuth2Setting.value)
     .then((res) => {
       if (res.code === 1) {
         theToast.success(res.msg)
@@ -223,6 +238,16 @@ const handleUpdateOAuth2Setting = async () => {
       // 重新获取OAuth2设置
       getOAuth2Setting()
     })
+}
+
+const handleBindOAuth2 = async () => {
+  const res = await fetchBindOAuth2(`${window.location.origin}/oauth/success`)
+  if (res.code !== 1) {
+    theToast.error(res.msg)
+  } else {
+    // 成功，跳转到授权URL
+    window.location.href = res.data
+  }
 }
 
 onMounted(() => {

@@ -139,7 +139,6 @@ export const useSettingStore = defineStore('settingStore', () => {
     getSystemSetting()
     getCommentSetting()
     getS3Setting()
-    getOAuth2Setting()
   }
 
   return {

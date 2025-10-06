@@ -2,9 +2,13 @@
 package service
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -355,7 +359,7 @@ func (userService *UserService) GetUserByID(userId int) (model.User, error) {
 //
 // 返回:
 //   - error: 绑定过程中的错误信息
-func (userService *UserService) BindGitHub(userID uint) (string, error) {
+func (userService *UserService) BindGitHub(userID uint, redirect_URI string) (string, error) {
 	// 检查当前用户是否存在
 	user, err := userService.userRepository.GetUserByID(int(userID))
 	if err != nil {
@@ -381,7 +385,7 @@ func (userService *UserService) BindGitHub(userID uint) (string, error) {
 	}
 
 	// 生成附带用户 ID 的 state 参数
-	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionBind), userID, "")
+	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionBind), userID, redirect_URI, string(commonModel.OAuth2GITHUB))
 	if err != nil {
 		return "", err
 	}
@@ -410,7 +414,7 @@ func (userService *UserService) BindGitHub(userID uint) (string, error) {
 // 返回:
 //   - string: GitHub 登录 URL
 //   - error: 获取过程中的错误信息
-func (userService *UserService) GetGitHubLoginURL() (string, error) {
+func (userService *UserService) GetGitHubLoginURL(redirect_URI string) (string, error) {
 	var setting settingModel.OAuth2Setting
 	if err := userService.settingService.GetOAuth2Setting(0, &setting, true); err != nil {
 		return "", err
@@ -425,7 +429,10 @@ func (userService *UserService) GetGitHubLoginURL() (string, error) {
 	}
 
 	// 生成随机的 state 参数，防止 CSRF 攻击
-	state := cryptoUtil.GenerateRandomString(16)
+	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionLogin), authModel.NO_USER_LOGINED, redirect_URI, string(commonModel.OAuth2GITHUB))
+	if err != nil {
+		return "", err
+	}
 
 	scope := ""
 	if len(setting.Scopes) > 0 {
@@ -467,6 +474,130 @@ func (userService *UserService) HandleGitHubCallback(code string, state string) 
 		return ""
 	}
 
+	// 提取 state 信息
+	oauthState, err := jwtUtil.ParseOAuthState(state)
+	if err != nil {
+		return ""
+	}
 
-	return ""
+	// 2. 用 code 换取 access_token
+	tokenResp, err := exchangeCodeForToken(&setting, code)
+	if err != nil {
+		fmt.Println("Error exchanging code for token:", err)
+		return ""
+	}
+
+	// 3. 获取 GitHub 用户信息
+	githubUser, err := fetchGitHubUserInfo(&setting, tokenResp.AccessToken)
+	if err != nil {
+		fmt.Println("Error fetching GitHub user info:", err)
+		return ""
+	}
+
+	// 处理不同的 OAuth2 操作
+	switch oauthState.Action {
+	case string(authModel.OAuth2ActionLogin):
+		// 处理登录操作
+		if oauthState.UserID != authModel.NO_USER_LOGINED {
+			// 非法的登录请求，state 中包含用户 ID
+			return ""
+		}
+
+		// 根据 GitHub ID 查找用户
+		user, err := userService.userRepository.GetUserByOAuthID(context.Background(), string(commonModel.OAuth2GITHUB), fmt.Sprint(githubUser.ID))
+		if err != nil {
+			fmt.Println("Error fetching user by OAuth ID:", err)
+			return ""
+		}
+
+		// 根据用户信息生成 JWT token
+		token, err := jwtUtil.GenerateToken(jwtUtil.CreateClaims(user))
+		if err != nil {
+			fmt.Println("Error generating token:", err)
+			return ""
+		}
+
+		// 构造重定向 URL，包含 token 信息
+		redirectURL, err := url.Parse(oauthState.Redirect)
+		if err != nil {
+			return ""
+		}
+		query := redirectURL.Query()
+		query.Set("token", token)
+		redirectURL.RawQuery = query.Encode()
+
+		// 返回重定向 URL
+		return redirectURL.String()
+
+	case string(authModel.OAuth2ActionBind):
+		// 处理绑定操作
+		if oauthState.UserID == authModel.NO_USER_LOGINED {
+			// 用户未登录，无法绑定
+			return ""
+		}
+
+		// 绑定 GitHub 账号
+		userService.txManager.Run(func(ctx context.Context) error {
+			return userService.userRepository.BindOAuth(ctx, oauthState.UserID, oauthState.Provider, fmt.Sprint(githubUser.ID))
+		})
+
+		// 返回绑定成功的前端 URL
+		return oauthState.Redirect
+
+	default:
+		// 未知操作
+		return ""
+	}
+}
+
+// 用 code 换取 access_token
+func exchangeCodeForToken(setting *settingModel.OAuth2Setting, code string) (*authModel.GitHubTokenResponse, error) {
+	data := map[string]string{
+		"client_id":     setting.ClientID,
+		"client_secret": setting.ClientSecret,
+		"code":          code,
+		"redirect_uri":  setting.RedirectURI,
+	}
+	jsonData, _ := json.Marshal(data)
+
+	req, _ := http.NewRequest("POST", setting.TokenURL, bytes.NewBuffer(jsonData))
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != 200 {
+		return nil, errors.New("GitHub token 响应错误: " + string(body))
+	}
+
+	var tokenResp authModel.GitHubTokenResponse
+	_ = json.Unmarshal(body, &tokenResp)
+	return &tokenResp, nil
+}
+
+// 获取 GitHub 用户信息
+func fetchGitHubUserInfo(setting *settingModel.OAuth2Setting, accessToken string) (*authModel.GitHubUser, error) {
+	req, _ := http.NewRequest("GET", setting.UserInfoURL, nil)
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != 200 {
+		return nil, errors.New("GitHub 用户信息请求失败: " + string(body))
+	}
+
+	var user authModel.GitHubUser
+	_ = json.Unmarshal(body, &user)
+	return &user, nil
 }
