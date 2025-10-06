@@ -33,4 +33,7 @@ type UserRepositoryInterface interface {
 
 	// GetUserByOAuthID 根据 OAuth 提供商和 OAuth ID 获取用户
 	GetUserByOAuthID(ctx context.Context, provider, oauthID string) (model.User, error)
+
+	// GetOAuthInfo 获取 OAuth2 信息
+	GetOAuthInfo(userId uint) (model.OAuthBinding, error)
 }

@@ -20,3 +20,10 @@ type UserInfoDto struct {
 	// example: https://example.com/avatar.png
 	Avatar string `json:"avatar"`
 }
+
+// OAuthInfoDto OAuth2 信息数据传输对象
+type OAuthInfoDto struct {
+	Provider string `json:"provider"`
+	UserID   uint   `json:"user_id"`
+	OAuthID  string `json:"oauth_id"`
+}

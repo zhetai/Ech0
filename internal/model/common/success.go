@@ -62,6 +62,7 @@ const (
 	DELETE_USER_SUCCESS   = "删除用户成功"
 	BIND_GITHUB_SUCCESS   = "绑定 GitHub 账号成功"
 	GET_OAUTH_BINGURL_SUCCESS = "获取绑定 URL 成功"
+	GET_OAUTH_INFO_SUCCESS = "获取 OAuth2 信息成功"
 )
 
 // Connect 成功相关常量

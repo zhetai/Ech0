@@ -205,6 +205,12 @@ declare namespace App {
         enabled: boolean
         provider: string
       }
+
+      type OAuthInfo = {
+        provider: string
+        user_id: number
+        oauth_id: string
+      }
     }
 
     namespace Connect {

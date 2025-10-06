@@ -351,3 +351,18 @@ func (userHandler *UserHandler) GitHubCallback() gin.HandlerFunc {
 	})
 }
 
+// GetOAuthInfo 获取 OAuth2 配置信息
+func (userHandler *UserHandler) GetOAuthInfo() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 调用 Service 层获取 OAuth2 信息
+		oauthInfo, _ := userHandler.userService.GetOAuthInfo(userid)
+
+		return res.Response{
+			Data: oauthInfo,
+			Msg:  commonModel.GET_OAUTH_INFO_SUCCESS,
+		}
+	})
+}

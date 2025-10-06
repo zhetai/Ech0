@@ -32,4 +32,7 @@ type UserHandlerInterface interface {
 
 	// BindGitHub 绑定 GitHub 账号
 	BindGitHub() gin.HandlerFunc
+
+	// GetOAuthInfo 获取 OAuth2 配置信息
+	GetOAuthInfo() gin.HandlerFunc
 }

@@ -172,14 +172,35 @@
           @blur="OAuth2Setting.scopes = scopeString.split(',').map((s) => s.trim())"
         />
       </div>
+    </div>
+  </div>
 
-      <div v-if="OAuth2Setting.enable && OAuth2Setting.provider" class="mb-3">
+  <div v-if="OAuth2Setting.enable && OAuth2Setting.provider" class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
+    <!-- OAuth2 账号绑定 -->
+    <div class="w-full">
+      <div class="mb-3">
         <h1 class="text-gray-600 font-bold text-lg">账号绑定</h1>
-        <p class="text-gray-400 font-bold text-sm">注意：需先配置OAuth2信息</p>
-        <BaseButton class="rounded-md mt-2" @click="handleBindOAuth2()">
+        <p class="text-gray-400 text-sm">注意：需先配置OAuth2信息</p>
+        <div v-if="oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0"
+          class="mt-2 border border-dashed border-gray-300 rounded-md p-3 flex items-center justify-center bg-gray-50"
+          >
+          <p class=" text-gray-500 font-bold flex items-center">
+             <component
+              :is="oauthInfo.provider === 'github' ? Github : Google"
+              class="w-5 h-5 mr-2"
+            />
+            <span>{{ oauthInfo.provider === 'github' ? 'GitHub' : 'Google' }}</span> 账号已绑定
+          </p>
+        </div>
+        <BaseButton v-else class="rounded-md mt-2" @click="handleBindOAuth2()">
           <div class="flex items-center justify-between">
-            <Github class="w-5 h-5" />
-            <span class="text-gray-500 font-bold">授权</span>
+            <component
+              :is="OAuth2Setting.provider === 'github' ? Github : Google"
+              class="w-5 h-5 mr-2"
+            />
+            <span class="flex-1 text-left">
+              {{ OAuth2Setting.provider === 'github' ? '绑定 GitHub 账号' : '绑定 Google 账号' }}
+            </span>
           </div>
         </BaseButton>
       </div>
@@ -199,8 +220,9 @@ import { ref, onMounted } from 'vue'
 import { useSettingStore } from '@/stores/setting'
 import { theToast } from '@/utils/toast'
 import { OAuth2Provider } from '@/enums/enums'
-import { fetchUpdateOAuth2Settings, fetchBindOAuth2 } from '@/service/api'
+import { fetchUpdateOAuth2Settings, fetchBindOAuth2, fetchGetOAuthInfo } from '@/service/api'
 import Github from '@/components/icons/github.vue'
+import Google from '@/components/icons/google.vue'
 import { storeToRefs } from 'pinia'
 
 const settingStore = useSettingStore()
@@ -248,8 +270,15 @@ const handleBindOAuth2 = async () => {
   }
 }
 
+const oauthInfo = ref<App.Api.Setting.OAuthInfo | null>(null)
+
 onMounted(() => {
   getOAuth2Setting()
+  fetchGetOAuthInfo().then((res) => {
+    if (res.code === 1) {
+      oauthInfo.value = res.data
+    }
+  })
 })
 </script>
 

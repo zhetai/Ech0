@@ -27,3 +27,4 @@ type OAuthBinding struct {
 	Provider  string `gorm:"size:64;not null;index" json:"provider"` // 例如 "github"
 	OAuthID   string `gorm:"size:255;not null;index" json:"oauth_id"` // 第三方平台的用户ID
 }
+

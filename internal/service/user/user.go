@@ -601,3 +601,32 @@ func fetchGitHubUserInfo(setting *settingModel.OAuth2Setting, accessToken string
 	_ = json.Unmarshal(body, &user)
 	return &user, nil
 }
+
+// GetOAuthInfo 获取 OAuth2 信息
+func (userService *UserService) GetOAuthInfo(userId uint) (model.OAuthInfoDto, error) {
+	var oauthInfo model.OAuthInfoDto
+
+	// 检查当前用户是否存在
+	user, err := userService.userRepository.GetUserByID(int(userId))
+	if err != nil {
+		return oauthInfo, err
+	}
+
+	// 检查用户是否为管理员
+	if !user.IsAdmin {
+		return oauthInfo, errors.New(commonModel.NO_PERMISSION_BINDING)
+	}
+
+	oauthInfoBinding, err := userService.userRepository.GetOAuthInfo(userId)
+	if err != nil {
+		return oauthInfo, err
+	}
+
+	oauthInfo = model.OAuthInfoDto{
+		Provider: oauthInfoBinding.Provider,
+		UserID:   oauthInfoBinding.UserID,
+		OAuthID:  oauthInfoBinding.OAuthID,
+	}
+
+	return oauthInfo, nil
+}
