@@ -459,7 +459,7 @@ func (userService *UserService) GetGitHubLoginURL(redirect_URI string) (string, 
 //
 // 返回:
 //   - string: 重定向的前端 URL，包含登录结果信息
-func (userService *UserService) HandleGitHubCallback(code string, state string) (string) {
+func (userService *UserService) HandleGitHubCallback(code string, state string) string {
 	// 获取 OAuth2 设置
 	var setting settingModel.OAuth2Setting
 	if err := userService.settingService.GetOAuth2Setting(0, &setting, true); err != nil {

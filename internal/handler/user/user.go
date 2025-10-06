@@ -297,7 +297,7 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 			}
 		}
 
-		bingURL, err := userHandler.userService.BindGitHub(userid, req.RedirectURI);
+		bingURL, err := userHandler.userService.BindGitHub(userid, req.RedirectURI)
 		if err != nil {
 			return res.Response{
 				Msg: "",
@@ -311,7 +311,6 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 		}
 	})
 }
-
 
 // GitHubLogin 处理 GitHub OAuth2 登录请求
 func (userHandler *UserHandler) GitHubLogin() gin.HandlerFunc {

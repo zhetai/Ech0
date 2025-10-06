@@ -37,7 +37,7 @@ type UserServiceInterface interface {
 	GetGitHubLoginURL(redirect_URI string) (string, error)
 
 	// HandleGitHubCallback 处理 GitHub OAuth2 回调
-	HandleGitHubCallback(code string, state string) (string)
+	HandleGitHubCallback(code string, state string) string
 
 	// GetOAuthInfo 获取 OAuth2 配置信息
 	GetOAuthInfo(userId uint) (model.OAuthInfoDto, error)

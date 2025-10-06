@@ -41,9 +41,9 @@ const (
 	UPDATE_COMMENT_SETTINGS_SUCCESS = "更新评论设置成功！"
 	GET_S3_SETTINGS_SUCCESS         = "获取 S3 存储设置成功！"
 	UPDATE_S3_SETTINGS_SUCCESS      = "更新 S3 存储设置成功！"
-	GET_OAUTH_SETTINGS_SUCCESS	  = "获取 OAuth 设置成功！"
+	GET_OAUTH_SETTINGS_SUCCESS      = "获取 OAuth 设置成功！"
 	UPDATE_OAUTH_SETTINGS_SUCCESS   = "更新 OAuth 设置成功！"
-	GET_OAUTH2_STATUS_SUCCESS	   = "获取 OAuth2 状态成功"
+	GET_OAUTH2_STATUS_SUCCESS       = "获取 OAuth2 状态成功"
 )
 
 // To do 成功相关常量
@@ -56,13 +56,13 @@ const (
 
 // User 成功相关常量
 const (
-	UPDATE_USER_SUCCESS   = "更新用户信息成功"
-	GET_USER_SUCCESS      = "获取用户列表成功"
-	GET_USER_INFO_SUCCESS = "获取用户信息成功"
-	DELETE_USER_SUCCESS   = "删除用户成功"
-	BIND_GITHUB_SUCCESS   = "绑定 GitHub 账号成功"
+	UPDATE_USER_SUCCESS       = "更新用户信息成功"
+	GET_USER_SUCCESS          = "获取用户列表成功"
+	GET_USER_INFO_SUCCESS     = "获取用户信息成功"
+	DELETE_USER_SUCCESS       = "删除用户成功"
+	BIND_GITHUB_SUCCESS       = "绑定 GitHub 账号成功"
 	GET_OAUTH_BINGURL_SUCCESS = "获取绑定 URL 成功"
-	GET_OAUTH_INFO_SUCCESS = "获取 OAuth2 信息成功"
+	GET_OAUTH_INFO_SUCCESS    = "获取 OAuth2 信息成功"
 )
 
 // Connect 成功相关常量

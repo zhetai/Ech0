@@ -175,17 +175,23 @@
     </div>
   </div>
 
-  <div v-if="OAuth2Setting.enable && OAuth2Setting.provider" class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
+  <div
+    v-if="OAuth2Setting.enable && OAuth2Setting.provider"
+    class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3"
+  >
     <!-- OAuth2 账号绑定 -->
     <div class="w-full">
       <div class="mb-3">
         <h1 class="text-gray-600 font-bold text-lg">账号绑定</h1>
         <p class="text-gray-400 text-sm">注意：需先配置OAuth2信息</p>
-        <div v-if="oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0"
+        <div
+          v-if="
+            oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0
+          "
           class="mt-2 border border-dashed border-gray-300 rounded-md p-3 flex items-center justify-center bg-gray-50"
-          >
-          <p class=" text-gray-500 font-bold flex items-center">
-             <component
+        >
+          <p class="text-gray-500 font-bold flex items-center">
+            <component
               :is="oauthInfo.provider === 'github' ? Github : Google"
               class="w-5 h-5 mr-2"
             />

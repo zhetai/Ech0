@@ -51,11 +51,11 @@ const (
 
 // User 错误相关常量
 const (
-	USERNAME_ALREADY_EXISTS = "用户名已存在"
+	USERNAME_ALREADY_EXISTS        = "用户名已存在"
 	FAILED_TO_GET_GITHUB_LOGIN_URL = "获取 GitHub 登录 URL 失败"
-	OAUTH2_NOT_CONFIGURED   = "OAuth2 未配置"
-	OAUTH2_NOT_ENABLED      = "OAuth2 未启用"
-	NO_PERMISSION_BINDING   = "没有权限绑定 GitHub 账号"
+	OAUTH2_NOT_CONFIGURED          = "OAuth2 未配置"
+	OAUTH2_NOT_ENABLED             = "OAuth2 未启用"
+	NO_PERMISSION_BINDING          = "没有权限绑定 GitHub 账号"
 )
 
 // TO DO 错误相关常量
@@ -72,7 +72,6 @@ const (
 // Setting 错误相关常量
 const (
 	NO_SUCH_COMMENT_PROVIDER = "无效的评论服务提供者"
-	
 )
 
 // Backup 错误相关常量
