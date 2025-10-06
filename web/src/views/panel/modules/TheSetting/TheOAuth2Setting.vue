@@ -241,7 +241,7 @@ const handleUpdateOAuth2Setting = async () => {
 }
 
 const handleBindOAuth2 = async () => {
-  const res = await fetchBindOAuth2(`${window.location.origin}/panel`)
+  const res = await fetchBindOAuth2(`${window.location.origin}/oauth`)
   if (res.code !== 1) {
     theToast.error(res.msg)
   } else {
