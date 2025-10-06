@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 pb-4 py-2 mt-4 mb-10 mx-auto flex justify-center items-center min-h-screen">
-    <div class="h-auto max-w-sm sm:max-w-md md:max-w-lg px-2 my-4">
+    <div class="h-auto max-w-lg px-2 my-4">
       <h1 class="text-6xl italic font-bold text-center text-gray-300 mb-5">Ech0s Panel</h1>
       <!-- 返回首页 / 登录 / 注册 -->
       <div class="flex justify-between items-center mb-5">

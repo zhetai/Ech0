@@ -17,19 +17,19 @@
 
       <!-- 开启S3 -->
       <div class="flex flex-row items-center justify-start text-gray-500 h-10">
-        <h2 class="font-semibold w-25 flex-shrink-0">启用S3存储:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">启用S3存储:</h2>
         <BaseSwitch v-model="S3Setting.enable" :disabled="!storageEditMode" />
       </div>
 
       <!-- 使用 SSL -->
       <div class="flex flex-row items-center justify-start text-gray-500 h-10">
-        <h2 class="font-semibold w-25 flex-shrink-0">启用SSL:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">启用SSL:</h2>
         <BaseSwitch v-model="S3Setting.use_ssl" :disabled="!storageEditMode" />
       </div>
 
       <!-- S3 Service Provider -->
       <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-25 flex-shrink-0">S3 服务:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">S3 服务:</h2>
         <BaseSelect
           v-model="S3Setting.provider"
           :options="S3ServiceOptions"
@@ -40,7 +40,7 @@
 
       <!-- S3 Endpoint -->
       <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-25 flex-shrink-0">S3 Endpoint:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">S3 Endpoint:</h2>
         <span
           v-if="!storageEditMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -60,7 +60,7 @@
 
       <!-- S3 Access Key -->
       <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-25 flex-shrink-0">Access Key:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">Access Key:</h2>
         <span
           v-if="!storageEditMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -80,7 +80,7 @@
 
       <!-- S3 Secret Key -->
       <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-25 flex-shrink-0">Secret Key:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">Secret Key:</h2>
         <span
           v-if="!storageEditMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -100,7 +100,7 @@
 
       <!-- S3 Bucket -->
       <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-25 flex-shrink-0">S3 Bucket:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">S3 Bucket:</h2>
         <span
           v-if="!storageEditMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -123,7 +123,7 @@
         v-if="S3Setting.provider === S3Provider.AWS"
         class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10"
       >
-        <h2 class="font-semibold w-25 flex-shrink-0">S3 Region:</h2>
+        <h2 class="font-semibold w-30 flex-shrink-0">S3 Region:</h2>
         <span
           v-if="!storageEditMode"
           class="truncate max-w-40 inline-block align-middle"
