@@ -202,14 +202,14 @@ const OAuth2ProviderOptions = [
   // { label: 'Google', value: OAuth2Provider.GOOGLE },
 ]
 
-const redirect_uri = ref(`${window.location.origin}/auth/callback`)
+const redirect_uri = ref(`${window.location.origin}/oauth/github/callback`)
 const scopeString = ref('read:user')
 
 const handleUpdateOAuth2Setting = async () => {
   // 修改Scopes
   OAuth2Setting.scopes = scopeString.value.split(',').map((s) => s.trim())
   // 修改回调地址为当前域名加上固定路径
-  OAuth2Setting.redirect_uri = redirect_uri.value || `${window.location.origin}/auth/callback`
+  OAuth2Setting.redirect_uri = redirect_uri.value || `${window.location.origin}/oauth/github/callback`
 
   // 提交更新
   await fetchUpdateOAuth2Settings(OAuth2Setting)

@@ -279,3 +279,29 @@ func (userHandler *UserHandler) GetUserInfo() gin.HandlerFunc {
 	})
 
 }
+
+// GitHubCallback 处理 GitHub OAuth2 回调
+func (userHandler *UserHandler) GitHubCallback() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		code := ctx.Query("code")
+		if code == "" {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+				Err: nil,
+			}
+		}
+
+		// token, err := userHandler.userService.GitHubCallback(code)
+		// if err != nil {
+		// 	return res.Response{
+		// 		Msg: "",
+		// 		Err: err,
+		// 	}
+		// }
+
+		return res.Response{
+			// Data: token,
+			Msg:  commonModel.LOGIN_SUCCESS,
+		}
+	})
+}

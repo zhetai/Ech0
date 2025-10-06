@@ -23,4 +23,7 @@ type UserHandlerInterface interface {
 
 	// GetUserInfo 获取用户信息
 	GetUserInfo() gin.HandlerFunc
+
+	// GitHubCallback 处理 GitHub OAuth2 回调
+	GitHubCallback() gin.HandlerFunc
 }

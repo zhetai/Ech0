@@ -342,6 +342,7 @@ func (settingService *SettingService) UpdateOAuth2Setting(userid uint, newSettin
 
 		oauthSetting := &model.OAuth2Setting{
 			Enable:       newSetting.Enable,
+			Provider:     newSetting.Provider,
 			ClientID:     newSetting.ClientID,
 			ClientSecret: newSetting.ClientSecret,
 			AuthURL:      httpUtil.TrimURL(newSetting.AuthURL),

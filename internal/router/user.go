@@ -4,6 +4,9 @@ import "github.com/lin-snow/ech0/internal/di"
 
 // setupUserRoutes 设置用户路由
 func setupUserRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
+	// OAuth2
+	appRouterGroup.ResourceGroup.GET("/oauth/github/callback", h.UserHandler.GitHubCallback())
+
 	// Public
 	appRouterGroup.PublicRouterGroup.POST("/login", h.UserHandler.Login())
 	appRouterGroup.PublicRouterGroup.POST("/register", h.UserHandler.Register())
