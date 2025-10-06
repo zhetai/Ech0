@@ -368,3 +368,16 @@ func (settingService *SettingService) UpdateOAuth2Setting(userid uint, newSettin
 	})
 
 }
+
+// GetOAuth2Status 获取 OAuth2 状态
+func (settingService *SettingService) GetOAuth2Status(status *model.OAuth2Status) error {
+	var oauthSetting model.OAuth2Setting
+	if err := settingService.GetOAuth2Setting(authModel.NO_USER_LOGINED, &oauthSetting, true); err != nil {
+		return err
+	}
+
+	status.Enabled = oauthSetting.Enable
+	status.Provider = oauthSetting.Provider
+
+	return nil
+}

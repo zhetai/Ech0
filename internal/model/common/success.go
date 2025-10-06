@@ -43,6 +43,7 @@ const (
 	UPDATE_S3_SETTINGS_SUCCESS      = "更新 S3 存储设置成功！"
 	GET_OAUTH_SETTINGS_SUCCESS	  = "获取 OAuth 设置成功！"
 	UPDATE_OAUTH_SETTINGS_SUCCESS   = "更新 OAuth 设置成功！"
+	GET_OAUTH2_STATUS_SUCCESS	   = "获取 OAuth2 状态成功"
 )
 
 // To do 成功相关常量

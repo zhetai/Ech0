@@ -26,4 +26,7 @@ type SettingHandlerInterface interface {
 
 	// UpdateOAuth2Settings 更新 OAuth2 设置
 	UpdateOAuth2Settings() gin.HandlerFunc
+
+	// GetOAuth2Status 获取 OAuth2 状态
+	GetOAuth2Status() gin.HandlerFunc
 }

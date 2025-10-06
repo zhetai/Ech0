@@ -200,6 +200,11 @@ declare namespace App {
         token_url: string
         user_info_url: string
       }
+
+      type OAuth2Status = {
+        enabled: boolean
+        provider: string
+      }
     }
 
     namespace Connect {

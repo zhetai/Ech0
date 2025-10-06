@@ -286,3 +286,30 @@ func (settingHandler *SettingHandler) UpdateOAuth2Settings() gin.HandlerFunc {
 		}
 	})
 }
+
+// GetOAuth2Status 获取 OAuth2 状态
+//
+// @Summary 获取 OAuth2 状态
+// @Description 获取系统的 OAuth2 启用状态
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response{data=bool} "获取 OAuth2 状态成功"
+// @Failure 200 {object} res.Response "获取 OAuth2 状态失败"
+// @Router /oauth2/status [get]
+func (settingHandler *SettingHandler) GetOAuth2Status() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		var status model.OAuth2Status
+		if err := settingHandler.settingService.GetOAuth2Status(&status); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: status,
+			Msg:  commonModel.GET_OAUTH2_STATUS_SUCCESS,
+		}
+	})
+}

@@ -67,3 +67,11 @@ export function fetchUpdateOAuth2Settings(oauth2Setting: App.Api.Setting.OAuth2S
     data: oauth2Setting,
   })
 }
+
+// 获取 OAuth2 状态
+export function fetchGetOAuth2Status() {
+  return request<App.Api.Setting.OAuth2Status>({
+    url: '/oauth2/status',
+    method: 'GET',
+  })
+}

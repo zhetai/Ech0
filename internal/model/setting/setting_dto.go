@@ -45,3 +45,7 @@ type OAuth2SettingDto struct {
 	UserInfoURL  string   `json:"user_info_url"`
 }
 
+type OAuth2Status struct {
+	Enabled  bool   `json:"enabled"`
+	Provider string `json:"provider"`
+}

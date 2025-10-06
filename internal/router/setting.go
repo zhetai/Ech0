@@ -7,6 +7,7 @@ func setupSettingRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Public
 	appRouterGroup.PublicRouterGroup.GET("/settings", h.SettingHandler.GetSettings())
 	appRouterGroup.PublicRouterGroup.GET("/comment/settings", h.SettingHandler.GetCommentSettings())
+	appRouterGroup.PublicRouterGroup.GET("/oauth2/status", h.SettingHandler.GetOAuth2Status())
 
 	// Auth
 	appRouterGroup.AuthRouterGroup.PUT("/settings", h.SettingHandler.UpdateSettings())

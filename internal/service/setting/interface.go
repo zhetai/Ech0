@@ -26,4 +26,7 @@ type SettingServiceInterface interface {
 
 	// UpdateOAuth2Setting 更新 OAuth2 设置
 	UpdateOAuth2Setting(userid uint, newSetting *model.OAuth2SettingDto) error
+
+	// GetOAuth2Status 获取 OAuth2 状态
+	GetOAuth2Status(status *model.OAuth2Status) error
 }
