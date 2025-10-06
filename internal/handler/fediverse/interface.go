@@ -33,6 +33,9 @@ type FediverseHandlerInterface interface {
 	// PostFollow 发送关注请求
 	PostFollow(ctx *gin.Context)
 
+	// Unfollow 取消关注请求
+	PostUnfollow(ctx *gin.Context)
+
 	// GetTimeline 获取关注的Actor的推文
 	GetTimeline(ctx *gin.Context)
 }
