@@ -33,6 +33,15 @@ type UserHandlerInterface interface {
 	// BindGitHub 绑定 GitHub 账号
 	BindGitHub() gin.HandlerFunc
 
+	// GoogleLogin 处理 Google OAuth2 登录请求
+	GoogleLogin() gin.HandlerFunc
+
+	// GoogleCallback 处理 Google OAuth2 回调
+	GoogleCallback() gin.HandlerFunc
+
+	// BindGoogle 绑定 Google 账号
+	BindGoogle() gin.HandlerFunc
+
 	// GetOAuthInfo 获取 OAuth2 配置信息
 	GetOAuthInfo() gin.HandlerFunc
 }

@@ -52,3 +52,24 @@ type GitHubUser struct {
 	Email     string `json:"email"`
 	AvatarURL string `json:"avatar_url"`
 }
+
+// GoogleTokenResponse Google token 响应结构
+type GoogleTokenResponse struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int64  `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	Scope        string `json:"scope"`
+	IDToken      string `json:"id_token"`
+}
+
+// GoogleUser Google 用户信息
+type GoogleUser struct {
+	Sub           string `json:"sub"`
+	Email         string `json:"email"`
+	VerifiedEmail bool   `json:"verified_email"`
+	Name          string `json:"name"`
+	GivenName     string `json:"given_name"`
+	FamilyName    string `json:"family_name"`
+	Picture       string `json:"picture"`
+}

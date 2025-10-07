@@ -39,6 +39,15 @@ type UserServiceInterface interface {
 	// HandleGitHubCallback 处理 GitHub OAuth2 回调
 	HandleGitHubCallback(code string, state string) string
 
+	// BindGoogle 绑定 Google 账号
+	BindGoogle(userID uint, redirect_URI string) (string, error)
+
+	// 获取 Google 登录 URL
+	GetGoogleLoginURL(redirect_URI string) (string, error)
+
+	// HandleGoogleCallback 处理 Google OAuth2 回调
+	HandleGoogleCallback(code string, state string) string
+
 	// GetOAuthInfo 获取 OAuth2 配置信息
 	GetOAuthInfo(userId uint, provider string) (model.OAuthInfoDto, error)
 }

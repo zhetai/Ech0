@@ -350,6 +350,76 @@ func (userHandler *UserHandler) GitHubCallback() gin.HandlerFunc {
 	})
 }
 
+// BindGoogle 绑定 Google 账号
+func (userHandler *UserHandler) BindGoogle() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		type Req struct {
+			RedirectURI string `json:"redirect_uri"`
+		}
+		var req Req
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		bingURL, err := userHandler.userService.BindGoogle(userid, req.RedirectURI)
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: bingURL,
+			Msg:  commonModel.GET_OAUTH_BINGURL_SUCCESS,
+		}
+	})
+}
+
+// GoogleLogin 处理 Google OAuth2 登录请求
+func (userHandler *UserHandler) GoogleLogin() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取重定向 URL
+		redirect_URI := ctx.Query("redirect_uri")
+
+		redirectURL, err := userHandler.userService.GetGoogleLoginURL(redirect_URI)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.FAILED_TO_GET_GOOGLE_LOGIN_URL,
+				Err: err,
+			}
+		}
+
+		// 重定向到 Google 登录页面
+		ctx.Redirect(302, redirectURL)
+		return res.Response{}
+	})
+}
+
+// GoogleCallback 处理 Google OAuth2 回调
+func (userHandler *UserHandler) GoogleCallback() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		code := ctx.Query("code")
+		state := ctx.Query("state")
+		if code == "" || state == "" {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+				Err: nil,
+			}
+		}
+
+		redirectURL := userHandler.userService.HandleGoogleCallback(code, state)
+		ctx.Redirect(302, redirectURL)
+		return res.Response{}
+	})
+}
+
 // GetOAuthInfo 获取 OAuth2 配置信息
 func (userHandler *UserHandler) GetOAuthInfo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
