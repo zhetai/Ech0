@@ -42,9 +42,9 @@ export function fetchDeleteUser(id: number) {
 }
 
 // 绑定 OAuth2 账号
-export function fetchBindOAuth2(redirect_uri: string) {
+export function fetchBindOAuth2(provider: string, redirect_uri: string) {
   return request<string>({
-    url: '/oauth/github/bind',
+    url: `/oauth/${provider}/bind`,
     method: 'POST',
     data: {
       redirect_uri: redirect_uri,

@@ -121,11 +121,11 @@ export const useSettingStore = defineStore('settingStore', () => {
   }
 
   const getOAuth2Setting = async () => {
-    fetchGetOAuth2Settings().then((res) => {
-      if (res.code === 1) {
-        OAuth2Setting.value = res.data
-      }
-    })
+    const res = await fetchGetOAuth2Settings()
+    if (res.code === 1) {
+      OAuth2Setting.value = res.data
+    }
+    return OAuth2Setting.value
   }
 
   const setSystemReady = (status: boolean) => {

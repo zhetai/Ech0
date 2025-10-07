@@ -267,7 +267,7 @@ const handleUpdateOAuth2Setting = async () => {
 }
 
 const handleBindOAuth2 = async () => {
-  const res = await fetchBindOAuth2(`${window.location.origin}/panel`)
+  const res = await fetchBindOAuth2(OAuth2Setting.value.provider, `${window.location.origin}/panel`)
   if (res.code !== 1) {
     theToast.error(res.msg)
   } else {
@@ -312,14 +312,14 @@ function getProviderTemplate(provider: string) {
   return {}
 }
 
-onMounted(() => {
-  getOAuth2Setting().then(() => {
-    fetchGetOAuthInfo(OAuth2Setting.value.provider).then((res) => {
-      if (res.code === 1) {
-        oauthInfo.value = res.data
-      }
-    })
-  })
+onMounted(async () => {
+  const setting = await getOAuth2Setting()
+  if (setting?.provider) {
+    const res = await fetchGetOAuthInfo(setting.provider)
+    if (res.code === 1) {
+      oauthInfo.value = res.data
+    }
+  }
 })
 </script>
 
