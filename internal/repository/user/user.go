@@ -197,9 +197,9 @@ func (userRepository *UserRepository) GetUserByOAuthID(ctx context.Context, prov
 }
 
 // GetOAuthInfo 获取 OAuth2 信息
-func (userRepository *UserRepository) GetOAuthInfo(userId uint) (model.OAuthBinding, error) {
+func (userRepository *UserRepository) GetOAuthInfo(userId uint, provider string) (model.OAuthBinding, error) {
 	var oauthInfo model.OAuthBinding
-	err := userRepository.db().Where("user_id = ?", userId).First(&oauthInfo).Error
+	err := userRepository.db().Where("user_id = ? AND provider = ?", userId, provider).First(&oauthInfo).Error
 	if err != nil {
 		return model.OAuthBinding{}, err
 	}

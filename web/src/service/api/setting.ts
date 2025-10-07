@@ -77,9 +77,9 @@ export function fetchGetOAuth2Status() {
 }
 
 // 获取 OAuth2 绑定信息
-export function fetchGetOAuthInfo() {
+export function fetchGetOAuthInfo(provider?: string) {
   return request<App.Api.Setting.OAuthInfo>({
-    url: '/oauth/info',
+    url: '/oauth/info?' + (provider ? `provider=${encodeURIComponent(provider)}` : ''),
     method: 'GET',
   })
 }

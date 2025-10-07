@@ -40,5 +40,5 @@ type UserServiceInterface interface {
 	HandleGitHubCallback(code string, state string) string
 
 	// GetOAuthInfo 获取 OAuth2 配置信息
-	GetOAuthInfo(userId uint) (model.OAuthInfoDto, error)
+	GetOAuthInfo(userId uint, provider string) (model.OAuthInfoDto, error)
 }

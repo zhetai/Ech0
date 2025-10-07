@@ -603,7 +603,7 @@ func fetchGitHubUserInfo(setting *settingModel.OAuth2Setting, accessToken string
 }
 
 // GetOAuthInfo 获取 OAuth2 信息
-func (userService *UserService) GetOAuthInfo(userId uint) (model.OAuthInfoDto, error) {
+func (userService *UserService) GetOAuthInfo(userId uint, provider string) (model.OAuthInfoDto, error) {
 	var oauthInfo model.OAuthInfoDto
 
 	// 检查当前用户是否存在
@@ -617,7 +617,7 @@ func (userService *UserService) GetOAuthInfo(userId uint) (model.OAuthInfoDto, e
 		return oauthInfo, errors.New(commonModel.NO_PERMISSION_BINDING)
 	}
 
-	oauthInfoBinding, err := userService.userRepository.GetOAuthInfo(userId)
+	oauthInfoBinding, err := userService.userRepository.GetOAuthInfo(userId, provider)
 	if err != nil {
 		return oauthInfo, err
 	}

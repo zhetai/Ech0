@@ -313,11 +313,12 @@ function getProviderTemplate(provider: string) {
 }
 
 onMounted(() => {
-  getOAuth2Setting()
-  fetchGetOAuthInfo().then((res) => {
-    if (res.code === 1) {
-      oauthInfo.value = res.data
-    }
+  getOAuth2Setting().then(() => {
+    fetchGetOAuthInfo(OAuth2Setting.value.provider).then((res) => {
+      if (res.code === 1) {
+        oauthInfo.value = res.data
+      }
+    })
   })
 })
 </script>

@@ -7,6 +7,8 @@ func setupUserRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// OAuth2
 	appRouterGroup.ResourceGroup.GET("/oauth/github/login", h.UserHandler.GitHubLogin())
 	appRouterGroup.ResourceGroup.GET("/oauth/github/callback", h.UserHandler.GitHubCallback())
+	appRouterGroup.ResourceGroup.GET("/oauth/google/login", h.UserHandler.GoogleLogin())
+	appRouterGroup.ResourceGroup.GET("/oauth/google/callback", h.UserHandler.GoogleCallback())
 
 	// Public
 	appRouterGroup.PublicRouterGroup.POST("/login", h.UserHandler.Login())
@@ -19,5 +21,6 @@ func setupUserRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.AuthRouterGroup.DELETE("/user/:id", h.UserHandler.DeleteUser())
 	appRouterGroup.AuthRouterGroup.PUT("/user/admin/:id", h.UserHandler.UpdateUserAdmin())
 	appRouterGroup.AuthRouterGroup.POST("/oauth/github/bind", h.UserHandler.BindGitHub())
+	appRouterGroup.AuthRouterGroup.POST("/oauth/google/bind", h.UserHandler.BindGoogle())
 	appRouterGroup.AuthRouterGroup.GET("/oauth/info", h.UserHandler.GetOAuthInfo())
 }
