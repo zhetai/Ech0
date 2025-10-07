@@ -487,8 +487,6 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	result.FileName = s3Dto.FileName
 	result.ContentType = contentType
 
-	
-
 	// 获取 S3 配置和客户端
 	_, s3setting, err := commonService.GetS3Client()
 	if err != nil {

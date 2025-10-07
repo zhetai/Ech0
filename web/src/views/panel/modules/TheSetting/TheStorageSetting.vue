@@ -133,7 +133,7 @@
           v-else
           v-model="S3Setting.path_prefix"
           type="text"
-          placeholder="S3 Path Prefix"
+          placeholder="S3 Path Prefix（可选）"
           class="w-full !py-1"
         />
       </div>
