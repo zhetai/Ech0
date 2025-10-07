@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -486,9 +487,7 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	result.FileName = s3Dto.FileName
 	result.ContentType = contentType
 
-	// 生成 Object Key (fileName_时间戳)
-	objectKey := fmt.Sprintf("%s_%d", s3Dto.FileName, time.Now().Unix())
-	result.ObjectKey = objectKey
+	
 
 	// 获取 S3 配置和客户端
 	_, s3setting, err := commonService.GetS3Client()
@@ -500,6 +499,11 @@ func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonMo
 	if !s3setting.Enable {
 		return result, errors.New(commonModel.S3_NOT_ENABLED)
 	}
+
+	// 生成 Object Key (包含 PathPrefix)
+	prefix := strings.TrimSuffix(s3setting.PathPrefix, "/")
+	objectKey := fmt.Sprintf("%s/%s_%d", prefix, s3Dto.FileName, time.Now().Unix())
+	result.ObjectKey = objectKey
 
 	// 生成预签名 URL
 	presignURL, err := commonService.objStorage.PresignURL(context.Background(), objectKey, 24*time.Hour, method)

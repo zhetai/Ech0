@@ -263,7 +263,7 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 			Region:     newSetting.Region,
 			UseSSL:     newSetting.UseSSL,
 			CDNURL:     httpUtil.TrimURL(newSetting.CDNURL),
-			PathPrefix: newSetting.PathPrefix,
+			PathPrefix: httpUtil.TrimURL(newSetting.PathPrefix),
 			PublicRead: newSetting.PublicRead,
 		}
 
