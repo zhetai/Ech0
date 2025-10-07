@@ -118,6 +118,26 @@
         />
       </div>
 
+      <!-- Path Prefix -->
+      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <h2 class="font-semibold w-30 flex-shrink-0">Path Prefix:</h2>
+        <span
+          v-if="!storageEditMode"
+          class="truncate max-w-40 inline-block align-middle"
+          :title="S3Setting.path_prefix"
+          style="vertical-align: middle"
+        >
+          {{ S3Setting.path_prefix.length === 0 ? '暂无' : S3Setting.path_prefix }}
+        </span>
+        <BaseInput
+          v-else
+          v-model="S3Setting.path_prefix"
+          type="text"
+          placeholder="S3 Path Prefix"
+          class="w-full !py-1"
+        />
+      </div>
+
       <!-- S3 Region -->
       <div
         v-if="S3Setting.provider === S3Provider.AWS"
