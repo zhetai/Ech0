@@ -33,7 +33,7 @@
             <!-- OAuth2 登录 -->
             <BaseButton
               v-if="oauth2Status && oauth2Status.enabled"
-              :icon="github"
+              :icon="oauth2Status.provider === 'github' ? Github : Google"
               @click="gotoOAuth2URL"
               class="w-9 h-9 rounded-md mr-2"
             />
@@ -86,7 +86,8 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import { useUserStore } from '@/stores/user'
 import Arrow from '@/components/icons/arrow.vue'
 import Home from '@/components/icons/home.vue'
-import github from '@/components/icons/github.vue'
+import Github from '@/components/icons/github.vue'
+import Google from '@/components/icons/google.vue'
 import { fetchGetOAuth2Status } from '@/service/api'
 
 const AuthMode = ref<'login' | 'register'>('login') // login / register
