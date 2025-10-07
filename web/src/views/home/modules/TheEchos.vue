@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto px-2 sm:px-4 md:px-6 my-4 sm:my-5 md:my-6">
     <!-- Echos -->
-    <div v-if="!echoStore.isLoading">
+    <div v-if="echoStore.echoList">
       <div v-for="echo in echoStore.echoList" :key="echo.id" class="will-change-transform">
         <TheEchoCard
           :echo="echo"
