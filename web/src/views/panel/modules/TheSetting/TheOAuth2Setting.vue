@@ -222,7 +222,7 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import Edit from '@/components/icons/edit.vue'
 import Close from '@/components/icons/close.vue'
 import Saveupdate from '@/components/icons/saveupdate.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useSettingStore } from '@/stores/setting'
 import { theToast } from '@/utils/toast'
 import { OAuth2Provider } from '@/enums/enums'
@@ -239,10 +239,10 @@ const oauth2EditMode = ref(false)
 
 const OAuth2ProviderOptions = [
   { label: 'GitHub', value: OAuth2Provider.GITHUB },
-  // { label: 'Google', value: OAuth2Provider.GOOGLE },
+  { label: 'Google', value: OAuth2Provider.GOOGLE },
 ]
 
-const redirect_uri = ref(`${window.location.origin}/oauth/github/callback`)
+const redirect_uri = ref(`${window.location.origin}/oauth/${OAuth2Setting.value.provider}/callback`)
 const scopeString = ref('read:user')
 
 const handleUpdateOAuth2Setting = async () => {
@@ -250,7 +250,7 @@ const handleUpdateOAuth2Setting = async () => {
   OAuth2Setting.value.scopes = scopeString.value.split(',').map((s) => s.trim())
   // 修改回调地址为当前域名加上固定路径
   OAuth2Setting.value.redirect_uri =
-    redirect_uri.value || `${window.location.origin}/oauth/github/callback`
+    redirect_uri.value || `${window.location.origin}/oauth/${OAuth2Setting.value.provider}/callback`
 
   // 提交更新
   await fetchUpdateOAuth2Settings(OAuth2Setting.value)
@@ -277,6 +277,40 @@ const handleBindOAuth2 = async () => {
 }
 
 const oauthInfo = ref<App.Api.Setting.OAuthInfo | null>(null)
+
+// 监听 OAuth2Setting.provider 变化，更新必填设置模板
+watch(
+  () => OAuth2Setting.value.provider,
+  (newProvider) => {
+    const template = getProviderTemplate(newProvider)
+    Object.assign(OAuth2Setting.value, template)
+  }
+)
+
+function getProviderTemplate(provider: string) {
+  if (provider === String(OAuth2Provider.GITHUB)) {
+    scopeString.value = 'read:user'
+    redirect_uri.value = `${window.location.origin}/oauth/github/callback`
+    return {
+      redirect_uri: `${window.location.origin}/oauth/github/callback`,
+      auth_url: 'https://github.com/login/oauth/authorize',
+      token_url: 'https://github.com/login/oauth/access_token',
+      user_info_url: 'https://api.github.com/user',
+      scopes: ['read:user'],
+    }
+  } else if (provider === String(OAuth2Provider.GOOGLE)) {
+    scopeString.value = 'openid'
+    redirect_uri.value = `${window.location.origin}/oauth/google/callback`
+    return {
+      redirect_uri: `${window.location.origin}/oauth/google/callback`,
+      auth_url: 'https://accounts.google.com/o/oauth2/v2/auth',
+      token_url: 'https://oauth2.googleapis.com/token',
+      user_info_url: 'https://openidconnect.googleapis.com/v1/userinfo',
+      scopes: ['openid'], // 只要OAuth ID
+    }
+  }
+  return {}
+}
 
 onMounted(() => {
   getOAuth2Setting()
