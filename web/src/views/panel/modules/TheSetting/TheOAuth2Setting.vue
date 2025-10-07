@@ -284,7 +284,7 @@ watch(
   (newProvider) => {
     const template = getProviderTemplate(newProvider)
     Object.assign(OAuth2Setting.value, template)
-  }
+  },
 )
 
 function getProviderTemplate(provider: string) {

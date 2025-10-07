@@ -431,7 +431,7 @@ func (userHandler *UserHandler) GetOAuthInfo() gin.HandlerFunc {
 		if provider != "github" && provider != "google" {
 			provider = "github" // 默认使用 GitHub
 		}
-			
+
 		// 调用 Service 层获取 OAuth2 信息
 		oauthInfo, _ := userHandler.userService.GetOAuthInfo(userid, provider)
 

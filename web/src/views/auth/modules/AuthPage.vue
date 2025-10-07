@@ -110,7 +110,9 @@ const getOAuth2Status = async () => {
   const res = await fetchGetOAuth2Status()
   if (res.code === 1) {
     oauth2Status.value = res.data
-    oauthURL.value = res.data.provider ? `${baseURL}/oauth/${res.data.provider}/login?redirect_uri=${window.location.origin}/auth` : `${baseURL}/auth`
+    oauthURL.value = res.data.provider
+      ? `${baseURL}/oauth/${res.data.provider}/login?redirect_uri=${window.location.origin}/auth`
+      : `${baseURL}/auth`
   }
 }
 
