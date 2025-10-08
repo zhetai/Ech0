@@ -95,44 +95,34 @@ import Update from '@/components/icons/update.vue'
 import ExitUpdate from '@/components/icons/exitupdate.vue'
 import Back from '@/components/icons/back.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
-import { Mode } from '@/enums/enums'
+import { ImageSource, Mode } from '@/enums/enums'
 import { storeToRefs } from 'pinia'
-import { useEchoStore } from '@/stores/echo'
+import { useEditorStore } from '@/stores/editor'
 
-const { currentMode, echoToAdd } = defineProps<{
-  echoToAdd: App.Api.Ech0.EchoToAdd
-  currentMode: Mode
-}>()
-
-const emit = defineEmits([
-  'handleAddorUpdate',
-  'handleChangeMode',
-  'handleAddImageMode',
-  'handlePrivate',
-  'handleExitUpdateMode',
-])
-
-const echoStore = useEchoStore()
-const { isUpdateMode } = storeToRefs(echoStore)
+const editorStore = useEditorStore()
+const { currentMode, isUpdateMode, echoToAdd, imageToAdd } = storeToRefs(editorStore)
 
 const handleAddorUpdate = () => {
-  emit('handleAddorUpdate')
+  editorStore.handleAddOrUpdate()
 }
 
 const handleChangeMode = () => {
-  emit('handleChangeMode')
+  editorStore.toggleMode()
 }
 
 const handleAddImageMode = () => {
-  emit('handleAddImageMode')
+  if (imageToAdd.value.image_source === '') {
+    imageToAdd.value.image_source = ImageSource.LOCAL
+  }
+  editorStore.setMode(Mode.Image)
 }
 
 const handlePrivate = () => {
-  emit('handlePrivate')
+  editorStore.togglePrivate()
 }
 
 const handleExitUpdateMode = () => {
-  emit('handleExitUpdateMode')
+  editorStore.handleExitUpdateMode()
 }
 </script>
 

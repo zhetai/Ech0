@@ -62,33 +62,24 @@ import BaseButton from '@/components/common/BaseButton.vue'
 // import Audio from '@/components/icons/audio.vue'
 
 import { Mode, ExtensionType } from '@/enums/enums'
+import { useEditorStore } from '@/stores/editor'
 import { useTodoStore } from '@/stores/todo'
 // import { theToast } from '@/utils/toast'
 
-const mode = defineModel<Mode>('mode', {
-  required: true,
-})
-const theExtensionType = defineModel<ExtensionType | undefined>('extensionType', {
-  required: true,
-})
-const theExtensionToAdd = defineModel<{
-  extension_type: string
-}>('extensionToAdd', {
-  required: true,
-})
+const editorStore = useEditorStore()
 
 const todoStore = useTodoStore()
 const { setTodoMode } = todoStore
 
 const handleAddExtension = (extensiontype: ExtensionType) => {
-  mode.value = Mode.EXTEN
-  theExtensionType.value = extensiontype
-  theExtensionToAdd.value.extension_type = extensiontype
+  editorStore.currentMode = Mode.EXTEN
+  editorStore.currentExtensionType = extensiontype
+  editorStore.extensionToAdd.extension_type = extensiontype
 }
 
 const handleTodo = () => {
   setTodoMode(true)
-  mode.value = Mode.TODO
+  editorStore.currentMode = Mode.TODO
 }
 
 // const handlePlayMusic = () => {

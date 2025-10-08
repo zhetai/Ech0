@@ -21,7 +21,6 @@ export const useEchoStore = defineStore('echoStore', () => {
     return searchValue.value.length > 0
   }) // 是否处于搜索模式
   const echoToUpdate = ref<App.Api.Ech0.EchoToUpdate | null>(null) // 用于更新Echo的临时存储
-  const isUpdateMode = ref<boolean>(false) // 是否处于更新模式
 
   // 监听 searchingMode 的变化
   watch(searchingMode, (newValue, oldValue) => {
@@ -118,7 +117,6 @@ export const useEchoStore = defineStore('echoStore', () => {
     searchingMode,
     hasMore,
     echoToUpdate,
-    isUpdateMode,
     getEchosByPage,
     refreshEchos,
     clearEchos,

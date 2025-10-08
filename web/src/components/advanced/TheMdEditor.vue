@@ -25,12 +25,21 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { MdEditor, config } from 'md-editor-v3'
 import type { ToolbarNames } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
+import { useEditorStore } from '@/stores/editor'
 
-const content = defineModel<string>()
+const editorStore = useEditorStore()
+
+const content = computed<string>({
+  get: () => editorStore.echoToAdd.content,
+  set: (val: string) => {
+    editorStore.echoToAdd.content = val
+  },
+})
+
 const initEditor = reactive({
   class: 'theMdEditor',
   theme: 'light' as 'light' | 'dark',

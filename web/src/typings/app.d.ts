@@ -86,8 +86,6 @@ declare namespace App {
 
       type EchoToAdd = {
         content: string
-        image_url?: string | null // 新版web已经废弃该字段
-        image_source?: string | null // 新版web已经废弃该字段
         images?: ImageToAdd[] | null
         extension?: string | null
         extension_type?: string | null
@@ -98,8 +96,6 @@ declare namespace App {
         id: number
         content: string
         username: string
-        image_url: string
-        image_source: string
         images?: ImageToAdd[] | null
         private: boolean
         user_id: number

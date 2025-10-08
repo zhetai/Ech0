@@ -1,7 +1,11 @@
 <template>
   <!-- 图片预览 -->
   <div
-    v-if="images && images.length > 0 && (currentMode === Mode.ECH0 || currentMode === Mode.Image)"
+    v-if="
+      imagesToAdd &&
+      imagesToAdd.length > 0 &&
+      (currentMode === Mode.ECH0 || currentMode === Mode.Image)
+    "
     class="relative rounded-lg shadow-lg w-5/6 mx-auto my-7"
   >
     <button
@@ -12,7 +16,7 @@
       <Close class="w-4 h-4" />
     </button>
     <div class="rounded-lg overflow-hidden">
-      <template v-for="(img, idx) in images" :key="idx">
+      <template v-for="(img, idx) in imagesToAdd" :key="idx">
         <a
           :href="getImageToAddUrl(img)"
           data-fancybox="gallery"
@@ -30,12 +34,14 @@
     </div>
   </div>
   <!-- 图片切换 -->
-  <div v-if="images.length > 1" class="flex items-center justify-center">
+  <div v-if="imagesToAdd.length > 1" class="flex items-center justify-center">
     <button @click="imageIndex = Math.max(imageIndex - 1, 0)">
       <Prev class="w-7 h-7" />
     </button>
-    <span class="text-gray-500 text-sm mx-2"> {{ imageIndex + 1 }} / {{ images.length }} </span>
-    <button @click="imageIndex = Math.min(imageIndex + 1, images.length - 1)">
+    <span class="text-gray-500 text-sm mx-2">
+      {{ imageIndex + 1 }} / {{ imagesToAdd.length }}
+    </span>
+    <button @click="imageIndex = Math.min(imageIndex + 1, imagesToAdd.length - 1)">
       <Next class="w-7 h-7" />
     </button>
   </div>
@@ -55,24 +61,27 @@ import { Mode } from '@/enums/enums'
 import { Fancybox } from '@fancyapps/ui'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { ImageSource } from '@/enums/enums'
+import { useEditorStore } from '@/stores/editor'
 
-const images = defineModel<App.Api.Ech0.ImageToAdd[]>('imagesToAdd', { required: true })
+// const images = defineModel<App.Api.Ech0.ImageToAdd[]>('imagesToAdd', { required: true })
 
-const { currentMode } = defineProps<{
-  currentMode: Mode
-}>()
+// const { currentMode } = defineProps<{
+//   currentMode: Mode
+// }>()
 
-const emit = defineEmits(['handleAddorUpdateEcho'])
+// const emit = defineEmits(['handleAddorUpdateEcho'])
 
 const imageIndex = ref<number>(0) // 临时图片索引变量
 const echoStore = useEchoStore()
-const { echoToUpdate, isUpdateMode } = storeToRefs(echoStore)
+const { echoToUpdate } = storeToRefs(echoStore)
+const editorStore = useEditorStore()
+const { imagesToAdd, currentMode, isUpdateMode } = storeToRefs(editorStore)
 
 const handleRemoveImage = () => {
   if (
     imageIndex.value < 0 ||
-    imageIndex.value >= images.value.length ||
-    images.value.length === 0
+    imageIndex.value >= imagesToAdd.value.length ||
+    imagesToAdd.value.length === 0
   ) {
     theToast.error('当前图片索引无效，无法删除！')
     return
@@ -81,9 +90,9 @@ const handleRemoveImage = () => {
 
   if (confirm('确定要移除图片吗？')) {
     const imageToDel: App.Api.Ech0.ImageToDelete = {
-      url: String(images.value[index].image_url),
-      source: String(images.value[index].image_source),
-      object_key: images.value[index].object_key,
+      url: String(imagesToAdd.value[index].image_url),
+      source: String(imagesToAdd.value[index].image_source),
+      object_key: imagesToAdd.value[index].object_key,
     }
 
     if (imageToDel.source === ImageSource.LOCAL || imageToDel.source === ImageSource.S3) {
@@ -94,16 +103,16 @@ const handleRemoveImage = () => {
       }).then((res) => {
         if (res.code === 1) {
           // 从数组中删除图片
-          images.value.splice(index, 1)
+          imagesToAdd.value.splice(index, 1)
 
           // 如果删除成功且当前处于Echo更新模式，则需要立马执行更新（图片删除操作不可逆，需要立马更新确保后端数据同步）
           if (isUpdateMode.value && echoToUpdate.value) {
-            emit('handleAddorUpdateEcho', true)
+            editorStore.handleAddOrUpdateEcho(true)
           }
         }
       })
     } else {
-      images.value.splice(index, 1)
+      imagesToAdd.value.splice(index, 1)
     }
 
     imageIndex.value = 0

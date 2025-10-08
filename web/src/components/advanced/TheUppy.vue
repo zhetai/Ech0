@@ -29,7 +29,7 @@ let uppy: Uppy | null = null
 const props = defineProps<{
   TheImageSource: string
 }>()
-const emit = defineEmits(['uppyUploaded', 'uppySetImageSource'])
+// const emit = defineEmits(['uppyUploaded'])
 
 const memorySource = ref<string>(props.TheImageSource) // 用于记住上传方式
 const isUploading = ref<boolean>(false) // 是否正在上传
@@ -223,7 +223,7 @@ const initUppy = () => {
     isUploading.value = false
     editorStore.ImageUploading = false
     const result = [...files.value]
-    emit('uppyUploaded', result)
+    editorStore.handleUppyUploaded(result)
     files.value = []
     tempFiles.value.clear()
   })

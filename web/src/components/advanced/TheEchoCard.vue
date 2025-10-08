@@ -153,6 +153,7 @@ import EditEcho from '../icons/editecho.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
 import { useEchoStore } from '@/stores/echo'
+import { useEditorStore } from '@/stores/editor'
 import { localStg } from '@/utils/storage'
 import { useRouter } from 'vue-router'
 import { ExtensionType } from '@/enums/enums'
@@ -180,6 +181,7 @@ const previewOptions = {
 }
 
 const echoStore = useEchoStore()
+const editorStore = useEditorStore()
 const router = useRouter()
 
 const handleDeleteEcho = (echoId: number) => {
@@ -194,7 +196,7 @@ const handleDeleteEcho = (echoId: number) => {
 }
 
 const handleUpdateEcho = () => {
-  if (echoStore.isUpdateMode) {
+  if (editorStore.isUpdateMode) {
     // 如果已经在更新模式，返回顶部并提示用户先退出更新模式
     window.scrollTo({ top: 0, behavior: 'smooth' })
     theToast.warning('请先退出更新模式！')
@@ -202,7 +204,7 @@ const handleUpdateEcho = () => {
   }
 
   echoStore.echoToUpdate = props.echo
-  echoStore.isUpdateMode = true
+  editorStore.isUpdateMode = true
 }
 
 const LIKE_LIST_KEY = 'likedEchoIds'

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="currentMode === Mode.PlayMusic">
+  <div>
     <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式（仅PC）</h2>
     <div class="mb-1 flex items-center gap-2">
       <p class="text-gray-500">上传音乐：</p>
@@ -35,15 +35,10 @@ import Audio from '@/components/icons/audio.vue'
 import Delete from '@/components/icons/delete.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import { ref } from 'vue'
-import { Mode } from '@/enums/enums'
 import { fetchUploadMusic, fetchDeleteMusic } from '@/service/api'
 import { theToast } from '@/utils/toast'
 
 const emit = defineEmits(['refreshAudio'])
-
-defineProps<{
-  currentMode: Mode
-}>()
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const handleTriggerUpload = () => {
