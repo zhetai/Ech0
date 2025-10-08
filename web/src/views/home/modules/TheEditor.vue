@@ -66,9 +66,7 @@ const handleRefreshAudio = () => {
 /* --------------- 与Pinia相关 ---------------- */
 const echoStore = useEchoStore()
 const editorStore = useEditorStore()
-
 const { echoToUpdate } = storeToRefs(echoStore)
-
 const {
   currentMode,
   isUpdateMode,
