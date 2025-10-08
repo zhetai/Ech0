@@ -54,6 +54,7 @@
             </div>
           </div>
 
+          <!-- 当前上传方式与状态 -->
           <div class="text-gray-300 text-sm mb-1">
             当前上传方式为
             <span class="font-bold">
@@ -87,6 +88,7 @@
               <span class="text-gray-400">点击上传</span>
             </BaseButton> -->
 
+            <!-- 图片上传 -->
             <TheUppy
               v-if="imageToAdd.image_source !== ImageSource.URL"
               @uppyUploaded="handleUppyUploaded"
