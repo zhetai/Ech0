@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/lin-snow/ech0/internal/transaction"
-
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
@@ -13,6 +11,7 @@ import (
 	repository "github.com/lin-snow/ech0/internal/repository/echo"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	fediverseService "github.com/lin-snow/ech0/internal/service/fediverse"
+	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 )
 
@@ -80,7 +79,8 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 			}
 		}
 
-		if newEcho.Content == "" && len(newEcho.Images) == 0 && (newEcho.Extension == "" || newEcho.ExtensionType == "") {
+		if newEcho.Content == "" && len(newEcho.Images) == 0 &&
+			(newEcho.Extension == "" || newEcho.ExtensionType == "") {
 			return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
 		}
 
@@ -97,7 +97,6 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 
 		return echoService.echoRepository.CreateEcho(ctx, newEcho)
 	})
-
 	if err != nil {
 		return err
 	}
@@ -118,7 +117,10 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 }
 
 // GetEchosByPage 获取Echo列表，支持分页
-func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonModel.PageQueryDto) (commonModel.PageQueryResult[[]model.Echo], error) {
+func (echoService *EchoService) GetEchosByPage(
+	userid uint,
+	pageQueryDto commonModel.PageQueryDto,
+) (commonModel.PageQueryResult[[]model.Echo], error) {
 	// 参数校验
 	if pageQueryDto.Page < 1 {
 		pageQueryDto.Page = 1
@@ -127,7 +129,7 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 		pageQueryDto.PageSize = 10
 	}
 
-	//管理员登陆则支持查看隐私数据，否则不允许
+	// 管理员登陆则支持查看隐私数据，否则不允许
 	showPrivate := false
 	if userid == authModel.NO_USER_LOGINED {
 		showPrivate = false
@@ -143,7 +145,12 @@ func (echoService *EchoService) GetEchosByPage(userid uint, pageQueryDto commonM
 		}
 	}
 
-	echosByPage, total := echoService.echoRepository.GetEchosByPage(pageQueryDto.Page, pageQueryDto.PageSize, pageQueryDto.Search, showPrivate)
+	echosByPage, total := echoService.echoRepository.GetEchosByPage(
+		pageQueryDto.Page,
+		pageQueryDto.PageSize,
+		pageQueryDto.Search,
+		showPrivate,
+	)
 	result := commonModel.PageQueryResult[[]model.Echo]{
 		Items: echosByPage,
 		Total: total,
@@ -189,12 +196,11 @@ func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
 
 		return echoService.echoRepository.DeleteEchoById(ctx, id)
 	})
-
 }
 
 // GetTodayEchos 获取今天的Echo列表
 func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error) {
-	//管理员登陆则支持查看隐私数据，否则不允许
+	// 管理员登陆则支持查看隐私数据，否则不允许
 	showPrivate := false
 	if userid == authModel.NO_USER_LOGINED {
 		showPrivate = false
@@ -266,7 +272,6 @@ func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error 
 
 		return echoService.echoRepository.UpdateEcho(ctx, echo)
 	})
-
 }
 
 // LikeEcho 点赞指定ID的Echo
@@ -274,7 +279,6 @@ func (echoService *EchoService) LikeEcho(id uint) error {
 	return echoService.txManager.Run(func(ctx context.Context) error {
 		return echoService.echoRepository.LikeEcho(ctx, id)
 	})
-
 }
 
 // GetEchoById 获取指定 ID 的 Echo

@@ -18,15 +18,15 @@ type Status struct {
 
 // TempFile 使用延迟删除机制处理S3和本地存储的孤儿文件
 type TempFile struct {
-	ID             uint   `json:"id" gorm:"primaryKey"` // 主键ID
-	FileName       string `json:"file_name"`            // 文件名
-	Storage        string `json:"storage"`              // 存储类型 local/s3/r2
-	FileType       string `json:"file_type"`            // 文件类型 image/audio
-	Bucket         string `json:"bucket"`               // 存储桶
-	ObjectKey      string `json:"object_key"`           // 对象键
-	Deleted        bool   `json:"deleted"`              // 是否已删除
-	CreatedAt      int64  `json:"created_at"`           // 创建时间（Unix时间戳）
-	LastAccessedAt int64  `json:"last_accessed_at"`     // 最后访问时间（Unix时间戳）
+	ID             uint   `json:"id"               gorm:"primaryKey"` // 主键ID
+	FileName       string `json:"file_name"`                          // 文件名
+	Storage        string `json:"storage"`                            // 存储类型 local/s3/r2
+	FileType       string `json:"file_type"`                          // 文件类型 image/audio
+	Bucket         string `json:"bucket"`                             // 存储桶
+	ObjectKey      string `json:"object_key"`                         // 对象键
+	Deleted        bool   `json:"deleted"`                            // 是否已删除
+	CreatedAt      int64  `json:"created_at"`                         // 创建时间（Unix时间戳）
+	LastAccessedAt int64  `json:"last_accessed_at"`                   // 最后访问时间（Unix时间戳）
 }
 
 // Heatmap 用于存储热力图数据
@@ -37,11 +37,13 @@ type Heatmap struct {
 
 // File 相关
 
-type UploadFileType string
-type FileStorageType string
-type CommentProvider string
-type S3Provider string
-type OAuth2Provider string
+type (
+	UploadFileType  string
+	FileStorageType string
+	CommentProvider string
+	S3Provider      string
+	OAuth2Provider  string
+)
 
 const (
 	// ImageType  图片类型
@@ -85,7 +87,7 @@ const (
 
 // key value表
 type KeyValue struct {
-	Key   string `json:"key" gorm:"primaryKey"`
+	Key   string `json:"key"   gorm:"primaryKey"`
 	Value string `json:"value"`
 }
 

@@ -10,7 +10,10 @@ type EchoServiceInterface interface {
 	PostEcho(userid uint, newEcho *model.Echo) error
 
 	// GetEchosByPage 获取Echo列表，支持分页
-	GetEchosByPage(userid uint, pageQueryDto commonModel.PageQueryDto) (commonModel.PageQueryResult[[]model.Echo], error)
+	GetEchosByPage(
+		userid uint,
+		pageQueryDto commonModel.PageQueryDto,
+	) (commonModel.PageQueryResult[[]model.Echo], error)
 
 	// DeleteEchoById 删除指定ID的Echo
 	DeleteEchoById(userid, id uint) error

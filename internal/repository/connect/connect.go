@@ -3,9 +3,10 @@ package repository
 import (
 	"context"
 
+	"gorm.io/gorm"
+
 	model "github.com/lin-snow/ech0/internal/model/connect"
 	"github.com/lin-snow/ech0/internal/transaction"
-	"gorm.io/gorm"
 )
 
 type ConnectRepository struct {

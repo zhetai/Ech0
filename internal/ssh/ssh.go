@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish"
+
 	"github.com/lin-snow/ech0/internal/config"
 	"github.com/lin-snow/ech0/internal/tui"
 )

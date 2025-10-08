@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lin-snow/ech0/internal/transaction"
+	"gorm.io/gorm"
 
 	"github.com/lin-snow/ech0/internal/cache"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
-	"gorm.io/gorm"
+	"github.com/lin-snow/ech0/internal/transaction"
 )
 
 type EchoRepository struct {
@@ -49,7 +49,11 @@ func (echoRepository *EchoRepository) CreateEcho(ctx context.Context, echo *mode
 }
 
 // GetEchosByPage 获取分页的 Echo 列表
-func (echoRepository *EchoRepository) GetEchosByPage(page, pageSize int, search string, showPrivate bool) ([]model.Echo, int64) {
+func (echoRepository *EchoRepository) GetEchosByPage(
+	page, pageSize int,
+	search string,
+	showPrivate bool,
+) ([]model.Echo, int64) {
 	// 查找缓存
 	cacheKey := GetEchoPageCacheKey(page, pageSize, search, showPrivate)
 	if cachedResult, err := echoRepository.cache.Get(cacheKey); err == nil {

@@ -12,7 +12,11 @@ type RistrettoCache[K ristretto.Key, V any] struct {
 }
 
 // NewRistrettoCache 创建一个新的 RistrettoCache 实例
-func NewRistrettoCache[K ristretto.Key, V any](maxCost int64, numCounters int64, bufferItems int64) (*RistrettoCache[K, V], error) {
+func NewRistrettoCache[K ristretto.Key, V any](
+	maxCost int64,
+	numCounters int64,
+	bufferItems int64,
+) (*RistrettoCache[K, V], error) {
 	cache, err := ristretto.NewCache(&ristretto.Config[K, V]{
 		NumCounters: numCounters,
 		MaxCost:     maxCost,

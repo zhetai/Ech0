@@ -83,7 +83,11 @@ func resolveActorURL(input string) (string, error) {
 	}
 
 	// 通过 WebFinger 获取 Actor URL
-	webfingerURL := fmt.Sprintf("https://%s/.well-known/webfinger?resource=%s", domain, url.QueryEscape("acct:"+username+"@"+domain))
+	webfingerURL := fmt.Sprintf(
+		"https://%s/.well-known/webfinger?resource=%s",
+		domain,
+		url.QueryEscape("acct:"+username+"@"+domain),
+	)
 	body, err := httpUtil.SendRequest(webfingerURL, http.MethodGet, httpUtil.Header{
 		Header:  "Accept",
 		Content: "application/jrd+json, application/json",
@@ -106,7 +110,9 @@ func resolveActorURL(input string) (string, error) {
 	// 查找符合条件的 self 链接
 	for _, link := range resp.Links {
 		if link.Rel == "self" && link.Href != "" {
-			if link.Type == "application/activity+json" || link.Type == "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"" || link.Type == "" {
+			if link.Type == "application/activity+json" ||
+				link.Type == "application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\"" ||
+				link.Type == "" {
 				// 返回找到的 Actor URL,格式为 http(s)://domain/users/username
 				return link.Href, nil
 			}
@@ -128,7 +134,11 @@ func generateDeterministicActivityID(serverURL, username, prefix, key string) st
 //==============================================================================
 
 // ConvertEchoToActivity 将 Echo 转换为 ActivityPub Activity
-func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Activity {
+func (fediverseService *FediverseService) ConvertEchoToActivity(
+	echo *echoModel.Echo,
+	actor *model.Actor,
+	serverURL string,
+) model.Activity {
 	obj := fediverseService.ConvertEchoToObject(echo, actor, serverURL)
 
 	activityID := fmt.Sprintf("%s/activities/%d", serverURL, echo.ID)
@@ -159,7 +169,11 @@ func (fediverseService *FediverseService) ConvertEchoToActivity(echo *echoModel.
 }
 
 // ConvertEchoToObject 将 Echo 转换为 ActivityPub Object
-func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Echo, actor *model.Actor, serverURL string) model.Object {
+func (fediverseService *FediverseService) ConvertEchoToObject(
+	echo *echoModel.Echo,
+	actor *model.Actor,
+	serverURL string,
+) model.Object {
 	var attachments []model.Attachment
 	for i := range echo.Images {
 		attachments = append(attachments, model.Attachment{
@@ -194,7 +208,9 @@ func (fediverseService *FediverseService) ConvertEchoToObject(echo *echoModel.Ec
 //==============================================================================
 
 // BuildActor 构建 Actor 对象
-func (fediverseService *FediverseService) BuildActor(user *userModel.User) (model.Actor, *settingModel.SystemSetting, error) {
+func (fediverseService *FediverseService) BuildActor(
+	user *userModel.User,
+) (model.Actor, *settingModel.SystemSetting, error) {
 	// 从设置服务获取服务器域名
 	var setting settingModel.SystemSetting
 	if err := fediverseService.settingService.GetSetting(&setting); err != nil {
@@ -290,7 +306,11 @@ func (fediverseService *FediverseService) BuildOutbox(username string) (model.Ou
 }
 
 // buildAcceptActivityPayload 构建 Accept Activity 的 JSON Payload
-func (fediverseService *FediverseService) buildAcceptActivityPayload(actor *model.Actor, follow *model.Activity, followerActor, serverURL string) ([]byte, error) {
+func (fediverseService *FediverseService) buildAcceptActivityPayload(
+	actor *model.Actor,
+	follow *model.Activity,
+	followerActor, serverURL string,
+) ([]byte, error) {
 	if follow.ActivityID == "" {
 		return nil, errors.New("follow activity missing id")
 	}
@@ -322,7 +342,12 @@ func (fediverseService *FediverseService) buildAcceptActivityPayload(actor *mode
 }
 
 // buildFollowActivityPayload 构建 Follow Activity 的 JSON Payload
-func buildFollowActivityPayload(actor *model.Actor, targetActor string, activityID string, published time.Time) ([]byte, error) {
+func buildFollowActivityPayload(
+	actor *model.Actor,
+	targetActor string,
+	activityID string,
+	published time.Time,
+) ([]byte, error) {
 	if actor == nil {
 		return nil, errors.New("actor is nil")
 	}
@@ -347,7 +372,13 @@ func buildFollowActivityPayload(actor *model.Actor, targetActor string, activity
 }
 
 // buildUndoFollowActivityPayload 构建 Undo Follow Activity 的 JSON Payload
-func buildUndoFollowActivityPayload(actor *model.Actor, targetActor string, undoID string, followActivityID string, published time.Time) ([]byte, error) {
+func buildUndoFollowActivityPayload(
+	actor *model.Actor,
+	targetActor string,
+	undoID string,
+	followActivityID string,
+	published time.Time,
+) ([]byte, error) {
 	if actor == nil {
 		return nil, errors.New("actor is nil")
 	}
@@ -377,7 +408,13 @@ func buildUndoFollowActivityPayload(actor *model.Actor, targetActor string, undo
 }
 
 // buildLikeActivityPayload 构建 Like Activity 的 JSON Payload
-func buildLikeActivityPayload(actor *model.Actor, targetActor string, object string, activityID string, published time.Time) ([]byte, error) {
+func buildLikeActivityPayload(
+	actor *model.Actor,
+	targetActor string,
+	object string,
+	activityID string,
+	published time.Time,
+) ([]byte, error) {
 	if actor == nil {
 		return nil, errors.New("actor is nil")
 	}
@@ -402,7 +439,14 @@ func buildLikeActivityPayload(actor *model.Actor, targetActor string, object str
 }
 
 // buildUndoLikeActivityPayload 构建 Undo Like Activity 的 JSON Payload
-func buildUndoLikeActivityPayload(actor *model.Actor, targetActor string, object string, likeActivityID string, undoID string, published time.Time) ([]byte, error) {
+func buildUndoLikeActivityPayload(
+	actor *model.Actor,
+	targetActor string,
+	object string,
+	likeActivityID string,
+	undoID string,
+	published time.Time,
+) ([]byte, error) {
 	if actor == nil {
 		return nil, errors.New("actor is nil")
 	}

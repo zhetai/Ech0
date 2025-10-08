@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 )
 

@@ -5,9 +5,10 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron/v2"
+	"go.uber.org/zap/zapcore"
+
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
-	"go.uber.org/zap/zapcore"
 )
 
 type Tasker struct {

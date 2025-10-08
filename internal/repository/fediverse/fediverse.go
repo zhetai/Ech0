@@ -5,9 +5,10 @@ import (
 	"errors"
 	"time"
 
+	"gorm.io/gorm"
+
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	"github.com/lin-snow/ech0/internal/transaction"
-	"gorm.io/gorm"
 )
 
 type FediverseRepository struct {
@@ -76,7 +77,11 @@ func (r *FediverseRepository) SaveOrUpdateFollow(ctx context.Context, follow *mo
 	return db.Save(&existing).Error
 }
 
-func (r *FediverseRepository) GetFollowByUserAndObject(ctx context.Context, userID uint, objectID string) (*model.Follow, error) {
+func (r *FediverseRepository) GetFollowByUserAndObject(
+	ctx context.Context,
+	userID uint,
+	objectID string,
+) (*model.Follow, error) {
 	var follow model.Follow
 	err := r.getDB(ctx).Where("user_id = ? AND object_id = ?", userID, objectID).First(&follow).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -144,7 +149,11 @@ func (r *FediverseRepository) UpsertInboxStatus(ctx context.Context, status *mod
 	return db.Model(&existing).Updates(updates).Error
 }
 
-func (r *FediverseRepository) ListInboxStatuses(ctx context.Context, userID uint, page, pageSize int) ([]model.InboxStatus, int64, error) {
+func (r *FediverseRepository) ListInboxStatuses(
+	ctx context.Context,
+	userID uint,
+	page, pageSize int,
+) ([]model.InboxStatus, int64, error) {
 	if page < 1 {
 		page = 1
 	}
@@ -173,7 +182,11 @@ func (r *FediverseRepository) ListInboxStatuses(ctx context.Context, userID uint
 	return statuses, total, nil
 }
 
-func (r *FediverseRepository) UpdateFollowStatusByActivityID(ctx context.Context, userID uint, activityID, status string) error {
+func (r *FediverseRepository) UpdateFollowStatusByActivityID(
+	ctx context.Context,
+	userID uint,
+	activityID, status string,
+) error {
 	if activityID == "" {
 		return errors.New("activity id is empty")
 	}

@@ -5,10 +5,11 @@ import (
 	"path/filepath"
 	"sync"
 
-	model "github.com/lin-snow/ech0/internal/model/common"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+
+	model "github.com/lin-snow/ech0/internal/model/common"
 )
 
 // Logger 全局日志记录器
@@ -22,29 +23,29 @@ var (
 // LogConfig 日志配置
 type LogConfig struct {
 	// 日志级别: debug, info, warn, error, panic
-	Level string `yaml:"level" json:"level"`
+	Level string `yaml:"level"   json:"level"`
 	// 日志格式: json, console
-	Format string `yaml:"format" json:"format"`
+	Format string `yaml:"format"  json:"format"`
 	// 是否输出到控制台
 	Console bool `yaml:"console" json:"console"`
 	// 文件输出配置
-	File FileConfig `yaml:"file" json:"file"`
+	File FileConfig `yaml:"file"    json:"file"`
 }
 
 // FileConfig 文件输出配置
 type FileConfig struct {
 	// 是否启用文件输出
-	Enable bool `yaml:"enable" json:"enable"`
+	Enable bool `yaml:"enable"     json:"enable"`
 	// 日志文件路径
-	Filename string `yaml:"filename" json:"filename"`
+	Filename string `yaml:"filename"   json:"filename"`
 	// 单个文件最大大小（MB）
-	MaxSize int `yaml:"maxsize" json:"maxsize"`
+	MaxSize int `yaml:"maxsize"    json:"maxsize"`
 	// 保留的旧文件数量
 	MaxBackups int `yaml:"maxbackups" json:"maxbackups"`
 	// 保留天数
-	MaxAge int `yaml:"maxage" json:"maxage"`
+	MaxAge int `yaml:"maxage"     json:"maxage"`
 	// 是否压缩旧文件
-	Compress bool `yaml:"compress" json:"compress"`
+	Compress bool `yaml:"compress"   json:"compress"`
 }
 
 // DefaultLogConfig 默认日志配置
@@ -137,7 +138,7 @@ func initializeLogger(config LogConfig) {
 	if config.File.Enable {
 		// 确保日志目录存在
 		logDir := filepath.Dir(config.File.Filename)
-		if err := os.MkdirAll(logDir, 0755); err != nil {
+		if err := os.MkdirAll(logDir, 0o755); err != nil {
 			panic(model.INIT_LOGGER_PANIC + ": 创建日志目录失败: " + err.Error())
 		}
 

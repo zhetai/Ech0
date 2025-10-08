@@ -12,14 +12,13 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/lin-snow/ech0/internal/transaction"
-
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	model "github.com/lin-snow/ech0/internal/model/user"
 	repository "github.com/lin-snow/ech0/internal/repository/user"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
+	"github.com/lin-snow/ech0/internal/transaction"
 	cryptoUtil "github.com/lin-snow/ech0/internal/util/crypto"
 	jwtUtil "github.com/lin-snow/ech0/internal/util/jwt"
 )
@@ -337,7 +336,6 @@ func (userService *UserService) DeleteUser(userid, id uint) error {
 
 		return nil
 	})
-
 }
 
 // GetUserByID 根据用户ID获取用户信息
@@ -384,12 +382,19 @@ func (userService *UserService) BindGitHub(userID uint, redirect_URI string) (st
 		return "", errors.New(commonModel.OAUTH2_NOT_ENABLED)
 	}
 
-	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" ||
+		setting.UserInfoURL == "" ||
+		setting.ClientSecret == "" {
 		return "", errors.New(commonModel.OAUTH2_NOT_CONFIGURED)
 	}
 
 	// 生成附带用户 ID 的 state 参数
-	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionBind), userID, redirect_URI, string(commonModel.OAuth2GITHUB))
+	state, err := jwtUtil.GenerateOAuthState(
+		string(authModel.OAuth2ActionBind),
+		userID,
+		redirect_URI,
+		string(commonModel.OAuth2GITHUB),
+	)
 	if err != nil {
 		return "", err
 	}
@@ -432,12 +437,19 @@ func (userService *UserService) GetGitHubLoginURL(redirect_URI string) (string, 
 		return "", errors.New(commonModel.OAUTH2_NOT_ENABLED)
 	}
 
-	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" ||
+		setting.UserInfoURL == "" ||
+		setting.ClientSecret == "" {
 		return "", errors.New(commonModel.OAUTH2_NOT_CONFIGURED)
 	}
 
 	// 生成随机的 state 参数，防止 CSRF 攻击
-	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionLogin), authModel.NO_USER_LOGINED, redirect_URI, string(commonModel.OAuth2GITHUB))
+	state, err := jwtUtil.GenerateOAuthState(
+		string(authModel.OAuth2ActionLogin),
+		authModel.NO_USER_LOGINED,
+		redirect_URI,
+		string(commonModel.OAuth2GITHUB),
+	)
 	if err != nil {
 		return "", err
 	}
@@ -482,7 +494,9 @@ func (userService *UserService) HandleGitHubCallback(code string, state string) 
 		return ""
 	}
 
-	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" ||
+		setting.UserInfoURL == "" ||
+		setting.ClientSecret == "" {
 		return ""
 	}
 
@@ -516,7 +530,11 @@ func (userService *UserService) HandleGitHubCallback(code string, state string) 
 		}
 
 		// 根据 GitHub ID 查找用户
-		user, err := userService.userRepository.GetUserByOAuthID(context.Background(), string(commonModel.OAuth2GITHUB), fmt.Sprint(githubUser.ID))
+		user, err := userService.userRepository.GetUserByOAuthID(
+			context.Background(),
+			string(commonModel.OAuth2GITHUB),
+			fmt.Sprint(githubUser.ID),
+		)
 		if err != nil {
 			fmt.Println("Error fetching user by OAuth ID:", err)
 			return ""
@@ -550,7 +568,12 @@ func (userService *UserService) HandleGitHubCallback(code string, state string) 
 
 		// 绑定 GitHub 账号
 		userService.txManager.Run(func(ctx context.Context) error {
-			return userService.userRepository.BindOAuth(ctx, oauthState.UserID, oauthState.Provider, fmt.Sprint(githubUser.ID))
+			return userService.userRepository.BindOAuth(
+				ctx,
+				oauthState.UserID,
+				oauthState.Provider,
+				fmt.Sprint(githubUser.ID),
+			)
 		})
 
 		// 返回绑定成功的前端 URL
@@ -588,11 +611,18 @@ func (userService *UserService) BindGoogle(userID uint, redirect_URI string) (st
 		return "", errors.New(commonModel.OAUTH2_NOT_ENABLED)
 	}
 
-	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" ||
+		setting.UserInfoURL == "" ||
+		setting.ClientSecret == "" {
 		return "", errors.New(commonModel.OAUTH2_NOT_CONFIGURED)
 	}
 
-	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionBind), userID, redirect_URI, string(commonModel.OAuth2GOOGLE))
+	state, err := jwtUtil.GenerateOAuthState(
+		string(authModel.OAuth2ActionBind),
+		userID,
+		redirect_URI,
+		string(commonModel.OAuth2GOOGLE),
+	)
 	if err != nil {
 		return "", err
 	}
@@ -633,11 +663,18 @@ func (userService *UserService) GetGoogleLoginURL(redirect_URI string) (string, 
 		return "", errors.New(commonModel.OAUTH2_NOT_ENABLED)
 	}
 
-	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" ||
+		setting.UserInfoURL == "" ||
+		setting.ClientSecret == "" {
 		return "", errors.New(commonModel.OAUTH2_NOT_CONFIGURED)
 	}
 
-	state, err := jwtUtil.GenerateOAuthState(string(authModel.OAuth2ActionLogin), authModel.NO_USER_LOGINED, redirect_URI, string(commonModel.OAuth2GOOGLE))
+	state, err := jwtUtil.GenerateOAuthState(
+		string(authModel.OAuth2ActionLogin),
+		authModel.NO_USER_LOGINED,
+		redirect_URI,
+		string(commonModel.OAuth2GOOGLE),
+	)
 	if err != nil {
 		return "", err
 	}
@@ -678,7 +715,9 @@ func (userService *UserService) HandleGoogleCallback(code string, state string) 
 		return ""
 	}
 
-	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" || setting.UserInfoURL == "" || setting.ClientSecret == "" {
+	if setting.ClientID == "" || setting.RedirectURI == "" || setting.AuthURL == "" || setting.TokenURL == "" ||
+		setting.UserInfoURL == "" ||
+		setting.ClientSecret == "" {
 		return ""
 	}
 
@@ -709,7 +748,11 @@ func (userService *UserService) HandleGoogleCallback(code string, state string) 
 			return ""
 		}
 
-		user, err := userService.userRepository.GetUserByOAuthID(context.Background(), string(commonModel.OAuth2GOOGLE), googleUser.Sub)
+		user, err := userService.userRepository.GetUserByOAuthID(
+			context.Background(),
+			string(commonModel.OAuth2GOOGLE),
+			googleUser.Sub,
+		)
 		if err != nil {
 			fmt.Println("Error fetching user by Google OAuth ID:", err)
 			return ""
@@ -800,7 +843,10 @@ func fetchGitHubUserInfo(setting *settingModel.OAuth2Setting, accessToken string
 }
 
 // 用 code 换取 Google access_token
-func exchangeGoogleCodeForToken(setting *settingModel.OAuth2Setting, code string) (*authModel.GoogleTokenResponse, error) {
+func exchangeGoogleCodeForToken(
+	setting *settingModel.OAuth2Setting,
+	code string,
+) (*authModel.GoogleTokenResponse, error) {
 	data := url.Values{}
 	data.Set("client_id", setting.ClientID)
 	data.Set("client_secret", setting.ClientSecret)

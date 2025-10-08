@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"strings"
 
+	"gorm.io/gorm"
+
 	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
-	"gorm.io/gorm"
 )
 
 // handleAcceptActivity 处理远端返回的 Accept 活动，将本地关注状态标记为已接受
@@ -29,10 +30,19 @@ func (fediverseService *FediverseService) handleAcceptActivity(user *userModel.U
 	}
 
 	return fediverseService.txManager.Run(func(ctx context.Context) error {
-		err := fediverseService.fediverseRepository.UpdateFollowStatusByActivityID(ctx, user.ID, followActivityID, model.FollowStatusAccepted)
+		err := fediverseService.fediverseRepository.UpdateFollowStatusByActivityID(
+			ctx,
+			user.ID,
+			followActivityID,
+			model.FollowStatusAccepted,
+		)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				fmt.Printf("accept activity references unknown follow: user=%d activity=%s\n", user.ID, followActivityID)
+				fmt.Printf(
+					"accept activity references unknown follow: user=%d activity=%s\n",
+					user.ID,
+					followActivityID,
+				)
 				return nil
 			}
 		}

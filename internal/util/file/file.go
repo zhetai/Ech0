@@ -10,9 +10,8 @@ import (
 	"strings"
 	"time"
 
-	httpUtil "github.com/lin-snow/ech0/internal/util/http"
-
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
+	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 )
 
 // ZipOptions ZIP 压缩选项
@@ -64,7 +63,7 @@ func ZipDirectoryWithOptions(sourceDir string, zipPath string, options ZipOption
 	}
 
 	// 确保目标目录存在
-	if err := os.MkdirAll(filepath.Dir(zipPath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(zipPath), 0o755); err != nil {
 		return fmt.Errorf("无法创建目标目录: %w", err)
 	}
 
@@ -258,7 +257,7 @@ func UnzipFile(src, dest string) error {
 	defer reader.Close()
 
 	// 确保目标目录存在
-	if err := os.MkdirAll(dest, 0755); err != nil {
+	if err := os.MkdirAll(dest, 0o755); err != nil {
 		return fmt.Errorf("创建目标目录失败: %w", err)
 	}
 
@@ -286,7 +285,7 @@ func extractFile(file *zip.File, destDir string) error {
 	}
 
 	// 确保父目录存在
-	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(filePath), 0o755); err != nil {
 		return err
 	}
 
@@ -399,7 +398,7 @@ func CopyDirectory(src, dest string) error {
 }
 
 func ensureDir(dir string) error {
-	return os.MkdirAll(dir, 0755)
+	return os.MkdirAll(dir, 0o755)
 }
 
 func ensureRemoved(path string) error {
@@ -413,7 +412,7 @@ func ensureRemoved(path string) error {
 }
 
 func copyFile(src, dest string, perm os.FileMode) error {
-	if err := os.MkdirAll(filepath.Dir(dest), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(dest), 0o755); err != nil {
 		return fmt.Errorf("创建文件目录失败: %w", err)
 	}
 

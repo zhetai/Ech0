@@ -3,11 +3,12 @@ package repository
 import (
 	"context"
 
+	"gorm.io/gorm"
+
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	"github.com/lin-snow/ech0/internal/transaction"
-	"gorm.io/gorm"
 )
 
 type CommonRepository struct {
@@ -89,7 +90,6 @@ func (commonRepository *CommonRepository) GetHeatMap(startDate, endDate string) 
 		Group("DATE(created_at)").
 		Order("date ASC").
 		Scan(&results).Error
-
 	if err != nil {
 		return nil, err
 	}
@@ -128,6 +128,14 @@ func (commonRepository *CommonRepository) GetAllTempFiles() ([]commonModel.TempF
 }
 
 // UpdateTempFileAccessTime 更新临时文件的最后访问时间
-func (commonRepository *CommonRepository) UpdateTempFileAccessTime(ctx context.Context, id uint, accessTime int64) error {
-	return commonRepository.getDB(ctx).Model(&commonModel.TempFile{}).Where("id = ?", id).Update("last_accessed_at", accessTime).Error
+func (commonRepository *CommonRepository) UpdateTempFileAccessTime(
+	ctx context.Context,
+	id uint,
+	accessTime int64,
+) error {
+	return commonRepository.getDB(ctx).
+		Model(&commonModel.TempFile{}).
+		Where("id = ?", id).
+		Update("last_accessed_at", accessTime).
+		Error
 }

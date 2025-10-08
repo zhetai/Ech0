@@ -19,7 +19,11 @@ func GetEchoPageCacheKey(page, pageSize int, search string, showPrivate bool) st
 	} else {
 		showPrivateStr = "false"
 	}
-	return EchoPageCacheKeyPrefix + ":" + strconv.Itoa(page) + ":" + strconv.Itoa(pageSize) + ":" + search + ":" + showPrivateStr
+	return EchoPageCacheKeyPrefix + ":" + strconv.Itoa(
+		page,
+	) + ":" + strconv.Itoa(
+		pageSize,
+	) + ":" + search + ":" + showPrivateStr
 }
 
 func ClearEchoPageCache(cache cache.ICache[string, any]) {

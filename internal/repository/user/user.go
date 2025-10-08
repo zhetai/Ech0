@@ -3,10 +3,11 @@ package repository
 import (
 	"context"
 
+	"gorm.io/gorm"
+
 	"github.com/lin-snow/ech0/internal/cache"
 	model "github.com/lin-snow/ech0/internal/model/user"
 	"github.com/lin-snow/ech0/internal/transaction"
-	"gorm.io/gorm"
 )
 
 type UserRepository struct {
@@ -186,7 +187,10 @@ func (userRepository *UserRepository) BindOAuth(ctx context.Context, userID uint
 }
 
 // GetUserByOAuthID 根据 OAuth 提供商和 OAuth ID 获取用户
-func (userRepository *UserRepository) GetUserByOAuthID(ctx context.Context, provider, oauthID string) (model.User, error) {
+func (userRepository *UserRepository) GetUserByOAuthID(
+	ctx context.Context,
+	provider, oauthID string,
+) (model.User, error) {
 	var binding model.OAuthBinding
 	err := userRepository.getDB(ctx).Where("provider = ? AND o_auth_id = ?", provider, oauthID).First(&binding).Error
 	if err != nil {

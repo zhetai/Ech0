@@ -9,11 +9,11 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/lin-snow/ech0/template"
 )
 
-type WebHandler struct {
-}
+type WebHandler struct{}
 
 // NewWebHandler WebHandler 的构造函数
 func NewWebHandler() *WebHandler {

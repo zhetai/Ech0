@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/lin-snow/ech0/internal/middleware"
 )
 

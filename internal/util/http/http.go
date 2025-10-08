@@ -214,7 +214,8 @@ func SignRequest(req *http.Request, priv *rsa.PrivateKey, keyID string, body []b
 	sigBase64 := base64.StdEncoding.EncodeToString(sig)
 
 	// 5. 构建 Signature 头
-	signatureHeader := fmt.Sprintf(`keyId="%s",algorithm="rsa-sha256",headers="(request-target) date digest",signature="%s"`,
+	signatureHeader := fmt.Sprintf(
+		`keyId="%s",algorithm="rsa-sha256",headers="(request-target) date digest",signature="%s"`,
 		keyID,
 		sigBase64,
 	)

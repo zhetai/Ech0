@@ -10,7 +10,11 @@ import (
 )
 
 // HandleOutbox 处理 Outbox 消息
-func (fediverseService *FediverseService) HandleOutboxPage(ctx context.Context, username string, page, pageSize int) (model.OutboxPage, error) {
+func (fediverseService *FediverseService) HandleOutboxPage(
+	ctx context.Context,
+	username string,
+	page, pageSize int,
+) (model.OutboxPage, error) {
 	// 查询用户，确保用户存在
 	user, err := fediverseService.userRepository.GetUserByUsername(username)
 	if err != nil {

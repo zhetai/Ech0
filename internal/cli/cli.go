@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/huh"
+
 	"github.com/lin-snow/ech0/internal/backup"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/server"
@@ -176,7 +177,6 @@ func DoTui() {
 			Value(&action).
 			WithTheme(huh.ThemeCatppuccin()).
 			Run()
-
 		if err != nil {
 			log.Fatal(err)
 		}

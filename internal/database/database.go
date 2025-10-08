@@ -7,6 +7,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	"gorm.io/driver/sqlite"
+	// "github.com/glebarez/sqlite" // 使用 glebarez/sqlite 作为 SQLite 驱动
+	"gorm.io/gorm"
+
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	connectModel "github.com/lin-snow/ech0/internal/model/connect"
@@ -14,12 +18,7 @@ import (
 	fediverseModel "github.com/lin-snow/ech0/internal/model/fediverse"
 	todoModel "github.com/lin-snow/ech0/internal/model/todo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
-
 	util "github.com/lin-snow/ech0/internal/util/err"
-	"gorm.io/driver/sqlite"
-
-	// "github.com/glebarez/sqlite" // 使用 glebarez/sqlite 作为 SQLite 驱动
-	"gorm.io/gorm"
 )
 
 // DB 全局数据库连接变量

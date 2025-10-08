@@ -86,7 +86,10 @@ func (fediverseService *FediverseService) GetFollowStatus(userID uint, target st
 }
 
 // FollowActor 发送关注请求
-func (fediverseService *FediverseService) FollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error) {
+func (fediverseService *FediverseService) FollowActor(
+	userID uint,
+	req model.FollowActionRequest,
+) (map[string]string, error) {
 	// 关注的目标 Actor
 	target := strings.TrimSpace(req.TargetActor)
 	if target == "" {
@@ -164,7 +167,10 @@ func (fediverseService *FediverseService) FollowActor(userID uint, req model.Fol
 //==========================================================
 
 // UnfollowActor 发送取消关注请求
-func (fediverseService *FediverseService) UnfollowActor(userID uint, req model.FollowActionRequest) (map[string]string, error) {
+func (fediverseService *FediverseService) UnfollowActor(
+	userID uint,
+	req model.FollowActionRequest,
+) (map[string]string, error) {
 	target := strings.TrimSpace(req.TargetActor)
 	if target == "" {
 		return nil, errors.New(commonModel.FEDIVERSE_INVALID_INPUT)
@@ -230,7 +236,10 @@ func (fediverseService *FediverseService) UnfollowActor(userID uint, req model.F
 //==========================================================
 
 // LikeObject 发送点赞请求
-func (fediverseService *FediverseService) LikeObject(userID uint, req model.LikeActionRequest) (map[string]string, error) {
+func (fediverseService *FediverseService) LikeObject(
+	userID uint,
+	req model.LikeActionRequest,
+) (map[string]string, error) {
 	targetActor := strings.TrimSpace(req.TargetActor)
 	object := strings.TrimSpace(req.Object)
 	if targetActor == "" || object == "" {
@@ -279,7 +288,10 @@ func (fediverseService *FediverseService) LikeObject(userID uint, req model.Like
 //==========================================================
 
 // UndoLikeObject 发送取消点赞请求
-func (fediverseService *FediverseService) UndoLikeObject(userID uint, req model.LikeActionRequest) (map[string]string, error) {
+func (fediverseService *FediverseService) UndoLikeObject(
+	userID uint,
+	req model.LikeActionRequest,
+) (map[string]string, error) {
 	targetActor := strings.TrimSpace(req.TargetActor)
 	object := strings.TrimSpace(req.Object)
 	if targetActor == "" || object == "" {

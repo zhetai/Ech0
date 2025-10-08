@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/lin-snow/ech0/internal/cli"
-
 	"github.com/spf13/cobra"
+
+	"github.com/lin-snow/ech0/internal/cli"
 )
 
 // backupCmd 是备份数据的命令

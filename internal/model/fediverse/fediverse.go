@@ -116,39 +116,39 @@ type FollowingPage struct {
 
 // Activity 表示 ActivityPub 的 Activity
 type Activity struct {
-	ID           uint      `gorm:"primaryKey;autoIncrement" json:"-"`  // 数据库主键
-	Context      any       `gorm:"type:text;not null" json:"@context"` // ActivityStreams 上下文，可以是字符串或数组
-	ActivityID   string    `gorm:"size:512;unique;not null" json:"id"` // Activity URL
-	Type         string    `gorm:"size:64;not null" json:"type"`       // Create, Follow, Like, Accept...
-	ActorID      string    `gorm:"index;not null" json:"-"`            // 关联的用户 ID
-	ActorURL     string    `gorm:"size:512;not null" json:"actor"`     // Actor URL
-	Object       any       `gorm:"-" json:"object,omitempty"`          // 原始 Object 字段，可能是字符串或对象
-	ObjectID     string    `gorm:"size:512;not null" json:"-"`         // 目标对象 URL
-	ObjectType   string    `gorm:"size:64;not null" json:"-"`          // 目标对象类型
-	Published    time.Time `json:"published"`                          // 发布时间
-	To           []string  `gorm:"type:text" json:"to,omitempty"`      // 接收者列表，序列化存储
-	Cc           []string  `gorm:"type:text" json:"cc,omitempty"`      // 补充接收列表
-	Summary      string    `gorm:"type:text" json:"summary,omitempty"` // 可选描述
-	ActivityJSON string    `gorm:"type:text;not null" json:"-"`        // 原始 Activity JSON
-	Delivered    bool      `gorm:"default:false" json:"-"`             // 是否投递
-	CreatedAt    time.Time `gorm:"autoCreateTime" json:"-"`            // 创建时间
+	ID           uint      `gorm:"primaryKey;autoIncrement" json:"-"`                 // 数据库主键
+	Context      any       `gorm:"type:text;not null"       json:"@context"`          // ActivityStreams 上下文，可以是字符串或数组
+	ActivityID   string    `gorm:"size:512;unique;not null" json:"id"`                // Activity URL
+	Type         string    `gorm:"size:64;not null"         json:"type"`              // Create, Follow, Like, Accept...
+	ActorID      string    `gorm:"index;not null"           json:"-"`                 // 关联的用户 ID
+	ActorURL     string    `gorm:"size:512;not null"        json:"actor"`             // Actor URL
+	Object       any       `gorm:"-"                        json:"object,omitempty"`  // 原始 Object 字段，可能是字符串或对象
+	ObjectID     string    `gorm:"size:512;not null"        json:"-"`                 // 目标对象 URL
+	ObjectType   string    `gorm:"size:64;not null"         json:"-"`                 // 目标对象类型
+	Published    time.Time `                                json:"published"`         // 发布时间
+	To           []string  `gorm:"type:text"                json:"to,omitempty"`      // 接收者列表，序列化存储
+	Cc           []string  `gorm:"type:text"                json:"cc,omitempty"`      // 补充接收列表
+	Summary      string    `gorm:"type:text"                json:"summary,omitempty"` // 可选描述
+	ActivityJSON string    `gorm:"type:text;not null"       json:"-"`                 // 原始 Activity JSON
+	Delivered    bool      `gorm:"default:false"            json:"-"`                 // 是否投递
+	CreatedAt    time.Time `gorm:"autoCreateTime"           json:"-"`                 // 创建时间
 }
 
 // Object 内容对象表 (存储 Note, Article, Image 等等)
 type Object struct {
-	Context      any            `gorm:"-" json:"@context,omitempty"`
+	Context      any            `gorm:"-"                        json:"@context,omitempty"`
 	ID           uint           `gorm:"primaryKey;autoIncrement" json:"-"`
-	ObjectID     string         `gorm:"size:512;unique;not null" json:"id"`     // 全局唯一 URL
-	Type         string         `gorm:"size:64;not null" json:"type"`           // Note, Article, Image...
-	AttributedTo string         `gorm:"size:512" json:"attributedTo,omitempty"` // actor URL
-	Content      string         `gorm:"type:text" json:"content,omitempty"`     // 主要内容
-	Source       map[string]any `gorm:"-" json:"source,omitempty"`              // 原始内容，可能包含 mediaType 和 content 字段
-	Attachments  []Attachment   `gorm:"-" json:"attachment,omitempty"`          // 附件 URL 列表，序列化存储
-	Published    time.Time      `json:"published,omitempty"`
-	To           []string       `gorm:"-" json:"to,omitempty"` // 序列化成 JSON 存储
-	Cc           []string       `gorm:"-" json:"cc,omitempty"` // 同上
-	ObjectJSON   string         `gorm:"type:text" json:"-"`    // 完整 JSON，便于恢复
-	CreatedAt    time.Time      `gorm:"autoCreateTime" json:"-"`
+	ObjectID     string         `gorm:"size:512;unique;not null" json:"id"`                     // 全局唯一 URL
+	Type         string         `gorm:"size:64;not null"         json:"type"`                   // Note, Article, Image...
+	AttributedTo string         `gorm:"size:512"                 json:"attributedTo,omitempty"` // actor URL
+	Content      string         `gorm:"type:text"                json:"content,omitempty"`      // 主要内容
+	Source       map[string]any `gorm:"-"                        json:"source,omitempty"`       // 原始内容，可能包含 mediaType 和 content 字段
+	Attachments  []Attachment   `gorm:"-"                        json:"attachment,omitempty"`   // 附件 URL 列表，序列化存储
+	Published    time.Time      `                                json:"published,omitempty"`
+	To           []string       `gorm:"-"                        json:"to,omitempty"` // 序列化成 JSON 存储
+	Cc           []string       `gorm:"-"                        json:"cc,omitempty"` // 同上
+	ObjectJSON   string         `gorm:"type:text"                json:"-"`            // 完整 JSON，便于恢复
+	CreatedAt    time.Time      `gorm:"autoCreateTime"           json:"-"`
 }
 
 // Attachment 附件对象
@@ -199,44 +199,44 @@ type Actor struct {
 // Follow 表：存储关注请求及状态
 type Follow struct {
 	ID         uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID     uint      `gorm:"not null;index" json:"user_id"`            // 发起关注的用户数据库 ID
-	ActorID    string    `gorm:"size:512;not null;index" json:"actor_id"`  // 发起关注的 Actor URL, 格式通常为 http(s)://domain/users/username
-	ObjectID   string    `gorm:"size:512;not null;index" json:"object_id"` // 被关注的 Actor URL, 格式通常为 http(s)://domain/users/username
-	ActivityID string    `gorm:"size:512" json:"activity_id"`              // Follow 活动 ID，便于撤销
-	Status     string    `gorm:"size:20;not null" json:"status"`           // pending, accepted, rejected
-	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	UserID     uint      `gorm:"not null;index"           json:"user_id"`     // 发起关注的用户数据库 ID
+	ActorID    string    `gorm:"size:512;not null;index"  json:"actor_id"`    // 发起关注的 Actor URL, 格式通常为 http(s)://domain/users/username
+	ObjectID   string    `gorm:"size:512;not null;index"  json:"object_id"`   // 被关注的 Actor URL, 格式通常为 http(s)://domain/users/username
+	ActivityID string    `gorm:"size:512"                 json:"activity_id"` // Follow 活动 ID，便于撤销
+	Status     string    `gorm:"size:20;not null"         json:"status"`      // pending, accepted, rejected
+	CreatedAt  time.Time `gorm:"autoCreateTime"           json:"created_at"`
+	UpdatedAt  time.Time `gorm:"autoUpdateTime"           json:"updated_at"`
 }
 
 // Follower 表：存储已接受的关注关系
 type Follower struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	ActorID   string    `gorm:"size:512;not null;index" json:"actor_id"` // 粉丝 Actor URL, 格式通常为 http(s)://domain/users/username
-	UserID    uint      `gorm:"not null;index" json:"user_id"`           // 被关注用户的数据库 ID
-	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	ActorID   string    `gorm:"size:512;not null;index"  json:"actor_id"` // 粉丝 Actor URL, 格式通常为 http(s)://domain/users/username
+	UserID    uint      `gorm:"not null;index"           json:"user_id"`  // 被关注用户的数据库 ID
+	CreatedAt time.Time `gorm:"autoCreateTime"           json:"created_at"`
 }
 
 // InboxStatus 收件箱中存储的远端推文记录，供后续时间线展示使用
 type InboxStatus struct {
-	ID                     uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID                 uint      `gorm:"not null;index:idx_user_activity,priority:1" json:"user_id"` // 本地用户 ID
+	ID                     uint      `gorm:"primaryKey;autoIncrement"                             json:"id"`
+	UserID                 uint      `gorm:"not null;index:idx_user_activity,priority:1"          json:"user_id"` // 本地用户 ID
 	ActivityID             string    `gorm:"size:512;not null;index:idx_user_activity,priority:2" json:"activity_id"`
-	ActorID                string    `gorm:"size:512;not null" json:"actor_id"`        // 发送者 Actor URL
-	ActorPreferredUsername string    `gorm:"size:128" json:"actor_preferred_username"` // 发送者用户名（推断）
-	ActorDisplayName       string    `gorm:"size:255" json:"actor_display_name"`       // 发送者显示名称
-	ActorAvatar            string    `gorm:"size:512" json:"actor_avatar"`             // 发送者头像 URL
-	ObjectID               string    `gorm:"size:512;not null" json:"object_id"`       // Object 的唯一 URL
-	ObjectType             string    `gorm:"size:64" json:"object_type"`               // Object 类型，例如 Note
-	ObjectAttributedTo     string    `gorm:"size:512" json:"object_attributed_to"`     // Object 的 attributedTo 字段
-	Summary                string    `gorm:"type:text" json:"summary"`                 // Activity 或 Object 中的摘要
-	Content                string    `gorm:"type:text" json:"content"`                 // Object 内容，通常为 HTML
-	To                     string    `gorm:"type:text" json:"to"`                      // 接收者列表，JSON 字符串
-	Cc                     string    `gorm:"type:text" json:"cc"`                      // 抄送列表，JSON 字符串
-	RawActivity            string    `gorm:"type:text;not null" json:"raw_activity"`   // 完整的 Activity JSON
-	RawObject              string    `gorm:"type:text" json:"raw_object"`              // 完整的 Object JSON
-	PublishedAt            time.Time `gorm:"index" json:"published_at"`                // 消息发布时间
-	CreatedAt              time.Time `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt              time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	ActorID                string    `gorm:"size:512;not null"                                    json:"actor_id"`                 // 发送者 Actor URL
+	ActorPreferredUsername string    `gorm:"size:128"                                             json:"actor_preferred_username"` // 发送者用户名（推断）
+	ActorDisplayName       string    `gorm:"size:255"                                             json:"actor_display_name"`       // 发送者显示名称
+	ActorAvatar            string    `gorm:"size:512"                                             json:"actor_avatar"`             // 发送者头像 URL
+	ObjectID               string    `gorm:"size:512;not null"                                    json:"object_id"`                // Object 的唯一 URL
+	ObjectType             string    `gorm:"size:64"                                              json:"object_type"`              // Object 类型，例如 Note
+	ObjectAttributedTo     string    `gorm:"size:512"                                             json:"object_attributed_to"`     // Object 的 attributedTo 字段
+	Summary                string    `gorm:"type:text"                                            json:"summary"`                  // Activity 或 Object 中的摘要
+	Content                string    `gorm:"type:text"                                            json:"content"`                  // Object 内容，通常为 HTML
+	To                     string    `gorm:"type:text"                                            json:"to"`                       // 接收者列表，JSON 字符串
+	Cc                     string    `gorm:"type:text"                                            json:"cc"`                       // 抄送列表，JSON 字符串
+	RawActivity            string    `gorm:"type:text;not null"                                   json:"raw_activity"`             // 完整的 Activity JSON
+	RawObject              string    `gorm:"type:text"                                            json:"raw_object"`               // 完整的 Object JSON
+	PublishedAt            time.Time `gorm:"index"                                                json:"published_at"`             // 消息发布时间
+	CreatedAt              time.Time `gorm:"autoCreateTime"                                       json:"created_at"`
+	UpdatedAt              time.Time `gorm:"autoUpdateTime"                                       json:"updated_at"`
 }
 
 // TimelineItem 联邦时间线条目响应体

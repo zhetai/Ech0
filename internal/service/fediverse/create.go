@@ -98,7 +98,9 @@ func (fediverse *FediverseService) handleCreateActivity(user *userModel.User, ac
 }
 
 // resolveActivityObject 解析 Activity 中的 Object 字段，必要时远程抓取完整的 Object
-func (fediverse *FediverseService) resolveActivityObject(activity *model.Activity) (map[string]any, []byte, string, string, string, error) {
+func (fediverse *FediverseService) resolveActivityObject(
+	activity *model.Activity,
+) (map[string]any, []byte, string, string, string, error) {
 	var (
 		objectMap map[string]any
 		objectID  string

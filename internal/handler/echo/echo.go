@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
@@ -55,7 +56,6 @@ func (echoHandler *EchoHandler) PostEcho() gin.HandlerFunc {
 			Msg: commonModel.POST_ECHO_SUCCESS,
 		}
 	})
-
 }
 
 // GetEchosByPage 获取Echo列表，支持分页, 兼容 GET Query 和 POST JSON 请求

@@ -3,10 +3,11 @@ package service
 import (
 	"errors"
 
-	commonModel "github.com/lin-snow/ech0/internal/model/common"
-	model "github.com/lin-snow/ech0/internal/model/fediverse"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
+	model "github.com/lin-snow/ech0/internal/model/fediverse"
 )
 
 // ProcessInbox 处理接收到的 ActivityPub 消息

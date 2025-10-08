@@ -5,9 +5,10 @@ import (
 	"log"
 	"time"
 
+	"gorm.io/gorm"
+
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
-	"gorm.io/gorm"
 )
 
 // UpdateMigration 执行数据库迁移，将旧版 Message 表的数据迁移到新版 Echo 表

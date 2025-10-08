@@ -6,11 +6,11 @@ const (
 
 // User 定义用户实体
 type User struct {
-	ID       uint   `gorm:"primaryKey" json:"id"`
+	ID       uint   `gorm:"primaryKey"               json:"id"`
 	Username string `gorm:"size:255;not null;unique" json:"username"`
-	Password string `gorm:"size:255;not null" json:"password"`
-	IsAdmin  bool   `gorm:"bool" json:"is_admin"`
-	Avatar   string `gorm:"size:255" json:"avatar"`
+	Password string `gorm:"size:255;not null"        json:"password"`
+	IsAdmin  bool   `gorm:"bool"                     json:"is_admin"`
+	Avatar   string `gorm:"size:255"                 json:"avatar"`
 
 	// ActivityPub 相关字段
 	// DisplayName   string    `gorm:"size:128" json:"display_name"`
@@ -22,8 +22,8 @@ type User struct {
 }
 
 type OAuthBinding struct {
-	ID       uint   `gorm:"primaryKey" json:"id"`
-	UserID   uint   `gorm:"not null;index" json:"user_id"`
-	Provider string `gorm:"size:64;not null;index" json:"provider"`  // 例如 "github"
+	ID       uint   `gorm:"primaryKey"              json:"id"`
+	UserID   uint   `gorm:"not null;index"          json:"user_id"`
+	Provider string `gorm:"size:64;not null;index"  json:"provider"` // 例如 "github"
 	OAuthID  string `gorm:"size:255;not null;index" json:"oauth_id"` // 第三方平台的用户ID
 }

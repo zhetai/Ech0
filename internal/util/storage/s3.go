@@ -106,7 +106,12 @@ func (m *minioStorage) ListObjectStream(ctx context.Context, prefix string) (<-c
 }
 
 // PresignURL implements storage.ObjectStorage.
-func (m *minioStorage) PresignURL(ctx context.Context, objectName string, expiry time.Duration, method string) (string, error) {
+func (m *minioStorage) PresignURL(
+	ctx context.Context,
+	objectName string,
+	expiry time.Duration,
+	method string,
+) (string, error) {
 	switch method {
 	case "GET":
 		// 下载类型预签名 URL

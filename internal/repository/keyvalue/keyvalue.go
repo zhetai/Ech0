@@ -3,10 +3,11 @@ package keyvalue
 import (
 	"context"
 
+	"gorm.io/gorm"
+
 	"github.com/lin-snow/ech0/internal/cache"
 	model "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/transaction"
-	"gorm.io/gorm"
 )
 
 type KeyValueRepository struct {

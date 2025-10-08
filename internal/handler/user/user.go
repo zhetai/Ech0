@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -58,7 +59,6 @@ func (userHandler *UserHandler) Login() gin.HandlerFunc {
 			Msg:  commonModel.LOGIN_SUCCESS,
 		}
 	})
-
 }
 
 // Register 用户注册
@@ -94,7 +94,6 @@ func (userHandler *UserHandler) Register() gin.HandlerFunc {
 			Msg: commonModel.REGISTER_SUCCESS,
 		}
 	})
-
 }
 
 // UpdateUser 更新用户信息
@@ -133,7 +132,6 @@ func (userHandler *UserHandler) UpdateUser() gin.HandlerFunc {
 			Msg: commonModel.UPDATE_USER_SUCCESS,
 		}
 	})
-
 }
 
 // UpdateUserAdmin 更新用户权限
@@ -173,7 +171,6 @@ func (userHandler *UserHandler) UpdateUserAdmin() gin.HandlerFunc {
 			Msg: commonModel.UPDATE_USER_SUCCESS,
 		}
 	})
-
 }
 
 // GetAllUsers 获取所有用户
@@ -202,7 +199,6 @@ func (userHandler *UserHandler) GetAllUsers() gin.HandlerFunc {
 			Msg:  commonModel.GET_USER_SUCCESS,
 		}
 	})
-
 }
 
 // DeleteUser 删除用户
@@ -242,7 +238,6 @@ func (userHandler *UserHandler) DeleteUser() gin.HandlerFunc {
 			Msg: commonModel.DELETE_USER_SUCCESS,
 		}
 	})
-
 }
 
 // GetUserInfo 获取当前用户信息
@@ -277,7 +272,6 @@ func (userHandler *UserHandler) GetUserInfo() gin.HandlerFunc {
 			Msg:  commonModel.GET_USER_INFO_SUCCESS,
 		}
 	})
-
 }
 
 // BindGitHub 绑定 GitHub 账号

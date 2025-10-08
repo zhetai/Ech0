@@ -5,19 +5,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/lin-snow/ech0/internal/transaction"
 	"sync"
 	"time"
 
-	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	"go.uber.org/zap"
 
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/connect"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	repository "github.com/lin-snow/ech0/internal/repository/connect"
+	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
+	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
@@ -86,7 +86,6 @@ func (connectService *ConnectService) AddConnect(userid uint, connected model.Co
 
 		return nil
 	})
-
 }
 
 // DeleteConnect 删除连接
@@ -217,7 +216,6 @@ func (connectService *ConnectService) GetConnectsInfo() ([]model.Connect, error)
 					Header:  "Ech0_URL",
 					Content: conn.ConnectURL,
 				}, requestTimeout) // 传入自定义超时时间
-
 				if err != nil {
 					lastErr = err
 					logUtil.GetLogger().Error("[连接信息获取失败]",

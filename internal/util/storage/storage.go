@@ -12,7 +12,11 @@ import (
 )
 
 // UploadFile 根据文件类型和存储类型上传文件
-func UploadFile(file *multipart.FileHeader, fileType commonModel.UploadFileType, storageType commonModel.FileStorageType) (string, error) {
+func UploadFile(
+	file *multipart.FileHeader,
+	fileType commonModel.UploadFileType,
+	storageType commonModel.FileStorageType,
+) (string, error) {
 	if file == nil {
 		return "", errors.New(commonModel.NO_FILE_UPLOAD_ERROR)
 	}

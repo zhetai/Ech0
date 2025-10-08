@@ -7,7 +7,7 @@ type FollowActionRequest struct {
 
 // LikeActionRequest 前端发起点赞/取消点赞请求体
 type LikeActionRequest struct {
-	TargetActor string `json:"targetActor" binding:"required"`
-	Object      string `json:"object" binding:"required"`
+	TargetActor string `json:"targetActor"          binding:"required"`
+	Object      string `json:"object"               binding:"required"`
 	ObjectType  string `json:"objectType,omitempty"`
 }

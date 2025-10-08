@@ -10,10 +10,18 @@ import (
 )
 
 // GetTimeline 获取当前用户关注的远端推文时间线
-func (fediverseService *FediverseService) GetTimeline(userID uint, page, pageSize int) (commonModel.PageQueryResult[[]model.TimelineItem], error) {
+func (fediverseService *FediverseService) GetTimeline(
+	userID uint,
+	page, pageSize int,
+) (commonModel.PageQueryResult[[]model.TimelineItem], error) {
 	page, pageSize = normalizePageParams(page, pageSize)
 
-	statuses, total, err := fediverseService.fediverseRepository.ListInboxStatuses(context.Background(), userID, page, pageSize)
+	statuses, total, err := fediverseService.fediverseRepository.ListInboxStatuses(
+		context.Background(),
+		userID,
+		page,
+		pageSize,
+	)
 	if err != nil {
 		return commonModel.PageQueryResult[[]model.TimelineItem]{}, err
 	}

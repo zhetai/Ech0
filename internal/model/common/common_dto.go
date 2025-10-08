@@ -4,9 +4,9 @@ package model
 //
 // swagger:model PageQueryDto
 type PageQueryDto struct {
-	Page     int    `json:"page" form:"page"`         // 页码，从1开始
+	Page     int    `json:"page"     form:"page"`     // 页码，从1开始
 	PageSize int    `json:"pageSize" form:"pageSize"` // 每页大小
-	Search   string `json:"search" form:"search"`     // 用于搜索的关键字
+	Search   string `json:"search"   form:"search"`   // 用于搜索的关键字
 }
 
 // ImageDto 用于图片相关的请求数据传输对象
@@ -14,8 +14,8 @@ type PageQueryDto struct {
 // swagger:model ImageDto
 type ImageDto struct {
 	// 图片的 URL 地址
-	URL       string `json:"url" binding:"required"`
-	SOURCE    string `json:"source" binding:"required"`
+	URL       string `json:"url"        binding:"required"`
+	SOURCE    string `json:"source"     binding:"required"`
 	ObjectKey string `json:"object_key"` // 对象存储的 Key, 用于删除 S3/R2 上的图片
 }
 
@@ -34,6 +34,6 @@ type PresignDto struct {
 //
 // swagger:model GetPresignURLDto
 type GetPresignURLDto struct {
-	FileName    string `json:"file_name" binding:"required"` // 原始文件名
-	ContentType string `json:"content_type"`                 // 文件的 MIME 类型
+	FileName    string `json:"file_name"    binding:"required"` // 原始文件名
+	ContentType string `json:"content_type"`                    // 文件的 MIME 类型
 }

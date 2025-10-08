@@ -13,5 +13,5 @@ type Connect struct {
 // Connected 定义添加的连接信息
 type Connected struct {
 	ID         uint   `gorm:"primaryKey" json:"id"`
-	ConnectURL string `json:"connect_url"` // 连接地址
+	ConnectURL string `                  json:"connect_url"` // 连接地址
 }

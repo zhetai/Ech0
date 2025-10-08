@@ -4,14 +4,13 @@ import (
 	"context"
 	"errors"
 
-	"github.com/lin-snow/ech0/internal/transaction"
-
 	"github.com/lin-snow/ech0/internal/config"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/setting"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
+	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 )
@@ -118,7 +117,6 @@ func (settingService *SettingService) UpdateSetting(userid uint, newSetting *mod
 
 		return nil
 	})
-
 }
 
 // GetCommentSetting 获取评论设置
@@ -152,7 +150,6 @@ func (settingService *SettingService) GetCommentSetting(setting *model.CommentSe
 
 		return nil
 	})
-
 }
 
 // UpdateCommentSetting 更新评论设置
@@ -192,7 +189,6 @@ func (settingService *SettingService) UpdateCommentSetting(userid uint, newSetti
 
 		return nil
 	})
-
 }
 
 // GetS3Setting 获取 S3 存储设置
@@ -239,7 +235,6 @@ func (settingService *SettingService) GetS3Setting(userid uint, setting *model.S
 
 		return nil
 	})
-
 }
 
 // UpdateS3Setting 更新 S3 存储设置
@@ -279,11 +274,14 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 
 		return nil
 	})
-
 }
 
 // GetOAuth2Setting 获取 OAuth2 设置
-func (settingService *SettingService) GetOAuth2Setting(userid uint, setting *model.OAuth2Setting, forInternal bool) error {
+func (settingService *SettingService) GetOAuth2Setting(
+	userid uint,
+	setting *model.OAuth2Setting,
+	forInternal bool,
+) error {
 	return settingService.txManager.Run(func(ctx context.Context) error {
 		if !forInternal {
 			user, err := settingService.commonService.CommonGetUserByUserId(userid)
@@ -328,7 +326,6 @@ func (settingService *SettingService) GetOAuth2Setting(userid uint, setting *mod
 
 		return nil
 	})
-
 }
 
 // UpdateOAuth2Setting 更新 OAuth2 设置
@@ -366,7 +363,6 @@ func (settingService *SettingService) UpdateOAuth2Setting(userid uint, newSettin
 
 		return nil
 	})
-
 }
 
 // GetOAuth2Status 获取 OAuth2 状态

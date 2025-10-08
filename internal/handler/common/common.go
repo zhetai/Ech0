@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	service "github.com/lin-snow/ech0/internal/service/common"
@@ -178,7 +179,6 @@ func (commonHandler *CommonHandler) GetHeatMap() gin.HandlerFunc {
 			Msg:  commonModel.GET_HEATMAP_SUCCESS,
 		}
 	})
-
 }
 
 // GetRss 获取RSS
@@ -270,7 +270,6 @@ func (commonHandler *CommonHandler) DeleteAudio() gin.HandlerFunc {
 			Msg: commonModel.DELETE_SUCCESS,
 		}
 	})
-
 }
 
 // GetPlayMusic 获取可播放的音乐

@@ -5,12 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/lin-snow/ech0/internal/transaction"
-
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/todo"
 	repository "github.com/lin-snow/ech0/internal/repository/todo"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
+	"github.com/lin-snow/ech0/internal/transaction"
 )
 
 type TodoService struct {
@@ -94,7 +93,6 @@ func (todoService *TodoService) AddTodo(userid uint, todo *model.Todo) error {
 		}
 		return nil
 	})
-
 }
 
 // UpdateTodo 更新指定ID的 To do
@@ -131,7 +129,6 @@ func (todoService *TodoService) UpdateTodo(userid uint, id int64) error {
 
 		return nil
 	})
-
 }
 
 // DeleteTodo 删除指定ID的 To do
@@ -163,5 +160,4 @@ func (todoService *TodoService) DeleteTodo(userid uint, id int64) error {
 
 		return nil
 	})
-
 }

@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 )
@@ -56,7 +57,7 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 		}
 	}()
 
-	if err = os.MkdirAll(filepath.Dir(savePath), 0750); err != nil {
+	if err = os.MkdirAll(filepath.Dir(savePath), 0o750); err != nil {
 		return "", err
 	}
 
@@ -104,7 +105,7 @@ func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
 		}
 	}()
 
-	if err = os.MkdirAll(filepath.Dir(savePath), 0750); err != nil {
+	if err = os.MkdirAll(filepath.Dir(savePath), 0o750); err != nil {
 		return "", err
 	}
 

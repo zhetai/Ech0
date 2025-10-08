@@ -11,8 +11,9 @@ import (
 	"log"
 	"os"
 
-	model "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/spf13/viper"
+
+	model "github.com/lin-snow/ech0/internal/model/common"
 )
 
 // Config 全局配置变量
@@ -22,12 +23,16 @@ var Config AppConfig
 var JWT_SECRET []byte
 
 // RSA_PRIVATE_KEY 用于联邦架构的私钥
-var RSA_PRIVATE *rsa.PrivateKey
-var RSA_PRIVATE_KEY []byte
+var (
+	RSA_PRIVATE     *rsa.PrivateKey
+	RSA_PRIVATE_KEY []byte
+)
 
 // RSA_PUBLIC_KEY 用于联邦架构的公钥
-var RSA_PUBLIC *rsa.PublicKey
-var RSA_PUBLIC_KEY []byte
+var (
+	RSA_PUBLIC     *rsa.PublicKey
+	RSA_PUBLIC_KEY []byte
+)
 
 // AppConfig 应用程序配置结构体
 type AppConfig struct {
@@ -128,7 +133,7 @@ func GenSecretKey() {
 	// 检查密钥文件是否已经存在
 	if _, err := os.Stat(keyDir); os.IsNotExist(err) {
 		// 创建存放密钥的目录
-		if err := os.Mkdir(keyDir, 0700); err != nil {
+		if err := os.Mkdir(keyDir, 0o700); err != nil {
 			log.Fatalf("Failed to create key directory: %v", err)
 		}
 	}
@@ -157,7 +162,7 @@ func GenSecretKey() {
 			Type:  "RSA PRIVATE KEY",
 			Bytes: privBytes,
 		})
-		os.WriteFile(keyDir+"/"+privateKey, privPem, 0600)
+		os.WriteFile(keyDir+"/"+privateKey, privPem, 0o600)
 
 		// 保存公钥到文件
 		pub := &priv.PublicKey
@@ -169,7 +174,7 @@ func GenSecretKey() {
 			Type:  "PUBLIC KEY",
 			Bytes: pubBytes,
 		})
-		os.WriteFile(keyDir+"/"+publicKey, pubPem, 0644)
+		os.WriteFile(keyDir+"/"+publicKey, pubPem, 0o644)
 
 		log.Println("Generated RSA key pair and saved to private.pem and public.pem")
 		RSA_PRIVATE_KEY = privPem

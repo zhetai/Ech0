@@ -13,12 +13,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lin-snow/ech0/internal/transaction"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
-	"github.com/lin-snow/ech0/internal/config"
 
+	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
@@ -26,6 +24,7 @@ import (
 	repository "github.com/lin-snow/ech0/internal/repository/common"
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
+	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 	mdUtil "github.com/lin-snow/ech0/internal/util/md"
@@ -318,10 +317,24 @@ func (commonService *CommonService) GenerateRSS(ctx *gin.Context) (string, error
 				switch image.ImageSource {
 				case echoModel.ImageSourceLocal:
 					imageURL := fmt.Sprintf("%s://%s/api%s", schema, host, image.ImageURL)
-					renderedContent = append([]byte(fmt.Sprintf("<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />", imageURL)), renderedContent...)
+					renderedContent = append(
+						[]byte(
+							fmt.Sprintf(
+								"<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />",
+								imageURL,
+							),
+						),
+						renderedContent...)
 				case echoModel.ImageSourceS3:
 					imageURL := image.ImageURL
-					renderedContent = append([]byte(fmt.Sprintf("<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />", imageURL)), renderedContent...)
+					renderedContent = append(
+						[]byte(
+							fmt.Sprintf(
+								"<img src=\"%s\" alt=\"Image\" style=\"max-width:100%%;height:auto;\" />",
+								imageURL,
+							),
+						),
+						renderedContent...)
 				}
 			}
 		}
@@ -448,7 +461,11 @@ func (commonService *CommonService) PlayMusic(ctx *gin.Context) {
 }
 
 // GetS3PresignURL 获取 S3 预签名 URL
-func (commonService *CommonService) GetS3PresignURL(userid uint, s3Dto *commonModel.GetPresignURLDto, method string) (commonModel.PresignDto, error) {
+func (commonService *CommonService) GetS3PresignURL(
+	userid uint,
+	s3Dto *commonModel.GetPresignURLDto,
+	method string,
+) (commonModel.PresignDto, error) {
 	var result commonModel.PresignDto
 
 	user, err := commonService.commonRepository.GetUserByUserId(userid)
@@ -549,7 +566,13 @@ func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, se
 	s3setting.Endpoint = httpUtil.TrimURL(s3setting.Endpoint)
 
 	// 初始化 S3 客户端
-	commonService.objStorage, err = storageUtil.NewMinioStorage(s3setting.Endpoint, s3setting.AccessKey, s3setting.SecretKey, s3setting.BucketName, s3setting.UseSSL)
+	commonService.objStorage, err = storageUtil.NewMinioStorage(
+		s3setting.Endpoint,
+		s3setting.AccessKey,
+		s3setting.SecretKey,
+		s3setting.BucketName,
+		s3setting.UseSSL,
+	)
 	if err != nil {
 		return nil, s3setting, errors.New(commonModel.S3_CONFIG_ERROR)
 	}
@@ -588,7 +611,7 @@ func (commonService *CommonService) CleanupTempFiles() error {
 			// 删除文件
 			switch file.Storage {
 			case string(commonModel.LOCAL_FILE):
-				//TODO: 删除本地文件
+				// TODO: 删除本地文件
 
 			case string(commonModel.S3_FILE):
 				// 获取 S3 客户端

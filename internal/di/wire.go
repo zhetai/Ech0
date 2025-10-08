@@ -5,6 +5,8 @@ package di
 
 import (
 	"github.com/google/wire"
+	"gorm.io/gorm"
+
 	"github.com/lin-snow/ech0/internal/cache"
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
@@ -32,7 +34,6 @@ import (
 	userService "github.com/lin-snow/ech0/internal/service/user"
 	"github.com/lin-snow/ech0/internal/task"
 	"github.com/lin-snow/ech0/internal/transaction"
-	"gorm.io/gorm"
 )
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例

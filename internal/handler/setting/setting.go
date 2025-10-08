@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/setting"
@@ -44,7 +45,6 @@ func (settingHandler *SettingHandler) GetSettings() gin.HandlerFunc {
 			Msg:  commonModel.GET_SETTINGS_SUCCESS,
 		}
 	})
-
 }
 
 // UpdateSettings 更新设置
@@ -178,7 +178,6 @@ func (settingHandler *SettingHandler) GetS3Settings() gin.HandlerFunc {
 			Msg:  commonModel.GET_S3_SETTINGS_SUCCESS,
 		}
 	})
-
 }
 
 // UpdateS3Settings 更新 S3 存储设置

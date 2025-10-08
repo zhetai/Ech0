@@ -1,10 +1,11 @@
 package router
 
 import (
-	"github.com/lin-snow/ech0/internal/di"
-	_ "github.com/lin-snow/ech0/internal/swagger"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	"github.com/lin-snow/ech0/internal/di"
+	_ "github.com/lin-snow/ech0/internal/swagger"
 )
 
 // setupResourceRoutes 设置资源路由

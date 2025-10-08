@@ -131,7 +131,10 @@ func buildFollowersPage(actor *model.Actor, followerURLs []string, page, pageSiz
 }
 
 // GetFollowingPage 获取关注列表分页
-func (fediverseService *FediverseService) GetFollowersPage(username string, page, pageSize int) (model.FollowersPage, error) {
+func (fediverseService *FediverseService) GetFollowersPage(
+	username string,
+	page, pageSize int,
+) (model.FollowersPage, error) {
 	page, pageSize = normalizePageParams(page, pageSize)
 
 	actor, followerURLs, err := fediverseService.loadFollowersData(username)
@@ -245,7 +248,10 @@ func buildFollowingPage(actor *model.Actor, followingURLs []string, page, pageSi
 }
 
 // GetFollowingPage 获取关注列表分页
-func (fediverseService *FediverseService) GetFollowingPage(username string, page, pageSize int) (model.FollowingPage, error) {
+func (fediverseService *FediverseService) GetFollowingPage(
+	username string,
+	page, pageSize int,
+) (model.FollowingPage, error) {
 	page, pageSize = normalizePageParams(page, pageSize)
 
 	actor, followingURLs, err := fediverseService.loadFollowingData(username)
