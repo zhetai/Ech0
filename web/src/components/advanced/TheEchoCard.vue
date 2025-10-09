@@ -158,6 +158,9 @@ import { localStg } from '@/utils/storage'
 import { useRouter } from 'vue-router'
 import { ExtensionType } from '@/enums/enums'
 import { formatDate } from '@/utils/other'
+import { useBaseDialog } from '@/composables/useBaseDialog'
+
+const { openConfirm } = useBaseDialog()
 
 const emit = defineEmits(['refresh', 'updateLikeCount'])
 
@@ -185,14 +188,17 @@ const editorStore = useEditorStore()
 const router = useRouter()
 
 const handleDeleteEcho = (echoId: number) => {
-  // 浏览器alert弹窗确认删除
-  if (confirm('确定要删除吗？')) {
-    fetchDeleteEcho(echoId).then(() => {
-      theToast.success('删除成功！')
-      // 触发父组件的刷新事件emit
-      emit('refresh')
-    })
-  }
+  openConfirm({
+    title: '确定要删除吗？',
+    description: '删除后将无法恢复，请谨慎操作',
+    onConfirm: () => {
+      fetchDeleteEcho(echoId).then(() => {
+        theToast.success('删除成功！')
+        // 触发父组件的刷新事件emit
+        emit('refresh')
+      })
+    },
+  })
 }
 
 const handleUpdateEcho = () => {

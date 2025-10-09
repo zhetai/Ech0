@@ -46,6 +46,8 @@ import BaseSwitch from '@/components/common/BaseSwitch.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import Deluser from '@/components/icons/deluser.vue'
 import { theToast } from '@/utils/toast'
+import { useBaseDialog } from '@/composables/useBaseDialog'
+const { openConfirm } = useBaseDialog()
 
 import { fetchGetAllUsers, fetchUpdateUserPermission, fetchDeleteUser } from '@/service/api'
 
@@ -53,13 +55,17 @@ const allusers = ref<App.Api.User.User[]>([])
 const userEditMode = ref<boolean>(false)
 
 const handleDeleteUser = async (userId: number) => {
-  if (confirm('确定要删除该用户吗？')) {
-    fetchDeleteUser(userId).then((res) => {
-      if (res.code === 1) {
-        getAllUsers()
-      }
-    })
-  }
+  openConfirm({
+    title: '确定要删除该用户吗？',
+    description: '删除后将无法恢复，请谨慎操作',
+    onConfirm: () => {
+      fetchDeleteUser(userId).then((res) => {
+        if (res.code === 1) {
+          getAllUsers()
+        }
+      })
+    },
+  })
 }
 
 const handleUpdateUserPermission = async (userId: number) => {

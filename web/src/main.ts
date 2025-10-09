@@ -52,6 +52,10 @@ config({
 
 // Md-Editor End
 
+// 自定义组件
+import BaseDialog from '@/components/common/BaseDialog.vue'
+
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -63,6 +67,9 @@ const pinia = createPinia()
 
 app.use(pinia)
 app.use(router)
+
+// 全局注册组件
+app.component('BaseDialog', BaseDialog)
 
 app.mount('#app')
 

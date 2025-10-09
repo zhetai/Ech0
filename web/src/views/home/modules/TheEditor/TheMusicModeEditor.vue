@@ -37,6 +37,9 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import { ref } from 'vue'
 import { fetchUploadMusic, fetchDeleteMusic } from '@/service/api'
 import { theToast } from '@/utils/toast'
+import { useBaseDialog } from '@/composables/useBaseDialog'
+
+const { openConfirm } = useBaseDialog()
 
 const emit = defineEmits(['refreshAudio'])
 
@@ -70,14 +73,18 @@ const handleUploadMusic = async (event: Event) => {
 }
 
 const handleDeleteMusic = () => {
-  if (confirm('确定要删除音乐吗？')) {
-    fetchDeleteMusic().then((res) => {
-      if (res.code === 1) {
-        theToast.success('音乐删除成功！')
-        emit('refreshAudio')
-      }
-    })
-  }
+  openConfirm({
+    title: '确定要删除音乐吗？',
+    description: '删除后将无法恢复，请谨慎操作',
+    onConfirm: () => {
+      fetchDeleteMusic().then((res) => {
+        if (res.code === 1) {
+          theToast.success('音乐删除成功！')
+          emit('refreshAudio')
+        }
+      })
+    },
+  })
 }
 </script>
 

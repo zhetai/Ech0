@@ -73,6 +73,9 @@ import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { ShowWhichEnum } from '@/enums/enums'
 import { theToast } from '@/utils/toast'
+import { useBaseDialog } from '@/composables/useBaseDialog'
+
+const { openConfirm } = useBaseDialog()
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -100,10 +103,14 @@ const handleLogout = () => {
   }
 
   // 弹出浏览器确认框
-  if (confirm('确定要退出登录吗？')) {
-    // 清除用户信息
-    userStore.logout()
-  }
+  openConfirm({
+    title: '确定要退出登录吗？',
+    description: '',
+    onConfirm: () => {
+      // 清除用户信息
+      userStore.logout()
+    },
+  })
 }
 
 onMounted(() => {

@@ -62,6 +62,9 @@ import { Fancybox } from '@fancyapps/ui'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { ImageSource } from '@/enums/enums'
 import { useEditorStore } from '@/stores/editor'
+import { useBaseDialog } from '@/composables/useBaseDialog'
+
+const { openConfirm } = useBaseDialog()
 
 // const images = defineModel<App.Api.Ech0.ImageToAdd[]>('imagesToAdd', { required: true })
 
@@ -88,35 +91,39 @@ const handleRemoveImage = () => {
   }
   const index = imageIndex.value
 
-  if (confirm('确定要移除图片吗？')) {
-    const imageToDel: App.Api.Ech0.ImageToDelete = {
-      url: String(imagesToAdd.value[index]?.image_url),
-      source: String(imagesToAdd.value[index]?.image_source),
-      object_key: imagesToAdd.value[index]?.object_key,
-    }
+  openConfirm({
+    title: '确定要移除图片吗？',
+    description: '',
+    onConfirm: () => {
+      const imageToDel: App.Api.Ech0.ImageToDelete = {
+        url: String(imagesToAdd.value[index]?.image_url),
+        source: String(imagesToAdd.value[index]?.image_source),
+        object_key: imagesToAdd.value[index]?.object_key,
+      }
 
-    if (imageToDel.source === ImageSource.LOCAL || imageToDel.source === ImageSource.S3) {
-      fetchDeleteImage({
-        url: imageToDel.url,
-        source: imageToDel.source,
-        object_key: imageToDel.object_key,
-      }).then((res) => {
-        if (res.code === 1) {
-          // 从数组中删除图片
-          imagesToAdd.value.splice(index, 1)
+      if (imageToDel.source === ImageSource.LOCAL || imageToDel.source === ImageSource.S3) {
+        fetchDeleteImage({
+          url: imageToDel.url,
+          source: imageToDel.source,
+          object_key: imageToDel.object_key,
+        }).then((res) => {
+          if (res.code === 1) {
+            // 从数组中删除图片
+            imagesToAdd.value.splice(index, 1)
 
-          // 如果删除成功且当前处于Echo更新模式，则需要立马执行更新（图片删除操作不可逆，需要立马更新确保后端数据同步）
-          if (isUpdateMode.value && echoToUpdate.value) {
-            editorStore.handleAddOrUpdateEcho(true)
+            // 如果删除成功且当前处于Echo更新模式，则需要立马执行更新（图片删除操作不可逆，需要立马更新确保后端数据同步）
+            if (isUpdateMode.value && echoToUpdate.value) {
+              editorStore.handleAddOrUpdateEcho(true)
+            }
           }
-        }
-      })
-    } else {
-      imagesToAdd.value.splice(index, 1)
-    }
+        })
+      } else {
+        imagesToAdd.value.splice(index, 1)
+      }
 
-    imageIndex.value = 0
-  }
+      imageIndex.value = 0
+    },
+  })
 }
 
 onMounted(() => {

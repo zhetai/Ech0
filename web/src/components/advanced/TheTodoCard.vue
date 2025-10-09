@@ -56,6 +56,9 @@ import { fetchUpdateTodo, fetchDeleteTodo } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
+import { useBaseDialog } from '@/composables/useBaseDialog'
+
+const { openConfirm } = useBaseDialog()
 
 const props = defineProps<{
   todo: App.Api.Todo.Todo | undefined
@@ -69,28 +72,39 @@ const todoStore = useTodoStore()
 const { loading } = storeToRefs(todoStore)
 
 const handleDeleteTodo = () => {
-  if (confirm('确定要删除待办吗？') && props.todo?.id !== undefined) {
-    fetchDeleteTodo(props.todo.id).then((res) => {
-      if (res.code === 1) {
-        theToast.success('待办已删除！')
-        emit('refresh')
+  openConfirm({
+    title: '确定要删除待办吗？',
+    description: '删除后将无法恢复，请谨慎操作',
+    onConfirm: () => {
+      if (props.todo?.id !== undefined) {
+        fetchDeleteTodo(props.todo.id).then((res) => {
+          if (res.code === 1) {
+            theToast.success('待办已删除！')
+            emit('refresh')
+          }
+        })
       }
-    })
-  }
+    },
+  })
 }
 
 const handleChangeTodoStatus = () => {
   if (props.todo?.id === undefined) {
     return
   }
-  if (confirm('确定要切换待办状态吗？')) {
-    fetchUpdateTodo(props.todo.id).then((res) => {
-      if (res.code === 1) {
-        theToast.success('待办已完成！')
-        emit('refresh')
-      }
-    })
-  }
+
+  openConfirm({
+    title: '确定要切换待办状态吗？',
+    description: '切换后待办状态将标记为已完成',
+    onConfirm: () => {
+      fetchUpdateTodo(props.todo!.id).then((res) => {
+        if (res.code === 1) {
+          theToast.success('待办已完成！')
+          emit('refresh')
+        }
+      })
+    },
+  })
 }
 </script>
 

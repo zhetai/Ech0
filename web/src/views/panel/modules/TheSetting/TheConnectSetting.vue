@@ -75,6 +75,9 @@ import { theToast } from '@/utils/toast'
 import { useConnectStore } from '@/stores/connect'
 import { storeToRefs } from 'pinia'
 
+import { useBaseDialog } from '@/composables/useBaseDialog'
+const { openConfirm } = useBaseDialog()
+
 const connectStore = useConnectStore()
 const { getConnect } = connectStore
 const { connects } = storeToRefs(connectStore)
@@ -97,14 +100,18 @@ const handleAddConnect = async () => {
 
 const handleDisconnect = async (connect_id: number) => {
   // 弹出确认框
-  if (confirm('确定要断开连接吗？')) {
-    await fetchDeleteConnect(connect_id).then((res) => {
-      if (res.code === 1) {
-        theToast.success(res.msg)
-        getConnect()
-      }
-    })
-  }
+  openConfirm({
+    title: '确定要断开连接吗？',
+    description: '',
+    onConfirm: async () => {
+      await fetchDeleteConnect(connect_id).then((res) => {
+        if (res.code === 1) {
+          theToast.success(res.msg)
+          getConnect()
+        }
+      })
+    },
+  })
 }
 
 onMounted(() => {

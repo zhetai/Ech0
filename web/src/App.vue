@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { watch } from 'vue'
 import { useSettingStore } from '@/stores/setting'
 import { storeToRefs } from 'pinia'
 import { Toaster } from 'vue-sonner'
 import 'vue-sonner/style.css'
+import BaseDialog from './components/common/BaseDialog.vue'
+
+import { useBaseDialog } from '@/composables/useBaseDialog'
+
+const { register, title, description, handleConfirm } = useBaseDialog()
+const dialogRef = ref()
 
 const settingStore = useSettingStore()
 const { SystemSetting } = storeToRefs(settingStore)
@@ -44,12 +50,16 @@ onMounted(() => {
     },
     { immediate: true },
   )
+
+  // 初始注入
+  register(dialogRef.value) // 全局注册弹窗对话框
 })
 </script>
 
 <template>
   <RouterView />
   <Toaster theme="light" position="top-right" :expand="false" richColors />
+  <BaseDialog ref="dialogRef" :title="title" :description="description" @confirm="handleConfirm" />
 </template>
 
 <style scoped></style>
