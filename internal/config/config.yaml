@@ -10,8 +10,8 @@ database:
 auth:
   jwt:
     expires: 2592000 # 30天（单位秒）
-    issuer: "ech0s"
-    audience: "ech0s"
+    issuer: "ech0"
+    audience: "ech0"
 
 upload:
   imagemaxsize: 5242880 # 5MB
