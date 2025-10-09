@@ -6,12 +6,12 @@
       <!-- The Title && Nav -->
       <TheTitleAndNav />
 
-      <div class="mt-4 px-3 gap-2 font-serif">
-        <p class="text-[#5b7083]">
-          <RouterLink to="/auth" class="font-bold">登录</RouterLink>后一吐为快
+      <div class="mt-4 px-3 gap-2 font-serif flex justify-between items-baseline">
+        <p class="text-[#5b7083] text-md">
+          <RouterLink to="/auth" class="font-bold">登录</RouterLink> 后一吐为快
         </p>
         <span class="text-gray-400 text-xs"
-          >本站由 <a href="https://github.com/lin-snow/Ech0">Ech0</a> 强力驱动</span
+          >Powered by <a href="https://github.com/lin-snow/Ech0">Ech0</a></span
         >
       </div>
     </div>
