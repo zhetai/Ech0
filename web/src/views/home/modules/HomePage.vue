@@ -4,7 +4,7 @@
   >
     <div class="sm:max-w-sm w-full">
       <TheTop class="sm:hidden" />
-      <TheEditor v-if="isLogin" @refresh-audio="handleRefreshAudio" />
+      <TheEditor v-if="isLogin" />
       <TheBoard v-else />
     </div>
     <div ref="mainColumn" class="sm:max-w-lg w-full sm:mt-1">
@@ -18,9 +18,9 @@
       <div v-if="isLogin" class="mb-2 px-11">
         <TheTodoCard :todo="todos[0]" :index="0" :operative="false" @refresh="getTodos" />
       </div>
-      <!-- <div class="px-11">
-        <TheAudioCard ref="theAudioCard" />
-      </div> -->
+      <div class="mb-2">
+        <TheAudioCard />
+      </div>
       <TheConnects />
     </div>
 
@@ -56,13 +56,6 @@ const userStore = useUserStore()
 const { getTodos } = todoStore
 const { todoMode, todos } = storeToRefs(todoStore)
 const { isLogin } = storeToRefs(userStore)
-
-const theAudioCard = ref<InstanceType<typeof TheAudioCard> | null>()
-const handleRefreshAudio = () => {
-  if (theAudioCard.value) {
-    theAudioCard.value.handleGetMusic()
-  }
-}
 
 const mainColumn = ref<HTMLElement | null>(null)
 const backTopStyle = ref({ right: '100px' }) // 默认 fallback

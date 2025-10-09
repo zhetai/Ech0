@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式（仅PC）</h2>
+    <h2 class="text-gray-500 font-bold mb-1">欢迎使用音乐播放模式</h2>
     <div class="mb-1 flex items-center gap-2">
       <p class="text-gray-500">上传音乐：</p>
       <input
@@ -38,10 +38,11 @@ import { ref } from 'vue'
 import { fetchUploadMusic, fetchDeleteMusic } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useBaseDialog } from '@/composables/useBaseDialog'
+import { useEditorStore } from '@/stores/editor'
 
 const { openConfirm } = useBaseDialog()
 
-const emit = defineEmits(['refreshAudio'])
+const editorStore = useEditorStore()
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const handleTriggerUpload = () => {
@@ -63,7 +64,7 @@ const handleUploadMusic = async (event: Event) => {
     })
 
     if (res.code === 1) {
-      emit('refreshAudio')
+      editorStore.handleGetPlayingMusic()
     }
   } catch (err) {
     console.error('音乐上传异常:', err)
@@ -80,7 +81,7 @@ const handleDeleteMusic = () => {
       fetchDeleteMusic().then((res) => {
         if (res.code === 1) {
           theToast.success('音乐删除成功！')
-          emit('refreshAudio')
+          editorStore.handleGetPlayingMusic()
         }
       })
     },

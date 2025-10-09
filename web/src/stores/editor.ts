@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { theToast } from '@/utils/toast'
-import { fetchAddEcho, fetchUpdateEcho, fetchAddTodo } from '@/service/api'
+import { fetchAddEcho, fetchUpdateEcho, fetchAddTodo, fetchGetMusic } from '@/service/api'
 import { Mode, ExtensionType, ImageSource } from '@/enums/enums'
 import { useEchoStore } from '@/stores/echo'
 import { useTodoStore } from '@/stores/todo'
+import { getApiUrl } from '@/service/request/shared'
 
 export const useEditorStore = defineStore('editorStore', () => {
   const echoStore = useEchoStore()
@@ -64,6 +65,12 @@ export const useEditorStore = defineStore('editorStore', () => {
   const extensionToAdd = ref({ extension: '', extension_type: '' }) // 最终要添加的扩展内容
 
   //================================================================
+  // 其它状态变量
+  //================================================================
+  const PlayingMusicURL = ref('') // 当前正在播放的音乐URL
+  const ShouldLoadMusic = ref(true) // 是否应该加载音乐（用于控制音乐播放器的加载）
+
+  //================================================================
   // 编辑器功能函数
   //================================================================
   // 设置当前编辑模式
@@ -107,6 +114,15 @@ export const useEditorStore = defineStore('editorStore', () => {
     githubRepo.value = ''
     extensionToAdd.value = { extension: '', extension_type: '' }
     todoToAdd.value = { content: '' }
+  }
+
+  const handleGetPlayingMusic = () => {
+    fetchGetMusic().then((res) => {
+      if (res.code === 1 && res.data) {
+        ShouldLoadMusic.value = !ShouldLoadMusic.value // 切换加载状态以强制播放器重新加载
+        PlayingMusicURL.value = `${getApiUrl()}/playmusic?t=${Date.now()}` // 添加时间戳，绕过缓存
+      }
+    })
   }
 
   //===============================================================
@@ -359,6 +375,10 @@ export const useEditorStore = defineStore('editorStore', () => {
     else handleAddOrUpdateEcho(false)
   }
 
+  const init = () => {
+    handleGetPlayingMusic()
+  }
+
   return {
     // 状态
     ShowEditor,
@@ -383,10 +403,15 @@ export const useEditorStore = defineStore('editorStore', () => {
     githubRepo,
     extensionToAdd,
 
+    PlayingMusicURL,
+    ShouldLoadMusic,
+
     // 方法
+    init,
     setMode,
     toggleMode,
     clearEditor,
+    handleGetPlayingMusic,
     handleAddMoreImage,
     togglePrivate,
     handleAddTodo,

@@ -18,10 +18,7 @@
         <TheTodoModeEditor v-if="currentMode === Mode.TODO" />
 
         <!-- MusicMode : TheMusicModeEditor -->
-        <TheMusicModeEditor
-          v-if="currentMode === Mode.PlayMusic"
-          @refresh-audio="handleRefreshAudio"
-        />
+        <TheMusicModeEditor v-if="currentMode === Mode.PlayMusic" />
 
         <!-- The Mode Panel -->
         <TheModePanel v-if="currentMode === Mode.Panel" />
@@ -56,13 +53,6 @@ import { useEchoStore } from '@/stores/echo'
 import { storeToRefs } from 'pinia'
 import { Mode, ExtensionType } from '@/enums/enums'
 import { useEditorStore } from '@/stores/editor'
-
-/* --------------- 与音乐播放相关 ---------------- */
-const emit = defineEmits(['refreshAudio'])
-const handleRefreshAudio = () => {
-  emit('refreshAudio')
-}
-/* ----------------------------------------------- */
 
 /* --------------- 与Pinia相关 ---------------- */
 const echoStore = useEchoStore()

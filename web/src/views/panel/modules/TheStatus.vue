@@ -16,8 +16,13 @@
     </div>
 
     <!-- Ech0 Connect -->
-    <div class="justify-center my-1">
+    <div class="justify-center my-2">
       <TheConnects />
+    </div>
+
+    <!-- 音乐播放器 -->
+    <div class="justify-center my-1">
+      <TheAudioCard />
     </div>
   </div>
 </template>
@@ -27,6 +32,7 @@ import TheHeatMap from '@/components/advanced/TheHeatMap.vue'
 import TheConnects from '@/views/connect/modules/TheConnects.vue'
 import TheStatusCard from '@/components/advanced/TheStatusCard.vue'
 import TheTodoCard from '@/components/advanced/TheTodoCard.vue'
+import TheAudioCard from '@/components/advanced/TheAudioCard.vue'
 
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
