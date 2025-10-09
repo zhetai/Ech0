@@ -72,6 +72,9 @@ function openFancybox(startIndex: number) {
   }))
 
   Fancybox.show(items, {
+    theme: 'auto',
+    zoomEffect: true,
+    fadeEffect: true,
     startIndex, // 从点击的那张开始
     backdropClick: 'close', // 点击背景不关闭
     dragToClose: true, // 启用拖拽关闭
