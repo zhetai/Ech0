@@ -9,7 +9,7 @@
           class="w-6 sm:w-7 h-6 sm:h-7 rounded-full ring-1 ring-gray-200 shadow-sm object-cover"
         />
       </div>
-      <h1 class="text-slate-600 font-bold italic sm:text-xl">
+      <h1 class="text-slate-600 font-bold sm:text-xl">
         {{ SystemSetting.server_name }}
       </h1>
     </div>
@@ -17,7 +17,7 @@
     <div class="flex flex-row items-center gap-2">
       <!-- Hello -->
       <div
-        class="p-1 ring-1 ring-inset ring-gray-200 rounded-full hover:shadow-sm transition-colors duration-200 cursor-pointer"
+        class="p-1 ring-1 ring-inset ring-gray-200 rounded-full hover:shadow-xs transition-colors duration-200 cursor-pointer"
       >
         <Hello @click="handleHello" class="w-6 h-6" />
       </div>
