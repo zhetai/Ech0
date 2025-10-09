@@ -5,7 +5,6 @@ import { fetchAddEcho, fetchUpdateEcho, fetchAddTodo, fetchGetMusic } from '@/se
 import { Mode, ExtensionType, ImageSource } from '@/enums/enums'
 import { useEchoStore } from '@/stores/echo'
 import { useTodoStore } from '@/stores/todo'
-import { getApiUrl } from '@/service/request/shared'
 
 export const useEditorStore = defineStore('editorStore', () => {
   const echoStore = useEchoStore()
@@ -117,10 +116,11 @@ export const useEditorStore = defineStore('editorStore', () => {
   }
 
   const handleGetPlayingMusic = () => {
+    ShouldLoadMusic.value = !ShouldLoadMusic.value
     fetchGetMusic().then((res) => {
       if (res.code === 1 && res.data) {
-        ShouldLoadMusic.value = !ShouldLoadMusic.value // 切换加载状态以强制播放器重新加载
-        PlayingMusicURL.value = `${getApiUrl()}/playmusic?t=${Date.now()}` // 添加时间戳，绕过缓存
+        PlayingMusicURL.value = res.data || ''
+        ShouldLoadMusic.value = !ShouldLoadMusic.value
       }
     })
   }

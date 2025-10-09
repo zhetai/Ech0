@@ -25,9 +25,9 @@
 
       <audio
         ref="audioRef"
-        :src="PlayingMusicURL"
-        @play="isPlaying = true"
-        @pause="isPlaying = false"
+        :src="url"
+        @play="toggleIsPlaying(true)"
+        @pause="toggleIsPlaying(false)"
         preload="none"
       />
     </div>
@@ -38,25 +38,36 @@
 import { useEditorStore } from '@/stores/editor'
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
+import { getApiUrl } from '@/service/request/shared'
 import Album from '../icons/album.vue'
 import Pause from '../icons/pause.vue'
 import Play from '../icons/play.vue'
 
-const isPlaying = ref(false)
+const url = ref<string>(`${getApiUrl()}/playmusic?t=${Date.now()}`)
+const isPlaying = ref<boolean>(false)
 const audioRef = ref<HTMLAudioElement | null>(null)
 const editorStore = useEditorStore()
 const { PlayingMusicURL, ShouldLoadMusic } = storeToRefs(editorStore)
 
 watch(ShouldLoadMusic, (newVal) => {
   if (newVal && audioRef.value) {
+    url.value = `${getApiUrl()}/playmusic?t=${Date.now()}` // 添加时间戳，绕过缓存
     // 强制重新加载音频
-    audioRef.value.pause()
+    if (isPlaying.value) {
+      audioRef.value.pause()
+      isPlaying.value = false
+    }
     audioRef.value.load()
+    audioRef.value.pause()
   }
 })
 
+const toggleIsPlaying = (state: boolean) => {
+  isPlaying.value = state
+}
+
 function togglePlay() {
-  if (!audioRef.value || !PlayingMusicURL.value) return
+  if (!audioRef.value) return
   if (isPlaying.value) {
     audioRef.value.pause()
   } else {

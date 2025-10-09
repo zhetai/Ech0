@@ -82,6 +82,7 @@ const handleDeleteMusic = () => {
         if (res.code === 1) {
           theToast.success('音乐删除成功！')
           editorStore.handleGetPlayingMusic()
+          editorStore.PlayingMusicURL = ''
         }
       })
     },
