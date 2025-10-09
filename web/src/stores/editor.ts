@@ -10,6 +10,11 @@ export const useEditorStore = defineStore('editorStore', () => {
   const echoStore = useEchoStore()
   const todoStore = useTodoStore()
 
+  //================================================================
+  // 编辑器状态控制
+  //================================================================
+  const ShowEditor = ref<boolean>(true) // 是否显示编辑器
+
   // ================================================================
   // 主编辑模式
   // ================================================================
@@ -356,6 +361,8 @@ export const useEditorStore = defineStore('editorStore', () => {
 
   return {
     // 状态
+    ShowEditor,
+
     currentMode,
     currentExtensionType,
 

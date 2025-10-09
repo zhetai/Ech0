@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="ShowEditor"
     class="bg-white rounded-lg ring-1 ring-gray-200 ring-inset mx-auto shadow-sm hover:shadow-md"
   >
     <div class="mx-auto w-full px-3 py-4">
@@ -68,6 +69,7 @@ const echoStore = useEchoStore()
 const editorStore = useEditorStore()
 const { echoToUpdate } = storeToRefs(echoStore)
 const {
+  ShowEditor,
   currentMode,
   isUpdateMode,
   echoToAdd,

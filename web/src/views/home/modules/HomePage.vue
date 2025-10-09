@@ -4,7 +4,8 @@
   >
     <div class="sm:max-w-sm w-full">
       <TheTop class="sm:hidden" />
-      <TheEditor @refresh-audio="handleRefreshAudio" />
+      <TheEditor v-if="isLogin" @refresh-audio="handleRefreshAudio" />
+      <TheBoard v-else />
     </div>
     <div ref="mainColumn" class="sm:max-w-lg w-full sm:mt-1">
       <TheTop class="hidden sm:block sm:px-4" />
@@ -36,6 +37,7 @@
 <script setup lang="ts">
 import TheTop from './TheTop.vue'
 import TheEditor from './TheEditor.vue'
+import TheBoard from './TheBoard.vue'
 import TheEchos from './TheEchos.vue'
 import TheTodos from './TheTodos.vue'
 import TheConnects from '@/views/connect/modules/TheConnects.vue'

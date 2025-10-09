@@ -66,7 +66,7 @@ import {
   TransitionRoot,
 } from '@headlessui/vue'
 
-const props = defineProps({
+defineProps({
   title: String,
   description: String,
 })

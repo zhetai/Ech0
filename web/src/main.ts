@@ -55,7 +55,6 @@ config({
 // 自定义组件
 import BaseDialog from '@/components/common/BaseDialog.vue'
 
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
