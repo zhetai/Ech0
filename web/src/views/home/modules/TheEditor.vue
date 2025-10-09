@@ -95,7 +95,7 @@ watch(
       } else {
         match = newVal.match(ytRegex)
         if (match) {
-          extensionToAdd.value.extension = match[1] //youtube
+          extensionToAdd.value.extension = match[1] ?? '' //youtube
         } else {
           theToast.error('请输入正确的B站/YT分享链接！')
         }

@@ -84,12 +84,12 @@ const ShowingArray = [
   ShowWhichEnum.Advance,
 ]
 const ShowingIndex = ref<number>(0)
-const Showing = ref<string>(ShowWhichEnum.Status)
+const Showing = ref<ShowWhichEnum>(ShowWhichEnum.Status)
 
 const changeShow = () => {
   // 切换状态
   ShowingIndex.value = (ShowingIndex.value + 1) % ShowingArray.length
-  Showing.value = ShowingArray[ShowingIndex.value]
+  Showing.value = ShowingArray[ShowingIndex.value] as ShowWhichEnum
 }
 
 const handleLogout = () => {

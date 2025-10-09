@@ -58,7 +58,7 @@ import { useTodoStore } from '@/stores/todo'
 import { storeToRefs } from 'pinia'
 
 const props = defineProps<{
-  todo: App.Api.Todo.Todo
+  todo: App.Api.Todo.Todo | undefined
   index: number
   operative: boolean
 }>()
@@ -69,7 +69,7 @@ const todoStore = useTodoStore()
 const { loading } = storeToRefs(todoStore)
 
 const handleDeleteTodo = () => {
-  if (confirm('确定要删除待办吗？')) {
+  if (confirm('确定要删除待办吗？') && props.todo?.id !== undefined) {
     fetchDeleteTodo(props.todo.id).then((res) => {
       if (res.code === 1) {
         theToast.success('待办已删除！')
@@ -80,6 +80,9 @@ const handleDeleteTodo = () => {
 }
 
 const handleChangeTodoStatus = () => {
+  if (props.todo?.id === undefined) {
+    return
+  }
   if (confirm('确定要切换待办状态吗？')) {
     fetchUpdateTodo(props.todo.id).then((res) => {
       if (res.code === 1) {

@@ -28,7 +28,7 @@ function printGradientBanner(text: string): string {
   return lines
     .map((line, index) => {
       const colorFn = gradientColors[index % gradientColors.length]
-      return colorFn(line)
+      return colorFn ? colorFn(line) : line
     })
     .join('\n')
 }

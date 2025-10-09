@@ -101,8 +101,8 @@ const initials = computed(() => {
   const name = displayName.value.trim()
   if (!name) return 'AP'
   const words = name.split(/\s+/)
-  if (words.length === 1) return words[0].charAt(0).toUpperCase()
-  return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase()
+  if (words.length === 1) return words[0]?.charAt(0).toUpperCase()
+  return ((words[0]?.charAt(0) ?? '') + (words[1]?.charAt(0) ?? '')).toUpperCase()
 })
 // 简单处理 summary，去除多余空白
 const sanitizedSummary = computed(() => {

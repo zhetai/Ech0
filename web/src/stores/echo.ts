@@ -100,8 +100,10 @@ export const useEchoStore = defineStore('echoStore', () => {
     const idx = echoIndexMap.value.get(echoId)
     if (idx !== undefined) {
       const targetEcho = echoList.value[idx]
-      targetEcho.fav_count = (targetEcho.fav_count || 0) + delta
-      echoList.value[idx] = { ...targetEcho } // 保证响应式触发
+      if (targetEcho) {
+        targetEcho.fav_count = (targetEcho.fav_count || 0) + delta
+        echoList.value[idx] = { ...targetEcho } // 保证响应式触发
+      }
     }
   }
 

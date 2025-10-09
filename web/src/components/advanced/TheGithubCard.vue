@@ -42,7 +42,9 @@ const props = defineProps<{
 }>()
 
 // 处理GithubURL(提取owner和repo)
-const [owner, repo] = props.GithubURL.split('/').slice(-2)
+const [ownerRaw, repoRaw] = props.GithubURL.split('/').slice(-2)
+const owner = ownerRaw ?? ''
+const repo = repoRaw ?? ''
 const CardData = ref<App.Api.Ech0.GithubCardData>()
 
 onMounted(() => {

@@ -111,17 +111,19 @@ const handleBackupRestore = async () => {
     if (target.files && target.files.length > 0) {
       const file = target.files[0]
 
-      await theToast.promise(
-        fetchImportBackup(file),
-        {
-          loading: '导入中,请不要关闭页面...',
-          success: (res) => (res.code === 1 ? '快照恢复成功🎉' : `导入失败: ${res.msg}`),
-          error: '导入失败,请尝试重新导入或使用TUI模式进行恢复',
-        },
-        {
-          duration: 5000,
-        },
-      )
+      if (file) {
+        await theToast.promise(
+          fetchImportBackup(file),
+          {
+            loading: '导入中,请不要关闭页面...',
+            success: (res) => (res.code === 1 ? '快照恢复成功🎉' : `导入失败: ${res.msg}`),
+            error: '导入失败,请尝试重新导入或使用TUI模式进行恢复',
+          },
+          {
+            duration: 5000,
+          },
+        )
+      }
     }
   }
   input.click()

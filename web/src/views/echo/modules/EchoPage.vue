@@ -45,10 +45,10 @@ const isLoading = ref(true)
 const echo = ref<App.Api.Ech0.Echo | null>(null)
 
 // 从 echoIndexMap 获取对应的 EchoList索引
-const getEchoFromStore = () => {
+const getEchoFromStore = (): App.Api.Ech0.Echo | null => {
   const idx = echoStore.echoIndexMap.get(Number(echoId))
   if (idx !== undefined) {
-    return echoStore.echoList[idx]
+    return echoStore.echoList[idx] ?? null
   }
   return null
 }

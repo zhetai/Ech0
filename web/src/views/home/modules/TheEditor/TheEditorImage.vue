@@ -90,9 +90,9 @@ const handleRemoveImage = () => {
 
   if (confirm('确定要移除图片吗？')) {
     const imageToDel: App.Api.Ech0.ImageToDelete = {
-      url: String(imagesToAdd.value[index].image_url),
-      source: String(imagesToAdd.value[index].image_source),
-      object_key: imagesToAdd.value[index].object_key,
+      url: String(imagesToAdd.value[index]?.image_url),
+      source: String(imagesToAdd.value[index]?.image_source),
+      object_key: imagesToAdd.value[index]?.object_key,
     }
 
     if (imageToDel.source === ImageSource.LOCAL || imageToDel.source === ImageSource.S3) {

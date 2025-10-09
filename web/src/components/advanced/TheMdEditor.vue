@@ -166,6 +166,17 @@ config({
   height: 10rem;
 }
 
+:deep(.md-editor-custom-scrollbar__track) {
+  overflow: auto !important; /* 保持可滚动 */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
+  display: none !important;
+}
+
+:deep(.md-editor-custom-scrollbar__track::-webkit-scrollbar) {
+  display: none !important; /* Chrome/Safari */
+}
+
 :deep(.md-editor-toolbar-item) {
   color: #c5c5c5;
 }

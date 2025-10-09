@@ -116,14 +116,14 @@ const sanitizeHtml = (input: string) =>
     .replace(/on\w+\s*=\s*"[^"]*"/gi, '')
     .replace(/on\w+\s*=\s*'[^']*'/gi, '')
 
-const extractImageUrlsFromHtml = (html: string) => {
+const extractImageUrlsFromHtml = (html: string): string[] => {
   const matches = html.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/gi) || []
   return matches
     .map((tag) => {
       const srcMatch = tag.match(/src=["']([^"']+)["']/i)
-      return srcMatch ? srcMatch[1] : ''
+      return srcMatch ? srcMatch[1] : undefined
     })
-    .filter((src) => !!src)
+    .filter((src): src is string => typeof src === 'string' && !!src)
 }
 
 const extractAttachmentUrls = (raw: unknown, fallbackHtml: string) => {
@@ -189,7 +189,7 @@ const extractAttachmentUrls = (raw: unknown, fallbackHtml: string) => {
   }
 
   if (!urls.length && fallbackHtml) {
-    urls.push(...extractImageUrlsFromHtml(fallbackHtml))
+    urls.push(...extractImageUrlsFromHtml(fallbackHtml || ''))
   }
 
   return Array.from(new Set(urls))
