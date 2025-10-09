@@ -30,8 +30,8 @@ upload:
     - "audio/flac"
 
 setting:
-  sitetitle: "Ech0s~"
-  servername: "Ech0s~"
+  sitetitle: "Ech0"
+  servername: "Ech0"
   serverurl: "https://ech0.example.com"
   allowregister: true
   icpnumber: ""
