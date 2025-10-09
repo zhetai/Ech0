@@ -25,7 +25,7 @@
           leave-to="opacity-0 scale-95"
         >
           <DialogPanel
-            class="w-full max-w-sm rounded-xl bg-white p-6 shadow-sm ring-1 ring-inset ring-gray-200"
+            class="w-full max-w-sm rounded-lg bg-white p-6 shadow-sm ring-1 ring-inset ring-gray-200"
           >
             <DialogTitle class="text-base font-semibold text-gray-600">
               {{ title }}
