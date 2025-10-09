@@ -438,11 +438,13 @@ func (commonService *CommonService) PlayMusic(ctx *gin.Context) {
 
 	// 获取 Content-Type
 	contentType := "audio/mpeg"
-	if musicName[len(musicName)-4:] == ".flac" {
-		contentType = "audio/flac"
-	} else if musicName[len(musicName)-4:] == ".m4a" {
-		contentType = "audio/mp4"
-	}
+    lowerName := strings.ToLower(musicName)
+    switch {
+    case strings.HasSuffix(lowerName, ".flac"):
+        contentType = "audio/flac"
+    case strings.HasSuffix(lowerName, ".wav"):
+        contentType = "audio/wav"
+    }
 
 	// 读取文件内容
 	data, err := os.ReadFile(musicPath)
