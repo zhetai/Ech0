@@ -20,10 +20,12 @@
           @focusout="onBlurOutside"
           @focusin="onFocusInput"
           @mousedown="onFocusInput"
-          >
+        >
           <ComboboxInput
             :displayValue="displayValue"
             :placeholder="placeholder"
+            @focus="onFocusInput"
+            @click="onFocusInput"
             @input="onInputChange"
             :class="['outline-none text-md', inputClass]"
           />
@@ -51,6 +53,7 @@
           leave-to="opacity-0 translate-y-1"
         >
           <ComboboxOptions
+            static
             v-if="dropdownOpen && (filteredOptions.length > 0 || allowCreate)"
             class="absolute z-10 mt-2 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
@@ -189,8 +192,6 @@ const onBlurOutside = (e: FocusEvent) => {
     }
   }
 }
-
-
 
 const getOptionLabel = (option: any): string => {
   if (option == null) return ''
