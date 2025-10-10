@@ -66,6 +66,7 @@ declare namespace App {
         user_id: number
         extension: string
         extension_type: string
+        tags: Tag[]
         fav_count: number
         created_at: string
       }
@@ -78,15 +79,30 @@ declare namespace App {
         object_key?: string // 对象存储的Key (如果是本地存储则为空)
       }
 
+      type Tag = {
+        id: number
+        name: string
+        usage_count: number
+        created_at: string
+      }
+
       type ImageToAdd = {
         image_url: string
         image_source: string
         object_key?: string // 对象存储的Key (如果是本地存储则为空)
       }
 
+      type TagToAdd = {
+        id?: number
+        name: string
+        usage_count?: number
+        created_at?: string
+      }
+
       type EchoToAdd = {
         content: string
         images?: ImageToAdd[] | null
+        tags?: TagToAdd[] | null
         extension?: string | null
         extension_type?: string | null
         private: boolean
@@ -97,6 +113,7 @@ declare namespace App {
         content: string
         username: string
         images?: ImageToAdd[] | null
+        tags?: TagToAdd[] | null
         private: boolean
         user_id: number
         extension?: string | null
