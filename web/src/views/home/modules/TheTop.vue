@@ -35,7 +35,6 @@
           <!-- icon -->
           <Panel class="w-8 h-8 text-gray-400" />
         </RouterLink>
-        <!-- <span class="absolute -top-1 -right-1 block w-2 h-2 bg-green-500 rounded-full ring-1 ring-white"></span> -->
       </div>
     </div>
   </div>
