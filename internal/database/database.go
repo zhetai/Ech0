@@ -112,6 +112,8 @@ func MigrateDB() error {
 		&connectModel.Connected{},
 		&commonModel.TempFile{},
 		&userModel.OAuthBinding{},
+		&echoModel.Tag{},
+		&echoModel.EchoTag{},
 
 		// Fediverse 相关
 		&fediverseModel.Follow{},
