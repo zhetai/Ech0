@@ -29,4 +29,7 @@ type EchoHandlerInterface interface {
 
 	// DeleteTag 删除标签
 	DeleteTag() gin.HandlerFunc
+
+	// GetEchosByTagId 获取指定标签 ID 的 Echo 列表
+	GetEchosByTagId() gin.HandlerFunc
 }

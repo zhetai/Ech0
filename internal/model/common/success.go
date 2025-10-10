@@ -22,6 +22,7 @@ const (
 	GET_ECHO_BY_ID_SUCCESS    = "获取Echo成功"
 	GET_ALL_TAGS_SUCCESS	  = "获取所有标签成功"
 	DELETE_TAG_SUCCESS		  = "删除标签成功"
+	GET_ECHOS_BY_TAG_ID_SUCCESS = "获取标签下的Echos成功"
 )
 
 // Common 成功相关常量

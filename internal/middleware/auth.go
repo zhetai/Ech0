@@ -55,6 +55,14 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 				return
 			}
 
+			// 根据 Tag ID 获取 Echo 列表
+			if strings.HasPrefix(ctx.Request.URL.Path, "/api/echo/tag/") && ctx.Request.Method == http.MethodGet {
+				// 设置 userid 为 NO_USER_LOGINED
+				ctx.Set("userid", authModel.NO_USER_LOGINED)
+				ctx.Next()
+				return
+			}
+
 			// 如果 Authorization 头部信息为空，或者格式不正确，或者 token 为空，则返回错误
 			ctx.JSON(http.StatusUnauthorized, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
 				Msg: commonModel.TOKEN_NOT_FOUND,

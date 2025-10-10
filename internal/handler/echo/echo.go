@@ -362,3 +362,42 @@ func (echoHandler *EchoHandler) DeleteTag() gin.HandlerFunc {
 		}
 	})
 }
+
+// GetEchosByTagId 获取指定标签 ID 的 Echo 列表
+//
+// @Summary 获取指定标签 ID 的 Echo 列表
+// @Description 根据标签 ID 获取包含该标签的所有 Echo 列表
+// @Tags Echo
+// @Accept json
+// @Produce json
+// @Param tagid path int true "标签 ID"
+// @Success 200 {object} res.Response "获取成功"
+// @Failure 200 {object} res.Response "获取失败"
+// @Router /echo/{tagid} [get]
+func (echoHandler *EchoHandler) GetEchosByTagId() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 从 URL 参数获取标签 ID
+		// tagIdStr := ctx.Param("tagid")
+		// tagId, err := strconv.ParseUint(tagIdStr, 10, 64)
+		// if err != nil {
+		// 	return res.Response{
+		// 		Msg: commonModel.INVALID_PARAMS,
+		// 	}
+		// }
+
+		// userid := ctx.MustGet("userid").(uint)
+
+		// result, err := echoHandler.echoService.GetEchosByTagId(userid, uint(tagId))
+		// if err != nil {
+		// 	return res.Response{
+		// 		Msg: "",
+		// 		Err: err,
+		// 	}
+		// }
+
+		return res.Response{
+			// Data: result,
+			Msg:  commonModel.GET_ECHOS_BY_TAG_ID_SUCCESS,
+		}
+	})
+}
