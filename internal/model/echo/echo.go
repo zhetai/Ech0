@@ -12,6 +12,7 @@ type Echo struct {
 	UserID        uint      `gorm:"not null;index"                                   json:"user_id"`
 	Extension     string    `gorm:"type:text"                                        json:"extension,omitempty"`
 	ExtensionType string    `gorm:"type:varchar(100)"                                json:"extension_type,omitempty"`
+	Tags          []Tag     `gorm:"many2many:echo_tags;"                             json:"tags,omitempty"`
 	FavCount      int       `gorm:"default:0"                                        json:"fav_count"`
 	CreatedAt     time.Time `                                                        json:"created_at"`
 }
@@ -40,13 +41,28 @@ type Image struct {
 	ObjectKey   string `gorm:"type:text"        json:"object_key,omitempty"` // 对象存储的Key (如果是本地存储则为空)
 }
 
+// Tag 定义Tag实体
+type Tag struct {
+	ID         uint      `gorm:"primaryKey"                            json:"id"`
+	Name       string    `gorm:"type:varchar(50);uniqueIndex;not null" json:"name"`
+	UsageCount int       `gorm:"default:0"                             json:"usage_count"`
+	CreatedAt  time.Time `                                             json:"created_at"`
+}
+
+// EchoTag 纯关系表，联合主键
+type EchoTag struct {
+	EchoID uint `gorm:"primaryKey;autoIncrement:false"`
+	TagID  uint `gorm:"primaryKey;autoIncrement:false"`
+}
+
 const (
-	Extension_MUSIC      = "MUSIC"
-	Extension_VIDEO      = "VIDEO"
-	Extension_GITHUBPROJ = "GITHUBPROJ"
-	Extension_WEBSITE    = "WEBSITE"
-	ImageSourceLocal     = "local" // 本地图片
-	ImageSourceURL       = "url"   // 直链图片
-	ImageSourceS3        = "s3"    // S3 图片
-	ImageSourceR2        = "r2"    // R2 图片
+	Extension_MUSIC      = "MUSIC"      // 扩展附加内容--音乐
+	Extension_VIDEO      = "VIDEO"      // 扩展附加内容--视频
+	Extension_GITHUBPROJ = "GITHUBPROJ" // 扩展附加内容--GitHub项目
+	Extension_WEBSITE    = "WEBSITE"    // 扩展附加内容--网站
+
+	ImageSourceLocal = "local" // 本地图片
+	ImageSourceURL   = "url"   // 直链图片
+	ImageSourceS3    = "s3"    // S3 图片
+	ImageSourceR2    = "r2"    // R2 图片
 )
