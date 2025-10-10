@@ -62,6 +62,7 @@ export const useEditorStore = defineStore('editorStore', () => {
   const musicURL = ref('') // 辅助生成扩展内容（音乐）的变量
   const githubRepo = ref('') // 辅助生成扩展内容（GitHub项目）的变量
   const extensionToAdd = ref({ extension: '', extension_type: '' }) // 最终要添加的扩展内容
+  const tagToAdd = ref<string>('')
 
   //================================================================
   // 其它状态变量
@@ -402,6 +403,7 @@ export const useEditorStore = defineStore('editorStore', () => {
     musicURL,
     githubRepo,
     extensionToAdd,
+    tagToAdd,
 
     PlayingMusicURL,
     ShouldLoadMusic,

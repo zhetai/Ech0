@@ -28,6 +28,21 @@
           title="是否私密"
         />
       </div>
+      <!-- Tag Add or Select -->
+      <div v-if="currentMode === Mode.ECH0">
+        <div
+          class="flex items-center justify-between rounded-sm border border-gray-300 border-dashed px-1"
+        >
+          <span class="text-gray-300">#</span>
+          <BaseCombobox
+            v-model="tagToAdd"
+            :options="['学习', '工作', '生活', '娱乐', '随笔']"
+            placeholder="标签"
+            class="rounded-sm border-none"
+            input-class="w-11 h-7 text-gray-300"
+          />
+        </div>
+      </div>
     </div>
 
     <div class="flex flex-row items-center gap-2">
@@ -95,12 +110,14 @@ import Update from '@/components/icons/update.vue'
 import ExitUpdate from '@/components/icons/exitupdate.vue'
 import Back from '@/components/icons/back.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
+import BaseCombobox from '@/components/common/BaseCombobox.vue'
 import { ImageSource, Mode } from '@/enums/enums'
 import { storeToRefs } from 'pinia'
 import { useEditorStore } from '@/stores/editor'
+import { theToast } from '@/utils/toast'
 
 const editorStore = useEditorStore()
-const { currentMode, isUpdateMode, echoToAdd, imageToAdd } = storeToRefs(editorStore)
+const { currentMode, isUpdateMode, echoToAdd, imageToAdd, tagToAdd } = storeToRefs(editorStore)
 
 const handleAddorUpdate = () => {
   editorStore.handleAddOrUpdate()
@@ -119,6 +136,7 @@ const handleAddImageMode = () => {
 
 const handlePrivate = () => {
   editorStore.togglePrivate()
+  theToast.info('已切换为 ' + (echoToAdd.value.private ? '私密' : '公开') + ' 状态')
 }
 
 const handleExitUpdateMode = () => {
