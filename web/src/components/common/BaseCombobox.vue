@@ -6,16 +6,25 @@
     </label>
 
     <!-- Combobox Wrapper -->
-    <Combobox v-model="internalValue" :by="by" :multiple="multiple">
+    <Combobox
+      v-model="internalValue"
+      :by="by"
+      :multiple="multiple"
+      :nullable="!multiple"
+      @update:model-value="onSelect"
+    >
       <div class="relative">
         <!-- Input -->
         <div
           class="flex items-center px-0.5 py-0.5 rounded-md bg-white transition duration-150 ease-in-out"
-        >
+          @focusout="onBlurOutside"
+          @focusin="onFocusInput"
+          @mousedown="onFocusInput"
+          >
           <ComboboxInput
             :displayValue="displayValue"
             :placeholder="placeholder"
-            @input="query = $event.target.value"
+            @input="onInputChange"
             :class="['outline-none text-md', inputClass]"
           />
 
@@ -42,7 +51,7 @@
           leave-to="opacity-0 translate-y-1"
         >
           <ComboboxOptions
-            v-if="filteredOptions.length > 0 || allowCreate"
+            v-if="dropdownOpen && (filteredOptions.length > 0 || allowCreate)"
             class="absolute z-10 mt-2 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
             <!-- Existing Options -->
@@ -90,21 +99,32 @@ import { Transition } from 'vue'
 type ClassValue = string | string[] | Record<string, boolean | number | string>
 
 const props = defineProps<{
+  /** 绑定到外部的值，支持单选或多选 */
   modelValue: any
+  /** 可供选择的选项列表 */
   options: any[]
+  /** 输入框上方显示的标签文本 */
   label?: string
+  /** 关联 label 与输入框的 id */
   id?: string
+  /** 输入框提示文本 */
   placeholder?: string
+  /** 自定义选项比对逻辑或字段名 */
   by?: string | ((a: any, b: any) => boolean)
+  /** 显示选项时使用的字段名 */
   labelField?: string
+  /** 是否允许创建新选项 */
   allowCreate?: boolean
+  /** 是否启用多选模式 */
   multiple?: boolean
+  /** 输入框额外的样式类 */
   inputClass?: ClassValue
 }>()
 
 const emit = defineEmits(['update:modelValue', 'create'])
 
 const query = ref('')
+const dropdownOpen = ref(false)
 const internalValue = ref(props.modelValue)
 const labelField = props.labelField || 'name'
 const allowCreate = props.allowCreate ?? false
@@ -119,6 +139,58 @@ watch(
 watch(internalValue, (val) => {
   emit('update:modelValue', val)
 })
+
+const onSelect = (val: any) => {
+  internalValue.value = val
+  query.value = getOptionLabel(val) // 更新显示
+  dropdownOpen.value = multiple
+}
+
+const onInputChange = (e: Event) => {
+  const value = (e.target as HTMLInputElement).value.trim()
+  query.value = value
+  dropdownOpen.value = true
+
+  // 输入框被清空时 -> 清空绑定值
+  if (value === '') {
+    internalValue.value = multiple ? [] : null
+    emit('update:modelValue', internalValue.value)
+    return
+  }
+
+  // 如果输入内容刚好匹配某个现有选项 -> 自动选择该项
+  const matched = props.options.find(
+    (option) => getOptionLabel(option).toLowerCase() === value.toLowerCase()
+  )
+  if (matched) {
+    internalValue.value = matched
+    emit('update:modelValue', matched)
+    dropdownOpen.value = multiple
+  } else {
+    // 否则表示用户正在输入新的标签
+    internalValue.value = { [labelField]: value, isNew: true }
+    emit('create', value) // 可选：通知外部准备创建
+    emit('update:modelValue', internalValue.value)
+  }
+}
+
+const onFocusInput = () => {
+  dropdownOpen.value = true
+}
+
+const onBlurOutside = (e: FocusEvent) => {
+  // 确保焦点确实离开整个 Combobox（不是内部选项）
+  const currentTarget = e.currentTarget as HTMLElement
+  if (!currentTarget.contains(e.relatedTarget as Node)) {
+    dropdownOpen.value = false
+    if (query.value.trim() === '') {
+      internalValue.value = multiple ? [] : null
+      emit('update:modelValue', internalValue.value)
+    }
+  }
+}
+
+
 
 const getOptionLabel = (option: any): string => {
   if (option == null) return ''
