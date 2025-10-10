@@ -46,7 +46,7 @@
           :icon="Publish"
           @click="handleAddorUpdate"
           class="w-8 h-8 sm:w-9 sm:h-9 rounded-md"
-          title="发布Echo"
+          title="发布Echo / Todo"
         />
       </div>
       <!-- Exit Update -->
