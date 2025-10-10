@@ -107,3 +107,19 @@ export function fetchGetPresignedUrl(fileName: string, contentType?: string) {
     },
   })
 }
+
+// 获取标签列表
+export function fetchGetTags() {
+  return request<App.Api.Ech0.Tag[]>({
+    url: `/tags`,
+    method: 'GET',
+  })
+}
+
+// 删除某个标签
+export function fetchDeleteTagById(tagId: number) {
+  return request({
+    url: `/tag/${tagId}`,
+    method: 'DELETE',
+  })
+}

@@ -172,7 +172,6 @@ export const useEditorStore = defineStore('editorStore', () => {
   // 添加或更新Echo
   //===============================================================
   const handleAddOrUpdateEcho = async (justSyncImages: boolean) => {
-    console.log('tag:', tagToAdd.value)
     // 防止重复提交
     if (isSubmitting.value) return
     isSubmitting.value = true
@@ -186,6 +185,9 @@ export const useEditorStore = defineStore('editorStore', () => {
       // 回填图片板块
       echoToAdd.value.images = imagesToAdd.value
 
+      // 回填标签板块
+      echoToAdd.value.tags = [...[{ name: tagToAdd.value.trim() }]]
+
       // 检查Echo是否为空
       if (checkIsEmptyEcho(echoToAdd.value)) {
         const errMsg = isUpdateMode.value ? '待更新的Echo不能为空！' : '待添加的Echo不能为空！'
@@ -195,6 +197,7 @@ export const useEditorStore = defineStore('editorStore', () => {
 
       // ========= 添加模式 =========
       if (!isUpdateMode.value) {
+        console.log('adding echo:', echoToAdd.value)
         theToast.promise(fetchAddEcho(echoToAdd.value), {
           loading: '🚀发布中...',
           success: (res) => {

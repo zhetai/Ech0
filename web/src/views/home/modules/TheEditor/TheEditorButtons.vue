@@ -37,7 +37,7 @@
           <BaseCombobox
             v-model="tagToAdd"
             :multiple=false
-            :options="['生活', '读书', '电影', ...tagOptions]"
+            :options="tagOptions"
             placeholder="标签"
             class="rounded-sm border-none"
             input-class="w-11 h-7 text-gray-300"
