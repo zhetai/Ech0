@@ -55,10 +55,12 @@
           <ComboboxOptions
             static
             v-if="dropdownOpen && (filteredOptions.length > 0 || allowCreate)"
-            class="!w-auto overflow-auto absolute z-10 mt-2 max-h-60 rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            class="!w-auto absolute z-10 mt-2 max-h-64 overflow-y-scroll rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
             <!-- Existing Options -->
-            <div class="px-2 py-1 text-gray-500 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold border border-gray-200 rounded-md mx-auto" @click="console.log('标签管理')">
+            <div
+            @click="toggleManaging"
+            class="px-2 py-1 w-30 text-gray-500 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold mx-auto hover:text-amber-600" >
               <tagsetting class="w-6 h-6" />
               标签管理
             </div>
@@ -66,10 +68,10 @@
               v-for="item in filteredOptions"
               :key="getOptionLabel(item) || String(item)"
               :value="item"
-              class="!w-full !max-w-32 truncate text-gray-500 hover:text-gray-700 text-lg cursor-pointer select-none px-2 py-1 whitespace-nowrap text-ellipsis"
+              class="!w-full !max-w-32 truncate  text-gray-500 hover:text-gray-800 text-lg cursor-pointer select-none px-4 py-1 whitespace-nowrap text-ellipsis"
             >
               <slot name="option" :option="item">
-               # {{ getOptionLabel(item) }}
+                # {{ getOptionLabel(item) }}
               </slot>
             </ComboboxOption>
           </ComboboxOptions>
@@ -90,6 +92,8 @@ import {
 } from '@headlessui/vue'
 import { Transition } from 'vue'
 import tagsetting from '../icons/tagsetting.vue'
+import { useEditorStore } from '@/stores/editor'
+import { Mode } from '@/enums/enums'
 
 type ClassValue = string | string[] | Record<string, boolean | number | string>
 
@@ -124,6 +128,14 @@ const internalValue = ref(props.modelValue)
 const labelField = props.labelField || 'name'
 const allowCreate = props.allowCreate ?? false
 const multiple = props.multiple ?? false
+const isManaging = ref<boolean>(false)
+const editorStore = useEditorStore()
+
+const toggleManaging = () => {
+  isManaging.value = !isManaging.value
+  console.log(isManaging.value)
+  editorStore.setMode(Mode.TagManage)
+}
 
 watch(
   () => props.modelValue,

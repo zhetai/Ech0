@@ -14,6 +14,7 @@ export enum Mode {
   EXTEN = 3, // 处理扩展状态
   PlayMusic = 4, // 音乐播放器状态
   Image = 5, // 图片上传状态
+  TagManage = 6, // 标签管理状态
 }
 
 // 扩展类型

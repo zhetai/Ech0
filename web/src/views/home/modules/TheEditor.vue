@@ -25,6 +25,8 @@
 
         <!-- ExtensionMode: TheExtensionEditor -->
         <TheExtensionEditor v-if="currentMode === Mode.EXTEN" />
+
+        <TheTagsManager v-if="currentMode === Mode.TagManage" />
       </div>
 
       <!-- Editor Buttons -->
@@ -46,6 +48,7 @@ import TheEditorButtons from './TheEditor/TheEditorButtons.vue'
 import TheTodoModeEditor from './TheEditor/TheTodoModeEditor.vue'
 import TheMusicModeEditor from './TheEditor/TheMusicModeEditor.vue'
 import TheExtensionEditor from './TheEditor/TheExtensionEditor.vue'
+import TheTagsManager from './TheEditor/TheTagsManager.vue'
 
 import { theToast } from '@/utils/toast'
 import { watch } from 'vue'
