@@ -253,6 +253,7 @@ export const useEditorStore = defineStore('editorStore', () => {
       }
     } finally {
       isSubmitting.value = false
+      echoStore.getTags() // 刷新标签列表
     }
   }
 

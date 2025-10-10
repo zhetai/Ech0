@@ -114,7 +114,8 @@ export const useEchoStore = defineStore('echoStore', () => {
   const getTags = () => {
     fetchGetTags().then((res) => {
       if (res.code === 1) {
-        tagList.value = res.data
+        // 清空原数组再插入新数据
+        tagList.value.splice(0, tagList.value.length, ...res.data)
       }
     })
   }

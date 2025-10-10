@@ -35,6 +35,7 @@
         >
           <span class="text-gray-300">#</span>
           <BaseCombobox
+            :key="tagOptions.length"
             v-model="tagToAdd"
             :multiple=false
             :options="tagOptions"
