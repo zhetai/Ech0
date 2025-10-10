@@ -90,6 +90,7 @@ func (echoRepository *EchoRepository) GetEchosByPage(
 	// 获取总数并进行分页查询
 	query.Count(&total).
 		Preload("Images").
+		Preload("Tags").
 		Limit(pageSize).
 		Offset(offset).
 		Order("created_at DESC").
@@ -314,4 +315,39 @@ func (echoRepository *EchoRepository) DeleteTagById(ctx context.Context, id uint
 	}
 
 	return nil
+}
+
+// GetTagByName 根据名称获取标签
+func (echoRepository *EchoRepository) GetTagByName(name string) (*model.Tag, error) {
+	var tag model.Tag
+	result := echoRepository.db().Where("name = ?", name).First(&tag)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil // 如果未找到记录，则返回 nil
+		}
+		return nil, result.Error // 其他错误返回
+	}
+	return &tag, nil
+}
+
+// CreateTag 创建标签
+func (echoRepository *EchoRepository) CreateTag(ctx context.Context, tag *model.Tag) error {
+	tag.Name = strings.TrimSpace(tag.Name)
+	if tag.Name == "" {
+		return errors.New("标签名称不能为空")
+	}
+
+	result := echoRepository.getDB(ctx).Create(tag)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+// IncrementTagUsageCount 增加标签的使用计数
+func (echoRepository *EchoRepository) IncrementTagUsageCount(ctx context.Context, tagID uint) error {
+	return echoRepository.getDB(ctx).Model(&model.Tag{}).
+		Where("id = ?", tagID).
+		UpdateColumn("usage_count", gorm.Expr("usage_count + ?", 1)).Error
 }

@@ -86,20 +86,41 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		}
 
 		// 处理标签
-		if len(newEcho.Tags) > 0 {
-			for i, tag := range newEcho.Tags {
-				tag.Name = strings.TrimSpace(tag.Name)
-				if tag.Name == "" {
-					newEcho.Tags = append(newEcho.Tags[:i], newEcho.Tags[i+1:]...)
-					continue
-				} else {
-					newEcho.Tags[i].Name = strings.TrimPrefix(tag.Name, "#")
-					newEcho.Tags[i].Name = strings.TrimSpace(newEcho.Tags[i].Name)
-					// 检查标签是否已存在，存在则复用ID
-					
+		var processedTags []model.Tag
+
+		for _, tag := range newEcho.Tags {
+			// 清洗
+			name := strings.TrimSpace(strings.TrimPrefix(tag.Name, "#"))
+			if name == "" {
+				continue // 跳过空标签
+			}
+
+			// 查找已存在的标签
+			existingTag, err := echoService.echoRepository.GetTagByName(name)
+			if err != nil {
+				return err
+			}
+
+			if existingTag != nil {
+				// 标签已存在 → 复用
+				// 增加使用计数
+				if err := echoService.echoRepository.IncrementTagUsageCount(ctx, existingTag.ID); err != nil {
+					return err
 				}
+				// 使用已存在的标签
+				processedTags = append(processedTags, *existingTag)
+			} else {
+				// 标签不存在 → 创建
+				newTag := model.Tag{Name: name, UsageCount: 1}
+				if createErr := echoService.echoRepository.CreateTag(ctx, &newTag); createErr != nil {
+					return createErr
+				}
+				processedTags = append(processedTags, newTag)
 			}
 		}
+
+		// 替换原始标签
+		newEcho.Tags = processedTags
 
 		// 处理临时文件表，防止被当作孤儿文件删除
 		for i := range newEcho.Images {

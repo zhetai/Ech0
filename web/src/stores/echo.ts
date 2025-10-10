@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import { fetchGetEchosByPage } from '@/service/api'
+import { fetchGetEchosByPage, fetchGetTags } from '@/service/api'
 
 export const useEchoStore = defineStore('echoStore', () => {
   /**
@@ -111,6 +111,18 @@ export const useEchoStore = defineStore('echoStore', () => {
     }
   }
 
+  const getTags = () => {
+    fetchGetTags().then((res) => {
+      if (res.code === 1) {
+        tagList.value = res.data
+      }
+    })
+  }
+
+  const init = () => {
+    getTags()
+  }
+
   return {
     echoList,
     echoIndexMap,
@@ -131,5 +143,7 @@ export const useEchoStore = defineStore('echoStore', () => {
     refreshForSearch,
     updateEcho,
     updateLikeCount,
+    getTags,
+    init,
   }
 })

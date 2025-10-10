@@ -33,4 +33,13 @@ type EchoRepositoryInterface interface {
 
 	// DeleteTagById 删除标签
 	DeleteTagById(ctx context.Context, id uint) error
+
+	// GetTagByName 根据名称获取标签
+	GetTagByName(name string) (*model.Tag, error)
+
+	// CreateTag 创建标签
+	CreateTag(ctx context.Context, tag *model.Tag) error
+
+	// IncrementTagUsageCount 增加标签的使用计数
+	IncrementTagUsageCount(ctx context.Context, tagID uint) error
 }
