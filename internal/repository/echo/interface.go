@@ -27,4 +27,10 @@ type EchoRepositoryInterface interface {
 
 	// LikeEcho 点赞 Echo
 	LikeEcho(ctx context.Context, id uint) error
+
+	// GetAllTags 获取所有标签
+	GetAllTags() ([]model.Tag, error)
+
+	// DeleteTagById 删除标签
+	DeleteTagById(ctx context.Context, id uint) error
 }

@@ -6,6 +6,7 @@ import "github.com/lin-snow/ech0/internal/di"
 func setupEchoRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	// Public
 	appRouterGroup.PublicRouterGroup.PUT("/echo/like/:id", h.EchoHandler.LikeEcho())
+	appRouterGroup.PublicRouterGroup.GET("/tags", h.EchoHandler.GetAllTags())
 
 	// Auth
 	appRouterGroup.AuthRouterGroup.POST("/echo", h.EchoHandler.PostEcho())
@@ -15,4 +16,5 @@ func setupEchoRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.AuthRouterGroup.GET("/echo/today", h.EchoHandler.GetTodayEchos())
 	appRouterGroup.AuthRouterGroup.PUT("/echo", h.EchoHandler.UpdateEcho())
 	appRouterGroup.AuthRouterGroup.GET("/echo/:id", h.EchoHandler.GetEchoById())
+	appRouterGroup.AuthRouterGroup.DELETE("/tag/:id", h.EchoHandler.DeleteTag())
 }

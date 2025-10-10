@@ -298,3 +298,67 @@ func (echoHandler *EchoHandler) GetEchoById() gin.HandlerFunc {
 		}
 	})
 }
+
+// GetAllTags 获取所有标签
+//
+// @Summary 获取所有标签
+// @Description 获取所有标签及其使用次数
+// @Tags Tag
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response "获取成功"
+// @Failure 200 {object} res.Response "获取失败"
+// @Router /tags [get]
+func (echoHandler *EchoHandler) GetAllTags() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		tags, err := echoHandler.echoService.GetAllTags()
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: tags,
+			Msg:  commonModel.GET_ALL_TAGS_SUCCESS,
+		}
+	})
+}
+
+// DeleteTag 删除标签
+//
+// @Summary 删除标签
+// @Description 根据ID删除指定的标签
+// @Tags Tag
+// @Accept json
+// @Produce json
+// @Param id path int true "标签 ID"
+// @Success 200 {object} res.Response "删除成功"
+// @Failure 200 {object} res.Response "删除失败"
+// @Router /tag/{id} [delete]
+func (echoHandler *EchoHandler) DeleteTag() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 从 URL 参数获取标签 ID
+		idStr := ctx.Param("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+			}
+		}
+
+		userid := ctx.MustGet("userid").(uint)
+
+		if err := echoHandler.echoService.DeleteTag(userid, uint(id)); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.DELETE_TAG_SUCCESS,
+		}
+	})
+}

@@ -324,3 +324,30 @@ func (echoService *EchoService) GetEchoById(userId, id uint) (*model.Echo, error
 	// 返回Echo
 	return echo, nil
 }
+
+// GetAllTags 获取所有标签
+func (echoService *EchoService) GetAllTags() ([]model.Tag, error) {
+	tags, err := echoService.echoRepository.GetAllTags()
+	if err != nil {
+		return nil, err
+	}
+
+	return tags, nil
+}
+
+// DeleteTag 删除标签
+func (echoService *EchoService) DeleteTag(userid, id uint) error {
+	user, err := echoService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	echoService.txManager.Run(func(ctx context.Context) error {
+		return echoService.echoRepository.DeleteTagById(ctx, id)
+	})
+
+	return nil
+}

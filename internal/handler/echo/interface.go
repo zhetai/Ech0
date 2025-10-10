@@ -23,4 +23,10 @@ type EchoHandlerInterface interface {
 
 	// GetEchoById 获取指定 ID 的 Echo
 	GetEchoById() gin.HandlerFunc
+
+	// GetAllTags 获取所有标签
+	GetAllTags() gin.HandlerFunc
+
+	// DeleteTag 删除标签
+	DeleteTag() gin.HandlerFunc
 }

@@ -284,3 +284,34 @@ func (echoRepository *EchoRepository) LikeEcho(ctx context.Context, id uint) err
 
 	return nil
 }
+
+// GetAllTags 获取所有标签
+func (echoRepository *EchoRepository) GetAllTags() ([]model.Tag, error) {
+	var tags []model.Tag
+	result := echoRepository.db().Order("usage_count DESC, created_at DESC").Find(&tags)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return tags, nil
+}
+
+// DeleteTagById 删除标签
+func (echoRepository *EchoRepository) DeleteTagById(ctx context.Context, id uint) error {
+	var tag model.Tag
+
+	// 删除关联的 EchoTag 关系
+	if err := echoRepository.getDB(ctx).Where("tag_id = ?", id).Delete(&model.EchoTag{}).Error; err != nil {
+		return err
+	}
+
+	// 删除标签
+	result := echoRepository.getDB(ctx).Delete(&tag, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound // 如果没有找到记录
+	}
+
+	return nil
+}

@@ -29,4 +29,10 @@ type EchoServiceInterface interface {
 
 	// GetEchoById 获取指定 ID 的 Echo
 	GetEchoById(userId, id uint) (*model.Echo, error)
+
+	// GetAllTags 获取所有标签
+	GetAllTags() ([]model.Tag, error)
+	
+	// DeleteTag 删除标签
+	DeleteTag(userid, id uint) error
 }
