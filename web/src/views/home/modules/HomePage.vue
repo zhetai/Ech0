@@ -14,7 +14,7 @@
     </div>
     <div class="hidden xl:block sm:max-w-sm w-full px-6 h-screen">
       <TheHeatMap class="mb-2" />
-      <TheStatusCard class="mb-2" />
+      <TheStatusCard v-if="isLogin" class="mb-2" />
       <div v-if="isLogin" class="mb-2 px-11">
         <TheTodoCard :todo="todos[0]" :index="0" :operative="false" @refresh="getTodos" />
       </div>
