@@ -36,7 +36,8 @@
           <span class="text-gray-300">#</span>
           <BaseCombobox
             v-model="tagToAdd"
-            :options="['学习', '工作', '生活', '娱乐', '随笔']"
+            :multiple=false
+            :options="['生活', '读书', '电影', ...tagOptions]"
             placeholder="标签"
             class="rounded-sm border-none"
             input-class="w-11 h-7 text-gray-300"
@@ -114,10 +115,13 @@ import BaseCombobox from '@/components/common/BaseCombobox.vue'
 import { ImageSource, Mode } from '@/enums/enums'
 import { storeToRefs } from 'pinia'
 import { useEditorStore } from '@/stores/editor'
+import { useEchoStore } from '@/stores/echo'
 import { theToast } from '@/utils/toast'
 
 const editorStore = useEditorStore()
 const { currentMode, isUpdateMode, echoToAdd, imageToAdd, tagToAdd } = storeToRefs(editorStore)
+const echoStore = useEchoStore()
+const { tagOptions } = storeToRefs(echoStore)
 
 const handleAddorUpdate = () => {
   editorStore.handleAddOrUpdate()

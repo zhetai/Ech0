@@ -10,7 +10,7 @@
       v-model="internalValue"
       :by="by"
       :multiple="multiple"
-      :nullable="!multiple"
+      :nullable="true"
       @update:model-value="onSelect"
     >
       <div class="relative">
@@ -60,12 +60,12 @@
             <!-- Existing Options -->
             <ComboboxOption
               v-for="item in filteredOptions"
-              :key="item.id || item.value || item"
+              :key="getOptionLabel(item) || String(item)"
               :value="item"
               class="text-gray-500 hover:text-gray-700 text-lg cursor-pointer select-none px-2 py-1"
             >
               <slot name="option" :option="item">
-                {{ item[labelField] || item }}
+                {{ getOptionLabel(item) }}
               </slot>
             </ComboboxOption>
 
@@ -103,9 +103,9 @@ type ClassValue = string | string[] | Record<string, boolean | number | string>
 
 const props = defineProps<{
   /** 绑定到外部的值，支持单选或多选 */
-  modelValue: any
+  modelValue: string | object | null | (string | object)[]
   /** 可供选择的选项列表 */
-  options: any[]
+  options: string[] | object[]
   /** 输入框上方显示的标签文本 */
   label?: string
   /** 关联 label 与输入框的 id */
@@ -171,7 +171,7 @@ const onInputChange = (e: Event) => {
     dropdownOpen.value = multiple
   } else {
     // 否则表示用户正在输入新的标签
-    internalValue.value = { [labelField]: value, isNew: true }
+    internalValue.value = value
     emit('create', value) // 可选：通知外部准备创建
     emit('update:modelValue', internalValue.value)
   }

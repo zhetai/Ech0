@@ -172,6 +172,7 @@ export const useEditorStore = defineStore('editorStore', () => {
   // 添加或更新Echo
   //===============================================================
   const handleAddOrUpdateEcho = async (justSyncImages: boolean) => {
+    console.log('tag:', tagToAdd.value)
     // 防止重复提交
     if (isSubmitting.value) return
     isSubmitting.value = true

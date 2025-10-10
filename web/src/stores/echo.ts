@@ -21,6 +21,10 @@ export const useEchoStore = defineStore('echoStore', () => {
     return searchValue.value.length > 0
   }) // 是否处于搜索模式
   const echoToUpdate = ref<App.Api.Ech0.EchoToUpdate | null>(null) // 用于更新Echo的临时存储
+  const tagList = ref<App.Api.Ech0.Tag[]>([]) // 标签列表
+  const tagOptions = computed<string[]>(() => {
+    return tagList.value.map((tag) => (tag.name))
+  })
 
   // 监听 searchingMode 的变化
   watch(searchingMode, (newValue, oldValue) => {
@@ -119,6 +123,8 @@ export const useEchoStore = defineStore('echoStore', () => {
     searchingMode,
     hasMore,
     echoToUpdate,
+    tagList,
+    tagOptions,
     getEchosByPage,
     refreshEchos,
     clearEchos,
