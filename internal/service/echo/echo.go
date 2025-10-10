@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
 
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
@@ -82,6 +83,22 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		if newEcho.Content == "" && len(newEcho.Images) == 0 &&
 			(newEcho.Extension == "" || newEcho.ExtensionType == "") {
 			return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
+		}
+
+		// 处理标签
+		if len(newEcho.Tags) > 0 {
+			for i, tag := range newEcho.Tags {
+				tag.Name = strings.TrimSpace(tag.Name)
+				if tag.Name == "" {
+					newEcho.Tags = append(newEcho.Tags[:i], newEcho.Tags[i+1:]...)
+					continue
+				} else {
+					newEcho.Tags[i].Name = strings.TrimPrefix(tag.Name, "#")
+					newEcho.Tags[i].Name = strings.TrimSpace(newEcho.Tags[i].Name)
+					// 检查标签是否已存在，存在则复用ID
+					
+				}
+			}
 		}
 
 		// 处理临时文件表，防止被当作孤儿文件删除
