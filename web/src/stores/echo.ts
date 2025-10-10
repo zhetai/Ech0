@@ -111,13 +111,14 @@ export const useEchoStore = defineStore('echoStore', () => {
     }
   }
 
-  const getTags = () => {
-    fetchGetTags().then((res) => {
-      if (res.code === 1) {
-        // 清空原数组再插入新数据
-        tagList.value.splice(0, tagList.value.length, ...res.data)
-      }
-    })
+  const getTags = async () => {
+    const res = await fetchGetTags()
+    if (res.code === 1) {
+      // 清空原数组再插入新数据
+      tagList.value.splice(0, tagList.value.length, ...res.data)
+      console.log('标签列表更新', tagList.value)
+      console.log('标签选项更新', tagOptions.value)
+    }
   }
 
   const init = () => {

@@ -68,19 +68,6 @@
                 {{ getOptionLabel(item) }}
               </slot>
             </ComboboxOption>
-
-            <!-- Create new option -->
-            <!-- <ComboboxOption
-              v-if="
-                allowCreate &&
-                normalizedQuery &&
-                !filteredOptions.some((o) => getOptionLabel(o).toLowerCase() === normalizedQuery)
-              "
-              :value="query"
-              class="cursor-pointer select-none px-3 py-2 text-orange-600 hover:bg-orange-50"
-            >
-              创建新标签 "{{ query }}"
-            </ComboboxOption> -->
           </ComboboxOptions>
         </Transition>
       </div>

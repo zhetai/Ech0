@@ -205,6 +205,7 @@ export const useEditorStore = defineStore('editorStore', () => {
               clearEditor()
               echoStore.refreshEchos()
               setMode(Mode.ECH0)
+              echoStore.getTags() // 刷新标签列表
               return '🎉发布成功！'
             } else {
               return '😭发布失败，请稍后再试！'
@@ -241,6 +242,7 @@ export const useEditorStore = defineStore('editorStore', () => {
               isUpdateMode.value = false
               echoStore.echoToUpdate = null
               setMode(Mode.ECH0)
+              echoStore.getTags() // 刷新标签列表
               return '🎉更新成功！'
             } else if (res.code === 1 && justSyncImages) {
               return '🔁发现图片更改，已自动更新同步Echo！'
@@ -253,7 +255,6 @@ export const useEditorStore = defineStore('editorStore', () => {
       }
     } finally {
       isSubmitting.value = false
-      echoStore.getTags() // 刷新标签列表
     }
   }
 
