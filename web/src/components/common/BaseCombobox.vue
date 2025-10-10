@@ -55,14 +55,14 @@
           <ComboboxOptions
             static
             v-if="dropdownOpen && (filteredOptions.length > 0 || allowCreate)"
-            class="absolute z-10 mt-2 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            class="!w-auto overflow-auto absolute z-10 mt-2 max-h-60 rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
             <!-- Existing Options -->
             <ComboboxOption
               v-for="item in filteredOptions"
               :key="getOptionLabel(item) || String(item)"
               :value="item"
-              class="text-gray-500 hover:text-gray-700 text-lg cursor-pointer select-none px-2 py-1"
+              class="!w-full !max-w-32 truncate text-gray-500 hover:text-gray-700 text-lg cursor-pointer select-none px-2 py-1 whitespace-nowrap text-ellipsis"
             >
               <slot name="option" :option="item">
                 {{ getOptionLabel(item) }}

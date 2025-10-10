@@ -39,7 +39,7 @@
             :multiple=false
             :options="tagOptions"
             placeholder="标签"
-            class="rounded-sm border-none"
+            class="rounded-sm border-none w-auto"
             input-class="w-11 h-7 text-gray-300"
           />
         </div>
