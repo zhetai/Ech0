@@ -18,4 +18,5 @@ func setupEchoRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.AuthRouterGroup.GET("/echo/:id", h.EchoHandler.GetEchoById())
 	appRouterGroup.AuthRouterGroup.GET("/echo/tag/:tagid", h.EchoHandler.GetEchosByTagId())
 	appRouterGroup.AuthRouterGroup.DELETE("/tag/:id", h.EchoHandler.DeleteTag())
+	// appRouterGroup.AuthRouterGroup.PUT("/tag", h.EchoHandler.UpdateTag())
 }
