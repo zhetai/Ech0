@@ -41,7 +41,7 @@
             :options="tagOptions"
             placeholder="标签"
             class="rounded-sm border-none w-auto"
-            input-class="w-11 h-7 text-gray-300"
+            input-class="w-16 h-7 text-gray-500"
           />
         </div>
       </div>

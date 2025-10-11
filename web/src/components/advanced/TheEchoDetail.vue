@@ -75,7 +75,7 @@
           {{ formatDate(props.echo.created_at) }}
         </div>
          <!-- 标签 -->
-        <div class="text-sm text-gray-300 w-16 truncate text-nowrap">
+        <div class="text-sm text-gray-300 w-18 truncate text-nowrap">
           <span>{{ props.echo.tags ? `#${props.echo.tags[0]?.name}` : '' }}</span>
         </div>
       </div>
