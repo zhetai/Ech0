@@ -102,6 +102,7 @@ export const useEditorStore = defineStore('editorStore', () => {
       private: false,
       extension: null,
       extension_type: null,
+      tags: [],
     }
     imageToAdd.value = {
       image_url: '',
@@ -113,6 +114,7 @@ export const useEditorStore = defineStore('editorStore', () => {
     musicURL.value = ''
     githubRepo.value = ''
     extensionToAdd.value = { extension: '', extension_type: '' }
+    tagToAdd.value = ''
     todoToAdd.value = { content: '' }
   }
 
@@ -231,6 +233,7 @@ export const useEditorStore = defineStore('editorStore', () => {
         echoStore.echoToUpdate.images = echoToAdd.value.images
         echoStore.echoToUpdate.extension = echoToAdd.value.extension
         echoStore.echoToUpdate.extension_type = echoToAdd.value.extension_type
+        echoStore.echoToUpdate.tags = echoToAdd.value.tags
 
         // 更新 Echo
         theToast.promise(fetchUpdateEcho(echoStore.echoToUpdate), {

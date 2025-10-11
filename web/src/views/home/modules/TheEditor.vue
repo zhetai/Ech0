@@ -70,6 +70,7 @@ const {
   extensionToAdd,
   imagesToAdd,
   websiteToAdd,
+  tagToAdd,
   currentExtensionType,
 } = storeToRefs(editorStore)
 
@@ -151,10 +152,16 @@ watch(
         }
       }
 
-      // 4. 回到页面顶部（触发BackToTop）
+      // 4. 填充标签
+      tagToAdd.value =
+        Array.isArray(echoToUpdate.value?.tags) && echoToUpdate.value.tags.length > 0
+          ? echoToUpdate.value.tags[0]?.name || ''
+          : ''
+
+      // 5. 回到页面顶部（触发BackToTop）
       window.scrollTo({ top: 0, behavior: 'smooth' })
 
-      // 5. 弹出通知，提示可以编辑了
+      // 6. 弹出通知，提示可以编辑了
       theToast.info('已进入更新模式，请编辑内容后点击更新按钮！')
     } else {
       // 退出更新模式

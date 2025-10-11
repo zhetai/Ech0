@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -210,6 +211,8 @@ func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
 				Err: err,
 			}
 		}
+
+		fmt.Println("tags", updateEcho.Tags)
 
 		userId := ctx.MustGet("userid").(uint)
 		if err := echoHandler.echoService.UpdateEcho(userId, &updateEcho); err != nil {

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -209,15 +210,15 @@ func (echoRepository *EchoRepository) UpdateEcho(ctx context.Context, echo *mode
 	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
 
 	// 开启事务确保数据一致性
-	tx := echoRepository.db().Begin()
-	if tx.Error != nil {
-		return tx.Error
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
+	// tx := echoRepository.db().Begin()
+	// if tx.Error != nil {
+	// 	return tx.Error
+	// }
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		tx.Rollback()
+	// 	}
+	// }()
 
 	// 1. 先删除该 Echo 关联的所有旧图片
 	if err := echoRepository.getDB(ctx).Where("message_id = ?", echo.ID).Delete(&model.Image{}).Error; err != nil {
@@ -249,6 +250,17 @@ func (echoRepository *EchoRepository) UpdateEcho(ctx context.Context, echo *mode
 			return err
 		}
 	}
+
+	fmt.Println("new tags", echo.Tags)
+
+	// 4. 更新标签关联关系
+	if len(echo.Tags) > 0 {
+		if err := echoRepository.getDB(ctx).Model(echo).Association("Tags").Replace(echo.Tags); err != nil {
+			return err
+		}
+	}
+
+	fmt.Println("new Echo", *echo)
 
 	// 提交事务
 	return nil
@@ -328,6 +340,16 @@ func (echoRepository *EchoRepository) GetTagByName(name string) (*model.Tag, err
 		return nil, result.Error // 其他错误返回
 	}
 	return &tag, nil
+}
+
+// GetTagsByNames 根据名称列表获取标签
+func (echoRepository *EchoRepository) GetTagsByNames(names []string) ([]*model.Tag, error) {
+	var tags []*model.Tag
+	result := echoRepository.db().Where("name IN ?", names).Find(&tags)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return tags, nil
 }
 
 // CreateTag 创建标签

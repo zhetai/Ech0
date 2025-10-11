@@ -37,6 +37,9 @@ type EchoRepositoryInterface interface {
 	// GetTagByName 根据名称获取标签
 	GetTagByName(name string) (*model.Tag, error)
 
+	// GetTagsByNames 根据名称列表获取标签
+	GetTagsByNames(names []string) ([]*model.Tag, error)
+
 	// CreateTag 创建标签
 	CreateTag(ctx context.Context, tag *model.Tag) error
 
