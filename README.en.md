@@ -55,33 +55,35 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 
 ## Highlights
 
-☁️ **Atomically Lightweight**: Uses less than 15 MB of memory, image size under 50 MB, powered by a single SQLite file architecture.  
-🚀 **Blazing-Fast Deployment**: No configuration required—ready to use with a single command.  
-🧰 **CLI Power Tool**: Built-in high-availability command-line interface with one-click backup, restore, and export.  
-📟 **Refined TUI Experience**: A beautifully crafted terminal user interface for effortless Ech0 management.  
-✍️ **Distraction-Free Writing**: A clean online Markdown editor with rich plugin and live preview support.  
-📦 **Data Sovereignty**: All content stored locally in a SQLite database, with built-in RSS subscription support.  
-🔐 **Secure Backup System**: One-click export and full backup available via Web, TUI, or CLI.  
-♻️ **Seamless Recovery**: Instantly restore any backup from TUI, CLI, or Web, ensuring complete data safety.  
-🎉 **Forever Free**: Open source under the AGPL-3.0 license — no tracking, no subscription, no external dependencies.  
-🌍 **Cross-Platform Design**: Fully responsive on desktop and mobile browsers — works flawlessly on phone, iPad, and PC.  
-👾 **PWA Ready**: Installable as a web app for a near-native experience.  
-☁️ **S3 Storage Integration**: Natively supports S3-compatible object storage for efficient cloud archiving.  
-🌐 **ActivityPub Federation**: Interoperable with Mastodon, Misskey, and other federated platforms for a decentralized ecosystem.  
-🔑 **OAuth2 Integration**: Native support for OAuth2, enabling easy third-party login and API authorization.  
-📝 **Built-in To-Do Manager**: Effortlessly record and manage daily tasks for efficient planning and progress tracking.  
-🔗 **Ech0 Connect**: A new multi-instance communication system that enables cross-instance status subscriptions and tracking.  
-🎵 **Seamless Music Integration**: Ultra-lightweight built-in music player for immersive background audio and focus mode.  
-🎥 **Instant Video Sharing**: Native intelligent parsing for Bilibili and YouTube links.  
-🃏 **Rich Shortcut Cards**: One-click sharing for websites, GitHub projects, and other rich media—making content vivid and interactive.  
-⚙️ **Advanced Customization**: Power users can easily add custom styles and scripts for expressive, personalized sharing.  
-💬 **Comment System**: Lightweight integration with Twikoo comment service for instant, non-intrusive interaction and feedback.  
-💻 **Cross-Platform Compatibility**: Natively supports Windows, Linux, and ARM devices like Raspberry Pi for stable, versatile deployment.  
-🔗 **Ech0 Hub Integration**: Submit your instance to the official Ech0 Hub ecosystem to discover, subscribe to, and share high-quality content.  
-📦 **Self-Contained Binary**: All resources bundled in a single executable—no external dependencies or configuration required.  
-🔗 **Extensive API Support**: Open APIs for seamless integration with external systems and flexible application development.  
-🃏 **Dynamic Content Display**: Supports X-style (Twitter-like) cards with social interactions such as likes.  
-👤 **Multi-Account Access Control**: Flexible user and permission management system for secure and private content access.  
+☁️ **Atomically Lightweight**: Consumes less than **15MB** of memory with an image size under **50MB**, powered by a single-file SQLite architecture  
+🚀 **Instant Deployment**: Zero configuration required — from installation to operation in just one command  
+✍️ **Distraction-Free Writing**: A clean, online Markdown editor with rich plugin support and real-time preview  
+📦 **Data Sovereignty**: All content is stored locally in SQLite, with full RSS feed support  
+🔐 **Secure Backup Mechanism**: One-click full-data export and backup via Web, TUI, or CLI  
+♻️ **Seamless Recovery**: Supports TUI/CLI snapshot restoration and Web-based zero-downtime recovery, ensuring data safety with ease  
+🎉 **Forever Free**: Open-sourced under the AGPL-3.0 license — no tracking, no subscriptions, no external dependencies  
+🌍 **Cross-Platform Adaptation**: Fully responsive design optimized for desktop, tablet, and mobile browsers  
+👾 **PWA Ready**: Installable as a web application, offering a near-native experience  
+🏷️ **Elegant Tag Management & Filtering**: Intelligent tagging system with fast filtering and precise search for effortless organization  
+☁️ **S3 Storage Integration** — Native support for S3-compatible object storage enables efficient cloud synchronization  
+🌐 **ActivityPub Federation** — Seamlessly federates with Mastodon, Misskey, and other decentralized platforms  
+🔑 **OAuth2 Integration** — Native support for OAuth2, simplifying third-party login and API authorization  
+📝 **Built-in Todo Management**: Easily capture and manage daily tasks to stay organized and productive  
+🧰 **Command-Line Powerhouse**: A built-in high-availability CLI that empowers developers and advanced users with precision control and seamless automation  
+📟 **Refined TUI Experience**: A beautifully designed terminal interface offering intuitive management of Ech0  
+🔗 **Ech0 Connect**: A multi-instance connectivity feature that enables real-time status sharing and synchronization between Ech0 nodes  
+🎵 **Seamless Music Integration**: Lightweight embedded music player providing immersive soundscapes and focus modes  
+🎥 **Instant Video Sharing**: Natively supports intelligent parsing of Bilibili and YouTube videos  
+🃏 **Rich Smart Cards**: Instantly share websites, GitHub projects, and other media in visually engaging cards  
+⚙️ **Advanced Customization**: Easily personalize styles and scripts for expressive, unique content presentation  
+💬 **Comment System**: Quick Twikoo integration for lightweight, instant, and non-intrusive interactions  
+💻 **Cross-Platform Compatibility**: Runs natively on Windows, Linux, and ARM devices like Raspberry Pi for stable deployment anywhere  
+🔗 **Ech0 Hub Integration**: Connect to the official Ech0 Hub to discover, subscribe, and share high-quality content  
+📦 **Self-Contained Binary**: Includes all required resources — no extra dependencies, no setup hassle  
+🔗 **Rich API Support**: Open APIs for seamless integration with external systems and workflows  
+🃏 **Dynamic Content Display**: Supports Twitter-like card layouts with likes and social interactions  
+👤 **Multi-Account & Permission Management**: Flexible user and role-based access control ensuring privacy and security  
+
 
 ---
 
