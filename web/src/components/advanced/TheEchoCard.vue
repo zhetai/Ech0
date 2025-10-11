@@ -12,7 +12,7 @@
           {{ formatDate(props.echo.created_at) }}
         </div>
         <!-- 标签 -->
-        <div class="text-sm text-gray-300 w-14 truncate text-nowrap hover:text-gray-500 hover:underline hover:decoration-offset-3 hover:decoration-1">
+        <div class="text-sm text-gray-300 w-18 truncate text-nowrap">
           <span>{{ props.echo.tags ? `#${props.echo.tags[0]?.name}` : '' }}</span>
         </div>
       </div>
@@ -102,6 +102,8 @@
         </div>
       </div>
     </div>
+
+
   </div>
 </template>
 
