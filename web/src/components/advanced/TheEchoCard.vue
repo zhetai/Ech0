@@ -14,7 +14,9 @@
           {{ formatDate(props.echo.created_at) }}
         </div>
         <!-- 标签 -->
-        <div v-if="!showMenu" class="text-sm text-gray-300 w-24 px-1 truncate text-nowrap">
+        <div v-if="!showMenu"
+          @click="handleFilterByTag"
+        class="text-sm text-gray-300 w-24 px-1 truncate text-nowrap hover:cursor-pointer hover:text-gray-400 hover:underline hover:decoration-offset-3 hover:decoration-1">
           <span>{{ props.echo.tags ? `#${props.echo.tags[0]?.name}` : '' }}</span>
         </div>
       </div>
@@ -268,6 +270,13 @@ const toggleMenu = () => {
 const handleClickOutside = (event: MouseEvent) => {
   if (menuRef.value && !menuRef.value.contains(event.target as Node)) {
     showMenu.value = false
+  }
+}
+
+const handleFilterByTag = () => {
+  if (props.echo.tags && props.echo.tags.length > 0 && props.echo.tags[0] && props.echo.tags[0].id) {
+    echoStore.filteredTagId = props.echo.tags[0].id
+    echoStore.isFilteringMode = true
   }
 }
 

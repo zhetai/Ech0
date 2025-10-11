@@ -123,3 +123,11 @@ export function fetchDeleteTagById(tagId: number) {
     method: 'DELETE',
   })
 }
+
+// 根据标签查询Echos（支持分页）
+export function fetchGetEchosByTagId(tagId: number, searchParams: App.Api.Ech0.ParamsByPagination) {
+  return request<App.Api.Ech0.PaginationResult>({
+    url: `/echo/tag/${tagId}?page=${searchParams.page}&pageSize=${searchParams.pageSize}&search=${searchParams.search || ''}`,
+    method: 'GET',
+  })
+}

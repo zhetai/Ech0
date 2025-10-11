@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import { fetchGetEchosByPage, fetchGetTags } from '@/service/api'
+import { fetchGetEchosByPage, fetchGetTags, fetchGetEchosByTagId } from '@/service/api'
 
 export const useEchoStore = defineStore('echoStore', () => {
   /**
@@ -26,11 +26,32 @@ export const useEchoStore = defineStore('echoStore', () => {
     return tagList.value.map((tag) => tag.name)
   })
 
+  const isFilteringMode = ref<boolean>(false) // 是否正在通过标签过滤
+  const filteredEchoList = ref<App.Api.Ech0.Echo[]>([]) // 过滤后的Echo列表
+  const filteredEchoIndexMap = ref(new Map<number, number>()) // 过滤后的id -> index
+  const filteredTotal = ref<number>(0) // 过滤后的总数据量
+  const filteredPageSize = ref<number>(5) // 过滤后的每页显示的数量
+  const filteredPage = ref<number>(0) // 过滤后的当前页码，从0开始计数
+  const filteredCurrent = ref<number>(1) // 过滤后的当前页码，从1开始计数
+  const filteredSearchValue = ref<string>('') // 过滤后的搜索关键词
+  const filteredHasMore = computed(() => {
+    return filteredTotal.value > filteredEchoList.value.length
+  }) // 过滤后是否还有更多数据可加载
+  const filteredTagId = ref<number>() // 当前用于过滤的标签ID
+
   // 监听 searchingMode 的变化
   watch(searchingMode, (newValue, oldValue) => {
     // 如果从搜索模式切换到非搜索模式，重置当前页码和数据列表
     if (newValue === false && oldValue === true) {
       refreshEchos()
+    }
+  })
+
+  // 监听 isFilteringMode 的变化
+  watch(isFilteringMode, (newValue, oldValue) => {
+    // 如果从过滤模式切换到非过滤模式，重置当前页码和数据列表
+    if (newValue === false && oldValue === true) {
+      refreshEchosForFilter()
     }
   })
 
@@ -119,6 +140,50 @@ export const useEchoStore = defineStore('echoStore', () => {
     }
   }
 
+  const refreshEchosForFilter = () => {
+    filteredCurrent.value = 1
+    filteredPage.value = 0
+    filteredEchoList.value = []
+    filteredEchoIndexMap.value.clear()
+  }
+
+  async function getEchosByPageForFilter() {
+    if (filteredCurrent.value <= filteredPage.value) return
+
+    if (!filteredTagId.value) return
+
+    isLoading.value = true
+
+    await fetchGetEchosByTagId(
+      filteredTagId.value,
+      {
+        page: filteredCurrent.value,
+        pageSize: filteredPageSize.value,
+        search: filteredSearchValue.value || '',
+      })
+      .then((res) => {
+        if (res.code === 1) {
+          filteredTotal.value = res.data.total
+
+          // 同步更新 echoMap
+          res.data.items.forEach((item: App.Api.Ech0.Echo) => {
+            const idx = filteredEchoIndexMap.value.get(item.id)
+            if (idx !== undefined) {
+              filteredEchoList.value[idx] = item // 更新已有数据
+            } else {
+              filteredEchoList.value.push(item) // 添加新数据
+              filteredEchoIndexMap.value.set(item.id, filteredEchoList.value.length - 1)
+            }
+          })
+
+          filteredPage.value += 1
+        }
+      })
+      .finally(() => {
+        isLoading.value = false
+      })
+  }
+
   const init = () => {
     getTags()
   }
@@ -137,6 +202,18 @@ export const useEchoStore = defineStore('echoStore', () => {
     echoToUpdate,
     tagList,
     tagOptions,
+    isFilteringMode,
+    filteredEchoList,
+    filteredEchoIndexMap,
+    filteredTotal,
+    filteredPageSize,
+    filteredPage,
+    filteredCurrent,
+    filteredSearchValue,
+    filteredHasMore,
+    filteredTagId,
+    getEchosByPageForFilter,
+    refreshEchosForFilter,
     getEchosByPage,
     refreshEchos,
     clearEchos,
