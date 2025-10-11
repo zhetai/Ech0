@@ -208,17 +208,6 @@ func (echoRepository *EchoRepository) UpdateEcho(ctx context.Context, echo *mode
 	echoRepository.cache.Delete(GetTodayEchosCacheKey(true))  // 删除今天的 Echo 缓存（管理员视图）
 	echoRepository.cache.Delete(GetTodayEchosCacheKey(false)) // 删除今天的 Echo 缓存（非管理员视图）
 
-	// 开启事务确保数据一致性
-	// tx := echoRepository.db().Begin()
-	// if tx.Error != nil {
-	// 	return tx.Error
-	// }
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		tx.Rollback()
-	// 	}
-	// }()
-
 	// 1. 先删除该 Echo 关联的所有旧图片
 	if err := echoRepository.getDB(ctx).Where("message_id = ?", echo.ID).Delete(&model.Image{}).Error; err != nil {
 		return err
@@ -251,13 +240,10 @@ func (echoRepository *EchoRepository) UpdateEcho(ctx context.Context, echo *mode
 	}
 
 	// 4. 更新标签关联关系
-	if len(echo.Tags) > 0 {
-		if err := echoRepository.getDB(ctx).Model(echo).Association("Tags").Replace(echo.Tags); err != nil {
-			return err
-		}
+	if err := echoRepository.getDB(ctx).Model(echo).Association("Tags").Replace(echo.Tags); err != nil {
+		return err
 	}
 
-	// 提交事务
 	return nil
 }
 

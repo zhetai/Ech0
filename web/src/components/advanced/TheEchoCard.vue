@@ -3,17 +3,18 @@
     <!-- 日期时间 && 操作按钮 -->
     <div class="flex justify-between items-center">
       <!-- 日期时间 -->
-      <div @click="handleExpandEcho(echo.id)" class="flex justify-start items-center h-auto">
+      <div class="flex justify-start items-center h-auto">
         <!-- 小点 -->
         <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
         <!-- 具体日期时间 -->
         <div
-          class="flex justify-start text-sm text-orange-500 hover:underline hover:decoration-offset-3 hover:decoration-1 mr-1"
+          @click="handleExpandEcho(echo.id)"
+          class="flex justify-start text-sm text-nowrap text-orange-500 hover:underline hover:decoration-offset-3 hover:decoration-1 mr-1"
         >
           {{ formatDate(props.echo.created_at) }}
         </div>
         <!-- 标签 -->
-        <div class="text-sm text-gray-300 w-18 truncate text-nowrap">
+        <div v-if="!showMenu" class="text-sm text-gray-300 w-24 px-1 truncate text-nowrap">
           <span>{{ props.echo.tags ? `#${props.echo.tags[0]?.name}` : '' }}</span>
         </div>
       </div>
@@ -77,7 +78,10 @@
               <button
                 @click="handleLikeEcho(props.echo.id)"
                 title="点赞"
-                class="transform transition-transform duration-200 hover:scale-120"
+                :class="[
+                  'transform transition-transform duration-200 hover:scale-120',
+                  isLikeAnimating ? 'scale-110' : 'scale-100',
+                ]"
               >
                 <GrayLike class="w-4 h-4 transition-colors duration-200 hover:text-red-500" />
               </button>
@@ -163,7 +167,6 @@ import { useRouter } from 'vue-router'
 import { ExtensionType } from '@/enums/enums'
 import { formatDate } from '@/utils/other'
 import { useBaseDialog } from '@/composables/useBaseDialog'
-
 const { openConfirm } = useBaseDialog()
 
 const emit = defineEmits(['refresh', 'updateLikeCount'])
@@ -173,6 +176,8 @@ type Echo = App.Api.Ech0.Echo
 const props = defineProps<{
   echo: Echo
 }>()
+
+const isLikeAnimating = ref(false)
 
 const userStore = useUserStore()
 const previewOptions = {
@@ -223,6 +228,11 @@ const hasLikedEcho = (echoId: number): boolean => {
   return likedEchoIds.includes(echoId)
 }
 const handleLikeEcho = (echoId: number) => {
+  isLikeAnimating.value = true
+  setTimeout(() => {
+    isLikeAnimating.value = false
+  }, 150) // 对应 duration-150
+
   // 检查LocalStorage中是否已经点赞过
   if (hasLikedEcho(echoId)) {
     theToast.success('你已经点赞过了,感谢你的喜欢！')

@@ -12,15 +12,15 @@
       </div>
       <div class="flex flex-col">
         <div class="flex items-center gap-1">
-          <h1 class="text-black font-semibold overflow-hidden whitespace-nowrap text-center">
+          <h2 class="text-gray-700 font-bold overflow-hidden whitespace-nowrap text-center">
             {{ SystemSetting.server_name }}
-          </h1>
+          </h2>
 
           <div>
             <Verified class="text-sky-500 w-5 h-5" />
           </div>
         </div>
-        <span class="text-[#5b7083]">@ {{ echo.username }} </span>
+        <span class="text-[#5b7083] font-serif">@ {{ echo.username }} </span>
       </div>
     </div>
 
@@ -81,7 +81,21 @@
       </div>
 
       <!-- 操作按钮 -->
-      <div ref="menuRef" class="relative flex items-center justify-center gap-1 h-auto">
+      <div ref="menuRef" class="relative flex items-center justify-center gap-2 h-auto">
+        <!-- 分享 -->
+        <div class="flex items-center justify-end" title="分享">
+          <button
+            @click="handleShareEcho(props.echo.id)"
+            title="分享"
+            :class="[
+              'transform transition-transform duration-150',
+              isShareAnimating ? 'scale-160' : 'scale-100',
+            ]"
+          >
+            <Share class="w-4 h-4" />
+          </button>
+        </div>
+
         <!-- 点赞 -->
         <div class="flex items-center justify-end" title="点赞">
           <div class="flex items-center gap-1">
@@ -89,7 +103,10 @@
             <button
               @click="handleLikeEcho(props.echo.id)"
               title="点赞"
-              class="transform transition-transform duration-200 hover:scale-160"
+              :class="[
+                'transform transition-transform duration-150',
+                isLikeAnimating ? 'scale-160' : 'scale-100',
+              ]"
             >
               <GrayLike class="w-4 h-4" />
             </button>
@@ -111,6 +128,7 @@ import TheGithubCard from './TheGithubCard.vue'
 import TheVideoCard from './TheVideoCard.vue'
 import Verified from '../icons/verified.vue'
 import GrayLike from '../icons/graylike.vue'
+import Share from '../icons/share.vue'
 import TheAPlayerCard from './TheAPlayerCard.vue'
 import TheWebsiteCard from './TheWebsiteCard.vue'
 import TheImageGallery from './TheImageGallery.vue'
@@ -146,15 +164,23 @@ const previewOptions = {
   autoFoldThreshold: 15,
 }
 
+const isLikeAnimating = ref(false)
+const isShareAnimating = ref(false)
+
 const LIKE_LIST_KEY = 'likedEchoIds'
 const likedEchoIds: number[] = localStg.getItem(LIKE_LIST_KEY) || []
 const hasLikedEcho = (echoId: number): boolean => {
   return likedEchoIds.includes(echoId)
 }
 const handleLikeEcho = (echoId: number) => {
+  isLikeAnimating.value = true
+  setTimeout(() => {
+    isLikeAnimating.value = false
+  }, 150) // 对应 duration-150
+
   // 检查LocalStorage中是否已经点赞过
   if (hasLikedEcho(echoId)) {
-    theToast.success('你已经点赞过了,感谢你的喜欢！')
+    theToast.info('你已经点赞过了,感谢你的喜欢！')
     return
   }
 
@@ -164,8 +190,20 @@ const handleLikeEcho = (echoId: number) => {
       localStg.setItem(LIKE_LIST_KEY, likedEchoIds)
       // 发送更新事件
       emit('updateLikeCount', echoId)
-      theToast.success('点赞成功！')
+      theToast.info('点赞成功！')
     }
+  })
+}
+
+const handleShareEcho = (echoId: number) => {
+  isShareAnimating.value = true
+  setTimeout(() => {
+    isShareAnimating.value = false
+  }, 150) // 对应 duration-150
+
+  const shareUrl = `${window.location.origin}/echo/${echoId}`
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    theToast.info('已复制到剪贴板！')
   })
 }
 

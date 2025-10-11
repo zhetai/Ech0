@@ -60,16 +60,17 @@
             <!-- Existing Options -->
             <div
               @click="toggleManaging"
-              class="px-2 py-1 w-30 text-gray-500 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold mx-auto hover:text-amber-600 border-b-2 border-dashed"
+              class="px-2 py-1 w-36 text-gray-400 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold mx-auto hover:text-amber-500"
             >
               <tagsetting class="w-4 h-4" />
               标签管理
+              <jump class="w-4 h-4" />
             </div>
             <ComboboxOption
               v-for="item in filteredOptions"
               :key="getOptionLabel(item) || String(item)"
               :value="item"
-              class="!w-full !max-w-32 truncate text-gray-500 hover:text-gray-800 text-lg cursor-pointer select-none px-4 py-1 whitespace-nowrap text-ellipsis"
+              class="!w-full !max-w-32 truncate text-gray-300 hover:text-gray-800 text-lg cursor-pointer select-none px-4 py-1 whitespace-nowrap text-ellipsis"
             >
               <slot name="option" :option="item"> # {{ getOptionLabel(item) }} </slot>
             </ComboboxOption>
@@ -90,6 +91,7 @@ import {
   ComboboxButton,
 } from '@headlessui/vue'
 import tagsetting from '../icons/tagsetting.vue'
+import jump from '../icons/jump.vue'
 import { useEditorStore } from '@/stores/editor'
 import { Mode } from '@/enums/enums'
 

@@ -188,10 +188,7 @@ export const useEditorStore = defineStore('editorStore', () => {
       echoToAdd.value.images = imagesToAdd.value
 
       // 回填标签板块
-      echoToAdd.value.tags = tagToAdd.value?.trim()
-        ? [{ name: tagToAdd.value.trim() }]
-        : []
-
+      echoToAdd.value.tags = tagToAdd.value?.trim() ? [{ name: tagToAdd.value.trim() }] : []
 
       // 检查Echo是否为空
       if (checkIsEmptyEcho(echoToAdd.value)) {
