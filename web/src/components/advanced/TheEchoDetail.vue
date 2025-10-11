@@ -74,7 +74,7 @@
         <div class="flex justify-start text-sm text-slate-500 mr-1">
           {{ formatDate(props.echo.created_at) }}
         </div>
-         <!-- 标签 -->
+        <!-- 标签 -->
         <div class="text-sm text-gray-300 w-18 truncate text-nowrap">
           <span>{{ props.echo.tags ? `#${props.echo.tags[0]?.name}` : '' }}</span>
         </div>

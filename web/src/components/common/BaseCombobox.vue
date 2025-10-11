@@ -59,8 +59,9 @@
           >
             <!-- Existing Options -->
             <div
-            @click="toggleManaging"
-            class="px-2 py-1 w-30 text-gray-500 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold mx-auto hover:text-amber-600 border-b-2 border-dashed" >
+              @click="toggleManaging"
+              class="px-2 py-1 w-30 text-gray-500 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold mx-auto hover:text-amber-600 border-b-2 border-dashed"
+            >
               <tagsetting class="w-4 h-4" />
               标签管理
             </div>
@@ -68,11 +69,9 @@
               v-for="item in filteredOptions"
               :key="getOptionLabel(item) || String(item)"
               :value="item"
-              class="!w-full !max-w-32 truncate  text-gray-500 hover:text-gray-800 text-lg cursor-pointer select-none px-4 py-1 whitespace-nowrap text-ellipsis"
+              class="!w-full !max-w-32 truncate text-gray-500 hover:text-gray-800 text-lg cursor-pointer select-none px-4 py-1 whitespace-nowrap text-ellipsis"
             >
-              <slot name="option" :option="item">
-                # {{ getOptionLabel(item) }}
-              </slot>
+              <slot name="option" :option="item"> # {{ getOptionLabel(item) }} </slot>
             </ComboboxOption>
           </ComboboxOptions>
         </Transition>
@@ -90,7 +89,6 @@ import {
   ComboboxOption,
   ComboboxButton,
 } from '@headlessui/vue'
-import { Transition } from 'vue'
 import tagsetting from '../icons/tagsetting.vue'
 import { useEditorStore } from '@/stores/editor'
 import { Mode } from '@/enums/enums'
@@ -109,7 +107,7 @@ const props = defineProps<{
   /** 输入框提示文本 */
   placeholder?: string
   /** 自定义选项比对逻辑或字段名 */
-  by?: string | ((a: any, b: any) => boolean)
+  by?: string | ((a: object | string, b: object | string) => boolean)
   /** 显示选项时使用的字段名 */
   labelField?: string
   /** 是否允许创建新选项 */
@@ -147,7 +145,7 @@ watch(internalValue, (val) => {
   emit('update:modelValue', val)
 })
 
-const onSelect = (val: any) => {
+const onSelect = (val: object | string) => {
   internalValue.value = val
   query.value = getOptionLabel(val) // 更新显示
   dropdownOpen.value = multiple
@@ -167,7 +165,7 @@ const onInputChange = (e: Event) => {
 
   // 如果输入内容刚好匹配某个现有选项 -> 自动选择该项
   const matched = props.options.find(
-    (option) => getOptionLabel(option).toLowerCase() === value.toLowerCase()
+    (option) => getOptionLabel(option).toLowerCase() === value.toLowerCase(),
   )
   if (matched) {
     internalValue.value = matched
@@ -197,7 +195,7 @@ const onBlurOutside = (e: FocusEvent) => {
   }
 }
 
-const getOptionLabel = (option: any): string => {
+const getOptionLabel = (option: object | string): string => {
   if (option == null) return ''
   if (typeof option === 'object' && !Array.isArray(option)) {
     const record = option as Record<string, unknown>
@@ -215,7 +213,7 @@ const filteredOptions = computed(() => {
   return props.options.filter((option) => getOptionLabel(option).toLowerCase().includes(lowerQuery))
 })
 
-const displayValue = (item: any) => {
+const displayValue = (item: object | string) => {
   if (Array.isArray(item)) return item.map((i) => getOptionLabel(i)).join(', ')
   return getOptionLabel(item)
 }

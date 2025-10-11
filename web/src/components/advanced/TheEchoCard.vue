@@ -8,7 +8,8 @@
         <div class="w-2 h-2 rounded-full bg-orange-600 mr-2"></div>
         <!-- 具体日期时间 -->
         <div
-          class="flex justify-start text-sm text-orange-500 hover:underline hover:decoration-offset-3 hover:decoration-1 mr-1">
+          class="flex justify-start text-sm text-orange-500 hover:underline hover:decoration-offset-3 hover:decoration-1 mr-1"
+        >
           {{ formatDate(props.echo.created_at) }}
         </div>
         <!-- 标签 -->
@@ -20,36 +21,52 @@
       <!-- 操作按钮 -->
       <div ref="menuRef" class="relative flex items-center justify-center gap-1 h-auto">
         <!-- 更多操作 -->
-        <div v-if="!showMenu" @click.stop="toggleMenu"
-          class="w-7 h-7 flex items-center justify-center bg-white ring-1 ring-gray-200 ring-inset rounded-full shadow-sm hover:shadow-md transition">
+        <div
+          v-if="!showMenu"
+          @click.stop="toggleMenu"
+          class="w-7 h-7 flex items-center justify-center bg-white ring-1 ring-gray-200 ring-inset rounded-full shadow-sm hover:shadow-md transition"
+        >
           <!-- 默认图标，展开后隐藏 -->
           <More class="w-5 h-5" />
         </div>
 
         <!-- 展开后的按钮组 -->
-        <div v-if="showMenu"
-          class="flex items-center gap-4 bg-white rounded-full px-2 py-1 shadow-sm hover:shadow-md ring-1 ring-gray-200 ring-inset">
+        <div
+          v-if="showMenu"
+          class="flex items-center gap-4 bg-white rounded-full px-2 py-1 shadow-sm hover:shadow-md ring-1 ring-gray-200 ring-inset"
+        >
           <!-- 是否隐私 -->
           <span v-if="props.echo.private" title="私密状态">
             <Lock />
           </span>
 
           <!-- 删除 -->
-          <button v-if="userStore.isLogin" @click="handleDeleteEcho(props.echo.id)" title="删除"
-            class="transform transition-transform duration-200 hover:scale-120">
+          <button
+            v-if="userStore.isLogin"
+            @click="handleDeleteEcho(props.echo.id)"
+            title="删除"
+            class="transform transition-transform duration-200 hover:scale-120"
+          >
             <Roll />
           </button>
 
           <!-- 更新 -->
-          <button v-if="userStore.isLogin" @click="handleUpdateEcho()" title="更新"
-            class="transform transition-transform duration-200 hover:scale-120">
+          <button
+            v-if="userStore.isLogin"
+            @click="handleUpdateEcho()"
+            title="更新"
+            class="transform transition-transform duration-200 hover:scale-120"
+          >
             <EditEcho />
           </button>
 
           <!-- 展开内容 -->
 
-          <button @click="handleExpandEcho(echo.id)" title="展开Echo"
-            class="transform transition-transform duration-200 hover:scale-120">
+          <button
+            @click="handleExpandEcho(echo.id)"
+            title="展开Echo"
+            class="transform transition-transform duration-200 hover:scale-120"
+          >
             <Expand />
           </button>
 
@@ -57,8 +74,11 @@
           <div class="flex items-center justify-end" title="点赞">
             <div class="flex items-center gap-1">
               <!-- 点赞按钮   -->
-              <button @click="handleLikeEcho(props.echo.id)" title="点赞"
-                class="transform transition-transform duration-200 hover:scale-120">
+              <button
+                @click="handleLikeEcho(props.echo.id)"
+                title="点赞"
+                class="transform transition-transform duration-200 hover:scale-120"
+              >
                 <GrayLike class="w-4 h-4 transition-colors duration-200 hover:text-red-500" />
               </button>
 
@@ -80,11 +100,18 @@
 
         <!-- 内容 -->
         <div class="mx-auto w-11/12 pl-1">
-          <MdPreview :id="previewOptions.proviewId" :modelValue="props.echo.content" :theme="previewOptions.theme"
-            :show-code-row-number="previewOptions.showCodeRowNumber" :preview-theme="previewOptions.previewTheme"
-            :code-theme="previewOptions.codeTheme" :code-style-reverse="previewOptions.codeStyleReverse"
-            :no-img-zoom-in="previewOptions.noImgZoomIn" :code-foldable="previewOptions.codeFoldable"
-            :auto-fold-threshold="previewOptions.autoFoldThreshold" />
+          <MdPreview
+            :id="previewOptions.proviewId"
+            :modelValue="props.echo.content"
+            :theme="previewOptions.theme"
+            :show-code-row-number="previewOptions.showCodeRowNumber"
+            :preview-theme="previewOptions.previewTheme"
+            :code-theme="previewOptions.codeTheme"
+            :code-style-reverse="previewOptions.codeStyleReverse"
+            :no-img-zoom-in="previewOptions.noImgZoomIn"
+            :code-foldable="previewOptions.codeFoldable"
+            :auto-fold-threshold="previewOptions.autoFoldThreshold"
+          />
         </div>
 
         <!-- 扩展内容 -->
@@ -95,15 +122,19 @@
           <div v-if="props.echo.extension_type === ExtensionType.VIDEO">
             <TheVideoCard :videoId="props.echo.extension" class="px-2 mx-auto hover:shadow-md" />
           </div>
-          <TheGithubCard v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ" :GithubURL="props.echo.extension"
-            class="px-2 mx-auto hover:shadow-md" />
-          <TheWebsiteCard v-if="props.echo.extension_type === ExtensionType.WEBSITE" :website="props.echo.extension"
-            class="px-2 mx-auto hover:shadow-md" />
+          <TheGithubCard
+            v-if="props.echo.extension_type === ExtensionType.GITHUBPROJ"
+            :GithubURL="props.echo.extension"
+            class="px-2 mx-auto hover:shadow-md"
+          />
+          <TheWebsiteCard
+            v-if="props.echo.extension_type === ExtensionType.WEBSITE"
+            :website="props.echo.extension"
+            class="px-2 mx-auto hover:shadow-md"
+          />
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 

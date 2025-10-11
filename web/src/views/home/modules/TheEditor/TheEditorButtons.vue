@@ -37,7 +37,7 @@
           <BaseCombobox
             :key="tagOptions.length"
             v-model="tagToAdd"
-            :multiple=false
+            :multiple="false"
             :options="tagOptions"
             placeholder="标签"
             class="rounded-sm border-none w-auto"

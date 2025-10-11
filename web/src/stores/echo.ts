@@ -23,7 +23,7 @@ export const useEchoStore = defineStore('echoStore', () => {
   const echoToUpdate = ref<App.Api.Ech0.EchoToUpdate | null>(null) // 用于更新Echo的临时存储
   const tagList = ref<App.Api.Ech0.Tag[]>([]) // 标签列表
   const tagOptions = computed<string[]>(() => {
-    return tagList.value.map((tag) => (tag.name))
+    return tagList.value.map((tag) => tag.name)
   })
 
   // 监听 searchingMode 的变化
