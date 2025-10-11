@@ -66,7 +66,6 @@
           </button>
 
           <!-- 展开内容 -->
-
           <button
             @click="handleExpandEcho(echo.id)"
             title="展开Echo"
@@ -149,7 +148,7 @@
 <script setup lang="ts">
 import { MdPreview } from 'md-editor-v3'
 import { onMounted, ref, onBeforeUnmount } from 'vue'
-import { fetchDeleteEcho, fetchLikeEcho } from '@/service/api'
+import { fetchDeleteEcho, fetchLikeEcho, fetchGetEchoById } from '@/service/api'
 import { theToast } from '@/utils/toast'
 import { useUserStore } from '@/stores/user'
 import TheGithubCard from './TheGithubCard.vue'
@@ -214,7 +213,7 @@ const handleDeleteEcho = (echoId: number) => {
   })
 }
 
-const handleUpdateEcho = () => {
+const handleUpdateEcho = async () => {
   if (editorStore.isUpdateMode) {
     // 如果已经在更新模式，返回顶部并提示用户先退出更新模式
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -222,7 +221,15 @@ const handleUpdateEcho = () => {
     return
   }
 
-  echoStore.echoToUpdate = props.echo
+  // 进入更新模式
+  // echoStore.echoToUpdate = props.echo // 直接传对象会有可能没有拉取到最新数据
+  const res = await fetchGetEchoById(String(props.echo.id))
+  if (res.code === 1 && res.data) {
+    echoStore.echoToUpdate = res.data
+  } else {
+    echoStore.echoToUpdate = props.echo
+  }
+
   editorStore.isUpdateMode = true
 }
 
