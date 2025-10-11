@@ -404,43 +404,43 @@ func (echoService *EchoService) DeleteTag(userid, id uint) error {
 func (echoService *EchoService) ProcessEchoTags(ctx context.Context, echo *model.Echo) error {
 	var processedTags []model.Tag
 
-    // 一次性查询已有标签
-    var names []string
-    for _, tag := range echo.Tags {
-        name := strings.TrimSpace(strings.TrimPrefix(tag.Name, "#"))
-        if name != "" {
-            names = append(names, name)
-        }
-    }
+	// 一次性查询已有标签
+	var names []string
+	for _, tag := range echo.Tags {
+		name := strings.TrimSpace(strings.TrimPrefix(tag.Name, "#"))
+		if name != "" {
+			names = append(names, name)
+		}
+	}
 
-    existingTags, err := echoService.echoRepository.GetTagsByNames(names)
-    if err != nil {
-        return err
-    }
+	existingTags, err := echoService.echoRepository.GetTagsByNames(names)
+	if err != nil {
+		return err
+	}
 
-    existingMap := make(map[string]*model.Tag)
-    for _, t := range existingTags {
-        existingMap[t.Name] = t
-    }
+	existingMap := make(map[string]*model.Tag)
+	for _, t := range existingTags {
+		existingMap[t.Name] = t
+	}
 
-    // 处理标签（在同一事务内）
-    for _, name := range names {
-        if existing, ok := existingMap[name]; ok {
-            // 标签已存在
-            if err := echoService.echoRepository.IncrementTagUsageCount(ctx, existing.ID); err != nil {
-                return err
-            }
-            processedTags = append(processedTags, *existing)
-        } else {
-            // 新建标签
-            newTag := model.Tag{Name: name, UsageCount: 1}
-            if err := echoService.echoRepository.CreateTag(ctx, &newTag); err != nil {
-                return err
-            }
-            processedTags = append(processedTags, newTag)
-        }
-    }
+	// 处理标签（在同一事务内）
+	for _, name := range names {
+		if existing, ok := existingMap[name]; ok {
+			// 标签已存在
+			if err := echoService.echoRepository.IncrementTagUsageCount(ctx, existing.ID); err != nil {
+				return err
+			}
+			processedTags = append(processedTags, *existing)
+		} else {
+			// 新建标签
+			newTag := model.Tag{Name: name, UsageCount: 1}
+			if err := echoService.echoRepository.CreateTag(ctx, &newTag); err != nil {
+				return err
+			}
+			processedTags = append(processedTags, newTag)
+		}
+	}
 
-    echo.Tags = processedTags
-    return nil
+	echo.Tags = processedTags
+	return nil
 }

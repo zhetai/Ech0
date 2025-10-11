@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -251,16 +250,12 @@ func (echoRepository *EchoRepository) UpdateEcho(ctx context.Context, echo *mode
 		}
 	}
 
-	fmt.Println("new tags", echo.Tags)
-
 	// 4. 更新标签关联关系
 	if len(echo.Tags) > 0 {
 		if err := echoRepository.getDB(ctx).Model(echo).Association("Tags").Replace(echo.Tags); err != nil {
 			return err
 		}
 	}
-
-	fmt.Println("new Echo", *echo)
 
 	// 提交事务
 	return nil

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -212,8 +211,6 @@ func (echoHandler *EchoHandler) UpdateEcho() gin.HandlerFunc {
 			}
 		}
 
-		fmt.Println("tags", updateEcho.Tags)
-
 		userId := ctx.MustGet("userid").(uint)
 		if err := echoHandler.echoService.UpdateEcho(userId, &updateEcho); err != nil {
 			return res.Response{
@@ -400,7 +397,7 @@ func (echoHandler *EchoHandler) GetEchosByTagId() gin.HandlerFunc {
 
 		return res.Response{
 			// Data: result,
-			Msg:  commonModel.GET_ECHOS_BY_TAG_ID_SUCCESS,
+			Msg: commonModel.GET_ECHOS_BY_TAG_ID_SUCCESS,
 		}
 	})
 }

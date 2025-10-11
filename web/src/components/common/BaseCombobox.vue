@@ -195,7 +195,7 @@ const onBlurOutside = (e: FocusEvent) => {
   }
 }
 
-const getOptionLabel = (option: object | string): string => {
+const getOptionLabel = (option: unknown): string => {
   if (option == null) return ''
   if (typeof option === 'object' && !Array.isArray(option)) {
     const record = option as Record<string, unknown>
@@ -213,7 +213,7 @@ const filteredOptions = computed(() => {
   return props.options.filter((option) => getOptionLabel(option).toLowerCase().includes(lowerQuery))
 })
 
-const displayValue = (item: object | string) => {
+const displayValue = (item: unknown) => {
   if (Array.isArray(item)) return item.map((i) => getOptionLabel(i)).join(', ')
   return getOptionLabel(item)
 }

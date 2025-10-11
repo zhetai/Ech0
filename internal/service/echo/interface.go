@@ -32,7 +32,7 @@ type EchoServiceInterface interface {
 
 	// GetAllTags 获取所有标签
 	GetAllTags() ([]model.Tag, error)
-	
+
 	// DeleteTag 删除标签
 	DeleteTag(userid, id uint) error
 }
