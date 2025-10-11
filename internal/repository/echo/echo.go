@@ -121,7 +121,7 @@ func (echoRepository *EchoRepository) GetEchosById(id uint) (*model.Echo, error)
 	// 缓存未命中，查询数据库
 	// 使用 Preload 预加载关联的 Images
 	var echo model.Echo
-	result := echoRepository.db().Preload("Images").First(&echo, id)
+	result := echoRepository.db().Preload("Images").Preload("Tags").First(&echo, id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil // 如果未找到记录，则返回 nil
@@ -190,6 +190,7 @@ func (echoRepository *EchoRepository) GetTodayEchos(showPrivate bool) []model.Ec
 	// 获取总数并进行分页查询
 	query.
 		Preload("Images").
+		Preload("Tags").
 		Order("created_at DESC").
 		Find(&echos)
 
