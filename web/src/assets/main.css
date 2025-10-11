@@ -21,9 +21,9 @@ body {
 
   /* 大屏幕放大 */
   @media (min-width: 1920px) {
-    /* body {
-      zoom: 1.1;
-    } */
+    body {
+      zoom: 125%;
+    }
   }
 }
 

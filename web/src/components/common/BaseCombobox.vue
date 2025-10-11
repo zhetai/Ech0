@@ -60,8 +60,8 @@
             <!-- Existing Options -->
             <div
             @click="toggleManaging"
-            class="px-2 py-1 w-30 text-gray-500 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold mx-auto hover:text-amber-600" >
-              <tagsetting class="w-6 h-6" />
+            class="px-2 py-1 w-30 text-gray-500 cursor-pointer flex items-center justify-start gap-2 text-lg font-bold mx-auto hover:text-amber-600 border-b-2 border-dashed" >
+              <tagsetting class="w-4 h-4" />
               标签管理
             </div>
             <ComboboxOption
