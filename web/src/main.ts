@@ -48,6 +48,12 @@ config({
       instance: mermaid,
     },
   },
+  codeMirrorExtensions(extensions) {
+    return [
+      // 移除 linkShortener
+      ...extensions.filter((ext) => ext.type !== 'linkShortener'),
+    ]
+  }
 })
 
 // Md-Editor End
