@@ -382,21 +382,34 @@ func (echoRepository *EchoRepository) GetEchosByTagId(
 		return db
 	}
 
-	if err := applyFilters(echoRepository.db().Model(&model.Echo{})).
-		Distinct("echos.id").
-		Count(&total).Error; err != nil {
+	countQuery := applyFilters(echoRepository.db().Model(&model.Echo{}))
+
+	if err := countQuery.Distinct("echos.id").Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
 	offset := (page - 1) * pageSize
 
-	if err := applyFilters(echoRepository.db().Model(&model.Echo{})).
+	var echoIDs []uint
+	idsQuery := applyFilters(echoRepository.db().Model(&model.Echo{}))
+	if err := idsQuery.
 		Distinct("echos.id").
-		Preload("Images").
-		Preload("Tags").
 		Order("echos.created_at DESC").
 		Limit(pageSize).
 		Offset(offset).
+		Pluck("echos.id", &echoIDs).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if len(echoIDs) == 0 {
+		return []model.Echo{}, total, nil
+	}
+
+	if err := echoRepository.db().
+		Where("id IN ?", echoIDs).
+		Preload("Images").
+		Preload("Tags").
+		Order("created_at DESC").
 		Find(&echos).Error; err != nil {
 		return nil, 0, err
 	}

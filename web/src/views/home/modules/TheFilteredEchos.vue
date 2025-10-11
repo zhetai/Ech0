@@ -11,13 +11,13 @@
       </div>
     </div>
     <!-- 加载更多 -->
-    <div v-if="echoStore.hasMore && !echoStore.isLoading" class="mb-4 mt-1 -ml-2">
+    <div v-if="echoStore.filteredHasMore && !echoStore.isLoading" class="mb-4 mt-1 -ml-2">
       <BaseButton @click="handleLoadMore" class="rounded-full bg-white !active:bg-gray-100">
         <span class="text-gray-600 text-md text-center px-2 py-1">继续装填</span>
       </BaseButton>
     </div>
     <!-- 没有更多 -->
-    <div v-if="!echoStore.hasMore && !echoStore.isLoading" class="mx-auto my-5 text-center">
+    <div v-if="!echoStore.filteredHasMore && !echoStore.isLoading" class="mx-auto my-5 text-center">
       <span class="text-xl text-gray-400">没有啦！🎉</span>
     </div>
     <!-- 加载中 -->

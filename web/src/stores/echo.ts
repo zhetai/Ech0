@@ -37,7 +37,10 @@ export const useEchoStore = defineStore('echoStore', () => {
   const filteredHasMore = computed(() => {
     return filteredTotal.value > filteredEchoList.value.length
   }) // 过滤后是否还有更多数据可加载
-  const filteredTagId = ref<number>() // 当前用于过滤的标签ID
+  const filteredTag = ref<App.Api.Ech0.Tag | null>(null) // 当前用于过滤的标签
+  const filteredSearchingMode = computed(() => {
+    return filteredSearchValue.value.length > 0
+  }) // 过滤后是否处于搜索模式
 
   // 监听 searchingMode 的变化
   watch(searchingMode, (newValue, oldValue) => {
@@ -46,6 +49,13 @@ export const useEchoStore = defineStore('echoStore', () => {
       refreshEchos()
     }
   })
+
+  // watch(filteredSearchingMode, (newValue, oldValue) => {
+  //   // 如果从搜索模式切换到非搜索模式，重置当前页码和数据列表
+  //   if (newValue === false && oldValue === true) {
+  //     refreshEchosForFilter()
+  //   }
+  // })
 
   // 监听 isFilteringMode 的变化
   watch(isFilteringMode, (newValue, oldValue) => {
@@ -150,12 +160,12 @@ export const useEchoStore = defineStore('echoStore', () => {
   async function getEchosByPageForFilter() {
     if (filteredCurrent.value <= filteredPage.value) return
 
-    if (!filteredTagId.value) return
+    if (!filteredTag.value) return
 
     isLoading.value = true
 
     await fetchGetEchosByTagId(
-      filteredTagId.value,
+      filteredTag.value.id,
       {
         page: filteredCurrent.value,
         pageSize: filteredPageSize.value,
@@ -182,6 +192,13 @@ export const useEchoStore = defineStore('echoStore', () => {
       .finally(() => {
         isLoading.value = false
       })
+  }
+
+  const refreshForFilterSearch = () => {
+    filteredCurrent.value = 1
+    filteredPage.value = 0
+    filteredEchoList.value = []
+    filteredEchoIndexMap.value.clear()
   }
 
   const init = () => {
@@ -211,7 +228,9 @@ export const useEchoStore = defineStore('echoStore', () => {
     filteredCurrent,
     filteredSearchValue,
     filteredHasMore,
-    filteredTagId,
+    filteredTag,
+    filteredSearchingMode,
+    refreshForFilterSearch,
     getEchosByPageForFilter,
     refreshEchosForFilter,
     getEchosByPage,
