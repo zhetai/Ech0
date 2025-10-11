@@ -58,7 +58,7 @@
             />
           </div> -->
       <!-- Publish -->
-      <div v-if="currentMode !== Mode.Panel && isUpdateMode === false">
+      <div v-if="(currentMode !== Mode.Panel && currentMode !== Mode.TagManage && currentMode !== Mode.PlayMusic) && isUpdateMode === false">
         <BaseButton
           :icon="Publish"
           @click="handleAddorUpdate"
