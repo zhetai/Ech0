@@ -176,7 +176,7 @@ const handleLikeEcho = (echoId: number) => {
   isLikeAnimating.value = true
   setTimeout(() => {
     isLikeAnimating.value = false
-  }, 150) // 对应 duration-150
+  }, 250) // 对应 duration-250
 
   // 检查LocalStorage中是否已经点赞过
   if (hasLikedEcho(echoId)) {
@@ -199,7 +199,7 @@ const handleShareEcho = (echoId: number) => {
   isShareAnimating.value = true
   setTimeout(() => {
     isShareAnimating.value = false
-  }, 150) // 对应 duration-150
+  }, 250) // 对应 duration-250
 
   const shareUrl = `${window.location.origin}/echo/${echoId}`
   navigator.clipboard.writeText(shareUrl).then(() => {
