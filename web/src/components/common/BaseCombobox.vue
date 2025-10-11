@@ -70,7 +70,7 @@
               v-for="item in filteredOptions"
               :key="getOptionLabel(item) || String(item)"
               :value="item"
-              class="!w-full !max-w-32 truncate text-gray-300 hover:text-gray-800 text-lg cursor-pointer select-none px-4 py-1 whitespace-nowrap text-ellipsis"
+              class="!w-full !max-w-32 truncate text-gray-300 hover:text-gray-500 text-lg cursor-pointer select-none px-4 py-1 whitespace-nowrap text-ellipsis"
             >
               <slot name="option" :option="item"> # {{ getOptionLabel(item) }} </slot>
             </ComboboxOption>

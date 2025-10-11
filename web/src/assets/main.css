@@ -19,12 +19,13 @@ body {
 
   background-color: #f4f1ec;
 
-  /* 大屏幕放大 */
-  @media (min-width: 1920px) {
+  /* 大屏幕放大(TODO： 放大后tooltip会有偏移bug) */
+  /* @media (min-width: 1920px) {
     body {
-      zoom: 125%;
+      transform: scale(1.25);
+      transform-origin: top center;
     }
-  }
+  } */
 }
 
 ::selection {
