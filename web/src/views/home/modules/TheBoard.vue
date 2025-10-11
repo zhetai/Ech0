@@ -7,7 +7,7 @@
       <TheTitleAndNav />
 
       <div class="mt-8 px-3 gap-2 font-serif flex justify-between items-baseline">
-        <div class="text-[#5d7183] text-md">
+        <div class="text-[#5d7183] text-lg">
           <span class="font-bold">欢迎访问本站!</span>
         </div>
         <div class="text-gray-300 text-xs italic">
