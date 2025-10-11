@@ -35,4 +35,9 @@ type EchoServiceInterface interface {
 
 	// DeleteTag 删除标签
 	DeleteTag(userid, id uint) error
+
+	GetEchosByTagId(
+		userId, tagId uint,
+		pageQueryDto commonModel.PageQueryDto,
+	) (commonModel.PageQueryResult[[]model.Echo], error)
 }

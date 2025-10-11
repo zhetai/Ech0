@@ -45,4 +45,11 @@ type EchoRepositoryInterface interface {
 
 	// IncrementTagUsageCount 增加标签的使用计数
 	IncrementTagUsageCount(ctx context.Context, tagID uint) error
+
+	GetEchosByTagId(
+		tagId uint,
+		page, pageSize int,
+		search string,
+		showPrivate bool,
+	) ([]model.Echo, int64, error)
 }

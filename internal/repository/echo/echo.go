@@ -354,3 +354,52 @@ func (echoRepository *EchoRepository) IncrementTagUsageCount(ctx context.Context
 		Where("id = ?", tagID).
 		UpdateColumn("usage_count", gorm.Expr("usage_count + ?", 1)).Error
 }
+
+// GetEchosByTagId 根据标签ID获取关联的 Echo 列表
+func (echoRepository *EchoRepository) GetEchosByTagId(
+	tagId uint,
+	page, pageSize int,
+	search string,
+	showPrivate bool,
+) ([]model.Echo, int64, error) {
+	var (
+		echos []model.Echo
+		total int64
+	)
+
+	applyFilters := func(db *gorm.DB) *gorm.DB {
+		db = db.Joins("JOIN echo_tags ON echo_tags.echo_id = echos.id").
+			Where("echo_tags.tag_id = ?", tagId)
+
+		if !showPrivate {
+			db = db.Where("echos.private = ?", false)
+		}
+
+		if search != "" {
+			db = db.Where("echos.content LIKE ?", "%"+search+"%")
+		}
+
+		return db
+	}
+
+	if err := applyFilters(echoRepository.db().Model(&model.Echo{})).
+		Distinct("echos.id").
+		Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	offset := (page - 1) * pageSize
+
+	if err := applyFilters(echoRepository.db().Model(&model.Echo{})).
+		Distinct("echos.id").
+		Preload("Images").
+		Preload("Tags").
+		Order("echos.created_at DESC").
+		Limit(pageSize).
+		Offset(offset).
+		Find(&echos).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return echos, total, nil
+}
