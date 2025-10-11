@@ -164,13 +164,11 @@ export const useEchoStore = defineStore('echoStore', () => {
 
     isLoading.value = true
 
-    await fetchGetEchosByTagId(
-      filteredTag.value.id,
-      {
-        page: filteredCurrent.value,
-        pageSize: filteredPageSize.value,
-        search: filteredSearchValue.value || '',
-      })
+    await fetchGetEchosByTagId(filteredTag.value.id, {
+      page: filteredCurrent.value,
+      pageSize: filteredPageSize.value,
+      search: filteredSearchValue.value || '',
+    })
       .then((res) => {
         if (res.code === 1) {
           filteredTotal.value = res.data.total

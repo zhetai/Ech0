@@ -4,7 +4,7 @@
       <!-- 搜索与过滤 -->
       <div class="flex justify-start items-center gap-2">
         <BaseInput
-        v-if="!isFilteringMode"
+          v-if="!isFilteringMode"
           title="搜索"
           type="text"
           v-model="searchContent"
@@ -15,10 +15,12 @@
         />
         <!-- 过滤条件 -->
         <Filter v-if="isFilteringMode" class="w-7 h-7" />
-        <div v-if="isFilteringMode && filteredTag" @click="handleCancelFilter"
+        <div
+          v-if="isFilteringMode && filteredTag"
+          @click="handleCancelFilter"
           class="w-34 text-nowrap flex items-center justify-between px-1 py-0.5 text-gray-300 border border-dashed border-gray-400 rounded-md hover:cursor-pointer hover:line-through hover:text-gray-500"
         >
-          <p class="text-nowrap truncate ">{{ filteredTag.name }}</p>
+          <p class="text-nowrap truncate">{{ filteredTag.name }}</p>
           <Close class="inline w-4 h-4 ml-1" />
         </div>
       </div>
@@ -67,8 +69,8 @@ import { ref } from 'vue'
 import Close from '@/components/icons/close.vue'
 import Filter from '@/components/icons/filter.vue'
 const echoStore = useEchoStore()
-const { refreshForSearch, getEchosByPage, refreshForFilterSearch, getEchosByPageForFilter } = echoStore
-const { searchingMode, filteredTag, isFilteringMode, filteredSearchingMode } = storeToRefs(echoStore)
+const { refreshForSearch, getEchosByPage } = echoStore
+const { searchingMode, filteredTag, isFilteringMode } = storeToRefs(echoStore)
 
 const searchContent = ref<string>('')
 
@@ -77,11 +79,10 @@ const handleSearch = () => {
 
   // 设置搜索内容
 
-    echoStore.searchValue = searchContent.value
-
+  echoStore.searchValue = searchContent.value
 
   // 判断是否是搜索模式
-    if (searchingMode.value) {
+  if (searchingMode.value) {
     // 初始化搜索
     refreshForSearch()
     // 开始搜索

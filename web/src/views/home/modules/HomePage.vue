@@ -60,7 +60,7 @@ const echoStore = useEchoStore()
 const { getTodos } = todoStore
 const { todoMode, todos } = storeToRefs(todoStore)
 const { isLogin } = storeToRefs(userStore)
-const { isFilteringMode} = storeToRefs(echoStore)
+const { isFilteringMode } = storeToRefs(echoStore)
 
 const mainColumn = ref<HTMLElement | null>(null)
 const backTopStyle = ref({ right: '100px' }) // 默认 fallback
