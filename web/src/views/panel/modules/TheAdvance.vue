@@ -3,11 +3,11 @@
     <!-- 存储设置 -->
     <TheStorageSetting />
 
-    <!-- 数据管理 -->
-    <TheBackupSetting />
-
     <!-- Webhook 设置 -->
     <TheWebhookSetting />
+
+    <!-- 数据管理 -->
+    <TheBackupSetting />
   </div>
 </template>
 

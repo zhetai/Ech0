@@ -61,17 +61,17 @@
       </div>
       <div
         v-else-if="Webhooks.length !== 0 && !webhookEdit"
-        class="mt-2 border border-gray-200 rounded-md p-1"
+        class="mt-2 border border-dashed border-gray-300 rounded-md p-2 flex flex-col gap-2 max-h-60 overflow-y-auto"
       >
         <div
           v-for="(webhook, index) in Webhooks"
           :key="index"
-          class="flex w-full flex-row items-center justify-between text-gray-500 gap-3 h-10 border-b border-gray-200 last:border-0"
+          class="flex w-full flex-row items-center justify-between text-gray-500 gap-3 h-10 border-b border-gray-200 last:border-0 flex-shrink-0"
         >
-          <div class="w-60 flex items-center gap-2">
-            <h2 class="w-3/4 font-semibold truncate">{{ webhook.name }}</h2>
-            |
-            <span class="truncate max-w-full" :title="webhook.url" style="display: inline-block">
+          <div class="w-60 flex-nowrap flex items-start gap-2">
+            <span class="w-26 font-bold text-nowrap overflow-x-auto">{{ webhook.name }}</span>
+            <span class="text-gray-600 font-bold"> | </span>
+            <span class="w-32 overflow-x-auto" :title="webhook.url">
               {{ webhook.url }}
             </span>
           </div>

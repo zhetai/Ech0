@@ -29,20 +29,23 @@
       <!-- Connect列表 -->
       <div
         v-if="connects.length === 0 && !connectsEdit"
-        class="flex flex-col items-center justify-center mt-2"
+        class="flex flex-col items-center justify-center mt-2 border border-dashed border-gray-300 rounded-md p-1"
       >
         <span class="text-gray-400">暂无连接...</span>
       </div>
-      <div v-else class="mt-2">
+      <div
+        v-else
+        class="mt-2 border border-dashed border-gray-300 rounded-md p-2 flex flex-col overflow-hidden gap-2 max-h-60 overflow-y-auto"
+      >
         <div
           v-for="(connect, index) in connects"
           :key="index"
-          class="flex flex-row items-center justify-between text-gray-500 gap-3 h-10"
+          class="flex flex-row items-center justify-between text-gray-500 gap-3 h-10 border-b border-gray-200 last:border-0 flex-shrink-0"
         >
           <div class="flex items-center gap-2 flex-1 min-w-0">
             <h2 class="font-semibold w-auto flex-shrink-0">Connect {{ index + 1 }}:</h2>
             <span
-              class="truncate max-w-full"
+              class="overflow-x-auto max-w-full"
               :title="connect.connect_url"
               style="display: inline-block"
               >{{ connect.connect_url }}</span
