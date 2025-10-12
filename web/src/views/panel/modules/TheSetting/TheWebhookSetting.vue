@@ -2,7 +2,7 @@
   <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
     <!-- Webhook 设置 -->
     <div class="w-full">
-      <div class="flex flex-row items-center justify-between mb-3">
+      <div class="flex flex-row items-center justify-between mb-4">
         <h1 class="text-gray-600 font-bold text-lg">Webhook</h1>
         <div class="flex flex-row items-center justify-end gap-2 w-14">
           <button @click="webhookEdit = !webhookEdit" title="编辑">
@@ -13,7 +13,44 @@
       </div>
 
       <!-- 添加 Webhook -->
-      <div v-if="webhookEdit" class="mb-2 border border-gray-300 border-dashed rounded-md"></div>
+      <div
+        v-if="webhookEdit"
+        class="mb-2 border border-gray-300 border-dashed rounded-md flex flex-col gap-2 p-2 text-gray-400"
+      >
+        <div>
+          <span>Webhook 名称：</span>
+          <BaseInput class="w-full" v-model="webhookToAdd.name" placeholder="Webhook 名称" />
+        </div>
+
+        <div>
+          <span>Webhook 地址：</span>
+          <BaseInput
+            class="w-full"
+            v-model="webhookToAdd.url"
+            placeholder="Webhook 地址（带https/http）"
+          />
+        </div>
+
+        <div class="flex items-center justify-center my-2">
+          <BaseButton
+            :disabled="isSubmitting"
+            @click="handleCancelAddWebhook"
+            class="w-1/3 h-8 rounded-md flex justify-center mr-2"
+            title="取消添加"
+          >
+            <span>取消</span>
+          </BaseButton>
+
+          <BaseButton
+            :loading="isSubmitting"
+            @click="handleAddWebhook"
+            class="w-1/3 h-8 rounded-md flex justify-center"
+            title="添加 Webhook"
+          >
+            <span class="text-gray-600">添加</span>
+          </BaseButton>
+        </div>
+      </div>
 
       <!-- Webhook 列表 -->
       <div
@@ -22,23 +59,26 @@
       >
         <span class="text-gray-400">暂无 Webhook...</span>
       </div>
-      <div v-else class="mt-2">
+      <div
+        v-else-if="Webhooks.length !== 0 && !webhookEdit"
+        class="mt-2 border border-gray-200 rounded-md p-1"
+      >
         <div
           v-for="(webhook, index) in Webhooks"
           :key="index"
-          class="flex flex-row items-center justify-between text-gray-500 gap-3 h-10 border-b border-gray-200 last:border-0"
+          class="flex w-full flex-row items-center justify-between text-gray-500 gap-3 h-10 border-b border-gray-200 last:border-0"
         >
-          <div class="flex items-center gap-2 flex-1 min-w-0">
-            <h2 class="font-semibold w-auto flex-shrink-0 w-30 truncate">{{ webhook.name }}</h2>
+          <div class="w-60 flex items-center gap-2">
+            <h2 class="w-3/4 font-semibold truncate">{{ webhook.name }}</h2>
+            |
             <span class="truncate max-w-full" :title="webhook.url" style="display: inline-block">
               {{ webhook.url }}
             </span>
           </div>
           <BaseButton
             :icon="Trashbin"
-            :disabled="!webhookEdit"
             @click="handleDeleteWebhook(webhook.id)"
-            class="w-7 h-7 rounded-md flex-shrink-0"
+            class="w-7 h-7 rounded-md"
             title="删除 Webhook"
           />
         </div>
@@ -53,11 +93,10 @@ import BaseButton from '@/components/common/BaseButton.vue'
 import Edit from '@/components/icons/edit.vue'
 import Trashbin from '@/components/icons/trashbin.vue'
 import Close from '@/components/icons/close.vue'
-import Publish from '@/components/icons/publish.vue'
 import { ref, onMounted } from 'vue'
 import { useSettingStore } from '@/stores/setting'
 import { storeToRefs } from 'pinia'
-import { fetchDeleteWebhook } from '@/service/api'
+import { fetchDeleteWebhook, fetchCreateWebhook } from '@/service/api'
 import { useBaseDialog } from '@/composables/useBaseDialog'
 import { theToast } from '@/utils/toast'
 
@@ -67,7 +106,44 @@ const settingStore = useSettingStore()
 const { Webhooks } = storeToRefs(settingStore)
 const { openConfirm } = useBaseDialog()
 
-const webhookToAdd = ref<App.Api.Setting.WebhookDto>()
+const webhookToAdd = ref<App.Api.Setting.WebhookDto>({
+  name: '',
+  url: '',
+  is_active: true,
+})
+const isSubmitting = ref<boolean>(false)
+
+const handleAddWebhook = () => {
+  if (isSubmitting.value) return
+  isSubmitting.value = true
+
+  if (!webhookToAdd.value?.name || !webhookToAdd.value?.url) {
+    theToast.error('请填写完整的 Webhook 信息')
+    isSubmitting.value = false
+    return
+  }
+
+  fetchCreateWebhook(webhookToAdd.value)
+    .then((res) => {
+      if (res.code === 1) {
+        theToast.success('添加 Webhook 成功')
+        webhookToAdd.value = { name: '', url: '', is_active: true }
+        settingStore.getAllWebhooks()
+      }
+
+      isSubmitting.value = false
+
+      handleCancelAddWebhook()
+    })
+    .finally(() => {
+      isSubmitting.value = false
+    })
+}
+
+const handleCancelAddWebhook = () => {
+  webhookEdit.value = false
+  webhookToAdd.value = { name: '', url: '', is_active: true }
+}
 
 const handleDeleteWebhook = (id: number) => {
   openConfirm({
@@ -77,6 +153,7 @@ const handleDeleteWebhook = (id: number) => {
       fetchDeleteWebhook(id).then((res) => {
         if (res.code === 1) {
           theToast.success('删除 Webhook 成功')
+          settingStore.getAllWebhooks()
         }
       })
     },

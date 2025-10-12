@@ -6,3 +6,9 @@
     />
   </svg>
 </template>
+
+<script lang="ts">
+export default {
+  name: 'TheOthers',
+}
+</script>
