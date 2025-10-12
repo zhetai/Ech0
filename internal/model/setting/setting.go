@@ -36,13 +36,20 @@ type S3Setting struct {
 
 // OAuth2Setting 定义 OAuth2 配置结构体
 type OAuth2Setting struct {
-	Enable       bool     `json:"enable"`
-	Provider     string   `json:"provider"`
-	ClientID     string   `json:"client_id"`
-	ClientSecret string   `json:"client_secret"`
-	RedirectURI  string   `json:"redirect_uri"`
-	Scopes       []string `json:"scopes"`
-	AuthURL      string   `json:"auth_url"`
-	TokenURL     string   `json:"token_url"`
-	UserInfoURL  string   `json:"user_info_url"`
+	Enable       bool     `json:"enable"`        // 是否启用 OAuth2 登录
+	Provider     string   `json:"provider"`      // OAuth2 提供商
+	ClientID     string   `json:"client_id"`     // OAuth2 Client ID
+	ClientSecret string   `json:"client_secret"` // OAuth2 Client Secret
+	RedirectURI  string   `json:"redirect_uri"`  // OAuth2 重定向 URI
+	Scopes       []string `json:"scopes"`        // OAuth2 请求的权限范围
+	AuthURL      string   `json:"auth_url"`      // OAuth2 授权 URL
+	TokenURL     string   `json:"token_url"`     // OAuth2 令牌 URL
+	UserInfoURL  string   `json:"user_info_url"` // OAuth2 用户信息 URL
+}
+
+// Webhook 定义 Webhook 设置实体
+type Webhook struct {
+	ID   uint   `gorm:"primaryKey" json:"id"` // Webhook ID
+	Name string `json:"name"`                 // Webhook 名称
+	URL  string `json:"url"`                  // Webhook URL
 }

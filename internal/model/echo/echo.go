@@ -18,19 +18,19 @@ type Echo struct {
 }
 
 // Message 定义Message实体 (注意⚠️: 该模型为旧版Echo模型,新版已经弃用)
-type Message struct {
-	ID            uint      `gorm:"primaryKey"           json:"id"`
-	Content       string    `gorm:"type:text;not null"   json:"content"`
-	Username      string    `gorm:"type:varchar(100)"    json:"username,omitempty"`
-	ImageURL      string    `gorm:"type:text"            json:"image_url,omitempty"`
-	ImageSource   string    `gorm:"type:varchar(20)"     json:"image_source,omitempty"`
-	Images        []Image   `gorm:"foreignKey:MessageID" json:"images,omitempty"`
-	Private       bool      `gorm:"default:false"        json:"private"`
-	UserID        uint      `gorm:"not null;index"       json:"user_id"`
-	Extension     string    `gorm:"type:text"            json:"extension,omitempty"`
-	ExtensionType string    `gorm:"type:varchar(100)"    json:"extension_type,omitempty"`
-	CreatedAt     time.Time `                            json:"created_at"`
-}
+// type Message struct {
+// 	ID            uint      `gorm:"primaryKey"           json:"id"`
+// 	Content       string    `gorm:"type:text;not null"   json:"content"`
+// 	Username      string    `gorm:"type:varchar(100)"    json:"username,omitempty"`
+// 	ImageURL      string    `gorm:"type:text"            json:"image_url,omitempty"`
+// 	ImageSource   string    `gorm:"type:varchar(20)"     json:"image_source,omitempty"`
+// 	Images        []Image   `gorm:"foreignKey:MessageID" json:"images,omitempty"`
+// 	Private       bool      `gorm:"default:false"        json:"private"`
+// 	UserID        uint      `gorm:"not null;index"       json:"user_id"`
+// 	Extension     string    `gorm:"type:text"            json:"extension,omitempty"`
+// 	ExtensionType string    `gorm:"type:varchar(100)"    json:"extension_type,omitempty"`
+// 	CreatedAt     time.Time `                            json:"created_at"`
+// }
 
 // Image 定义Image实体
 type Image struct {
