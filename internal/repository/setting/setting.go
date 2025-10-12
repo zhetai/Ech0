@@ -34,3 +34,22 @@ func (settingRepository *SettingRepository) CreateWebhook(ctx context.Context, w
 
 	return nil
 }
+
+// GetAllWebhooks 获取所有webhooks
+func (settingRepository *SettingRepository) GetAllWebhooks() ([]model.Webhook, error) {
+	var webhooks []model.Webhook
+	if err := settingRepository.db().Find(&webhooks).Error; err != nil {
+		return nil, err
+	}
+
+	return webhooks, nil
+}
+
+// DeleteWebhookByID 根据ID删除webhook
+func (settingRepository *SettingRepository) DeleteWebhookByID(ctx context.Context, id uint) error {
+	if err := settingRepository.getDB(ctx).Delete(&model.Webhook{}, id).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

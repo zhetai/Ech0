@@ -384,11 +384,38 @@ func (settingService *SettingService) GetOAuth2Status(status *model.OAuth2Status
 
 // GetAllWebhooks 获取所有 Webhook
 func (settingService *SettingService) GetAllWebhooks(userid uint) ([]model.Webhook, error) {
-	return nil, nil
+	// 鉴权
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return nil, err
+	}
+	if !user.IsAdmin {
+		return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	webhooks, err := settingService.settingRepository.GetAllWebhooks()
+	if err != nil {
+		return nil, err
+	}
+
+	return webhooks, nil
 }
 
 // DeleteWebhook 删除 Webhook
 func (settingService *SettingService) DeleteWebhook(userid, id uint) error {
+	// 鉴权
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	settingService.txManager.Run(func(ctx context.Context) error {
+		return settingService.settingRepository.DeleteWebhookByID(ctx, id)
+	})
+
 	return nil
 }
 
