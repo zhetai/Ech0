@@ -70,7 +70,7 @@
         >
           <div class="w-60 flex-nowrap flex items-start gap-2">
             <span class="w-26 font-bold text-nowrap overflow-x-auto">{{ webhook.name }}</span>
-            <span class="text-gray-600 font-bold"> | </span>
+            <span class="text-gray-700 font-mono font-bold"> | </span>
             <span class="w-32 overflow-x-auto" :title="webhook.url">
               {{ webhook.url }}
             </span>
