@@ -420,7 +420,7 @@ func (settingService *SettingService) CreateWebhook(userid uint, newWebhook *mod
 	}
 
 	settingService.txManager.Run(func(ctx context.Context) error {
-		return settingService.settingRepository.CreateWebhook(webhook)
+		return settingService.settingRepository.CreateWebhook(ctx, webhook)
 	})
 
 	return nil
