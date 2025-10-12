@@ -98,7 +98,7 @@ func InitDatabase() {
 	}
 
 	// 从 1.x 迁移到 2.x
-	UpdateMigration()
+	// UpdateMigration() // 目前应该不需要了，不再对远古版本提供支持
 }
 
 // MigrateDB 执行数据库迁移
