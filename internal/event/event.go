@@ -1,0 +1,121 @@
+package event
+
+import (
+	"context"
+	"log"
+	"math/rand"
+	"sync"
+	"time"
+
+	"github.com/oklog/ulid/v2"
+)
+
+// Event 事件结构体
+type Event struct {
+	ID        string       `json:"id"`        // Unique event ID
+	Type      EventType    `json:"type"`      // Event type
+	Payload   EventPayload `json:"data"`      // Event payload
+	Timestamp time.Time    `json:"timestamp"` // Event timestamp
+}
+
+type EventType string            // 事件类型
+type EventPayload map[string]any // 事件负载
+
+// 定义事件类型
+const (
+	EventTypeUserCreated EventType = "user.created" // 创建用户
+	EventTypeUserUpdated EventType = "user.updated" // 更新用户
+	EventTypeUserDeleted EventType = "user.deleted" // 删除用户
+
+	EventTypeEchoCreated EventType = "echo.created" // 创建Echo
+	EventTypeEchoUpdated EventType = "echo.updated" // 更新Echo
+	EventTypeEchoDeleted EventType = "echo.deleted" // 删除Echo
+
+	EventTypeResourceUploaded EventType = "resource.uploaded" // 资源上传
+
+	EventTypeSystemBackup EventType = "system.backup" // 系统备份
+)
+
+// NewEvent 创建一个新的事件
+func NewEvent(eventType EventType, payload EventPayload) *Event {
+	id := ulid.MustNew(ulid.Timestamp(time.Now()), rand.New(rand.NewSource(time.Now().UnixNano()))).String() // 使用 ULID 生成唯一 ID
+	return &Event{
+		ID:        id,
+		Type:      eventType,
+		Payload:   payload,
+		Timestamp: time.Now(),
+	}
+}
+
+// IEventBus 事件总线接口
+type IEventBus interface {
+	Publish(ctx context.Context, event *Event) error // 发布事件
+	Subscribe(eventType EventType, handler EventHandler) error // 订阅事件
+}
+
+// EventHandler 事件处理函数类型
+type EventHandler func(ctx context.Context, event *Event) error
+
+// EventBus 事件总线
+type EventBus struct {
+	mu   sync.RWMutex                 // 读写锁保护订阅者列表
+	subs map[EventType][]EventHandler // 订阅者列表
+}
+
+// NewEventBus 创建一个新的事件总线
+func NewEventBus() *EventBus {
+	return &EventBus{
+		subs: make(map[EventType][]EventHandler),
+	}
+}
+
+// Publish 发布事件
+func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
+	eb.mu.RLock()
+	handlers, ok := eb.subs[event.Type]
+	eb.mu.RUnlock()
+
+	if !ok {
+		return nil
+	}
+
+	for _, handler := range handlers {
+		go func(h EventHandler) {
+			if err := h(ctx, event); err != nil {
+				// 错误处理
+				log.Println("Event Handler Error:", err)
+			}
+		}(handler)
+	}
+
+	return nil
+}
+
+// Subscribe 订阅事件
+func (eb *EventBus) Subscribe(eventType EventType, handler EventHandler) error {
+	eb.mu.Lock()
+	defer eb.mu.Unlock()
+
+	eb.subs[eventType] = append(eb.subs[eventType], handler)
+	return nil
+}
+
+// // EventRegistrar 事件注册器
+// type EventRegistrar struct {
+// 	eb *EventBus // 事件总线
+// }
+
+// // EventHandlers 事件监听者集合
+// type EventHandlers struct {
+// 	Webhook webhook.WebhookDispatcher // Webhook 事件分发器
+// }
+
+// // NewEventRegistry 创建一个新的事件注册表
+// func NewEventRegistry(eb *EventBus) *EventRegistrar {
+// 	return &EventRegistrar{eb: eb}
+// }
+
+// // Register 注册事件处理函数
+// func (er *EventRegistrar) Register(eventType EventType, handler EventHandler) error {
+// 	return nil
+// }
