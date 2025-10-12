@@ -1,4 +1,3 @@
 package repository
 
-type WebhookRepositoryInterface interface {
-}
+type WebhookRepositoryInterface interface{}

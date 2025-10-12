@@ -18,8 +18,10 @@ type Event struct {
 	Timestamp time.Time    `json:"timestamp"` // Event timestamp
 }
 
-type EventType string            // 事件类型
-type EventPayload map[string]any // 事件负载
+type (
+	EventType    string         // 事件类型
+	EventPayload map[string]any // 事件负载
+)
 
 // 定义事件类型
 const (
@@ -38,7 +40,9 @@ const (
 
 // NewEvent 创建一个新的事件
 func NewEvent(eventType EventType, payload EventPayload) *Event {
-	id := ulid.MustNew(ulid.Timestamp(time.Now()), rand.New(rand.NewSource(time.Now().UnixNano()))).String() // 使用 ULID 生成唯一 ID
+	id := ulid.MustNew(ulid.Timestamp(time.Now()), rand.New(rand.NewSource(time.Now().UnixNano()))).
+		String()
+		// 使用 ULID 生成唯一 ID
 	return &Event{
 		ID:        id,
 		Type:      eventType,
@@ -49,7 +53,7 @@ func NewEvent(eventType EventType, payload EventPayload) *Event {
 
 // IEventBus 事件总线接口
 type IEventBus interface {
-	Publish(ctx context.Context, event *Event) error // 发布事件
+	Publish(ctx context.Context, event *Event) error           // 发布事件
 	Subscribe(eventType EventType, handler EventHandler) error // 订阅事件
 }
 
