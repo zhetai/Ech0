@@ -20,7 +20,7 @@
         <div class="flex flex-row items-center gap-2">
           <!-- 状态 / 设置 / 个人中心 / 高级 -->
           <BaseButton
-            :icon="[Setting, User, TheOthersIcon, Status][ShowingIndex]"
+            :icon="[Setting, User, Others, Status][ShowingIndex]"
             @click="changeShow"
             class="text-gray-600 rounded-md w-8 h-8 sm:w-9 sm:h-9"
             title="状态 / 设置 / 个人中心 / 高级"
@@ -61,7 +61,7 @@ import Arrow from '@/components/icons/arrow.vue'
 import User from '@/components/icons/user.vue'
 import Auth from '@/components/icons/auth.vue'
 import Status from '@/components/icons/status.vue'
-import TheOthersIcon from '@/components/icons/theothers.vue'
+import Others from '@/components/icons/theothers.vue'
 import Setting from '@/components/icons/setting.vue'
 import TheStatus from './TheStatus.vue'
 import TheSetting from './TheSetting.vue'

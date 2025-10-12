@@ -6,6 +6,7 @@ import {
   fetchGetCommentSettings,
   fetchGetS3Settings,
   fetchGetOAuth2Settings,
+  fetchGetAllWebhooks,
 } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
@@ -56,6 +57,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     token_url: '',
     user_info_url: '',
   })
+  const Webhooks = ref<App.Api.Setting.Webhook[]>([])
   const loading = ref<boolean>(true)
   const router = useRouter()
 
@@ -128,6 +130,13 @@ export const useSettingStore = defineStore('settingStore', () => {
     return OAuth2Setting.value
   }
 
+  const getAllWebhooks = async () => {
+    const res = await fetchGetAllWebhooks()
+    if (res.code === 1) {
+      Webhooks.value = res.data
+    }
+  }
+
   const setSystemReady = (status: boolean) => {
     isSystemReady.value = status
   }
@@ -147,12 +156,14 @@ export const useSettingStore = defineStore('settingStore', () => {
     CommentSetting,
     S3Setting,
     OAuth2Setting,
+    Webhooks,
     loading,
     getSystemReady,
     getSystemSetting,
     getCommentSetting,
     getS3Setting,
     getOAuth2Setting,
+    getAllWebhooks,
     setSystemReady,
     init,
   }
