@@ -234,6 +234,12 @@ ssh -p 6278 ssh.vaaat.com
 
 - 若程序出现 bug，可在 [Issues](https://github.com/lin-snow/Ech0/issues) 中反馈。
 - 针对新增或改进的需求，欢迎前往 [Discussions](https://github.com/lin-snow/Ech0/discussions) 一起交流。
+- 官方 QQ 群号：1065435773
+
+| 官方QQ交流群 | 其它交流群 |
+| ---------- | ---------------- |
+| <img src="./docs/imgs/qq.JPG" alt="QQ群" style="max-height:400px;"> | 暂无 |
+
 
 ---
 
