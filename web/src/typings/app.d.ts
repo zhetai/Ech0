@@ -224,6 +224,25 @@ declare namespace App {
         user_id: number
         oauth_id: string
       }
+
+      type Webhook = {
+        id: number
+        name: string
+        url: string
+        secret: string
+        is_active: boolean
+        last_status: string
+        last_trigger: string
+        created_at: string
+        updated_at: string
+      }
+
+      type WebhookDto = {
+        name: string
+        url: string
+        secret?: string
+        is_active: boolean
+      }
     }
 
     namespace Connect {

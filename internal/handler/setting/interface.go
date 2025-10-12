@@ -36,6 +36,9 @@ type SettingHandlerInterface interface {
 	// DeleteWebhook 删除 Webhook
 	DeleteWebhook() gin.HandlerFunc
 
+	// UpdateWebhook 更新 Webhook
+	UpdateWebhook() gin.HandlerFunc
+
 	// CreateWebhook 创建 Webhook
 	CreateWebhook() gin.HandlerFunc
 }

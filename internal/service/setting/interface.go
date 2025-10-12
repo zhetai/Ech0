@@ -36,6 +36,9 @@ type SettingServiceInterface interface {
 	// DeleteWebhook 删除 Webhook
 	DeleteWebhook(userid, id uint) error
 
+	// UpdateWebhook 更新 Webhook
+	UpdateWebhook(userid uint, id uint, newWebhook *model.WebhookDto) error
+
 	// CreateWebhook 创建 Webhook
 	CreateWebhook(userid uint, newWebhook *model.WebhookDto) error
 }

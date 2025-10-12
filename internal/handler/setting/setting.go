@@ -383,6 +383,54 @@ func (settingHandler *SettingHandler) DeleteWebhook() gin.HandlerFunc {
 	})
 }
 
+// UpdateWebhook 更新 Webhook
+//
+// @Summary 更新 Webhook
+// @Description 根据 ID 更新指定的 Webhook 配置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param id path int true "要更新的 Webhook ID"
+// @Param webhook body model.WebhookDto true "新的 Webhook 配置"
+// @Success 200 {object} res.Response "更新 Webhook 成功"
+// @Failure 200 {object} res.Response "更新 Webhook 失败"
+// @Router /webhook/{id} [put]
+func (settingHandler *SettingHandler) UpdateWebhook() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 从路径参数中获取 Webhook ID
+		idStr := ctx.Param("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+			}
+		}
+
+		// 解析请求体中的参数
+		var updatedWebhook model.WebhookDto
+		if err := ctx.ShouldBindJSON(&updatedWebhook); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		if err := settingHandler.settingService.UpdateWebhook(userid, uint(id), &updatedWebhook); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.UPDATE_WEBHOOK_SUCCESS,
+		}
+	})
+}
+
 // CreateWebhook 创建新的 Webhook
 //
 // @Summary 创建新的 Webhook

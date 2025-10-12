@@ -83,3 +83,37 @@ export function fetchGetOAuthInfo(provider?: string) {
     method: 'GET',
   })
 }
+
+// 获取 Webhook 列表
+export function fetchGetAllWebhooks() {
+  return request<App.Api.Setting.Webhook[]>({
+    url: '/webhook',
+    method: 'GET',
+  })
+}
+
+// 创建 Webhook
+export function fetchCreateWebhook(webhook: App.Api.Setting.WebhookDto) {
+  return request({
+    url: '/webhook',
+    method: 'POST',
+    data: webhook,
+  })
+}
+
+// 更新 Webhook
+export function fetchUpdateWebhook(webhookId: number, webhook: App.Api.Setting.WebhookDto) {
+  return request({
+    url: `/webhook/${webhookId}`,
+    method: 'PUT',
+    data: webhook,
+  })
+}
+
+// 删除 Webhook
+export function fetchDeleteWebhook(webhookId: number) {
+  return request({
+    url: `/webhook/${webhookId}`,
+    method: 'DELETE',
+  })
+}
