@@ -238,7 +238,7 @@ ssh -p 6278 ssh.vaaat.com
 
 | 官方QQ交流群 | 其它交流群 |
 | ---------- | ---------------- |
-| <img src="./docs/imgs/qq.JPG" alt="QQ群" style="max-height:400px;"> | 暂无 |
+| <img src="./docs/imgs/qq.JPG" alt="QQ群" style="max-height:150px;"> | 暂无 |
 
 
 ---
