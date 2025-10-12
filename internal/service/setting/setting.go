@@ -394,5 +394,34 @@ func (settingService *SettingService) DeleteWebhook(userid, id uint) error {
 
 // CreateWebhook 创建 Webhook
 func (settingService *SettingService) CreateWebhook(userid uint, newWebhook *model.WebhookDto) error {
+	// 鉴权
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	// 数据处理
+	newWebhook.URL = httpUtil.TrimURL(newWebhook.URL)
+
+	// 检查名称或URL是否为空
+	if newWebhook.Name == "" || newWebhook.URL == "" {
+		return errors.New(commonModel.WEBHOOK_NAME_OR_URL_CANNOT_BE_EMPTY)
+	}
+
+	// 保存到数据库
+	webhook := &model.Webhook{
+		Name:     newWebhook.Name,
+		URL:      newWebhook.URL,
+		Secret:   newWebhook.Secret,
+		IsActive: newWebhook.IsActive,
+	}
+
+	settingService.txManager.Run(func(ctx context.Context) error {
+		return settingService.settingRepository.CreateWebhook(webhook)
+	})
+
 	return nil
 }

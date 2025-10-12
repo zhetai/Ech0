@@ -73,7 +73,8 @@ const (
 
 // Setting 错误相关常量
 const (
-	NO_SUCH_COMMENT_PROVIDER = "无效的评论服务提供者"
+	NO_SUCH_COMMENT_PROVIDER            = "无效的评论服务提供者"
+	WEBHOOK_NAME_OR_URL_CANNOT_BE_EMPTY = "Webhook 名称或 URL 不能为空"
 )
 
 // Backup 错误相关常量
