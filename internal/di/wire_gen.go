@@ -19,11 +19,12 @@ import (
 	handler2 "github.com/lin-snow/ech0/internal/handler/user"
 	"github.com/lin-snow/ech0/internal/handler/web"
 	repository2 "github.com/lin-snow/ech0/internal/repository/common"
-	repository6 "github.com/lin-snow/ech0/internal/repository/connect"
+	repository7 "github.com/lin-snow/ech0/internal/repository/connect"
 	repository3 "github.com/lin-snow/ech0/internal/repository/echo"
-	repository4 "github.com/lin-snow/ech0/internal/repository/fediverse"
+	repository5 "github.com/lin-snow/ech0/internal/repository/fediverse"
 	"github.com/lin-snow/ech0/internal/repository/keyvalue"
-	repository5 "github.com/lin-snow/ech0/internal/repository/todo"
+	repository4 "github.com/lin-snow/ech0/internal/repository/setting"
+	repository6 "github.com/lin-snow/ech0/internal/repository/todo"
 	"github.com/lin-snow/ech0/internal/repository/user"
 	service8 "github.com/lin-snow/ech0/internal/service/backup"
 	"github.com/lin-snow/ech0/internal/service/common"
@@ -50,19 +51,20 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(dbProvider, iCache)
 	echoRepositoryInterface := repository3.NewEchoRepository(dbProvider, iCache)
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface)
-	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface)
+	settingRepositoryInterface := repository4.NewSettingRepository(dbProvider)
+	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface, settingRepositoryInterface)
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
-	fediverseRepositoryInterface := repository4.NewFediverseRepository(dbProvider)
+	fediverseRepositoryInterface := repository5.NewFediverseRepository(dbProvider)
 	fediverseServiceInterface := service4.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface, commonServiceInterface)
 	echoServiceInterface := service5.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface, fediverseServiceInterface)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
 	settingHandler := handler5.NewSettingHandler(settingServiceInterface)
-	todoRepositoryInterface := repository5.NewTodoRepository(dbProvider, iCache)
+	todoRepositoryInterface := repository6.NewTodoRepository(dbProvider, iCache)
 	todoServiceInterface := service6.NewTodoService(transactionManager, todoRepositoryInterface, commonServiceInterface)
 	todoHandler := handler6.NewTodoHandler(todoServiceInterface)
-	connectRepositoryInterface := repository6.NewConnectRepository(dbProvider)
+	connectRepositoryInterface := repository7.NewConnectRepository(dbProvider)
 	connectServiceInterface := service7.NewConnectService(transactionManager, connectRepositoryInterface, echoRepositoryInterface, commonServiceInterface, settingServiceInterface)
 	connectHandler := handler7.NewConnectHandler(connectServiceInterface)
 	backupServiceInterface := service8.NewBackupService(commonServiceInterface)
@@ -108,13 +110,13 @@ var EchoSet = wire.NewSet(repository3.NewEchoRepository, service5.NewEchoService
 var CommonSet = wire.NewSet(repository2.NewCommonRepository, service.NewCommonService, handler4.NewCommonHandler)
 
 // SettingSet 包含了构建 SettingHandler 所需的所有 Provider
-var SettingSet = wire.NewSet(keyvalue.NewKeyValueRepository, service2.NewSettingService, handler5.NewSettingHandler)
+var SettingSet = wire.NewSet(keyvalue.NewKeyValueRepository, repository4.NewSettingRepository, service2.NewSettingService, handler5.NewSettingHandler)
 
 // TodoSet 包含了构建 TodoHandler 所需的所有 Provider
-var TodoSet = wire.NewSet(repository5.NewTodoRepository, service6.NewTodoService, handler6.NewTodoHandler)
+var TodoSet = wire.NewSet(repository6.NewTodoRepository, service6.NewTodoService, handler6.NewTodoHandler)
 
 // ConnectSet 包含了构建 ConnectHandler 所需的所有 Provider
-var ConnectSet = wire.NewSet(repository6.NewConnectRepository, service7.NewConnectService, handler7.NewConnectHandler)
+var ConnectSet = wire.NewSet(repository7.NewConnectRepository, service7.NewConnectService, handler7.NewConnectHandler)
 
 // BackupSet 包含了构建 BackupHandler 所需的所有 Provider
 var BackupSet = wire.NewSet(handler8.NewBackupHandler, service8.NewBackupService)
@@ -123,4 +125,4 @@ var BackupSet = wire.NewSet(handler8.NewBackupHandler, service8.NewBackupService
 var TaskSet = wire.NewSet(task.NewTasker)
 
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider
-var FediverseSet = wire.NewSet(repository4.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler)
+var FediverseSet = wire.NewSet(repository5.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler)

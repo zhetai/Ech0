@@ -9,6 +9,7 @@ import (
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/setting"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
+	settingRepository "github.com/lin-snow/ech0/internal/repository/setting"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
@@ -19,17 +20,20 @@ type SettingService struct {
 	txManager          transaction.TransactionManager
 	commonService      commonService.CommonServiceInterface
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
+	settingRepository  settingRepository.SettingRepositoryInterface
 }
 
 func NewSettingService(
 	tm transaction.TransactionManager,
 	commonService commonService.CommonServiceInterface,
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface,
+	settingRepository settingRepository.SettingRepositoryInterface,
 ) SettingServiceInterface {
 	return &SettingService{
 		txManager:          tm,
 		commonService:      commonService,
 		keyvalueRepository: keyvalueRepository,
+		settingRepository:  settingRepository,
 	}
 }
 

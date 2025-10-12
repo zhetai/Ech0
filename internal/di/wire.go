@@ -22,6 +22,7 @@ import (
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	fediverseRepository "github.com/lin-snow/ech0/internal/repository/fediverse"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
+	settingRepository "github.com/lin-snow/ech0/internal/repository/setting"
 	todoRepository "github.com/lin-snow/ech0/internal/repository/todo"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
 	backupService "github.com/lin-snow/ech0/internal/service/backup"
@@ -115,6 +116,7 @@ var CommonSet = wire.NewSet(
 // SettingSet 包含了构建 SettingHandler 所需的所有 Provider
 var SettingSet = wire.NewSet(
 	keyvalueRepository.NewKeyValueRepository,
+	settingRepository.NewSettingRepository,
 	settingService.NewSettingService,
 	settingHandler.NewSettingHandler,
 )
