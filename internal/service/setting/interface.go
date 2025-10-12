@@ -29,4 +29,13 @@ type SettingServiceInterface interface {
 
 	// GetOAuth2Status 获取 OAuth2 状态
 	GetOAuth2Status(status *model.OAuth2Status) error
+
+	// GetAllWebhooks 获取所有 Webhook
+	GetAllWebhooks(userid uint) ([]model.Webhook, error)
+
+	// DeleteWebhook 删除 Webhook
+	DeleteWebhook(userid, id uint) error
+
+	// CreateWebhook 创建 Webhook
+	CreateWebhook(userid uint, newWebhook *model.WebhookDto) error
 }

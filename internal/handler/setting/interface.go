@@ -29,4 +29,13 @@ type SettingHandlerInterface interface {
 
 	// GetOAuth2Status 获取 OAuth2 状态
 	GetOAuth2Status() gin.HandlerFunc
+
+	// GetWebhook 获取所有 Webhook
+	GetWebhook() gin.HandlerFunc
+
+	// DeleteWebhook 删除 Webhook
+	DeleteWebhook() gin.HandlerFunc
+
+	// CreateWebhook 创建 Webhook
+	CreateWebhook() gin.HandlerFunc
 }

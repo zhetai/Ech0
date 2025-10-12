@@ -35,24 +35,24 @@ type Echo struct {
 // Image 定义Image实体
 type Image struct {
 	ID          uint   `gorm:"primaryKey"       json:"id"`
-	MessageID   uint   `gorm:"index;not null"   json:"message_id"` // 关联的Echo ID(注意⚠️: 该字段名为MessageID, 但实际关联的是Echo表,因为为了兼容旧版Echo用户)
-	ImageURL    string `gorm:"type:text"        json:"image_url"`
-	ImageSource string `gorm:"type:varchar(20)" json:"image_source"`
+	MessageID   uint   `gorm:"index;not null"   json:"message_id"`           // 关联的Echo ID(注意⚠️: 该字段名为MessageID, 但实际关联的是Echo表,因为为了兼容旧版Echo用户)
+	ImageURL    string `gorm:"type:text"        json:"image_url"`            // 图片URL
+	ImageSource string `gorm:"type:varchar(20)" json:"image_source"`         // 图片来源: local/url/s3/r2
 	ObjectKey   string `gorm:"type:text"        json:"object_key,omitempty"` // 对象存储的Key (如果是本地存储则为空)
 }
 
 // Tag 定义Tag实体
 type Tag struct {
 	ID         uint      `gorm:"primaryKey"                            json:"id"`
-	Name       string    `gorm:"type:varchar(50);uniqueIndex;not null" json:"name"`
-	UsageCount int       `gorm:"default:0"                             json:"usage_count"`
-	CreatedAt  time.Time `                                             json:"created_at"`
+	Name       string    `gorm:"type:varchar(50);uniqueIndex;not null" json:"name"`        // 标签名称
+	UsageCount int       `gorm:"default:0"                             json:"usage_count"` // 使用计数
+	CreatedAt  time.Time `                                             json:"created_at"`  // 创建时间
 }
 
 // EchoTag 纯关系表，联合主键
 type EchoTag struct {
-	EchoID uint `gorm:"primaryKey;autoIncrement:false"`
-	TagID  uint `gorm:"primaryKey;autoIncrement:false"`
+	EchoID uint `gorm:"primaryKey;autoIncrement:false"` // Echo ID
+	TagID  uint `gorm:"primaryKey;autoIncrement:false"` // Tag ID
 }
 
 const (

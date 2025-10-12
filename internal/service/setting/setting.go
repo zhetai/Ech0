@@ -377,3 +377,18 @@ func (settingService *SettingService) GetOAuth2Status(status *model.OAuth2Status
 
 	return nil
 }
+
+// GetAllWebhooks 获取所有 Webhook
+func (settingService *SettingService) GetAllWebhooks(userid uint) ([]model.Webhook, error) {
+	return nil, nil
+}
+
+// DeleteWebhook 删除 Webhook
+func (settingService *SettingService) DeleteWebhook(userid, id uint) error {
+	return nil
+}
+
+// CreateWebhook 创建 Webhook
+func (settingService *SettingService) CreateWebhook(userid uint, newWebhook *model.WebhookDto) error {
+	return nil
+}

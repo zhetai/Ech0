@@ -47,6 +47,9 @@ const (
 	GET_OAUTH_SETTINGS_SUCCESS      = "获取 OAuth 设置成功！"
 	UPDATE_OAUTH_SETTINGS_SUCCESS   = "更新 OAuth 设置成功！"
 	GET_OAUTH2_STATUS_SUCCESS       = "获取 OAuth2 状态成功"
+	GET_WEBHOOK_SUCCESS             = "获取 Webhook 成功"
+	DELETE_WEBHOOK_SUCCESS          = "删除 Webhook 成功"
+	CREATE_WEBHOOK_SUCCESS          = "创建 Webhook 成功"
 )
 
 // To do 成功相关常量

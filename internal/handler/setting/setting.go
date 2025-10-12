@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 
 	res "github.com/lin-snow/ech0/internal/handler/response"
@@ -309,6 +311,112 @@ func (settingHandler *SettingHandler) GetOAuth2Status() gin.HandlerFunc {
 		return res.Response{
 			Data: status,
 			Msg:  commonModel.GET_OAUTH2_STATUS_SUCCESS,
+		}
+	})
+}
+
+// GetWebhook 获取所有 Webhook
+//
+// @Summary 获取所有 Webhook
+// @Description 获取系统中配置的所有 Webhook 列表
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response{data=[]model.Webhook} "获取 Webhook 列表成功"
+// @Failure 200 {object} res.Response "获取 Webhook 列表失败"
+// @Router /webhook [get]
+func (settingHandler *SettingHandler) GetWebhook() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		result, err := settingHandler.settingService.GetAllWebhooks(userid)
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: result,
+			Msg:  commonModel.GET_WEBHOOK_SUCCESS,
+		}
+	})
+}
+
+// DeleteWebhook 删除 Webhook
+//
+// @Summary 删除 Webhook
+// @Description 根据 ID 删除指定的 Webhook 配置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param id path int true "要删除的 Webhook ID"
+// @Success 200 {object} res.Response "删除 Webhook 成功"
+// @Failure 200 {object} res.Response "删除 Webhook 失败"
+// @Router /webhook/{id} [delete]
+func (settingHandler *SettingHandler) DeleteWebhook() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 从路径参数中获取 Webhook ID
+		idStr := ctx.Param("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+			}
+		}
+
+		if err := settingHandler.settingService.DeleteWebhook(userid, uint(id)); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.DELETE_WEBHOOK_SUCCESS,
+		}
+	})
+}
+
+// CreateWebhook 创建新的 Webhook
+//
+// @Summary 创建新的 Webhook
+// @Description 创建一个新的 Webhook 配置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param webhook body model.WebhookDto true "新的 Webhook 配置"
+// @Success 200 {object} res.Response "创建 Webhook 成功"
+// @Failure 200 {object} res.Response "创建 Webhook 失败"
+// @Router /webhook [post]
+func (settingHandler *SettingHandler) CreateWebhook() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 解析请求体中的参数
+		var newWebhook model.WebhookDto
+		if err := ctx.ShouldBindJSON(&newWebhook); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		if err := settingHandler.settingService.CreateWebhook(userid, &newWebhook); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.CREATE_WEBHOOK_SUCCESS,
 		}
 	})
 }

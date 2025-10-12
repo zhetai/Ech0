@@ -49,3 +49,10 @@ type OAuth2Status struct {
 	Enabled  bool   `json:"enabled"`
 	Provider string `json:"provider"`
 }
+
+type WebhookDto struct {
+	Name     string `json:"name"`                                 // Webhook 名称
+	URL      string `json:"url"`                                  // Webhook URL
+	Secret   string `json:"secret,omitempty"`                     // 签名密钥，用于请求验证（HMAC等）
+	IsActive bool   `json:"is_active"        gorm:"default:true"` // 启用/禁用状态
+}
