@@ -105,7 +105,6 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 	eb.mu.RUnlock()
 
 	// 处理所有订阅所有事件的处理器
-	log.Println("ALL HANDLERS:", len(allHandlers))
 	for _, handler := range allHandlers {
 		go func(h EventHandler) {
 			if err := h(ctx, event); err != nil {

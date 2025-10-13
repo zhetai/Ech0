@@ -107,7 +107,7 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		}
 
 		return echoService.echoRepository.CreateEcho(ctx, newEcho)
-	});err != nil {
+	}); err != nil {
 		return err
 	}
 
