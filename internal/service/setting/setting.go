@@ -8,8 +8,10 @@ import (
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/setting"
+	webhookModel "github.com/lin-snow/ech0/internal/model/webhook"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
 	settingRepository "github.com/lin-snow/ech0/internal/repository/setting"
+	webhookRepository "github.com/lin-snow/ech0/internal/repository/webhook"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
@@ -21,6 +23,7 @@ type SettingService struct {
 	commonService      commonService.CommonServiceInterface
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
 	settingRepository  settingRepository.SettingRepositoryInterface
+	webhookRepository  webhookRepository.WebhookRepositoryInterface
 }
 
 func NewSettingService(
@@ -28,11 +31,13 @@ func NewSettingService(
 	commonService commonService.CommonServiceInterface,
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface,
 	settingRepository settingRepository.SettingRepositoryInterface,
+	webhookRepository webhookRepository.WebhookRepositoryInterface,
 ) SettingServiceInterface {
 	return &SettingService{
 		txManager:          tm,
 		commonService:      commonService,
 		keyvalueRepository: keyvalueRepository,
+		webhookRepository:  webhookRepository,
 		settingRepository:  settingRepository,
 	}
 }
@@ -383,7 +388,7 @@ func (settingService *SettingService) GetOAuth2Status(status *model.OAuth2Status
 }
 
 // GetAllWebhooks 获取所有 Webhook
-func (settingService *SettingService) GetAllWebhooks(userid uint) ([]model.Webhook, error) {
+func (settingService *SettingService) GetAllWebhooks(userid uint) ([]webhookModel.Webhook, error) {
 	// 鉴权
 	user, err := settingService.commonService.CommonGetUserByUserId(userid)
 	if err != nil {
@@ -393,7 +398,7 @@ func (settingService *SettingService) GetAllWebhooks(userid uint) ([]model.Webho
 		return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
 	}
 
-	webhooks, err := settingService.settingRepository.GetAllWebhooks()
+	webhooks, err := settingService.webhookRepository.GetAllWebhooks()
 	if err != nil {
 		return nil, err
 	}
@@ -413,7 +418,7 @@ func (settingService *SettingService) DeleteWebhook(userid, id uint) error {
 	}
 
 	settingService.txManager.Run(func(ctx context.Context) error {
-		return settingService.settingRepository.DeleteWebhookByID(ctx, id)
+		return settingService.webhookRepository.DeleteWebhookByID(ctx, id)
 	})
 
 	return nil
@@ -439,7 +444,7 @@ func (settingService *SettingService) UpdateWebhook(userid, id uint, newWebhook 
 	}
 
 	// 保存到数据库
-	webhook := &model.Webhook{
+	webhook := &webhookModel.Webhook{
 		ID:       id,
 		Name:     newWebhook.Name,
 		URL:      newWebhook.URL,
@@ -449,10 +454,10 @@ func (settingService *SettingService) UpdateWebhook(userid, id uint, newWebhook 
 
 	settingService.txManager.Run(func(ctx context.Context) error {
 		// 先删除再创建，避免部分字段无法更新的问题
-		if err := settingService.settingRepository.DeleteWebhookByID(ctx, webhook.ID); err != nil {
+		if err := settingService.webhookRepository.DeleteWebhookByID(ctx, webhook.ID); err != nil {
 			return err
 		}
-		return settingService.settingRepository.CreateWebhook(ctx, webhook)
+		return settingService.webhookRepository.CreateWebhook(ctx, webhook)
 	})
 
 	return nil
@@ -478,7 +483,7 @@ func (settingService *SettingService) CreateWebhook(userid uint, newWebhook *mod
 	}
 
 	// 保存到数据库
-	webhook := &model.Webhook{
+	webhook := &webhookModel.Webhook{
 		Name:     newWebhook.Name,
 		URL:      newWebhook.URL,
 		Secret:   newWebhook.Secret,
@@ -486,7 +491,7 @@ func (settingService *SettingService) CreateWebhook(userid uint, newWebhook *mod
 	}
 
 	settingService.txManager.Run(func(ctx context.Context) error {
-		return settingService.settingRepository.CreateWebhook(ctx, webhook)
+		return settingService.webhookRepository.CreateWebhook(ctx, webhook)
 	})
 
 	return nil

@@ -25,6 +25,7 @@ import (
 	settingRepository "github.com/lin-snow/ech0/internal/repository/setting"
 	todoRepository "github.com/lin-snow/ech0/internal/repository/todo"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
+	webhookRepository "github.com/lin-snow/ech0/internal/repository/webhook"
 	backupService "github.com/lin-snow/ech0/internal/service/backup"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	connectService "github.com/lin-snow/ech0/internal/service/connect"
@@ -117,6 +118,7 @@ var CommonSet = wire.NewSet(
 var SettingSet = wire.NewSet(
 	keyvalueRepository.NewKeyValueRepository,
 	settingRepository.NewSettingRepository,
+	webhookRepository.NewWebhookRepository,
 	settingService.NewSettingService,
 	settingHandler.NewSettingHandler,
 )

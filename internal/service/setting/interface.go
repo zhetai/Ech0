@@ -1,6 +1,9 @@
 package service
 
-import model "github.com/lin-snow/ech0/internal/model/setting"
+import (
+	model "github.com/lin-snow/ech0/internal/model/setting"
+	webhookModel "github.com/lin-snow/ech0/internal/model/webhook"
+)
 
 type SettingServiceInterface interface {
 	// GetSetting 获取设置
@@ -31,7 +34,7 @@ type SettingServiceInterface interface {
 	GetOAuth2Status(status *model.OAuth2Status) error
 
 	// GetAllWebhooks 获取所有 Webhook
-	GetAllWebhooks(userid uint) ([]model.Webhook, error)
+	GetAllWebhooks(userid uint) ([]webhookModel.Webhook, error)
 
 	// DeleteWebhook 删除 Webhook
 	DeleteWebhook(userid, id uint) error
