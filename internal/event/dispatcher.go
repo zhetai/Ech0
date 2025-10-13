@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -13,6 +12,7 @@ import (
 	webhookModel "github.com/lin-snow/ech0/internal/model/webhook"
 	webhookRepository "github.com/lin-snow/ech0/internal/repository/webhook"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
+	"go.uber.org/zap"
 )
 
 type WebhookDispatcher struct {
@@ -77,10 +77,10 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 	// 处理响应
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		// 成功处理
-		log.Println("Webhook", *wh, "dispatched event", *e, "successfully")
+		
 	} else {
 		// 记录失败日志
-		log.Println("Webhook", *wh, "dispatch event", *e, "failed with status", resp.StatusCode)
+		logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.Field{Key: "url", String: string(wh.URL)})
 	}
 }
 

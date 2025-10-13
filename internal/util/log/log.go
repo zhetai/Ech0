@@ -232,21 +232,41 @@ func ReopenLogger() {
 
 // Debug 打印调试级别日志
 func Debug(msg string, fields ...zap.Field) {
+	defer func() {
+		if r := recover(); r != nil {
+			println("Recovered panic in logger.Debug:", r)
+		}
+	}()
 	GetLogger().Debug(msg, fields...)
 }
 
 // Info 打印信息级别日志
 func Info(msg string, fields ...zap.Field) {
+	defer func() {
+		if r := recover(); r != nil {
+			println("Recovered panic in logger.Info:", r)
+		}
+	}()
 	GetLogger().Info(msg, fields...)
 }
 
 // Warn 打印警告级别日志
 func Warn(msg string, fields ...zap.Field) {
+	defer func() {
+		if r := recover(); r != nil {
+			println("Recovered panic in logger.Warn:", r)
+		}
+	}()
 	GetLogger().Warn(msg, fields...)
 }
 
 // Error 打印错误级别日志
 func Error(msg string, fields ...zap.Field) {
+	defer func() {
+		if r := recover(); r != nil {
+			println("Recovered panic in logger.Error:", r)
+		}
+	}()
 	GetLogger().Error(msg, fields...)
 }
 
