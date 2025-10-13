@@ -9,6 +9,7 @@ package di
 import (
 	"github.com/google/wire"
 	"github.com/lin-snow/ech0/internal/cache"
+	"github.com/lin-snow/ech0/internal/event"
 	handler8 "github.com/lin-snow/ech0/internal/handler/backup"
 	handler4 "github.com/lin-snow/ech0/internal/handler/common"
 	handler7 "github.com/lin-snow/ech0/internal/handler/connect"
@@ -87,6 +88,15 @@ func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, t
 	return tasker, nil
 }
 
+func BuildEventRegistrar(dbProvider func() *gorm.DB) (*event.EventRegistrar, error) {
+	eventBus := event.NewEventBus()
+	webhookRepositoryInterface := repository5.NewWebhookRepository(dbProvider)
+	webhookDispatcher := event.NewWebhookDispatcher(eventBus, webhookRepositoryInterface)
+	eventHandlers := event.NewEventHandlers(webhookDispatcher)
+	eventRegistrar := event.NewEventRegistry(eventBus, eventHandlers)
+	return eventRegistrar, nil
+}
+
 // wire.go:
 
 // CacheSet 包含了构建缓存所需的所有 Provider
@@ -123,8 +133,14 @@ var ConnectSet = wire.NewSet(repository8.NewConnectRepository, service7.NewConne
 // BackupSet 包含了构建 BackupHandler 所需的所有 Provider
 var BackupSet = wire.NewSet(handler8.NewBackupHandler, service8.NewBackupService)
 
+// WebhookSet 包含了构建 WebhookDispatcher 所需的所有 Provider
+var WebhookSet = wire.NewSet(repository5.NewWebhookRepository)
+
 // TaskSet 包含了构建 Tasker 所需的所有 Provider
 var TaskSet = wire.NewSet(task.NewTasker)
 
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider
 var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler)
+
+// EventSet 包含了构建 Event 相关所需的所有 Provider
+var EventSet = wire.NewSet(event.NewEventBus, wire.Bind(new(event.IEventBus), new(*event.EventBus)), event.NewWebhookDispatcher, event.NewEventHandlers, event.NewEventRegistry)

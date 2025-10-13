@@ -11,6 +11,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -20,6 +21,7 @@ import (
 	"github.com/lin-snow/ech0/internal/config"
 	"github.com/lin-snow/ech0/internal/database"
 	"github.com/lin-snow/ech0/internal/di"
+	"github.com/lin-snow/ech0/internal/event"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/lin-snow/ech0/internal/router"
 	"github.com/lin-snow/ech0/internal/task"
@@ -29,9 +31,10 @@ import (
 
 // Server 服务器结构体，包含Gin引擎
 type Server struct {
-	GinEngine  *gin.Engine
-	httpServer *http.Server // 用于优雅停止服务器
-	tasker     *task.Tasker // 任务器
+	GinEngine      *gin.Engine
+	httpServer     *http.Server          // 用于优雅停止服务器
+	tasker         *task.Tasker          // 任务器
+	eventRegistrar *event.EventRegistrar // 事件注册器
 }
 
 // New 创建一个新的服务器实例
@@ -80,6 +83,9 @@ func (s *Server) Init() {
 			Err: err,
 		})
 	}
+
+	// EventRegistrar
+	s.eventRegistrar, err = di.BuildEventRegistrar(database.GetDB)
 }
 
 // Start 异步启动服务器
@@ -101,11 +107,15 @@ func (s *Server) Start() {
 			})
 		}
 	}()
-	fmt.Println("🚀 Ech0 Server已启动，监听端口", port)
+	log.Println("🚀 Ech0 Server已启动，监听端口", port)
 
 	// 启动任务器
 	go s.tasker.Start()
-	// fmt.Println("🚀 任务器已启动")
+	log.Println("🚀 任务器已启动")
+
+	// 注册事件
+	go s.eventRegistrar.Register()
+	log.Println("🚀 事件注册器已启动")
 }
 
 // Stop 优雅停止服务器

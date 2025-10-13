@@ -18,7 +18,7 @@ type WebhookDispatcher struct {
 
 func NewWebhookDispatcher(bus IEventBus, repo webhookRepository.WebhookRepositoryInterface) *WebhookDispatcher {
 	return &WebhookDispatcher{
-		bus: bus,
+		bus:  bus,
 		repo: repo,
 	}
 }
@@ -30,8 +30,6 @@ func (wd *WebhookDispatcher) Handle(ctx context.Context, e *Event) error {
 }
 
 func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webhook, e *Event) {
-
-
 }
 
 func (wd *WebhookDispatcher) Wait() {

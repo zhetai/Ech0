@@ -12,7 +12,7 @@ func NewEventHandlers(wbd *WebhookDispatcher) *EventHandlers {
 
 // EventRegistrar 事件注册器
 type EventRegistrar struct {
-	eb IEventBus // 事件总线
+	eb IEventBus      // 事件总线
 	eh *EventHandlers // 事件处理器集合
 }
 
@@ -22,11 +22,11 @@ func NewEventRegistry(eb IEventBus, eh *EventHandlers) *EventRegistrar {
 }
 
 // Register 注册事件处理函数
-func (er *EventRegistrar) Register(eventType EventType) error {
+func (er *EventRegistrar) Register() error {
 	// 系统级 Dispatcher
 
 	// 业务级 Dispatcher
-    er.eb.SubscribeAll(er.eh.wbd.Handle) // 订阅所有事件，交给 WebhookDispatcher 处理
-	
+	er.eb.SubscribeAll(er.eh.wbd.Handle) // 订阅所有事件，交给 WebhookDispatcher 处理
+
 	return nil
 }

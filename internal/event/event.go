@@ -55,7 +55,7 @@ func NewEvent(eventType EventType, payload EventPayload) *Event {
 type IEventBus interface {
 	Publish(ctx context.Context, event *Event) error           // 发布事件
 	Subscribe(eventType EventType, handler EventHandler) error // 订阅特定事件
-	SubscribeAll(handler EventHandler) error                    // 订阅所有事件
+	SubscribeAll(handler EventHandler) error                   // 订阅所有事件
 }
 
 // EventHandler 事件处理函数类型
@@ -80,12 +80,26 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 	eb.mu.RLock()
 	handlers, ok := eb.subs[event.Type]
 	eb.mu.RUnlock()
-
 	if !ok {
 		return nil
 	}
 
+	// 处理所有订阅该事件类型的处理器
 	for _, handler := range handlers {
+		go func(h EventHandler) {
+			if err := h(ctx, event); err != nil {
+				// 错误处理
+				log.Println("Event Handler Error:", err)
+			}
+		}(handler)
+	}
+
+	// 处理所有订阅所有事件的处理器
+	eb.mu.RLock()
+	allHandlers := eb.all
+	eb.mu.RUnlock()
+
+	for _, handler := range allHandlers {
 		go func(h EventHandler) {
 			if err := h(ctx, event); err != nil {
 				// 错误处理

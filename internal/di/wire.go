@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/lin-snow/ech0/internal/cache"
-	event "github.com/lin-snow/ech0/internal/event"
+	"github.com/lin-snow/ech0/internal/event"
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
@@ -79,6 +79,17 @@ func BuildTasker(
 	return &task.Tasker{}, nil
 }
 
+func BuildEventRegistrar(
+	dbProvider func() *gorm.DB,
+) (*event.EventRegistrar, error) {
+	wire.Build(
+		WebhookSet,
+		EventSet,
+	)
+
+	return &event.EventRegistrar{}, nil
+}
+
 // CacheSet 包含了构建缓存所需的所有 Provider
 var CacheSet = wire.NewSet(
 	ProvideCache,
@@ -144,6 +155,11 @@ var BackupSet = wire.NewSet(
 	backupService.NewBackupService,
 )
 
+// WebhookSet 包含了构建 WebhookDispatcher 所需的所有 Provider
+var WebhookSet = wire.NewSet(
+	webhookRepository.NewWebhookRepository,
+)
+
 // TaskSet 包含了构建 Tasker 所需的所有 Provider
 var TaskSet = wire.NewSet(
 	task.NewTasker,
@@ -159,6 +175,7 @@ var FediverseSet = wire.NewSet(
 // EventSet 包含了构建 Event 相关所需的所有 Provider
 var EventSet = wire.NewSet(
 	event.NewEventBus,
+	wire.Bind(new(event.IEventBus), new(*event.EventBus)),
 	event.NewWebhookDispatcher,
 	event.NewEventHandlers,
 	event.NewEventRegistry,
