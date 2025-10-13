@@ -33,7 +33,7 @@ func NewEchoService(
 	echoRepository repository.EchoRepositoryInterface,
 	commonRepository commonRepository.CommonRepositoryInterface,
 	fediverseService fediverseService.FediverseServiceInterface,
-	eventBus event.IEventBus,
+	eventBusProvider func() event.IEventBus,
 ) EchoServiceInterface {
 	return &EchoService{
 		txManager:        tm,
@@ -41,7 +41,7 @@ func NewEchoService(
 		echoRepository:   echoRepository,
 		commonRepository: commonRepository,
 		fediverseService: fediverseService,
-		eventBus:         eventBus,
+		eventBus:         eventBusProvider(),
 	}
 }
 
@@ -89,7 +89,7 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
 	}
 
-	err = echoService.txManager.Run(func(ctx context.Context) error {
+	if err := echoService.txManager.Run(func(ctx context.Context) error {
 		// 处理标签
 		if err := echoService.ProcessEchoTags(ctx, newEcho); err != nil {
 			return err
@@ -107,8 +107,7 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		}
 
 		return echoService.echoRepository.CreateEcho(ctx, newEcho)
-	})
-	if err != nil {
+	});err != nil {
 		return err
 	}
 
@@ -124,7 +123,7 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 			event.NewEvent(
 				event.EventTypeEchoCreated,
 				event.EventPayload{
-					event.EventPayloadEcho: savedEcho,
+					event.EventPayloadEcho: *savedEcho,
 					event.EventPayloadUser: user,
 				},
 			),

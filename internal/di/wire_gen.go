@@ -44,7 +44,7 @@ import (
 // Injectors from wire.go:
 
 // BuildHandlers 使用wire生成的代码来构建Handlers实例
-func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*Handlers, error) {
+func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory, ebProvider func() event.IEventBus) (*Handlers, error) {
 	webHandler := handler.NewWebHandler()
 	transactionManager := ProvideTransactionManager(tmFactory)
 	iCache := ProvideCache(cacheFactory)
@@ -60,8 +60,7 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	fediverseRepositoryInterface := repository6.NewFediverseRepository(dbProvider)
 	fediverseServiceInterface := service4.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface, commonServiceInterface)
-	eventBus := event.NewEventBus()
-	echoServiceInterface := service5.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface, fediverseServiceInterface, eventBus)
+	echoServiceInterface := service5.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface, fediverseServiceInterface, ebProvider)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
 	settingHandler := handler5.NewSettingHandler(settingServiceInterface)
@@ -89,12 +88,11 @@ func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, t
 	return tasker, nil
 }
 
-func BuildEventRegistrar(dbProvider func() *gorm.DB) (*event.EventRegistrar, error) {
-	eventBus := event.NewEventBus()
+func BuildEventRegistrar(dbProvider func() *gorm.DB, ebProvider func() event.IEventBus) (*event.EventRegistrar, error) {
 	webhookRepositoryInterface := repository5.NewWebhookRepository(dbProvider)
-	webhookDispatcher := event.NewWebhookDispatcher(eventBus, webhookRepositoryInterface)
+	webhookDispatcher := event.NewWebhookDispatcher(ebProvider, webhookRepositoryInterface)
 	eventHandlers := event.NewEventHandlers(webhookDispatcher)
-	eventRegistrar := event.NewEventRegistry(eventBus, eventHandlers)
+	eventRegistrar := event.NewEventRegistry(ebProvider, eventHandlers)
 	return eventRegistrar, nil
 }
 
@@ -144,4 +142,4 @@ var TaskSet = wire.NewSet(task.NewTasker)
 var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler)
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
-var EventSet = wire.NewSet(event.NewEventBus, wire.Bind(new(event.IEventBus), new(*event.EventBus)), event.NewWebhookDispatcher, event.NewEventHandlers, event.NewEventRegistry)
+var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewEventHandlers, event.NewEventRegistry)

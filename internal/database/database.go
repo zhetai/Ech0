@@ -38,9 +38,9 @@ func SetDB(newDB *gorm.DB) {
 	db.Store(newDB)
 }
 
-func DBProvider() func() *gorm.DB {
-	return GetDB
-}
+// func DBProvider() func() *gorm.DB {
+// 	return GetDB
+// }
 
 // EnableWriteLock 启用写锁，阻止新的写操作
 func EnableWriteLock() {

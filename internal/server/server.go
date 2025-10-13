@@ -63,8 +63,11 @@ func (s *Server) Init() {
 	// TransactionManagerFactory
 	transactionManagerFactory := transaction.NewTransactionManagerFactory(database.GetDB)
 
+	// Event System
+	event.InitEventBus()
+
 	// Handlers
-	handlers, err := di.BuildHandlers(database.GetDB, cacheFactory, transactionManagerFactory)
+	handlers, err := di.BuildHandlers(database.GetDB, cacheFactory, transactionManagerFactory, event.GetEventBus)
 	if err != nil {
 		errUtil.HandlePanicError(&commonModel.ServerError{
 			Msg: commonModel.INIT_HANDLERS_PANIC,
@@ -85,7 +88,7 @@ func (s *Server) Init() {
 	}
 
 	// EventRegistrar
-	s.eventRegistrar, err = di.BuildEventRegistrar(database.GetDB)
+	s.eventRegistrar, err = di.BuildEventRegistrar(database.GetDB, event.GetEventBus)
 }
 
 // Start 异步启动服务器
@@ -142,9 +145,7 @@ func (s *Server) Stop(ctx context.Context) error {
 	s.tasker.Stop()
 
 	// 等待事件系统任务结束
-	log.Println("🕓 等待 Webhook 分发任务完成...")
 	s.eventRegistrar.Wait()
-	log.Println("✅ 所有 Webhook 任务已完成")
 
 	return nil
 }

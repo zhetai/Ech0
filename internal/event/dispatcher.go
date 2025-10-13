@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -23,9 +24,9 @@ type WebhookDispatcher struct {
 	wg     sync.WaitGroup
 }
 
-func NewWebhookDispatcher(bus IEventBus, repo webhookRepository.WebhookRepositoryInterface) *WebhookDispatcher {
+func NewWebhookDispatcher(ebp func() IEventBus, repo webhookRepository.WebhookRepositoryInterface) *WebhookDispatcher {
 	return &WebhookDispatcher{
-		bus:  bus,
+		bus:  ebp(),
 		repo: repo,
 		client: &http.Client{
 			Timeout: 5 * time.Second,
@@ -35,6 +36,8 @@ func NewWebhookDispatcher(bus IEventBus, repo webhookRepository.WebhookRepositor
 
 // Handle 由事件总线调用，负责调度事件到每个活跃的 webhook
 func (wd *WebhookDispatcher) Handle(ctx context.Context, e *Event) error {
+	log.Println("Webhook Handle:", e)
+
 	// 获取所有开启的webhook
 	webhooks, err := wd.repo.ListActiveWebhooks()
 	if err != nil {
@@ -58,6 +61,8 @@ func (wd *WebhookDispatcher) Handle(ctx context.Context, e *Event) error {
 
 // Dispatch 负责将事件发送到指定的 webhook
 func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webhook, e *Event) {
+	log.Println("Webhook :", wh, "Event", e)
+
 	// 构建 HTTP 请求
 	req, err := wd.buildRequest(wh, e)
 	if err != nil {

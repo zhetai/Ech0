@@ -17,8 +17,8 @@ type EventRegistrar struct {
 }
 
 // NewEventRegistry 创建一个新的事件注册表
-func NewEventRegistry(eb IEventBus, eh *EventHandlers) *EventRegistrar {
-	return &EventRegistrar{eb: eb, eh: eh}
+func NewEventRegistry(ebp func() IEventBus, eh *EventHandlers) *EventRegistrar {
+	return &EventRegistrar{eb: ebp(), eh: eh}
 }
 
 // Register 注册事件处理函数

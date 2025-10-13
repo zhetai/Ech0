@@ -44,6 +44,7 @@ func BuildHandlers(
 	dbProvider func() *gorm.DB,
 	cacheFactory *cache.CacheFactory,
 	tmFactory *transaction.TransactionManagerFactory,
+	ebProvider func() event.IEventBus,
 ) (*Handlers, error) {
 	wire.Build(
 		CacheSet,
@@ -57,7 +58,6 @@ func BuildHandlers(
 		ConnectSet,
 		BackupSet,
 		FediverseSet,
-		EventSet,
 		NewHandlers, // NewHandlers 聚合各个模块的Handler
 	)
 
@@ -82,6 +82,7 @@ func BuildTasker(
 
 func BuildEventRegistrar(
 	dbProvider func() *gorm.DB,
+	ebProvider func() event.IEventBus,
 ) (*event.EventRegistrar, error) {
 	wire.Build(
 		WebhookSet,
@@ -175,8 +176,6 @@ var FediverseSet = wire.NewSet(
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
 var EventSet = wire.NewSet(
-	event.NewEventBus,
-	wire.Bind(new(event.IEventBus), new(*event.EventBus)),
 	event.NewWebhookDispatcher,
 	event.NewEventHandlers,
 	event.NewEventRegistry,

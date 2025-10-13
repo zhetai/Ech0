@@ -87,7 +87,7 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 	handlers, ok := eb.subs[event.Type]
 	eb.mu.RUnlock()
 	if !ok {
-		return nil
+		handlers = []EventHandler{}
 	}
 
 	// 处理所有订阅该事件类型的处理器
@@ -100,11 +100,12 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 		}(handler)
 	}
 
-	// 处理所有订阅所有事件的处理器
 	eb.mu.RLock()
 	allHandlers := eb.all
 	eb.mu.RUnlock()
 
+	// 处理所有订阅所有事件的处理器
+	log.Println("ALL HANDLERS:", len(allHandlers))
 	for _, handler := range allHandlers {
 		go func(h EventHandler) {
 			if err := h(ctx, event); err != nil {
