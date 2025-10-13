@@ -68,6 +68,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 ☁️ **S3 Storage Integration** — Native support for S3-compatible object storage enables efficient cloud synchronization  
 🌐 **ActivityPub Federation** — Seamlessly federates with Mastodon, Misskey, and other decentralized platforms  
 🔑 **OAuth2 Integration** — Native support for OAuth2, simplifying third-party login and API authorization  
+🪶 **Highly Available Webhook**: Enables real-time integration and collaboration with external systems, supporting event-driven automated workflows  
 📝 **Built-in Todo Management**: Easily capture and manage daily tasks to stay organized and productive  
 🧰 **Command-Line Powerhouse**: A built-in high-availability CLI that empowers developers and advanced users with precision control and seamless automation  
 📟 **Refined TUI Experience**: A beautifully designed terminal interface offering intuitive management of Ech0  
