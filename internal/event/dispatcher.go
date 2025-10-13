@@ -6,21 +6,21 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"sync"
 	"time"
 
 	"go.uber.org/zap"
 
+	"github.com/lin-snow/ech0/internal/async"
 	webhookModel "github.com/lin-snow/ech0/internal/model/webhook"
 	webhookRepository "github.com/lin-snow/ech0/internal/repository/webhook"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
 type WebhookDispatcher struct {
-	bus    IEventBus
-	client *http.Client
-	repo   webhookRepository.WebhookRepositoryInterface
-	wg     sync.WaitGroup
+	bus    IEventBus                                    // 事件总线
+	client *http.Client                                 // HTTP 客户端
+	repo   webhookRepository.WebhookRepositoryInterface // Webhook 仓储层
+	pool   *async.WorkerPool                            // 任务池pool
 }
 
 func NewWebhookDispatcher(ebp func() IEventBus, repo webhookRepository.WebhookRepositoryInterface) *WebhookDispatcher {
@@ -30,6 +30,7 @@ func NewWebhookDispatcher(ebp func() IEventBus, repo webhookRepository.WebhookRe
 		client: &http.Client{
 			Timeout: 5 * time.Second,
 		},
+		pool: async.NewWorkerPool(6, 6), // 假设最大并发数为 6，任务队列大小为 6
 	}
 }
 
@@ -45,11 +46,12 @@ func (wd *WebhookDispatcher) Handle(ctx context.Context, e *Event) error {
 		// if !wh.ShouldHandle(e.Type) {
 		// 	continue
 		// }
-		wd.wg.Add(1)
-		go func(wh *webhookModel.Webhook) {
-			defer wd.wg.Done()
-			wd.Dispatch(ctx, wh, e)
-		}(&wh)
+		wh := wh // 捕获变量
+		// 提交任务到池中异步处理
+		wd.pool.Submit(func() error {
+			wd.Dispatch(ctx, &wh, e)
+			return nil
+		})
 	}
 
 	return nil
@@ -116,5 +118,5 @@ func (wd *WebhookDispatcher) buildRequest(wh *webhookModel.Webhook, e *Event) (*
 
 // Wait 等待所有事件处理完成
 func (wd *WebhookDispatcher) Wait() {
-	wd.wg.Wait()
+	wd.pool.Wait()
 }
