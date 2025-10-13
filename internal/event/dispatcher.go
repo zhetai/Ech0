@@ -58,30 +58,12 @@ func (wd *WebhookDispatcher) Handle(ctx context.Context, e *Event) error {
 
 // Dispatch 负责将事件发送到指定的 webhook
 func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webhook, e *Event) {
-	// 构造 HTTP 请求体
-	body, err := json.Marshal(e)
-	if err != nil {
-		// 记录日志或处理错误
-		logUtil.GetLogger().Error(err.Error())
-	}
-
-	// 构造 HTTP 请求头
-	headers := make(http.Header)
-	headers.Set("Content-Type", "application/json")
-	headers.Set("X-Ech0-Event", string(e.Type))
-	headers.Set("User-Agent", "Ech0-Webhook-Client")
-
-	// 发送 HTTP 请求
-	req, err := http.NewRequestWithContext(ctx, "POST", wh.URL, nil)
+	// 构建 HTTP 请求
+	req, err := wd.buildRequest(wh, e)
 	if err != nil {
 		// 记录日志或处理错误
 		logUtil.GetLogger().Error(err.Error())
 		return
-	}
-	req.Header = headers
-	req.Body = http.NoBody
-	req.GetBody = func() (bodyReader io.ReadCloser, err error) {
-		return io.NopCloser(bytes.NewReader(body)), nil
 	}
 
 	// 发送 HTTP 请求
@@ -102,6 +84,37 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 		// 记录失败日志
 		logUtil.GetLogger().Error("Webhook %s dispatch event %s failed with status %d", zapcore.Field{Key: "webhook", String: wh.URL}, zapcore.Field{Key: "event", String: string(e.Type)}, zapcore.Field{Key: "status", Integer: int64(resp.StatusCode)})
 	}
+}
+
+// buildRequest 构建 HTTP 请求(POST)
+func (wd *WebhookDispatcher) buildRequest(wh *webhookModel.Webhook, e *Event) (*http.Request, error) {
+	// 构造 HTTP 请求头
+	headers := make(http.Header)
+	headers.Set("Content-Type", "application/json")
+	headers.Set("X-Ech0-Event", string(e.Type))
+	headers.Set("User-Agent", "Ech0-Webhook-Client")
+
+	// 构造 HTTP 请求体
+	body, err := json.Marshal(e)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader := io.NopCloser(bytes.NewReader(body))
+
+	// 构造 HTTP 请求
+	req, err := http.NewRequest("POST", wh.URL, bodyReader)
+	if err != nil {
+		return nil, err
+	}
+	req.Header = headers
+
+	// 设置 GetBody 以支持重试
+	req.GetBody = func() (bodyReader io.ReadCloser, err error) {
+		return io.NopCloser(bytes.NewReader(body)), nil
+	}
+
+	// 返回请求对象
+	return req, nil
 }
 
 // Wait 等待所有事件处理完成
