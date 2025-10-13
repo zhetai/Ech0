@@ -30,3 +30,8 @@ func (er *EventRegistrar) Register() error {
 
 	return nil
 }
+
+// Wait 等待所有事件处理完成
+func (er *EventRegistrar) Wait() {
+	er.eh.wbd.Wait()
+}

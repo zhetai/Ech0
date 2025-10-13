@@ -141,5 +141,10 @@ func (s *Server) Stop(ctx context.Context) error {
 	// 停止任务器
 	s.tasker.Stop()
 
+	// 等待事件系统任务结束
+	log.Println("🕓 等待 Webhook 分发任务完成...")
+	s.eventRegistrar.Wait()
+	log.Println("✅ 所有 Webhook 任务已完成")
+
 	return nil
 }

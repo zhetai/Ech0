@@ -53,3 +53,13 @@ func (webhookRepository *WebhookRepository) DeleteWebhookByID(ctx context.Contex
 
 	return nil
 }
+
+// ListActiveWebhooks 列出所有激活的 webhook
+func (webhookRepository *WebhookRepository) ListActiveWebhooks() ([]model.Webhook, error) {
+	var webhooks []model.Webhook
+	if err := webhookRepository.db().Where("is_active = ?", true).Find(&webhooks).Error; err != nil {
+		return nil, err
+	}
+
+	return webhooks, nil
+}

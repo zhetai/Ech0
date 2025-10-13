@@ -15,4 +15,7 @@ type WebhookRepositoryInterface interface {
 
 	// DeleteWebhookByID 根据ID删除webhook
 	DeleteWebhookByID(ctx context.Context, id uint) error
+
+	// ListActiveWebhooks 列出所有激活的 webhook
+	ListActiveWebhooks() ([]model.Webhook, error)
 }
