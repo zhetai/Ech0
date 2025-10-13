@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/lin-snow/ech0/internal/event"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/echo"
@@ -14,6 +15,7 @@ import (
 	fediverseService "github.com/lin-snow/ech0/internal/service/fediverse"
 	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
+	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
 type EchoService struct {
@@ -22,6 +24,7 @@ type EchoService struct {
 	echoRepository   repository.EchoRepositoryInterface
 	commonRepository commonRepository.CommonRepositoryInterface
 	fediverseService fediverseService.FediverseServiceInterface
+	eventBus         event.IEventBus
 }
 
 func NewEchoService(
@@ -30,6 +33,7 @@ func NewEchoService(
 	echoRepository repository.EchoRepositoryInterface,
 	commonRepository commonRepository.CommonRepositoryInterface,
 	fediverseService fediverseService.FediverseServiceInterface,
+	eventBus event.IEventBus,
 ) EchoServiceInterface {
 	return &EchoService{
 		txManager:        tm,
@@ -37,94 +41,59 @@ func NewEchoService(
 		echoRepository:   echoRepository,
 		commonRepository: commonRepository,
 		fediverseService: fediverseService,
+		eventBus:         eventBus,
 	}
 }
 
 // PostEcho 创建新的Echo
 func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error {
-	err := echoService.txManager.Run(func(ctx context.Context) error {
-		newEcho.UserID = userid
+	newEcho.UserID = userid
 
-		user, err := echoService.commonService.CommonGetUserByUserId(userid)
-		if err != nil {
-			return err
+	user, err := echoService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	// 检查Extension内容
+	if newEcho.Extension != "" && newEcho.ExtensionType != "" {
+		switch newEcho.ExtensionType {
+		case model.Extension_MUSIC:
+			// 处理音乐链接 (暂无)
+		case model.Extension_VIDEO:
+			// 处理视频链接 (暂无)
+		case model.Extension_GITHUBPROJ:
+			// 处理GitHub项目的链接
+			newEcho.Extension = httpUtil.TrimURL(newEcho.Extension)
+		case model.Extension_WEBSITE:
+			// 处理网站链接 (暂无)
 		}
+	} else {
+		newEcho.Extension = ""
+		newEcho.ExtensionType = ""
+	}
 
-		if !user.IsAdmin {
-			return errors.New(commonModel.NO_PERMISSION_DENIED)
+	newEcho.Username = user.Username
+
+	for i := range newEcho.Images {
+		if newEcho.Images[i].ImageURL == "" {
+			newEcho.Images[i].ImageSource = ""
 		}
+	}
 
-		// 检查Extension内容
-		if newEcho.Extension != "" && newEcho.ExtensionType != "" {
-			switch newEcho.ExtensionType {
-			case model.Extension_MUSIC:
-				// 处理音乐链接 (暂无)
-			case model.Extension_VIDEO:
-				// 处理视频链接 (暂无)
-			case model.Extension_GITHUBPROJ:
-				// 处理GitHub项目的链接
-				newEcho.Extension = httpUtil.TrimURL(newEcho.Extension)
-			case model.Extension_WEBSITE:
-				// 处理网站链接 (暂无)
-			}
-		} else {
-			newEcho.Extension = ""
-			newEcho.ExtensionType = ""
-		}
+	if newEcho.Content == "" && len(newEcho.Images) == 0 &&
+		(newEcho.Extension == "" || newEcho.ExtensionType == "") {
+		return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
+	}
 
-		newEcho.Username = user.Username
-
-		for i := range newEcho.Images {
-			if newEcho.Images[i].ImageURL == "" {
-				newEcho.Images[i].ImageSource = ""
-			}
-		}
-
-		if newEcho.Content == "" && len(newEcho.Images) == 0 &&
-			(newEcho.Extension == "" || newEcho.ExtensionType == "") {
-			return errors.New(commonModel.ECHO_CAN_NOT_BE_EMPTY)
-		}
-
+	err = echoService.txManager.Run(func(ctx context.Context) error {
 		// 处理标签
 		if err := echoService.ProcessEchoTags(ctx, newEcho); err != nil {
 			return err
 		}
-		// // 处理标签
-		// var processedTags []model.Tag
-
-		// for _, tag := range newEcho.Tags {
-		// 	// 清洗
-		// 	name := strings.TrimSpace(strings.TrimPrefix(tag.Name, "#"))
-		// 	if name == "" {
-		// 		continue // 跳过空标签
-		// 	}
-
-		// 	// 查找已存在的标签
-		// 	existingTag, err := echoService.echoRepository.GetTagByName(name)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	if existingTag != nil {
-		// 		// 标签已存在 → 复用
-		// 		// 增加使用计数
-		// 		if err := echoService.echoRepository.IncrementTagUsageCount(ctx, existingTag.ID); err != nil {
-		// 			return err
-		// 		}
-		// 		// 使用已存在的标签
-		// 		processedTags = append(processedTags, *existingTag)
-		// 	} else {
-		// 		// 标签不存在 → 创建
-		// 		newTag := model.Tag{Name: name, UsageCount: 1}
-		// 		if createErr := echoService.echoRepository.CreateTag(ctx, &newTag); createErr != nil {
-		// 			return createErr
-		// 		}
-		// 		processedTags = append(processedTags, newTag)
-		// 	}
-		// }
-
-		// // 替换原始标签
-		// newEcho.Tags = processedTags
 
 		// 处理临时文件表，防止被当作孤儿文件删除
 		for i := range newEcho.Images {
@@ -143,17 +112,33 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		return err
 	}
 
-	// 事务提交成功后再推送，确保已拿到持久化 ID （暂时关闭主动推送至联邦功能，提高响应速度）
-	// savedEcho, fetchErr := echoService.echoRepository.GetEchosById(newEcho.ID)
-	// if fetchErr != nil {
-	// 	return fetchErr
-	// }
-	// if savedEcho != nil {
-	// 	if pushErr := echoService.fediverseService.PushEchoToFediverse(userid, *savedEcho); pushErr != nil {
-	// 		// 推送失败不影响发布
-	// 		fmt.Println("Error pushing Echo to Fediverse:", pushErr)
-	// 	}
-	// }
+	// 事务提交成功后再推送，确保已拿到持久化 ID
+	savedEcho, fetchErr := echoService.echoRepository.GetEchosById(newEcho.ID)
+	if fetchErr != nil {
+		return fetchErr
+	}
+	if savedEcho != nil {
+		// 推送事件
+		if pubErr := echoService.eventBus.Publish(
+			context.Background(),
+			event.NewEvent(
+				event.EventTypeEchoCreated,
+				event.EventPayload{
+					event.EventPayloadEcho: savedEcho,
+					event.EventPayloadUser: user,
+				},
+			),
+		); pubErr != nil {
+			// 推送失败不影响发布
+			logUtil.GetLogger().Error(pubErr.Error())
+		}
+
+		// 推送到联邦网络 (暂时关闭主动推送至联邦宇宙功能)
+		// if pushErr := echoService.fediverseService.PushEchoToFediverse(userid, *savedEcho); pushErr != nil {
+		// 	// 推送失败不影响发布
+		// 	log.Println("Error pushing Echo to Fediverse:", pushErr)
+		// }
+	}
 
 	return nil
 }

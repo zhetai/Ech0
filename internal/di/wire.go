@@ -57,6 +57,7 @@ func BuildHandlers(
 		ConnectSet,
 		BackupSet,
 		FediverseSet,
+		EventSet,
 		NewHandlers, // NewHandlers 聚合各个模块的Handler
 	)
 

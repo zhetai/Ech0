@@ -38,6 +38,12 @@ const (
 	EventTypeSystemBackup EventType = "system.backup" // 系统备份
 )
 
+// 定义事件Payload的常用字段
+const (
+	EventPayloadUser = "user"
+	EventPayloadEcho = "echo"
+)
+
 // NewEvent 创建一个新的事件
 func NewEvent(eventType EventType, payload EventPayload) *Event {
 	id := ulid.MustNew(ulid.Timestamp(time.Now()), rand.New(rand.NewSource(time.Now().UnixNano()))).
