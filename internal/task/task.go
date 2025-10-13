@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron/v2"
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	commonService "github.com/lin-snow/ech0/internal/service/common"
@@ -48,18 +49,12 @@ func (t *Tasker) CleanupTempFilesTask() {
 		gocron.NewTask(
 			func() {
 				if err := t.commonService.CleanupTempFiles(); err != nil {
-					logUtil.GetLogger().Error("Failed to clean up temporary files", zapcore.Field{
-						Key:    "error",
-						String: err.Error(),
-					})
+					logUtil.GetLogger().Error("Failed to clean up temporary files", zap.String("error", err.Error()))
 				}
 			},
 		),
 	)
 	if err != nil {
-		logUtil.GetLogger().Error("Failed to schedule CleanupTempFilesTask", zapcore.Field{
-			Key:    "error",
-			String: err.Error(),
-		})
+		logUtil.GetLogger().Error("Failed to schedule CleanupTempFilesTask", zap.String("error", err.Error()))
 	}
 }

@@ -110,15 +110,15 @@ func (s *Server) Start() {
 			})
 		}
 	}()
-	log.Println("🚀 Ech0 Server已启动，监听端口", port)
+	log.Println("🚀 Ech0 Server已启动")
 
 	// 启动任务器
 	go s.tasker.Start()
-	log.Println("🚀 任务器已启动")
+	log.Println("🤖 任务器已启动")
 
 	// 注册事件
 	go s.eventRegistrar.Register()
-	log.Println("🚀 事件注册器已启动")
+	log.Println("🔮 事件注册器已启动")
 }
 
 // Stop 优雅停止服务器
