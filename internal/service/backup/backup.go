@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"mime/multipart"
@@ -10,17 +11,23 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/lin-snow/ech0/internal/backup"
+	"github.com/lin-snow/ech0/internal/event"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 )
 
 type BackupService struct {
 	commonService commonService.CommonServiceInterface
+	eventBus      event.IEventBus
 }
 
-func NewBackupService(commonService commonService.CommonServiceInterface) BackupServiceInterface {
+func NewBackupService(
+	commonService commonService.CommonServiceInterface,
+	eventBusProvider func() event.IEventBus,
+) BackupServiceInterface {
 	return &BackupService{
 		commonService: commonService,
+		eventBus:      eventBusProvider(),
 	}
 }
 
@@ -39,6 +46,17 @@ func (backupService *BackupService) Backup(userid uint) error {
 	if _, _, err := backup.ExecuteBackup(); err != nil {
 		return err
 	}
+
+	// 触发备份完成事件
+	backupService.eventBus.Publish(
+		context.Background(),
+		event.NewEvent(
+			event.EventTypeSystemBackup,
+			event.EventPayload{
+				event.EventPayloadInfo: "System backup completed",
+			},
+		),
+	)
 
 	return nil
 }
@@ -75,6 +93,19 @@ func (backupService *BackupService) ExportBackup(ctx *gin.Context) error {
 
 	// 使用 Gin 的内置方法，支持 Range 请求
 	ctx.File(backupFilePath)
+
+	// 触发导出完成事件
+	backupService.eventBus.Publish(
+		context.Background(),
+		event.NewEvent(
+			event.EventTypeSystemExport,
+			event.EventPayload{
+				event.EventPayloadInfo: "System export completed",
+				event.EventPayloadSize: fileInfo.Size(),
+			},
+		),
+	)
+
 	return nil
 }
 
@@ -100,6 +131,17 @@ func (backupService *BackupService) ImportBackup(ctx *gin.Context, userid uint, 
 	if err := backup.ExcuteRestoreOnline(tempFilePath, timestamp); err != nil {
 		return errors.New(commonModel.SNAPSHOT_RESTORE_FAILED + ": " + err.Error())
 	}
+
+	// 触发恢复完成事件
+	backupService.eventBus.Publish(
+		context.Background(),
+		event.NewEvent(
+			event.EventTypeSystemRestore,
+			event.EventPayload{
+				event.EventPayloadInfo: "System restore completed",
+			},
+		),
+	)
 
 	return nil
 }

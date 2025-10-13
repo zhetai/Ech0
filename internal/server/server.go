@@ -11,7 +11,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -79,7 +78,7 @@ func (s *Server) Init() {
 	router.SetupRouter(s.GinEngine, handlers)
 
 	// Tasker
-	s.tasker, err = di.BuildTasker(database.GetDB, cacheFactory, transactionManagerFactory)
+	s.tasker, err = di.BuildTasker(database.GetDB, cacheFactory, transactionManagerFactory, event.GetEventBus)
 	if err != nil {
 		errUtil.HandlePanicError(&commonModel.ServerError{
 			Msg: commonModel.INIT_TASKER_PANIC,
@@ -110,15 +109,15 @@ func (s *Server) Start() {
 			})
 		}
 	}()
-	log.Println("🚀 Ech0 Server已启动")
+	// log.Println("🚀 Ech0 Server已启动")
 
 	// 启动任务器
 	go s.tasker.Start()
-	log.Println("🤖 任务器已启动")
+	// log.Println("🤖 任务器已启动")
 
 	// 注册事件
 	go s.eventRegistrar.Register()
-	log.Println("🔮 事件注册器已启动")
+	// log.Println("🔮 事件注册器已启动")
 }
 
 // Stop 优雅停止服务器

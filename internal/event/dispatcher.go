@@ -45,7 +45,6 @@ func (wd *WebhookDispatcher) Handle(ctx context.Context, e *Event) error {
 		// if !wh.ShouldHandle(e.Type) {
 		// 	continue
 		// }
-
 		wd.wg.Add(1)
 		go func(wh *webhookModel.Webhook) {
 			defer wd.wg.Done()
@@ -80,7 +79,7 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 		// 成功处理
 	} else {
 		// 记录失败日志
-		logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.String("url", wh.URL))
+		logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.String("name", wh.Name), zap.String("url", wh.URL))
 	}
 }
 

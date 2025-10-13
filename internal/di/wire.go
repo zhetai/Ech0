@@ -68,6 +68,7 @@ func BuildTasker(
 	dbProvider func() *gorm.DB,
 	cacheFactory *cache.CacheFactory,
 	tmFactory *transaction.TransactionManagerFactory,
+	ebProvider func() event.IEventBus,
 ) (*task.Tasker, error) {
 	wire.Build(
 		CacheSet,

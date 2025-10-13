@@ -193,15 +193,15 @@ func (echoService *EchoService) GetEchosByPage(
 
 // DeleteEchoById 删除指定ID的Echo
 func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
-	return echoService.txManager.Run(func(ctx context.Context) error {
-		user, err := echoService.commonService.CommonGetUserByUserId(userid)
-		if err != nil {
-			return err
-		}
-		if !user.IsAdmin {
-			return errors.New(commonModel.NO_PERMISSION_DENIED)
-		}
+	user, err := echoService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
 
+	if err := echoService.txManager.Run(func(ctx context.Context) error {
 		// 检查该Echo是否存在图片
 		echo, err := echoService.echoRepository.GetEchosById(id)
 		if err != nil {
@@ -221,7 +221,26 @@ func (echoService *EchoService) DeleteEchoById(userid, id uint) error {
 		}
 
 		return echoService.echoRepository.DeleteEchoById(ctx, id)
-	})
+	}); err != nil {
+		return err
+	}
+
+	// 删除成功后推送事件
+	if pubErr := echoService.eventBus.Publish(
+		context.Background(),
+		event.NewEvent(
+			event.EventTypeEchoDeleted,
+			event.EventPayload{
+				event.EventPayloadEcho: model.Echo{ID: id},
+				event.EventPayloadUser: user,
+			},
+		),
+	); pubErr != nil {
+		// 推送失败不影响删除
+		logUtil.GetLogger().Error(pubErr.Error())
+	}
+
+	return nil
 }
 
 // GetTodayEchos 获取今天的Echo列表
@@ -255,15 +274,15 @@ func (echoService *EchoService) GetTodayEchos(userid uint) ([]model.Echo, error)
 
 // UpdateEcho 更新指定ID的Echo
 func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error {
-	return echoService.txManager.Run(func(ctx context.Context) error {
-		user, err := echoService.commonService.CommonGetUserByUserId(userid)
-		if err != nil {
-			return err
-		}
-		if !user.IsAdmin {
-			return errors.New(commonModel.NO_PERMISSION_DENIED)
-		}
+	user, err := echoService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
 
+	if err := echoService.txManager.Run(func(ctx context.Context) error {
 		// 检查Extension内容
 		if echo.Extension != "" && echo.ExtensionType != "" {
 			switch echo.ExtensionType {
@@ -303,7 +322,26 @@ func (echoService *EchoService) UpdateEcho(userid uint, echo *model.Echo) error 
 
 		// 更新Echo
 		return echoService.echoRepository.UpdateEcho(ctx, echo)
-	})
+	}); err != nil {
+		return err
+	}
+
+	// 更新成功后推送事件
+	if pubErr := echoService.eventBus.Publish(
+		context.Background(),
+		event.NewEvent(
+			event.EventTypeEchoUpdated,
+			event.EventPayload{
+				event.EventPayloadEcho: *echo,
+				event.EventPayloadUser: user,
+			},
+		),
+	); pubErr != nil {
+		// 推送失败不影响更新
+		logUtil.GetLogger().Error(pubErr.Error())
+	}
+
+	return nil
 }
 
 // LikeEcho 点赞指定ID的Echo

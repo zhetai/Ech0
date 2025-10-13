@@ -52,11 +52,11 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	commonRepositoryInterface := repository2.NewCommonRepository(dbProvider)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(dbProvider, iCache)
 	echoRepositoryInterface := repository3.NewEchoRepository(dbProvider, iCache)
-	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface)
+	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface, ebProvider)
 	settingRepositoryInterface := repository4.NewSettingRepository(dbProvider)
 	webhookRepositoryInterface := repository5.NewWebhookRepository(dbProvider)
 	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface, settingRepositoryInterface, webhookRepositoryInterface)
-	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface)
+	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface, ebProvider)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	fediverseRepositoryInterface := repository6.NewFediverseRepository(dbProvider)
 	fediverseServiceInterface := service4.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface, commonServiceInterface)
@@ -70,20 +70,20 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	connectRepositoryInterface := repository8.NewConnectRepository(dbProvider)
 	connectServiceInterface := service7.NewConnectService(transactionManager, connectRepositoryInterface, echoRepositoryInterface, commonServiceInterface, settingServiceInterface)
 	connectHandler := handler7.NewConnectHandler(connectServiceInterface)
-	backupServiceInterface := service8.NewBackupService(commonServiceInterface)
+	backupServiceInterface := service8.NewBackupService(commonServiceInterface, ebProvider)
 	backupHandler := handler8.NewBackupHandler(backupServiceInterface)
 	fediverseHandler := handler9.NewFediverseHandler(fediverseServiceInterface)
 	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler, fediverseHandler)
 	return handlers, nil
 }
 
-func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory) (*task.Tasker, error) {
+func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, tmFactory *transaction.TransactionManagerFactory, ebProvider func() event.IEventBus) (*task.Tasker, error) {
 	transactionManager := ProvideTransactionManager(tmFactory)
 	commonRepositoryInterface := repository2.NewCommonRepository(dbProvider)
 	iCache := ProvideCache(cacheFactory)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(dbProvider, iCache)
 	echoRepositoryInterface := repository3.NewEchoRepository(dbProvider, iCache)
-	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface)
+	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface, ebProvider)
 	tasker := task.NewTasker(commonServiceInterface)
 	return tasker, nil
 }

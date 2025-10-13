@@ -10,19 +10,6 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
-// Event 事件结构体
-type Event struct {
-	ID        string       `json:"id"`        // Unique event ID
-	Type      EventType    `json:"type"`      // Event type
-	Payload   EventPayload `json:"data"`      // Event payload
-	Timestamp time.Time    `json:"timestamp"` // Event timestamp
-}
-
-type (
-	EventType    string         // 事件类型
-	EventPayload map[string]any // 事件负载
-)
-
 // 定义事件类型
 const (
 	EventTypeUserCreated EventType = "user.created" // 创建用户
@@ -35,13 +22,38 @@ const (
 
 	EventTypeResourceUploaded EventType = "resource.uploaded" // 资源上传
 
-	EventTypeSystemBackup EventType = "system.backup" // 系统备份
+	EventTypeSystemBackup  EventType = "system.backup"  // 系统快照备份
+	EventTypeSystemRestore EventType = "system.restore" // 系统快照恢复
+	EventTypeSystemExport  EventType = "system.export"  // 系统快照导出
 )
 
 // 定义事件Payload的常用字段
 const (
 	EventPayloadUser = "user"
 	EventPayloadEcho = "echo"
+	EventPayloadData = "data"
+	EventPayloadInfo = "info"
+	EventPayloadMeta = "meta"
+	EventPayloadTime = "time"
+	EventPayloadType = "type"
+	EventPayloadID   = "id"
+	EventPayloadURL  = "url"
+	EventPayloadSize = "size"
+	EventPayloadPath = "path"
+	EventPayloadFile = "file"
+)
+
+// Event 事件结构体
+type Event struct {
+	ID        string       `json:"id"`        // Unique event ID
+	Type      EventType    `json:"type"`      // Event type
+	Payload   EventPayload `json:"data"`      // Event payload
+	Timestamp time.Time    `json:"timestamp"` // Event timestamp
+}
+
+type (
+	EventType    string         // 事件类型
+	EventPayload map[string]any // 事件负载
 )
 
 // NewEvent 创建一个新的事件

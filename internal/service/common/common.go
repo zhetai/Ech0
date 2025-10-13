@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/feeds"
 
 	"github.com/lin-snow/ech0/internal/config"
+	"github.com/lin-snow/ech0/internal/event"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
@@ -37,6 +38,7 @@ type CommonService struct {
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
 	objStorage         storageUtil.ObjectStorage
 	echoRepository     echoRepository.EchoRepositoryInterface
+	eventBus           event.IEventBus
 }
 
 func NewCommonService(
@@ -44,6 +46,7 @@ func NewCommonService(
 	commonRepository repository.CommonRepositoryInterface,
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface,
 	echoRepository echoRepository.EchoRepositoryInterface,
+	eventBusProvider func() event.IEventBus,
 ) CommonServiceInterface {
 	return &CommonService{
 		txManager:          tm,
@@ -51,6 +54,7 @@ func NewCommonService(
 		keyvalueRepository: keyvalueRepository,
 		echoRepository:     echoRepository,
 		objStorage:         nil,
+		eventBus:           eventBusProvider(),
 	}
 }
 
@@ -82,6 +86,19 @@ func (commonService *CommonService) UploadImage(userId uint, file *multipart.Fil
 	if err != nil {
 		return "", err
 	}
+
+	// 触发图片上传事件
+	user.Password = "" // 清除密码字段，避免泄露
+	commonService.eventBus.Publish(context.Background(), event.NewEvent(
+		event.EventTypeResourceUploaded,
+		event.EventPayload{
+			event.EventPayloadUser: user,
+			event.EventPayloadFile: file.Filename,
+			event.EventPayloadURL:  imageUrl,
+			event.EventPayloadSize: file.Size,
+			event.EventPayloadType: commonModel.ImageType,
+		},
+	))
 
 	return imageUrl, nil
 }
