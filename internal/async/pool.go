@@ -17,16 +17,18 @@ type WorkerPool struct {
 // NewWorkerPool 创建一个新的 WorkerPool
 func NewWorkerPool(workerCount, jobQueueSize int) *WorkerPool {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &WorkerPool{
+	workerPool := &WorkerPool{
 		workerCount: workerCount,
 		jobs:        make(chan func() error, jobQueueSize),
 		ctx:         ctx,
 		cancel:      cancel,
 	}
+	workerPool.start()
+	return workerPool
 }
 
 // Start 启动工作池
-func (p *WorkerPool) Start() {
+func (p *WorkerPool) start() {
 	for i := 0; i < p.workerCount; i++ {
 		go func() {
 			for {

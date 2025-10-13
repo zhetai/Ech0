@@ -25,10 +25,15 @@ type WebhookDispatcher struct {
 
 func NewWebhookDispatcher(ebp func() IEventBus, repo webhookRepository.WebhookRepositoryInterface) *WebhookDispatcher {
 	return &WebhookDispatcher{
-		bus:  ebp(),
-		repo: repo,
-		client: &http.Client{
-			Timeout: 5 * time.Second,
+		bus:  ebp(), // 获取事件总线实例
+		repo: repo,  // 注入仓储层
+		client: &http.Client{ // 配置 HTTP 客户端
+			Timeout: 5 * time.Second, // 请求超时时间
+			Transport: &http.Transport{ // 自定义传输设置（使用连接池）
+				MaxIdleConns:        10,               // 最大空闲连接数
+				MaxIdleConnsPerHost: 10,               // 每个主机的最大空闲连接数
+				IdleConnTimeout:     30 * time.Second, // 空闲连接超时时间
+			},
 		},
 		pool: async.NewWorkerPool(6, 6), // 假设最大并发数为 6，任务队列大小为 6
 	}
@@ -67,31 +72,37 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 		return
 	}
 
-	// 发送 HTTP 请求
-	resp, err := wd.client.Do(req)
-	if err != nil {
-		// 记录日志或处理错误
-		logUtil.GetLogger().Error(err.Error())
-		return
-	}
-	defer resp.Body.Close()
+	// 发送请求，带重试机制
+	wd.retryWithBackoff(3, 500*time.Millisecond, func() error {
+		// 发送 HTTP 请求
+		resp, err := wd.client.Do(req)
+		if err != nil {
+			// 记录日志或处理错误
+			logUtil.GetLogger().Error(err.Error())
+			return err
+		}
+		defer resp.Body.Close()
 
-	// 处理响应
-	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-		// 成功处理
-	} else {
-		// 记录失败日志
-		logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.String("name", wh.Name), zap.String("url", wh.URL))
-	}
+		// 处理响应
+		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+			// 成功处理
+			return nil
+		} else {
+			// 记录失败日志
+			logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.String("name", wh.Name), zap.String("url", wh.URL))
+			return err
+		}
+	})
 }
 
 // buildRequest 构建 HTTP 请求(POST)
 func (wd *WebhookDispatcher) buildRequest(wh *webhookModel.Webhook, e *Event) (*http.Request, error) {
 	// 构造 HTTP 请求头
 	headers := make(http.Header)
-	headers.Set("Content-Type", "application/json")
-	headers.Set("X-Ech0-Event", string(e.Type))
-	headers.Set("User-Agent", "Ech0-Webhook-Client")
+	headers.Set("Content-Type", "application/json")  // 内容类型
+	headers.Set("X-Ech0-Event", string(e.Type))      // 事件类型
+	headers.Set("User-Agent", "Ech0-Webhook-Client") // 自定义 User-Agent
+	headers.Set("E-Ech0-Event-ID", e.ID)             // 唯一事件 ID，便于接收方去重，保证幂等性
 
 	// 构造 HTTP 请求体
 	body, err := json.Marshal(e)
@@ -114,6 +125,21 @@ func (wd *WebhookDispatcher) buildRequest(wh *webhookModel.Webhook, e *Event) (*
 
 	// 返回请求对象
 	return req, nil
+}
+
+// retryWithBackoff 带指数退避的重试机制
+func (wd *WebhookDispatcher) retryWithBackoff(maxRetries int, initialBackoff time.Duration, fn func() error) error {
+	var err error
+	delay := initialBackoff
+	for range maxRetries {
+		if err := fn(); err == nil {
+			return nil // 成功
+		}
+		time.Sleep(delay)
+		delay *= 2 // 指数退避
+	}
+
+	return err // 返回最后一次的错误
 }
 
 // Wait 等待所有事件处理完成
