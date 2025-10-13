@@ -54,7 +54,8 @@ func NewEvent(eventType EventType, payload EventPayload) *Event {
 // IEventBus 事件总线接口
 type IEventBus interface {
 	Publish(ctx context.Context, event *Event) error           // 发布事件
-	Subscribe(eventType EventType, handler EventHandler) error // 订阅事件
+	Subscribe(eventType EventType, handler EventHandler) error // 订阅特定事件
+	SubscribeAll(handler EventHandler) error                    // 订阅所有事件
 }
 
 // EventHandler 事件处理函数类型
@@ -64,6 +65,7 @@ type EventHandler func(ctx context.Context, event *Event) error
 type EventBus struct {
 	mu   sync.RWMutex                 // 读写锁保护订阅者列表
 	subs map[EventType][]EventHandler // 订阅者列表
+	all  []EventHandler               // 全部事件的订阅者
 }
 
 // NewEventBus 创建一个新的事件总线
@@ -95,11 +97,20 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 	return nil
 }
 
-// Subscribe 订阅事件
+// Subscribe 订阅指定事件
 func (eb *EventBus) Subscribe(eventType EventType, handler EventHandler) error {
 	eb.mu.Lock()
 	defer eb.mu.Unlock()
 
 	eb.subs[eventType] = append(eb.subs[eventType], handler)
+	return nil
+}
+
+// SubscribeAll 订阅所有事件
+func (eb *EventBus) SubscribeAll(handler EventHandler) error {
+	eb.mu.Lock()
+	defer eb.mu.Unlock()
+
+	eb.all = append(eb.all, handler)
 	return nil
 }

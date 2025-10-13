@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/lin-snow/ech0/internal/cache"
+	event "github.com/lin-snow/ech0/internal/event"
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
@@ -153,4 +154,12 @@ var FediverseSet = wire.NewSet(
 	fediverseRepository.NewFediverseRepository,
 	fediverseService.NewFediverseService,
 	fediverseHandler.NewFediverseHandler,
+)
+
+// EventSet 包含了构建 Event 相关所需的所有 Provider
+var EventSet = wire.NewSet(
+	event.NewEventBus,
+	event.NewWebhookDispatcher,
+	event.NewEventHandlers,
+	event.NewEventRegistry,
 )
