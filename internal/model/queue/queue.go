@@ -1,7 +1,23 @@
 package model
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
+const (
+	// DeadLetterTypeWebhook webhook 类型的死信任务
+	DeadLetterTypeWebhook = "webhook"
+	// DeadLetterTypePush push 类型的死信任务
+	DeadLetterTypePush = "push"
+	// DeadLetterTypeEmail email 类型的死信任务
+	DeadLetterTypeEmail = "email"
+)
+
+// ReplayPayload 重放任务的载荷，使用 map 以支持灵活的字段
+type ReplayPayload map[string]any
+
+// DeadLetter 死信任务模型
 type DeadLetter struct {
 	ID         int64     `db:"id"`
 	Type       string    `db:"type"`        // 业务类型，如 "webhook" / "push" / "email"
@@ -11,4 +27,14 @@ type DeadLetter struct {
 	NextRetry  time.Time `db:"next_retry"`  // 下次重试时间（指数退避）
 	CreatedAt  time.Time `db:"created_at"`
 	UpdatedAt  time.Time `db:"updated_at"`
+}
+
+func (dl *DeadLetter) SetType(t string) {
+	dl.Type = t
+}
+
+func (dl *DeadLetter) SetPayload(replay ReplayPayload) {
+	// 将 ReplayPayload 序列化为 JSON 字节数组
+	payload, _ := json.Marshal(replay)
+	dl.Payload = payload
 }

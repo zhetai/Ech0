@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/lin-snow/ech0/internal/async"
+	queueModel "github.com/lin-snow/ech0/internal/model/queue"
 	webhookModel "github.com/lin-snow/ech0/internal/model/webhook"
 	queueRepository "github.com/lin-snow/ech0/internal/repository/queue"
 	webhookRepository "github.com/lin-snow/ech0/internal/repository/webhook"
@@ -75,21 +77,17 @@ func (wd *WebhookDispatcher) Handle(ctx context.Context, e *Event) error {
 
 // Dispatch 负责将事件发送到指定的 webhook
 func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webhook, e *Event) {
-	// 构建 HTTP 请求
-	req, err := wd.buildRequest(wh, e)
-	if err != nil {
-		// 记录日志或处理错误
-		logUtil.GetLogger().Error(err.Error())
-		return
-	}
-
 	// 发送请求，带重试机制
-	wd.retryWithBackoff(3, 500*time.Millisecond, func() error {
+	err := wd.retryWithBackoff(3, 500*time.Millisecond, func() error {
+		// 构建 HTTP 请求
+		req, err := wd.buildRequest(wh, e)
+		if err != nil {
+			return err
+		}
+
 		// 发送 HTTP 请求
 		resp, err := wd.client.Do(req)
 		if err != nil {
-			// 记录日志或处理错误
-			logUtil.GetLogger().Error(err.Error())
 			return err
 		}
 		defer resp.Body.Close()
@@ -98,12 +96,34 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 			// 成功处理
 			return nil
-		} else {
-			// 记录失败日志
-			logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.String("name", wh.Name), zap.String("url", wh.URL))
-			return err
 		}
+
+		// 非成功状态码，视为失败
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	})
+	// 如果最终失败，记录到死信队列
+	if err != nil {
+		// 记录失败日志
+		logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.String("name", wh.Name), zap.String("url", wh.URL))
+
+		// 保存到死信队列
+		var deadLetter queueModel.DeadLetter
+		deadLetter.SetType(queueModel.DeadLetterTypeWebhook)
+		deadLetter.SetPayload(queueModel.ReplayPayload{
+			"webhook": *wh,
+			"event":   *e,
+		})
+		deadLetter.ErrorMsg = err.Error()
+		deadLetter.RetryCount = 0
+		deadLetter.NextRetry = time.Now().Add(6 * time.Hour) // 初始重试时间为 6 小时后
+		deadLetter.CreatedAt = time.Now()
+		deadLetter.UpdatedAt = time.Now()
+
+		// 使用事务保存死信任务
+		wd.txManager.Run(func(ctx context.Context) error {
+			return wd.queueRepo.SaveDeadLetter(ctx, &deadLetter)
+		})
+	}
 }
 
 // buildRequest 构建 HTTP 请求(POST)
