@@ -285,7 +285,7 @@ ssh -p 6278 ssh.vaaat.com
 ### 启动前后端联调  
 **第一步： 后端（在 Ech0 根目录下）：**
 ```shell
-go run cmd/ech0/main.go # 编译并启动后端
+go run main.go # 编译并启动后端
 ```
 > 如果依赖注入关系发生了变化先需要在`ech0/internal/di/`下执行`wire`命令生成新的`wire_gen.go`文件
 

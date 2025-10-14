@@ -245,7 +245,7 @@ ssh -p 6278 ssh.vaaat.com
 ### Start Backend & Frontend
 ```shell
 # Backend
-go run cmd/ech0/main.go
+go run main.go
 
 # Frontend
 cd web
