@@ -35,9 +35,9 @@ func (queueRepository *QueueRepository) DeleteDeadLetter(ctx context.Context, id
 }
 
 // ListDeadLetters 列出所有死信任务
-func (queueRepository *QueueRepository) ListDeadLetters(ctx context.Context, limit int) ([]model.DeadLetter, error) {
+func (queueRepository *QueueRepository) ListDeadLetters(limit int) ([]model.DeadLetter, error) {
 	var deadLetters []model.DeadLetter
-	err := queueRepository.getDB(ctx).Limit(limit).Find(&deadLetters).Error
+	err := queueRepository.db().Limit(limit).Find(&deadLetters).Error
 	if err != nil {
 		return []model.DeadLetter{}, err
 	}

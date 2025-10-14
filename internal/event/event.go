@@ -25,30 +25,34 @@ const (
 	EventTypeSystemBackup  EventType = "system.backup"  // 系统快照备份
 	EventTypeSystemRestore EventType = "system.restore" // 系统快照恢复
 	EventTypeSystemExport  EventType = "system.export"  // 系统快照导出
+
+	EventTypeDeadLetterRetried EventType = "deadletter.retried" // 死信任务重试
 )
 
 // 定义事件Payload的常用字段
 const (
-	EventPayloadUser = "user"
-	EventPayloadEcho = "echo"
-	EventPayloadData = "data"
-	EventPayloadInfo = "info"
-	EventPayloadMeta = "meta"
-	EventPayloadTime = "time"
-	EventPayloadType = "type"
-	EventPayloadID   = "id"
-	EventPayloadURL  = "url"
-	EventPayloadSize = "size"
-	EventPayloadPath = "path"
-	EventPayloadFile = "file"
+	EventPayloadUser       = "user"
+	EventPayloadEcho       = "echo"
+	EventPayloadData       = "data"
+	EventPayloadInfo       = "info"
+	EventPayloadMeta       = "meta"
+	EventPayloadTime       = "time"
+	EventPayloadType       = "type"
+	EventPayloadID         = "id"
+	EventPayloadURL        = "url"
+	EventPayloadSize       = "size"
+	EventPayloadPath       = "path"
+	EventPayloadFile       = "file"
+	EventPayloadDeadLetter = "dead_letter"
 )
 
 // Event 事件结构体
 type Event struct {
-	ID        string       `json:"id"`        // Unique event ID
-	Type      EventType    `json:"type"`      // Event type
-	Payload   EventPayload `json:"data"`      // Event payload
-	Timestamp time.Time    `json:"timestamp"` // Event timestamp
+	ID        string         `json:"id"`        // Unique event ID
+	Type      EventType      `json:"type"`      // Event type
+	Payload   EventPayload   `json:"data"`      // Event payload
+	Timestamp time.Time      `json:"timestamp"` // Event timestamp
+	Meta      map[string]any `json:"meta"`      // 事件元数据
 }
 
 type (
@@ -57,7 +61,7 @@ type (
 )
 
 // NewEvent 创建一个新的事件
-func NewEvent(eventType EventType, payload EventPayload) *Event {
+func NewEvent(eventType EventType, payload EventPayload, meta ...map[string]any) *Event {
 	id := ulid.MustNew(ulid.Timestamp(time.Now()), rand.New(rand.NewSource(time.Now().UnixNano()))).
 		String()
 		// 使用 ULID 生成唯一 ID
@@ -66,24 +70,39 @@ func NewEvent(eventType EventType, payload EventPayload) *Event {
 		Type:      eventType,
 		Payload:   payload,
 		Timestamp: time.Now(),
+		Meta: func() map[string]any {
+			if len(meta) > 0 {
+				return meta[0]
+			}
+			return nil
+		}(),
 	}
 }
 
 // IEventBus 事件总线接口
 type IEventBus interface {
-	Publish(ctx context.Context, event *Event) error           // 发布事件
-	Subscribe(eventType EventType, handler EventHandler) error // 订阅特定事件
-	SubscribeAll(handler EventHandler) error                   // 订阅所有事件
+	Publish(ctx context.Context, event *Event) error               // 发布事件
+	Subscribe(eventType EventType, handler EventHandler) error     // 订阅特定事件
+	SubscribeAll(handler EventHandler, exclude ...EventType) error // 订阅所有事件
 }
 
 // EventHandler 事件处理函数类型
 type EventHandler func(ctx context.Context, event *Event) error
 
+// EventFilter 事件过滤器函数类型
+type EventFilter func(eventType EventType) bool
+
+// globalHandler 全局事件处理器
+type globalHandler struct {
+	handler EventHandler
+	filter  EventFilter
+}
+
 // EventBus 事件总线
 type EventBus struct {
 	mu   sync.RWMutex                 // 读写锁保护订阅者列表
 	subs map[EventType][]EventHandler // 订阅者列表
-	all  []EventHandler               // 全部事件的订阅者
+	all  []globalHandler              // 支持过滤的全局订阅者
 }
 
 // NewEventBus 创建一个新的事件总线
@@ -117,13 +136,15 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 	eb.mu.RUnlock()
 
 	// 处理所有订阅所有事件的处理器
-	for _, handler := range allHandlers {
-		go func(h EventHandler) {
-			if err := h(ctx, event); err != nil {
-				// 错误处理
-				log.Println("Event Handler Error:", err)
-			}
-		}(handler)
+	for _, gh := range allHandlers {
+		if gh.filter == nil || gh.filter(event.Type) {
+			go func(h EventHandler) {
+				if err := h(ctx, event); err != nil {
+					// 错误处理
+					log.Println("Event Handler Error:", err)
+				}
+			}(gh.handler)
+		}
 	}
 
 	return nil
@@ -139,10 +160,23 @@ func (eb *EventBus) Subscribe(eventType EventType, handler EventHandler) error {
 }
 
 // SubscribeAll 订阅所有事件
-func (eb *EventBus) SubscribeAll(handler EventHandler) error {
+func (eb *EventBus) SubscribeAll(handler EventHandler, exclude ...EventType) error {
 	eb.mu.Lock()
 	defer eb.mu.Unlock()
 
-	eb.all = append(eb.all, handler)
+	excludeSet := make(map[EventType]struct{}, len(exclude))
+	for _, et := range exclude {
+		excludeSet[et] = struct{}{}
+	}
+
+	filter := func(eventType EventType) bool {
+		_, skip := excludeSet[eventType] // 如果在排除列表中,则skip为true
+		return !skip
+	}
+
+	eb.all = append(eb.all, globalHandler{
+		handler: handler,
+		filter:  filter,
+	})
 	return nil
 }

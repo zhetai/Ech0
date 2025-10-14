@@ -106,6 +106,11 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 		// 记录失败日志
 		logUtil.GetLogger().Error("Webhook Handle Failed: ", zap.String("name", wh.Name), zap.String("url", wh.URL))
 
+		// 处理失败的事件
+		e.Meta = map[string]any{
+			queueModel.DeadLetterMetaKey: true, // 标记为死信任务
+		}
+
 		// 保存到死信队列
 		var deadLetter queueModel.DeadLetter
 		deadLetter.SetType(queueModel.DeadLetterTypeWebhook)
@@ -118,6 +123,7 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 		deadLetter.NextRetry = time.Now().Add(6 * time.Hour) // 初始重试时间为 6 小时后
 		deadLetter.CreatedAt = time.Now()
 		deadLetter.UpdatedAt = time.Now()
+		deadLetter.Status = queueModel.DeadLetterStatusPending // 初始状态为待处理
 
 		// 使用事务保存死信任务
 		wd.txManager.Run(func(ctx context.Context) error {

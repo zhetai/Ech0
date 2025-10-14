@@ -2,12 +2,13 @@ package event
 
 // EventHandlers 事件处理器集合
 type EventHandlers struct {
-	wbd *WebhookDispatcher // webhook 事件处理器
+	wbd *WebhookDispatcher  // webhook 事件处理器
+	dlr *DeadLetterResolver // 死信处理器
 }
 
 // NewEventHandlers 创建一个新的事件处理器集合
-func NewEventHandlers(wbd *WebhookDispatcher) *EventHandlers {
-	return &EventHandlers{wbd: wbd}
+func NewEventHandlers(wbd *WebhookDispatcher, dlr *DeadLetterResolver) *EventHandlers {
+	return &EventHandlers{wbd: wbd, dlr: dlr}
 }
 
 // EventRegistrar 事件注册器
@@ -23,10 +24,11 @@ func NewEventRegistry(ebp func() IEventBus, eh *EventHandlers) *EventRegistrar {
 
 // Register 注册事件处理函数
 func (er *EventRegistrar) Register() error {
-	// 系统级 Dispatcher
+	// 订阅死信事件
+	er.eb.Subscribe(EventTypeDeadLetterRetried, er.eh.dlr.Handle) // 订阅死信事件，交给 DeadLetterResolver 处理
 
-	// 业务级 Dispatcher
-	er.eb.SubscribeAll(er.eh.wbd.Handle) // 订阅所有事件，交给 WebhookDispatcher 处理
+	// 订阅所有事件，交给 WebhookDispatcher 处理
+	er.eb.SubscribeAll(er.eh.wbd.Handle, EventTypeDeadLetterRetried) // 订阅所有事件，交给 WebhookDispatcher 处理,但是排除死信事件
 
 	return nil
 }

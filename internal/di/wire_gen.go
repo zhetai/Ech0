@@ -85,7 +85,8 @@ func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, t
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(dbProvider, iCache)
 	echoRepositoryInterface := repository3.NewEchoRepository(dbProvider, iCache)
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, keyValueRepositoryInterface, echoRepositoryInterface, ebProvider)
-	tasker := task.NewTasker(commonServiceInterface)
+	queueRepositoryInterface := repository9.NewQueueRepository(dbProvider)
+	tasker := task.NewTasker(commonServiceInterface, ebProvider, queueRepositoryInterface)
 	return tasker, nil
 }
 
@@ -94,7 +95,8 @@ func BuildEventRegistrar(dbProvider func() *gorm.DB, ebProvider func() event.IEv
 	queueRepositoryInterface := repository9.NewQueueRepository(dbProvider)
 	transactionManager := ProvideTransactionManager(tmFactory)
 	webhookDispatcher := event.NewWebhookDispatcher(ebProvider, webhookRepositoryInterface, queueRepositoryInterface, transactionManager)
-	eventHandlers := event.NewEventHandlers(webhookDispatcher)
+	deadLetterResolver := event.NewDeadLetterResolver()
+	eventHandlers := event.NewEventHandlers(webhookDispatcher, deadLetterResolver)
 	eventRegistrar := event.NewEventRegistry(ebProvider, eventHandlers)
 	return eventRegistrar, nil
 }
@@ -148,4 +150,4 @@ var QueueSet = wire.NewSet(repository9.NewQueueRepository)
 var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler)
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
-var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewEventHandlers, event.NewEventRegistry)
+var EventSet = wire.NewSet(event.NewDeadLetterResolver, event.NewWebhookDispatcher, event.NewEventHandlers, event.NewEventRegistry)
