@@ -75,8 +75,8 @@ func (t *Tasker) CleanupTempFilesTask() {
 func (t *Tasker) DeadLetterConsumeTask() {
 	// 每天12点执行一次, 测试时为每30秒执行一次
 	_, err := t.scheduler.NewJob(
-		// gocron.DailyJob(1, gocron.NewAtTimes(gocron.NewAtTime(12, 0, 0))),
-		gocron.DurationJob(30*time.Second),
+		gocron.DailyJob(1, gocron.NewAtTimes(gocron.NewAtTime(12, 0, 0))),
+		// gocron.DurationJob(30*time.Second), // 测试时为每30秒执行一次
 		gocron.NewTask(
 			func() {
 				// 取出死信队列中的任务，逐个重试
