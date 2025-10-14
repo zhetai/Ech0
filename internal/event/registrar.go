@@ -25,7 +25,7 @@ func NewEventRegistry(ebp func() IEventBus, eh *EventHandlers) *EventRegistrar {
 // Register 注册事件处理函数
 func (er *EventRegistrar) Register() error {
 	// 订阅死信事件
-	er.eb.Subscribe(EventTypeDeadLetterRetried, er.eh.dlr.Handle) // 订阅死信事件，交给 DeadLetterResolver 处理
+	er.eb.Subscribe(er.eh.dlr.Handle, EventTypeDeadLetterRetried) // 订阅死信事件，交给 DeadLetterResolver 处理
 
 	// 订阅所有事件，交给 WebhookDispatcher 处理
 	er.eb.SubscribeAll(er.eh.wbd.Handle, EventTypeDeadLetterRetried) // 订阅所有事件，交给 WebhookDispatcher 处理,但是排除死信事件

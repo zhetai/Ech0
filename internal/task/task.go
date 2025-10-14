@@ -44,7 +44,8 @@ func NewTasker(
 }
 
 func (t *Tasker) Start() {
-	t.CleanupTempFilesTask() // 启动清理临时文件任务
+	t.CleanupTempFilesTask()  // 启动清理临时文件任务
+	t.DeadLetterConsumeTask() // 启动死信任务消费任务
 	t.scheduler.Start()
 }
 
@@ -70,11 +71,12 @@ func (t *Tasker) CleanupTempFilesTask() {
 	}
 }
 
-// WebhookRetryTask 重试发送失败的 Webhook 任务（死信队列消费）
-func (t *Tasker) WebhookRetryTask() {
-	// 每天12点执行一次
+// DeadLetterConsumeTask 死信任务消费任务
+func (t *Tasker) DeadLetterConsumeTask() {
+	// 每天12点执行一次, 测试时为每30秒执行一次
 	_, err := t.scheduler.NewJob(
-		gocron.DailyJob(1, gocron.NewAtTimes(gocron.NewAtTime(12, 0, 0))),
+		// gocron.DailyJob(1, gocron.NewAtTimes(gocron.NewAtTime(12, 0, 0))),
+		gocron.DurationJob(30*time.Second),
 		gocron.NewTask(
 			func() {
 				// 取出死信队列中的任务，逐个重试

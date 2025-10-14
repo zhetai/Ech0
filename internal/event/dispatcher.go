@@ -20,6 +20,11 @@ import (
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
+type WebhookReplayPayload struct {
+	Webhook webhookModel.Webhook `json:"webhook"`
+	Event   Event                `json:"event"`
+}
+
 type WebhookDispatcher struct {
 	bus       IEventBus                                    // 事件总线
 	client    *http.Client                                 // HTTP 客户端
@@ -111,13 +116,16 @@ func (wd *WebhookDispatcher) Dispatch(ctx context.Context, wh *webhookModel.Webh
 			queueModel.DeadLetterMetaKey: true, // 标记为死信任务
 		}
 
+		payloadData := WebhookReplayPayload{
+			Webhook: *wh,
+			Event:   *e,
+		}
+		payload, _ := json.Marshal(payloadData)
+
 		// 保存到死信队列
 		var deadLetter queueModel.DeadLetter
 		deadLetter.SetType(queueModel.DeadLetterTypeWebhook)
-		deadLetter.SetPayload(queueModel.ReplayPayload{
-			"webhook": *wh,
-			"event":   *e,
-		})
+		deadLetter.Payload = payload
 		deadLetter.ErrorMsg = err.Error()
 		deadLetter.RetryCount = 0
 		deadLetter.NextRetry = time.Now().Add(6 * time.Hour) // 初始重试时间为 6 小时后
@@ -168,18 +176,60 @@ func (wd *WebhookDispatcher) buildRequest(wh *webhookModel.Webhook, e *Event) (*
 func (wd *WebhookDispatcher) retryWithBackoff(maxRetries int, initialBackoff time.Duration, fn func() error) error {
 	var err error
 	delay := initialBackoff
-	for range maxRetries {
-		if err := fn(); err == nil {
+	for i := 0; i < maxRetries; i++ {
+		err = fn()
+		if err == nil {
 			return nil // 成功
 		}
 		time.Sleep(delay)
 		delay *= 2 // 指数退避
 	}
-
 	return err // 返回最后一次的错误
 }
 
 // Wait 等待所有事件处理完成
 func (wd *WebhookDispatcher) Wait() {
 	wd.pool.Wait()
+}
+
+// HandleDeadLetter 处理死信任务
+func (wd *WebhookDispatcher) HandleDeadLetter(ctx context.Context, deadLetter *queueModel.DeadLetter) error {
+	// 解析负载
+	var payload WebhookReplayPayload
+	if err := json.Unmarshal(deadLetter.Payload, &payload); err != nil {
+		return fmt.Errorf("failed to unmarshal dead letter payload: %w", err)
+	}
+	webhook := payload.Webhook
+	event := payload.Event
+
+	// 重新发送请求
+	err := wd.retryWithBackoff(3, 500*time.Millisecond, func() error {
+		// 构建 HTTP 请求
+		req, err := wd.buildRequest(&webhook, &event)
+		if err != nil {
+			return err
+		}
+
+		// 发送 HTTP 请求
+		resp, err := wd.client.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		// 处理响应
+		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+			// 成功处理
+			return nil
+		}
+
+		// 非成功状态码，视为失败
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	})
+	if err != nil {
+		return err
+	}
+
+	// 成功处理，返回 nil
+	return nil
 }

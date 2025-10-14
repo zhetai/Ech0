@@ -16,6 +16,7 @@ import (
 	connectModel "github.com/lin-snow/ech0/internal/model/connect"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
 	fediverseModel "github.com/lin-snow/ech0/internal/model/fediverse"
+	queueModel "github.com/lin-snow/ech0/internal/model/queue"
 	todoModel "github.com/lin-snow/ech0/internal/model/todo"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	webhookModel "github.com/lin-snow/ech0/internal/model/webhook"
@@ -116,6 +117,7 @@ func MigrateDB() error {
 		&echoModel.Tag{},
 		&echoModel.EchoTag{},
 		&webhookModel.Webhook{},
+		&queueModel.DeadLetter{},
 
 		// Fediverse 相关
 		&fediverseModel.Follow{},

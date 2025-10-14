@@ -187,8 +187,8 @@ var FediverseSet = wire.NewSet(
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
 var EventSet = wire.NewSet(
-	event.NewDeadLetterResolver,
 	event.NewWebhookDispatcher,
+	event.NewDeadLetterResolver,
 	event.NewEventHandlers,
 	event.NewEventRegistry,
 )

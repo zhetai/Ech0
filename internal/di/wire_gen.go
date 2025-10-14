@@ -95,7 +95,7 @@ func BuildEventRegistrar(dbProvider func() *gorm.DB, ebProvider func() event.IEv
 	queueRepositoryInterface := repository9.NewQueueRepository(dbProvider)
 	transactionManager := ProvideTransactionManager(tmFactory)
 	webhookDispatcher := event.NewWebhookDispatcher(ebProvider, webhookRepositoryInterface, queueRepositoryInterface, transactionManager)
-	deadLetterResolver := event.NewDeadLetterResolver()
+	deadLetterResolver := event.NewDeadLetterResolver(queueRepositoryInterface, webhookDispatcher)
 	eventHandlers := event.NewEventHandlers(webhookDispatcher, deadLetterResolver)
 	eventRegistrar := event.NewEventRegistry(ebProvider, eventHandlers)
 	return eventRegistrar, nil
@@ -150,4 +150,4 @@ var QueueSet = wire.NewSet(repository9.NewQueueRepository)
 var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler)
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
-var EventSet = wire.NewSet(event.NewDeadLetterResolver, event.NewWebhookDispatcher, event.NewEventHandlers, event.NewEventRegistry)
+var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewDeadLetterResolver, event.NewEventHandlers, event.NewEventRegistry)
