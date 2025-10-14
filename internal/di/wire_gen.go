@@ -24,6 +24,7 @@ import (
 	repository3 "github.com/lin-snow/ech0/internal/repository/echo"
 	repository6 "github.com/lin-snow/ech0/internal/repository/fediverse"
 	"github.com/lin-snow/ech0/internal/repository/keyvalue"
+	repository9 "github.com/lin-snow/ech0/internal/repository/queue"
 	repository4 "github.com/lin-snow/ech0/internal/repository/setting"
 	repository7 "github.com/lin-snow/ech0/internal/repository/todo"
 	"github.com/lin-snow/ech0/internal/repository/user"
@@ -88,9 +89,11 @@ func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, t
 	return tasker, nil
 }
 
-func BuildEventRegistrar(dbProvider func() *gorm.DB, ebProvider func() event.IEventBus) (*event.EventRegistrar, error) {
+func BuildEventRegistrar(dbProvider func() *gorm.DB, ebProvider func() event.IEventBus, tmFactory *transaction.TransactionManagerFactory) (*event.EventRegistrar, error) {
 	webhookRepositoryInterface := repository5.NewWebhookRepository(dbProvider)
-	webhookDispatcher := event.NewWebhookDispatcher(ebProvider, webhookRepositoryInterface)
+	queueRepositoryInterface := repository9.NewQueueRepository(dbProvider)
+	transactionManager := ProvideTransactionManager(tmFactory)
+	webhookDispatcher := event.NewWebhookDispatcher(ebProvider, webhookRepositoryInterface, queueRepositoryInterface, transactionManager)
 	eventHandlers := event.NewEventHandlers(webhookDispatcher)
 	eventRegistrar := event.NewEventRegistry(ebProvider, eventHandlers)
 	return eventRegistrar, nil
@@ -137,6 +140,9 @@ var WebhookSet = wire.NewSet(repository5.NewWebhookRepository)
 
 // TaskSet 包含了构建 Tasker 所需的所有 Provider
 var TaskSet = wire.NewSet(task.NewTasker)
+
+// QueueSet 包含了构建 Queue 所需的所有 Provider
+var QueueSet = wire.NewSet(repository9.NewQueueRepository)
 
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider
 var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler)

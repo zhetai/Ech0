@@ -87,7 +87,7 @@ func (s *Server) Init() {
 	}
 
 	// EventRegistrar
-	s.eventRegistrar, err = di.BuildEventRegistrar(database.GetDB, event.GetEventBus)
+	s.eventRegistrar, err = di.BuildEventRegistrar(database.GetDB, event.GetEventBus, transactionManagerFactory)
 }
 
 // Start 异步启动服务器

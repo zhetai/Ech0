@@ -23,6 +23,7 @@ import (
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	fediverseRepository "github.com/lin-snow/ech0/internal/repository/fediverse"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
+	queueRepository "github.com/lin-snow/ech0/internal/repository/queue"
 	settingRepository "github.com/lin-snow/ech0/internal/repository/setting"
 	todoRepository "github.com/lin-snow/ech0/internal/repository/todo"
 	userRepository "github.com/lin-snow/ech0/internal/repository/user"
@@ -84,8 +85,11 @@ func BuildTasker(
 func BuildEventRegistrar(
 	dbProvider func() *gorm.DB,
 	ebProvider func() event.IEventBus,
+	tmFactory *transaction.TransactionManagerFactory,
 ) (*event.EventRegistrar, error) {
 	wire.Build(
+		TransactionManagerSet,
+		QueueSet,
 		WebhookSet,
 		EventSet,
 	)
@@ -166,6 +170,11 @@ var WebhookSet = wire.NewSet(
 // TaskSet 包含了构建 Tasker 所需的所有 Provider
 var TaskSet = wire.NewSet(
 	task.NewTasker,
+)
+
+// QueueSet 包含了构建 Queue 所需的所有 Provider
+var QueueSet = wire.NewSet(
+	queueRepository.NewQueueRepository,
 )
 
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider

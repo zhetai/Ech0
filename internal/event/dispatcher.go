@@ -12,21 +12,31 @@ import (
 
 	"github.com/lin-snow/ech0/internal/async"
 	webhookModel "github.com/lin-snow/ech0/internal/model/webhook"
+	queueRepository "github.com/lin-snow/ech0/internal/repository/queue"
 	webhookRepository "github.com/lin-snow/ech0/internal/repository/webhook"
+	"github.com/lin-snow/ech0/internal/transaction"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
 type WebhookDispatcher struct {
-	bus    IEventBus                                    // 事件总线
-	client *http.Client                                 // HTTP 客户端
-	repo   webhookRepository.WebhookRepositoryInterface // Webhook 仓储层
-	pool   *async.WorkerPool                            // 任务池pool
+	bus       IEventBus                                    // 事件总线
+	client    *http.Client                                 // HTTP 客户端
+	repo      webhookRepository.WebhookRepositoryInterface // Webhook 仓储层
+	pool      *async.WorkerPool                            // 任务池pool
+	queueRepo queueRepository.QueueRepositoryInterface     // 死信任务仓储
+	txManager transaction.TransactionManager               // 事务管理器
 }
 
-func NewWebhookDispatcher(ebp func() IEventBus, repo webhookRepository.WebhookRepositoryInterface) *WebhookDispatcher {
+func NewWebhookDispatcher(
+	ebp func() IEventBus,
+	repo webhookRepository.WebhookRepositoryInterface,
+	queueRepo queueRepository.QueueRepositoryInterface,
+	txManager transaction.TransactionManager,
+) *WebhookDispatcher {
 	return &WebhookDispatcher{
-		bus:  ebp(), // 获取事件总线实例
-		repo: repo,  // 注入仓储层
+		bus:       ebp(),     // 获取事件总线实例
+		repo:      repo,      // 注入仓储层
+		queueRepo: queueRepo, // 注入死信任务仓储
 		client: &http.Client{ // 配置 HTTP 客户端
 			Timeout: 5 * time.Second, // 请求超时时间
 			Transport: &http.Transport{ // 自定义传输设置（使用连接池）
@@ -35,7 +45,8 @@ func NewWebhookDispatcher(ebp func() IEventBus, repo webhookRepository.WebhookRe
 				IdleConnTimeout:     30 * time.Second, // 空闲连接超时时间
 			},
 		},
-		pool: async.NewWorkerPool(6, 6), // 假设最大并发数为 6，任务队列大小为 6
+		pool:      async.NewWorkerPool(6, 6), // 假设最大并发数为 6，任务队列大小为 6
+		txManager: txManager,                 // 注入事务管理器
 	}
 }
 

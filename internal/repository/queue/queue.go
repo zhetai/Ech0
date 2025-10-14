@@ -3,14 +3,14 @@ package repository
 import (
 	"context"
 
+	"gorm.io/gorm"
+
 	model "github.com/lin-snow/ech0/internal/model/queue"
 	"github.com/lin-snow/ech0/internal/transaction"
-	"gorm.io/gorm"
 )
 
 type QueueRepository struct {
 	db func() *gorm.DB
-
 }
 
 func NewQueueRepository(db func() *gorm.DB) QueueRepositoryInterface {
@@ -34,8 +34,8 @@ func (queueRepository *QueueRepository) DeleteDeadLetter(ctx context.Context, id
 	return queueRepository.getDB(ctx).Delete(&model.DeadLetter{}, id).Error
 }
 
-// ListRetryableDeadLetters 列出所有可重试的死信任务
-func (queueRepository *QueueRepository) ListRetryableDeadLetters(ctx context.Context, limit int) ([]model.DeadLetter, error) {
+// ListDeadLetters 列出所有死信任务
+func (queueRepository *QueueRepository) ListDeadLetters(ctx context.Context, limit int) ([]model.DeadLetter, error) {
 	var deadLetters []model.DeadLetter
 	err := queueRepository.getDB(ctx).Limit(limit).Find(&deadLetters).Error
 	if err != nil {
