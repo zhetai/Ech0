@@ -342,7 +342,7 @@ func (commonHandler *CommonHandler) HelloEch0() gin.HandlerFunc {
 // @Tags 通用功能
 // @Accept json
 // @Produce json
-// @Param s3Dto body commonModel.S3PresignDto true "S3 预签名请求体"
+// @Param s3Dto body commonModel.GetPresignURLDto true "S3 预签名请求体"
 // @Success 200 {object} res.Response{data=object} "获取预签名 URL 成功"
 // @Failure 200 {object} res.Response "获取预签名 URL 失败"
 // @Router /s3/presign [put]
