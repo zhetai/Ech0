@@ -172,6 +172,38 @@
                 }
             }
         },
+        "/backup/import": {
+            "post": {
+                "description": "用户上传备份文件，成功后恢复数据",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统备份"
+                ],
+                "summary": "恢复数据备份",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "备份文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "导入备份失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/comment/settings": {
             "get": {
                 "description": "获取系统的评论相关设置",
@@ -514,6 +546,56 @@
                 }
             }
         },
+        "/echo/tag/{tagid}": {
+            "get": {
+                "description": "根据标签 ID 获取包含该标签的 Echo 列表，支持 query 分页与搜索",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Echo"
+                ],
+                "summary": "获取指定标签 ID 的 Echo 列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "标签 ID",
+                        "name": "tagid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "搜索关键字",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/echo/today": {
             "get": {
                 "description": "获取当前用户今天发布的所有Echo动态",
@@ -780,6 +862,84 @@
                 }
             }
         },
+        "/oauth2/settings": {
+            "get": {
+                "description": "获取系统的 OAuth2 相关设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "获取 OAuth2 设置",
+                "responses": {
+                    "200": {
+                        "description": "获取 OAuth2 设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "更新系统的 OAuth2 相关设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "更新 OAuth2 设置",
+                "parameters": [
+                    {
+                        "description": "新的 OAuth 设置",
+                        "name": "oauthSettings",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OAuth2SettingDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新 OAuth 设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth2/status": {
+            "get": {
+                "description": "获取系统的 OAuth2 启用状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "获取 OAuth2 状态",
+                "responses": {
+                    "200": {
+                        "description": "获取 OAuth2 状态失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/playmusic": {
             "get": {
                 "description": "以流的方式播放当前可用的音乐文件",
@@ -860,6 +1020,95 @@
                 }
             }
         },
+        "/s3/presign": {
+            "put": {
+                "description": "获取用于上传文件到 S3 的预签名 URL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通用功能"
+                ],
+                "summary": "获取 S3 预签名 URL",
+                "parameters": [
+                    {
+                        "description": "S3 预签名请求体",
+                        "name": "s3Dto",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetPresignURLDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取预签名 URL 失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/s3/settings": {
+            "get": {
+                "description": "获取系统的 S3 存储相关设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "获取 S3 存储设置",
+                "responses": {
+                    "200": {
+                        "description": "获取 S3 存储设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "更新系统的 S3 存储相关设置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "更新 S3 存储设置",
+                "parameters": [
+                    {
+                        "description": "新的 S3 存储设置",
+                        "name": "s3Settings",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.S3SettingDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新 S3 存储设置失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/settings": {
             "get": {
                 "description": "获取系统的全局设置",
@@ -931,6 +1180,61 @@
                 "responses": {
                     "200": {
                         "description": "获取状态失败或未初始化",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tag/{id}": {
+            "delete": {
+                "description": "根据ID删除指定的标签",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "删除标签",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "标签 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags": {
+            "get": {
+                "description": "获取所有标签及其使用次数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "获取所有标签",
+                "responses": {
+                    "200": {
+                        "description": "获取失败",
                         "schema": {
                             "$ref": "#/definitions/handler.Response"
                         }
@@ -1193,6 +1497,132 @@
                     }
                 }
             }
+        },
+        "/webhook": {
+            "get": {
+                "description": "获取系统中配置的所有 Webhook 列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "获取所有 Webhook",
+                "responses": {
+                    "200": {
+                        "description": "获取 Webhook 列表失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "创建一个新的 Webhook 配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "创建新的 Webhook",
+                "parameters": [
+                    {
+                        "description": "新的 Webhook 配置",
+                        "name": "webhook",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.WebhookDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建 Webhook 失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/webhook/{id}": {
+            "put": {
+                "description": "根据 ID 更新指定的 Webhook 配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "更新 Webhook",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "要更新的 Webhook ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "新的 Webhook 配置",
+                        "name": "webhook",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.WebhookDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新 Webhook 失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "根据 ID 删除指定的 Webhook 配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统设置"
+                ],
+                "summary": "删除 Webhook",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "要删除的 Webhook ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除 Webhook 失败",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Response"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1288,10 +1718,32 @@
                 "private": {
                     "type": "boolean"
                 },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
+                },
                 "user_id": {
                     "type": "integer"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetPresignURLDto": {
+            "type": "object",
+            "required": [
+                "file_name"
+            ],
+            "properties": {
+                "content_type": {
+                    "description": "文件的 MIME 类型",
+                    "type": "string"
+                },
+                "file_name": {
+                    "description": "原始文件名",
                     "type": "string"
                 }
             }
@@ -1303,13 +1755,20 @@
                     "type": "integer"
                 },
                 "image_source": {
+                    "description": "图片来源: local/url/s3/r2",
                     "type": "string"
                 },
                 "image_url": {
+                    "description": "图片URL",
                     "type": "string"
                 },
                 "message_id": {
+                    "description": "关联的Echo ID(注意⚠️: 该字段名为MessageID, 但实际关联的是Echo表,因为为了兼容旧版Echo用户)",
                     "type": "integer"
+                },
+                "object_key": {
+                    "description": "对象存储的Key (如果是本地存储则为空)",
+                    "type": "string"
                 }
             }
         },
@@ -1320,6 +1779,10 @@
                 "url"
             ],
             "properties": {
+                "object_key": {
+                    "description": "对象存储的 Key, 用于删除 S3/R2 上的图片",
+                    "type": "string"
+                },
                 "source": {
                     "type": "string"
                 },
@@ -1340,6 +1803,85 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.OAuth2Setting": {
+            "type": "object",
+            "properties": {
+                "auth_url": {
+                    "description": "OAuth2 授权 URL",
+                    "type": "string"
+                },
+                "client_id": {
+                    "description": "OAuth2 Client ID",
+                    "type": "string"
+                },
+                "client_secret": {
+                    "description": "OAuth2 Client Secret",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用 OAuth2 登录",
+                    "type": "boolean"
+                },
+                "provider": {
+                    "description": "OAuth2 提供商",
+                    "type": "string"
+                },
+                "redirect_uri": {
+                    "description": "OAuth2 重定向 URI",
+                    "type": "string"
+                },
+                "scopes": {
+                    "description": "OAuth2 请求的权限范围",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "token_url": {
+                    "description": "OAuth2 令牌 URL",
+                    "type": "string"
+                },
+                "user_info_url": {
+                    "description": "OAuth2 用户信息 URL",
+                    "type": "string"
+                }
+            }
+        },
+        "model.OAuth2SettingDto": {
+            "type": "object",
+            "properties": {
+                "auth_url": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "client_secret": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "boolean"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "redirect_uri": {
+                    "type": "string"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "token_url": {
+                    "type": "string"
+                },
+                "user_info_url": {
                     "type": "string"
                 }
             }
@@ -1373,6 +1915,104 @@
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "model.S3Setting": {
+            "type": "object",
+            "properties": {
+                "access_key": {
+                    "description": "访问密钥 ID",
+                    "type": "string"
+                },
+                "bucket_name": {
+                    "description": "存储桶名称",
+                    "type": "string"
+                },
+                "cdn_url": {
+                    "description": "CDN 加速域名（可选，没有就走 Endpoint）",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用 S3 存储",
+                    "type": "boolean"
+                },
+                "endpoint": {
+                    "description": "S3 端点",
+                    "type": "string"
+                },
+                "path_prefix": {
+                    "description": "存储路径前缀，例如 \"uploads/\"，方便隔离目录",
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "S3 服务提供商，例如 \"aws\", \"aliyun\", \"minio\", \"other\"",
+                    "type": "string"
+                },
+                "public_read": {
+                    "description": "上传时是否默认设置对象为 public-read",
+                    "type": "boolean"
+                },
+                "region": {
+                    "description": "区域",
+                    "type": "string"
+                },
+                "secret_key": {
+                    "description": "秘密访问密钥",
+                    "type": "string"
+                },
+                "use_ssl": {
+                    "description": "是否使用 SSL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.S3SettingDto": {
+            "type": "object",
+            "properties": {
+                "access_key": {
+                    "description": "访问密钥 ID",
+                    "type": "string"
+                },
+                "bucket_name": {
+                    "description": "存储桶名称",
+                    "type": "string"
+                },
+                "cdn_url": {
+                    "description": "CDN 加速域名（可选，没有就走 Endpoint）",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用 S3 存储",
+                    "type": "boolean"
+                },
+                "endpoint": {
+                    "description": "S3 端点",
+                    "type": "string"
+                },
+                "path_prefix": {
+                    "description": "存储路径前缀，例如 \"uploads/\"，方便隔离目录",
+                    "type": "string"
+                },
+                "provider": {
+                    "description": "S3 服务提供商，例如 \"aws\", \"aliyun\", \"minio\", \"other\"",
+                    "type": "string"
+                },
+                "public_read": {
+                    "description": "上传时是否默认设置对象为 public-read",
+                    "type": "boolean"
+                },
+                "region": {
+                    "description": "区域",
+                    "type": "string"
+                },
+                "secret_key": {
+                    "description": "秘密访问密钥",
+                    "type": "string"
+                },
+                "use_ssl": {
+                    "description": "是否使用 SSL",
+                    "type": "boolean"
                 }
             }
         },
@@ -1454,6 +2094,26 @@
                 }
             }
         },
+        "model.Tag": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "标签名称",
+                    "type": "string"
+                },
+                "usage_count": {
+                    "description": "使用计数",
+                    "type": "integer"
+                }
+            }
+        },
         "model.Todo": {
             "type": "object",
             "properties": {
@@ -1495,6 +2155,68 @@
                 },
                 "username": {
                     "description": "用户名\nexample: linsnow",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Webhook": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Webhook ID",
+                    "type": "integer"
+                },
+                "is_active": {
+                    "description": "启用/禁用状态",
+                    "type": "boolean"
+                },
+                "last_status": {
+                    "description": "最近调用状态（如 success, failed）",
+                    "type": "string"
+                },
+                "last_trigger": {
+                    "description": "最近触发时间",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Webhook 名称",
+                    "type": "string"
+                },
+                "secret": {
+                    "description": "签名密钥，用于请求验证（HMAC等）",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "更新时间",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "Webhook URL",
+                    "type": "string"
+                }
+            }
+        },
+        "model.WebhookDto": {
+            "type": "object",
+            "properties": {
+                "is_active": {
+                    "description": "启用/禁用状态",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "Webhook 名称",
+                    "type": "string"
+                },
+                "secret": {
+                    "description": "签名密钥，用于请求验证（HMAC等）",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "Webhook URL",
                     "type": "string"
                 }
             }

@@ -63,24 +63,48 @@ definitions:
         type: array
       private:
         type: boolean
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
       user_id:
         type: integer
       username:
         type: string
+    type: object
+  model.GetPresignURLDto:
+    properties:
+      content_type:
+        description: 文件的 MIME 类型
+        type: string
+      file_name:
+        description: 原始文件名
+        type: string
+    required:
+    - file_name
     type: object
   model.Image:
     properties:
       id:
         type: integer
       image_source:
+        description: '图片来源: local/url/s3/r2'
         type: string
       image_url:
+        description: 图片URL
         type: string
       message_id:
+        description: '关联的Echo ID(注意⚠️: 该字段名为MessageID, 但实际关联的是Echo表,因为为了兼容旧版Echo用户)'
         type: integer
+      object_key:
+        description: 对象存储的Key (如果是本地存储则为空)
+        type: string
     type: object
   model.ImageDto:
     properties:
+      object_key:
+        description: 对象存储的 Key, 用于删除 S3/R2 上的图片
+        type: string
       source:
         type: string
       url:
@@ -99,6 +123,61 @@ definitions:
     required:
     - password
     - username
+    type: object
+  model.OAuth2Setting:
+    properties:
+      auth_url:
+        description: OAuth2 授权 URL
+        type: string
+      client_id:
+        description: OAuth2 Client ID
+        type: string
+      client_secret:
+        description: OAuth2 Client Secret
+        type: string
+      enable:
+        description: 是否启用 OAuth2 登录
+        type: boolean
+      provider:
+        description: OAuth2 提供商
+        type: string
+      redirect_uri:
+        description: OAuth2 重定向 URI
+        type: string
+      scopes:
+        description: OAuth2 请求的权限范围
+        items:
+          type: string
+        type: array
+      token_url:
+        description: OAuth2 令牌 URL
+        type: string
+      user_info_url:
+        description: OAuth2 用户信息 URL
+        type: string
+    type: object
+  model.OAuth2SettingDto:
+    properties:
+      auth_url:
+        type: string
+      client_id:
+        type: string
+      client_secret:
+        type: string
+      enable:
+        type: boolean
+      provider:
+        type: string
+      redirect_uri:
+        type: string
+      scopes:
+        items:
+          type: string
+        type: array
+      token_url:
+        type: string
+      user_info_url:
+        type: string
     type: object
   model.PageQueryDto:
     properties:
@@ -121,6 +200,78 @@ definitions:
     required:
     - password
     - username
+    type: object
+  model.S3Setting:
+    properties:
+      access_key:
+        description: 访问密钥 ID
+        type: string
+      bucket_name:
+        description: 存储桶名称
+        type: string
+      cdn_url:
+        description: CDN 加速域名（可选，没有就走 Endpoint）
+        type: string
+      enable:
+        description: 是否启用 S3 存储
+        type: boolean
+      endpoint:
+        description: S3 端点
+        type: string
+      path_prefix:
+        description: 存储路径前缀，例如 "uploads/"，方便隔离目录
+        type: string
+      provider:
+        description: S3 服务提供商，例如 "aws", "aliyun", "minio", "other"
+        type: string
+      public_read:
+        description: 上传时是否默认设置对象为 public-read
+        type: boolean
+      region:
+        description: 区域
+        type: string
+      secret_key:
+        description: 秘密访问密钥
+        type: string
+      use_ssl:
+        description: 是否使用 SSL
+        type: boolean
+    type: object
+  model.S3SettingDto:
+    properties:
+      access_key:
+        description: 访问密钥 ID
+        type: string
+      bucket_name:
+        description: 存储桶名称
+        type: string
+      cdn_url:
+        description: CDN 加速域名（可选，没有就走 Endpoint）
+        type: string
+      enable:
+        description: 是否启用 S3 存储
+        type: boolean
+      endpoint:
+        description: S3 端点
+        type: string
+      path_prefix:
+        description: 存储路径前缀，例如 "uploads/"，方便隔离目录
+        type: string
+      provider:
+        description: S3 服务提供商，例如 "aws", "aliyun", "minio", "other"
+        type: string
+      public_read:
+        description: 上传时是否默认设置对象为 public-read
+        type: boolean
+      region:
+        description: 区域
+        type: string
+      secret_key:
+        description: 秘密访问密钥
+        type: string
+      use_ssl:
+        description: 是否使用 SSL
+        type: boolean
     type: object
   model.SystemSetting:
     properties:
@@ -179,6 +330,20 @@ definitions:
         description: 站点标题
         type: string
     type: object
+  model.Tag:
+    properties:
+      created_at:
+        description: 创建时间
+        type: string
+      id:
+        type: integer
+      name:
+        description: 标签名称
+        type: string
+      usage_count:
+        description: 使用计数
+        type: integer
+    type: object
   model.Todo:
     properties:
       content:
@@ -216,6 +381,51 @@ definitions:
         description: |-
           用户名
           example: linsnow
+        type: string
+    type: object
+  model.Webhook:
+    properties:
+      created_at:
+        description: 创建时间
+        type: string
+      id:
+        description: Webhook ID
+        type: integer
+      is_active:
+        description: 启用/禁用状态
+        type: boolean
+      last_status:
+        description: 最近调用状态（如 success, failed）
+        type: string
+      last_trigger:
+        description: 最近触发时间
+        type: string
+      name:
+        description: Webhook 名称
+        type: string
+      secret:
+        description: 签名密钥，用于请求验证（HMAC等）
+        type: string
+      updated_at:
+        description: 更新时间
+        type: string
+      url:
+        description: Webhook URL
+        type: string
+    type: object
+  model.WebhookDto:
+    properties:
+      is_active:
+        description: 启用/禁用状态
+        type: boolean
+      name:
+        description: Webhook 名称
+        type: string
+      secret:
+        description: 签名密钥，用于请求验证（HMAC等）
+        type: string
+      url:
+        description: Webhook URL
         type: string
     type: object
 host: localhost:6277
@@ -328,6 +538,27 @@ paths:
           schema:
             $ref: '#/definitions/handler.Response'
       summary: 导出数据备份
+      tags:
+      - 系统备份
+  /backup/import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 用户上传备份文件，成功后恢复数据
+      parameters:
+      - description: 备份文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 导入备份失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 恢复数据备份
       tags:
       - 系统备份
   /comment/settings:
@@ -594,6 +825,39 @@ paths:
       summary: 获取Echo列表（分页）
       tags:
       - Echo
+  /echo/tag/{tagid}:
+    get:
+      consumes:
+      - application/json
+      description: 根据标签 ID 获取包含该标签的 Echo 列表，支持 query 分页与搜索
+      parameters:
+      - description: 标签 ID
+        in: path
+        name: tagid
+        required: true
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 搜索关键字
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取指定标签 ID 的 Echo 列表
+      tags:
+      - Echo
   /echo/today:
     get:
       consumes:
@@ -724,6 +988,57 @@ paths:
       summary: 用户登录接口
       tags:
       - 用户认证
+  /oauth2/settings:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统的 OAuth2 相关设置
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取 OAuth2 设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取 OAuth2 设置
+      tags:
+      - 系统设置
+    put:
+      consumes:
+      - application/json
+      description: 更新系统的 OAuth2 相关设置
+      parameters:
+      - description: 新的 OAuth 设置
+        in: body
+        name: oauthSettings
+        required: true
+        schema:
+          $ref: '#/definitions/model.OAuth2SettingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新 OAuth 设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 更新 OAuth2 设置
+      tags:
+      - 系统设置
+  /oauth2/status:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统的 OAuth2 启用状态
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取 OAuth2 状态失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取 OAuth2 状态
+      tags:
+      - 系统设置
   /playmusic:
     get:
       consumes:
@@ -776,6 +1091,64 @@ paths:
       summary: 获取RSS订阅源
       tags:
       - 通用功能
+  /s3/presign:
+    put:
+      consumes:
+      - application/json
+      description: 获取用于上传文件到 S3 的预签名 URL
+      parameters:
+      - description: S3 预签名请求体
+        in: body
+        name: s3Dto
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetPresignURLDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取预签名 URL 失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取 S3 预签名 URL
+      tags:
+      - 通用功能
+  /s3/settings:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统的 S3 存储相关设置
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取 S3 存储设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取 S3 存储设置
+      tags:
+      - 系统设置
+    put:
+      consumes:
+      - application/json
+      description: 更新系统的 S3 存储相关设置
+      parameters:
+      - description: 新的 S3 存储设置
+        in: body
+        name: s3Settings
+        required: true
+        schema:
+          $ref: '#/definitions/model.S3SettingDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新 S3 存储设置失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 更新 S3 存储设置
+      tags:
+      - 系统设置
   /settings:
     get:
       consumes:
@@ -827,6 +1200,42 @@ paths:
       summary: 获取 Echo 系统状态
       tags:
       - 通用功能
+  /tag/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据ID删除指定的标签
+      parameters:
+      - description: 标签 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 删除标签
+      tags:
+      - Tag
+  /tags:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有标签及其使用次数
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取所有标签
+      tags:
+      - Tag
   /todo:
     get:
       consumes:
@@ -990,4 +1399,87 @@ paths:
       summary: 更新用户权限（管理员权限）
       tags:
       - 用户管理
+  /webhook:
+    get:
+      consumes:
+      - application/json
+      description: 获取系统中配置的所有 Webhook 列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取 Webhook 列表失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 获取所有 Webhook
+      tags:
+      - 系统设置
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的 Webhook 配置
+      parameters:
+      - description: 新的 Webhook 配置
+        in: body
+        name: webhook
+        required: true
+        schema:
+          $ref: '#/definitions/model.WebhookDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建 Webhook 失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 创建新的 Webhook
+      tags:
+      - 系统设置
+  /webhook/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据 ID 删除指定的 Webhook 配置
+      parameters:
+      - description: 要删除的 Webhook ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除 Webhook 失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 删除 Webhook
+      tags:
+      - 系统设置
+    put:
+      consumes:
+      - application/json
+      description: 根据 ID 更新指定的 Webhook 配置
+      parameters:
+      - description: 要更新的 Webhook ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 新的 Webhook 配置
+        in: body
+        name: webhook
+        required: true
+        schema:
+          $ref: '#/definitions/model.WebhookDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新 Webhook 失败
+          schema:
+            $ref: '#/definitions/handler.Response'
+      summary: 更新 Webhook
+      tags:
+      - 系统设置
 swagger: "2.0"
