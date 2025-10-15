@@ -40,7 +40,7 @@ type ProgramHandler func(sess ssh.Session) *tea.Program
 // 它还捕获窗口调整大小事件并将它们作为 tea.WindowSizeMsgs
 // 发送到 tea.Program。
 func BubbleteaMiddleware(handler Handler) wish.Middleware {
-	return MiddlewareWithProgramHandler(newDefaultProgramHandler(handler), termenv.Ascii)
+	return MiddlewareWithProgramHandler(newDefaultProgramHandler(handler), termenv.TrueColor)
 }
 
 // MiddlewareWithColorProfile 允许您指定此程序正常工作所需的最少颜色数。
