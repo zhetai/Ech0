@@ -12,7 +12,7 @@ import (
 // PushEchoToFediverse 将 Echo 推送到联邦网络
 func (core *FediverseCore) PushEchoToFediverse(userId uint, echo echoModel.Echo) error {
 	// 获取用户
-	user, err := core.commonService.CommonGetUserByUserId(userId)
+	user, err := core.userRepository.GetUserByID(int(userId))
 	if err != nil {
 		return err
 	}

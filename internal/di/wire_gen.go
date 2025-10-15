@@ -61,8 +61,8 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface, ebProvider)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	fediverseRepositoryInterface := repository6.NewFediverseRepository(dbProvider)
-	fediverseCore := fediverse.NewFediverseCore(fediverseRepositoryInterface, commonServiceInterface, settingServiceInterface, userRepositoryInterface, echoRepositoryInterface)
-	fediverseServiceInterface := service4.NewFediverseService(fediverseCore, transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface)
+	fediverseCore := fediverse.NewFediverseCore(fediverseRepositoryInterface, settingServiceInterface, userRepositoryInterface, echoRepositoryInterface)
+	fediverseServiceInterface := service4.NewFediverseService(fediverseCore, transactionManager, fediverseRepositoryInterface, userRepositoryInterface, echoRepositoryInterface)
 	echoServiceInterface := service5.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface, fediverseServiceInterface, ebProvider)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
@@ -149,8 +149,11 @@ var TaskSet = wire.NewSet(task.NewTasker)
 // QueueSet 包含了构建 Queue 所需的所有 Provider
 var QueueSet = wire.NewSet(repository9.NewQueueRepository)
 
+// FediverseCoreSet 包含了构建 FediverseCore 所需的所有 Provider
+var FediverseCoreSet = wire.NewSet(fediverse.NewFediverseCore)
+
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider
-var FediverseSet = wire.NewSet(fediverse.NewFediverseCore, repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler, event.NewFediverseAgent)
+var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler, event.NewFediverseAgent)
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
 var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewDeadLetterResolver, event.NewEventHandlers, event.NewEventRegistry)

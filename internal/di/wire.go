@@ -9,7 +9,7 @@ import (
 
 	"github.com/lin-snow/ech0/internal/cache"
 	"github.com/lin-snow/ech0/internal/event"
-	"github.com/lin-snow/ech0/internal/fediverse"
+	fediverse "github.com/lin-snow/ech0/internal/fediverse"
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
@@ -59,6 +59,7 @@ func BuildHandlers(
 		TodoSet,
 		ConnectSet,
 		BackupSet,
+		FediverseCoreSet,
 		FediverseSet,
 		NewHandlers, // NewHandlers 聚合各个模块的Handler
 	)
@@ -180,9 +181,13 @@ var QueueSet = wire.NewSet(
 	queueRepository.NewQueueRepository,
 )
 
+// FediverseCoreSet 包含了构建 FediverseCore 所需的所有 Provider
+var FediverseCoreSet = wire.NewSet(
+	fediverse.NewFediverseCore,
+)
+
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider
 var FediverseSet = wire.NewSet(
-	fediverse.NewFediverseCore,
 	fediverseRepository.NewFediverseRepository,
 	fediverseService.NewFediverseService,
 	fediverseHandler.NewFediverseHandler,
