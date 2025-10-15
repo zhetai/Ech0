@@ -18,6 +18,29 @@ const router = createRouter({
       path: '/panel',
       name: 'panel',
       component: () => import('../views/panel/PanelView.vue'),
+      redirect: '/panel/status',
+      children: [
+        {
+          path: 'status',
+          name: 'panel-status',
+          component: () => import('../views/panel/modules/TheStatus.vue'),
+        },
+        {
+          path: 'setting',
+          name: 'panel-setting',
+          component: () => import('../views/panel/modules/TheSetting.vue'),
+        },
+        {
+          path: 'user',
+          name: 'panel-user',
+          component: () => import('../views/panel/modules/TheUser.vue'),
+        },
+        {
+          path: 'advance',
+          name: 'panel-advance',
+          component: () => import('../views/panel/modules/TheAdvance.vue'),
+        },
+      ],
     },
     {
       path: '/auth',
