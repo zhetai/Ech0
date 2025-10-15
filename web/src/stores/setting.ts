@@ -78,22 +78,19 @@ export const useSettingStore = defineStore('settingStore', () => {
     // 检查系统是否准备好
     if (!isSystemReady.value) {
       // 如果系统未准备好，调用接口获取系统状态
-      await fetchGetStatus()
-        .then((res) => {
-          if (res.code === 666) {
-            isSystemReady.value = false
-            theToast.info(res.msg)
-            // 跳转到登录页面
-            router.push({ name: 'auth' })
-          } else {
-            isSystemReady.value = true
-            console.log('系统已准备好')
-          }
-        })
-        .finally(() => {
-          // 保存系统状态到localStorage
-          localStg.setItem('systemStatus', isSystemReady.value)
-        })
+      const res = await fetchGetStatus()
+      if (res.code === 666) {
+        isSystemReady.value = false
+        theToast.info(res.msg)
+        // 跳转到登录页面
+        router.push({ name: 'auth' })
+      } else {
+        isSystemReady.value = true
+        console.log('系统已准备好')
+      }
+
+      // 保存系统状态到localStorage
+      localStg.setItem('systemStatus', isSystemReady.value)
     }
   }
 
