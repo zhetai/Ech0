@@ -82,7 +82,7 @@ export const useSettingStore = defineStore('settingStore', () => {
       if (res.code === 666) {
         isSystemReady.value = false
         theToast.info(res.msg)
-        // 跳转到登录页面
+        // 跳转到注册页面
         router.push({ name: 'auth' })
       } else {
         isSystemReady.value = true

@@ -240,11 +240,11 @@ func (commonService *CommonService) GetStatus() (commonModel.Status, error) {
 		return status, err
 	}
 
-	status.SysAdminID = sysuser.ID
-	status.Username = sysuser.Username
-	status.Logo = sysuser.Avatar
-	status.Users = users
-	status.TotalEchos = len(echos)
+	status.SysAdminID = sysuser.ID     // 管理员ID
+	status.Username = sysuser.Username // 管理员用户名
+	status.Logo = sysuser.Avatar       // 管理员头像
+	status.Users = users               // 所有用户状态
+	status.TotalEchos = len(echos)     // Echo总数
 
 	return status, nil
 }
