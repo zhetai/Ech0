@@ -6,16 +6,12 @@
 
     <!-- 移动端选择器 -->
     <div class="md:hidden mb-6 px-2">
-      <select
+      <BaseSelect
         v-model="selectedRoute"
+        :options="routeOptions"
+        placeholder="选择页面"
         @change="handleRouteChange"
-        class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-      >
-        <option value="/panel/status">状态</option>
-        <option value="/panel/setting">设置</option>
-        <option value="/panel/user">个人中心</option>
-        <option value="/panel/advance">高级</option>
-      </select>
+      />
       <div class="flex gap-2 mt-3">
         <button
           @click="router.push('/')"
@@ -41,7 +37,7 @@
     </div>
 
     <!-- 主内容区 -->
-    <div class="mx-auto flex px-2 my-4 w-full">
+    <div class="mx-auto flex my-4 w-full">
       <!-- 桌面端侧边栏 -->
       <div class="hidden md:flex flex-col gap-3 w-1/5 pr-8">
         <!-- 返回首页 -->
@@ -150,6 +146,7 @@
 
 <script setup lang="ts">
 import BaseButton from '@/components/common/BaseButton.vue'
+import BaseSelect from '@/components/common/BaseSelect.vue'
 import Arrow from '@/components/icons/arrow.vue'
 import User from '@/components/icons/user.vue'
 import Auth from '@/components/icons/auth.vue'
@@ -171,6 +168,14 @@ const route = useRoute()
 
 const currentRoute = computed(() => route.name as string)
 const selectedRoute = ref(route.path)
+
+// 路由选项
+const routeOptions = [
+  { label: '状态', value: '/panel/status' },
+  { label: '设置', value: '/panel/setting' },
+  { label: '个人中心', value: '/panel/user' },
+  { label: '高级', value: '/panel/advance' },
+]
 
 // 监听路由变化，更新选择器
 watch(
