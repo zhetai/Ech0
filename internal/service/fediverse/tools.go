@@ -584,10 +584,6 @@ func (fediverseService *FediverseService) PushEchoToFediverse(userId uint, echo 
 	}
 
 	if len(errs) > 0 {
-		fmt.Println("Errors occurred while pushing to Fediverse:")
-		for _, e := range errs {
-			fmt.Println(e)
-		}
 		return errors.Join(errs...)
 	}
 

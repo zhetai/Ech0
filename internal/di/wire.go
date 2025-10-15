@@ -92,6 +92,7 @@ func BuildEventRegistrar(
 		TransactionManagerSet,
 		QueueSet,
 		WebhookSet,
+		FediverseSet,
 		EventSet,
 	)
 
@@ -183,6 +184,8 @@ var FediverseSet = wire.NewSet(
 	fediverseRepository.NewFediverseRepository,
 	fediverseService.NewFediverseService,
 	fediverseHandler.NewFediverseHandler,
+
+	event.NewFediverseAgent,
 )
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
