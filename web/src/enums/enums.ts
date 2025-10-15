@@ -1,11 +1,3 @@
-// 控制面板的状态
-export enum ShowWhichEnum {
-  Status = 'status',
-  Setting = 'setting',
-  UserCenter = 'usercenter',
-  Advance = 'advance',
-}
-
 // 编辑器的状态
 export enum Mode {
   ECH0 = 0, // 默认编辑状态
