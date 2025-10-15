@@ -19,6 +19,9 @@ export const useTodoStore = defineStore('todoStore', () => {
       .then((res) => {
         if (res.code === 1) {
           todos.value = res.data
+        } else {
+          todos.value = []
+          loading.value = false
         }
       })
       .finally(() => {
@@ -33,6 +36,8 @@ export const useTodoStore = defineStore('todoStore', () => {
   function init() {
     if (useUserStore().isLogin) {
       getTodos()
+    } else {
+      loading.value = false
     }
   }
 

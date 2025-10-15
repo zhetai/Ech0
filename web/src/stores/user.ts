@@ -104,16 +104,15 @@ export const useUserStore = defineStore('userStore', () => {
 
   // 获取当前登录用户信息
   async function refreshCurrentUser() {
-    await fetchGetCurrentUser().then((res) => {
-      if (res.code === 1) {
-        console.log('获取用户信息成功,自动登录', res.data)
-        user.value = res.data
-      } else {
-        // 获取用户信息失败，清除token
-        console.log('获取用户信息失败，清除token，重新登录')
-        logout()
-      }
-    })
+    const res = await fetchGetCurrentUser()
+    if (res.code === 1) {
+      console.log('获取用户信息成功,自动登录', res.data)
+      user.value = res.data
+    } else {
+      // 获取用户信息失败，清除token
+      console.log('获取用户信息失败，清除token，重新登录')
+      logout()
+    }
   }
 
   // 初始化
