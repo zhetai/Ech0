@@ -141,7 +141,7 @@ func (h *FediverseHandler) GetOutbox(ctx *gin.Context) {
 	// 检查是否带有查询参数
 	if pageStr == "" {
 		// 不带查询参数，返回 Outbox 元信息
-		outbox, err := h.service.BuildOutbox(username)
+		outbox, err := h.service.HandleOutbox(username)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, model.ActivityPubError{
 				Context: "https://www.w3.org/ns/activitystreams",

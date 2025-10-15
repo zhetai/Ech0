@@ -9,6 +9,7 @@ import (
 
 	"github.com/lin-snow/ech0/internal/cache"
 	"github.com/lin-snow/ech0/internal/event"
+	"github.com/lin-snow/ech0/internal/fediverse"
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
@@ -181,6 +182,7 @@ var QueueSet = wire.NewSet(
 
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider
 var FediverseSet = wire.NewSet(
+	fediverse.NewFediverseCore,
 	fediverseRepository.NewFediverseRepository,
 	fediverseService.NewFediverseService,
 	fediverseHandler.NewFediverseHandler,

@@ -10,6 +10,7 @@ import (
 	"github.com/google/wire"
 	"github.com/lin-snow/ech0/internal/cache"
 	"github.com/lin-snow/ech0/internal/event"
+	"github.com/lin-snow/ech0/internal/fediverse"
 	handler8 "github.com/lin-snow/ech0/internal/handler/backup"
 	handler4 "github.com/lin-snow/ech0/internal/handler/common"
 	handler7 "github.com/lin-snow/ech0/internal/handler/connect"
@@ -60,7 +61,8 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface, ebProvider)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	fediverseRepositoryInterface := repository6.NewFediverseRepository(dbProvider)
-	fediverseServiceInterface := service4.NewFediverseService(transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface, commonServiceInterface)
+	fediverseCore := fediverse.NewFediverseCore(fediverseRepositoryInterface, commonServiceInterface, settingServiceInterface, userRepositoryInterface, echoRepositoryInterface)
+	fediverseServiceInterface := service4.NewFediverseService(fediverseCore, transactionManager, fediverseRepositoryInterface, userRepositoryInterface, settingServiceInterface, echoRepositoryInterface)
 	echoServiceInterface := service5.NewEchoService(transactionManager, commonServiceInterface, echoRepositoryInterface, commonRepositoryInterface, fediverseServiceInterface, ebProvider)
 	echoHandler := handler3.NewEchoHandler(echoServiceInterface)
 	commonHandler := handler4.NewCommonHandler(commonServiceInterface)
@@ -148,7 +150,7 @@ var TaskSet = wire.NewSet(task.NewTasker)
 var QueueSet = wire.NewSet(repository9.NewQueueRepository)
 
 // FediverseSet 包含了构建 Fediverse 所需的所有 Provider
-var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler, event.NewFediverseAgent)
+var FediverseSet = wire.NewSet(fediverse.NewFediverseCore, repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler, event.NewFediverseAgent)
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
 var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewDeadLetterResolver, event.NewEventHandlers, event.NewEventRegistry)

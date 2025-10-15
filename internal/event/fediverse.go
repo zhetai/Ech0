@@ -14,13 +14,15 @@ type FediverseAgent struct {
 func NewFediverseAgent() *FediverseAgent {
 	return &FediverseAgent{
 		pool: async.NewWorkerPool(3, 3), // 假设最大并发数为 3，任务队列大小为 3
+
 	}
 }
 
-func (fa *FediverseAgent) Handle(ctx context.Context, event *Event) error {
+func (fa *FediverseAgent) Handle(ctx context.Context, e *Event) error {
 	// 处理事件，与联邦宇宙交互
-	switch event.Type {
+	switch e.Type {
 	case EventTypeEchoCreated:
+		fa.HandleCreateEchoEvent(ctx, e)
 
 	default:
 		return nil // 忽略其他事件
@@ -31,4 +33,10 @@ func (fa *FediverseAgent) Handle(ctx context.Context, event *Event) error {
 
 func (fa *FediverseAgent) Wait() {
 	fa.pool.Wait()
+}
+
+func (fa *FediverseAgent) HandleCreateEchoEvent(ctx context.Context, e *Event) error {
+	// 将 Echo 推送到联邦宇宙
+
+	return nil
 }
