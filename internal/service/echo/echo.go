@@ -117,7 +117,7 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		return fetchErr
 	}
 	if savedEcho != nil {
-		// 推送事件
+		// 推送事件(Webhook, Fediverse等)
 		if pubErr := echoService.eventBus.Publish(
 			context.Background(),
 			event.NewEvent(
@@ -131,12 +131,6 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 			// 推送失败不影响发布
 			logUtil.GetLogger().Error(pubErr.Error())
 		}
-
-		// 推送到联邦网络 (暂时关闭主动推送至联邦宇宙功能)
-		// if pushErr := echoService.fediverseService.PushEchoToFediverse(userid, *savedEcho); pushErr != nil {
-		// 	// 推送失败不影响发布
-		// 	log.Println("Error pushing Echo to Fediverse:", pushErr)
-		// }
 	}
 
 	return nil
