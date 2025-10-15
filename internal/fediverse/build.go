@@ -12,6 +12,7 @@ import (
 	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	userModel "github.com/lin-snow/ech0/internal/model/user"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
+	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 )
 
 //==============================================================================
@@ -24,9 +25,14 @@ func (core *FediverseCore) BuildActor(
 ) (model.Actor, *settingModel.SystemSetting, error) {
 	// 从设置服务获取服务器域名
 	var setting settingModel.SystemSetting
-	if err := core.settingService.GetSetting(&setting); err != nil {
+	settingStr, err := core.keyvalueRepo.GetKeyValue(commonModel.SystemSettingsKey)
+	if err != nil {
 		return model.Actor{}, nil, err
 	}
+	if err := jsonUtil.JSONUnmarshal([]byte(settingStr.(string)), setting); err != nil {
+		return model.Actor{}, nil, err
+	}
+
 	serverURL, err := NormalizeServerURL(setting.ServerURL)
 	if err != nil {
 		return model.Actor{}, nil, err

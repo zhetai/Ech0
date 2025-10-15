@@ -55,6 +55,8 @@ func BuildHandlers(
 		UserSet,
 		EchoSet,
 		CommonSet,
+		WebhookSet,
+		KeyValueSet,
 		SettingSet,
 		TodoSet,
 		ConnectSet,
@@ -75,10 +77,10 @@ func BuildTasker(
 ) (*task.Tasker, error) {
 	wire.Build(
 		CacheSet,
+		KeyValueSet,
 		TransactionManagerSet,
 		EchoSet,
 		CommonSet,
-		SettingSet,
 		QueueSet,
 		TaskSet,
 	)
@@ -88,12 +90,18 @@ func BuildTasker(
 func BuildEventRegistrar(
 	dbProvider func() *gorm.DB,
 	ebProvider func() event.IEventBus,
+	cacheFactory *cache.CacheFactory,
 	tmFactory *transaction.TransactionManagerFactory,
 ) (*event.EventRegistrar, error) {
 	wire.Build(
+		EchoSet,
+		UserSet,
+		CacheSet,
 		TransactionManagerSet,
+		KeyValueSet,
 		QueueSet,
 		WebhookSet,
+		FediverseCoreSet,
 		FediverseSet,
 		EventSet,
 	)
@@ -137,11 +145,14 @@ var CommonSet = wire.NewSet(
 	commonHandler.NewCommonHandler,
 )
 
+// KeyValueSet 包含了构建 KeyValueRepository 所需的所有 Provider
+var KeyValueSet = wire.NewSet(
+	keyvalueRepository.NewKeyValueRepository,
+)
+
 // SettingSet 包含了构建 SettingHandler 所需的所有 Provider
 var SettingSet = wire.NewSet(
-	keyvalueRepository.NewKeyValueRepository,
 	settingRepository.NewSettingRepository,
-	webhookRepository.NewWebhookRepository,
 	settingService.NewSettingService,
 	settingHandler.NewSettingHandler,
 )
