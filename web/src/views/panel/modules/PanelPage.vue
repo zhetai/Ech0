@@ -2,11 +2,48 @@
   <div
     class="px-4 pb-4 py-2 mb-10 mx-auto flex flex-col min-h-screen max-w-screen-lg border border-gray-300 rounded-md mt-4"
   >
-    <h1 class="text-6xl italic font-bold text-center text-gray-300 mb-8">Ech0 Panel</h1>
+    <h1 class="text-4xl sm:text-6xl italic font-bold text-center text-gray-300 mb-8">Ech0 Panel</h1>
+
+    <!-- 移动端选择器 -->
+    <div class="md:hidden mb-6 px-2">
+      <select
+        v-model="selectedRoute"
+        @change="handleRouteChange"
+        class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+      >
+        <option value="/panel/status">状态</option>
+        <option value="/panel/setting">设置</option>
+        <option value="/panel/user">个人中心</option>
+        <option value="/panel/advance">高级</option>
+      </select>
+      <div class="flex gap-2 mt-3">
+        <button
+          @click="router.push('/')"
+          class="flex-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+        >
+          返回首页
+        </button>
+        <button
+          v-if="userStore.isLogin"
+          @click="handleLogout"
+          class="flex-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+        >
+          退出登录
+        </button>
+        <button
+          v-else
+          @click="router.push('/auth')"
+          class="flex-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+        >
+          登录 / 注册
+        </button>
+      </div>
+    </div>
 
     <!-- 主内容区 -->
     <div class="mx-auto flex px-2 my-4 w-full">
-      <div class="flex flex-col gap-3 w-1/5 pr-8">
+      <!-- 桌面端侧边栏 -->
+      <div class="hidden md:flex flex-col gap-3 w-1/5 pr-8">
         <!-- 返回首页 -->
         <BaseButton
           @click="router.push('/')"
@@ -104,7 +141,9 @@
       </div>
 
       <!-- 路由内容 -->
-      <router-view />
+      <div class="flex-1 w-full md:w-4/5">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
@@ -118,7 +157,7 @@ import Status from '@/components/icons/status.vue'
 import Others from '@/components/icons/theothers.vue'
 import Setting from '@/components/icons/setting.vue'
 import Logout from '@/components/icons/logout.vue'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter, useRoute } from 'vue-router'
 import { theToast } from '@/utils/toast'
@@ -131,6 +170,20 @@ const router = useRouter()
 const route = useRoute()
 
 const currentRoute = computed(() => route.name as string)
+const selectedRoute = ref(route.path)
+
+// 监听路由变化，更新选择器
+watch(
+  () => route.path,
+  (newPath) => {
+    selectedRoute.value = newPath
+  },
+)
+
+// 处理选择器变化
+const handleRouteChange = () => {
+  router.push(selectedRoute.value)
+}
 
 const handleLogout = () => {
   // 检查是否登录
