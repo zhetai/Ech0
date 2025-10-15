@@ -12,15 +12,18 @@ import (
 type DeadLetterResolver struct {
 	queueRepo queueRepository.QueueRepositoryInterface
 	whd       *WebhookDispatcher
+	fa        *FediverseAgent
 }
 
 func NewDeadLetterResolver(
 	queueRepo queueRepository.QueueRepositoryInterface,
 	whd *WebhookDispatcher,
+	fa *FediverseAgent,
 ) *DeadLetterResolver {
 	return &DeadLetterResolver{
 		queueRepo: queueRepo,
 		whd:       whd,
+		fa:        fa,
 	}
 }
 
@@ -121,17 +124,9 @@ func (dlr *DeadLetterResolver) processDeadLetter(ctx context.Context, deadLetter
 		// 处理 webhook 类型的死信任务
 		return dlr.whd.HandleDeadLetter(ctx, deadLetter)
 
-	case queueModel.DeadLetterTypePush:
-		// 处理 push 类型的死信任务
-		return nil
-
-	case queueModel.DeadLetterTypePushFediverse:
-		// 处理 push federiverse 类型的死信任务
-		return nil
-
-	case queueModel.DeadLetterTypeInternal:
-		// 处理内部任务类型的死信任务
-		return nil
+	case queueModel.DeadLetterTypePushEchoFediverse:
+		// 处理 push echo federiverse 类型的死信任务
+		return dlr.fa.HandlePushEchoDeadLetter(ctx, deadLetter)
 
 	default:
 		return fmt.Errorf("unknown dead letter type: %s", deadLetter.Type)
