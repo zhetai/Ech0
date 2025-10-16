@@ -60,6 +60,9 @@ func SetupRouter(r *gin.Engine, h *di.Handlers) {
 
 	// Setup Fediverse Routes
 	setupFediverseRoutes(appRouterGroup, h)
+
+	// Setup Dashboard Routes
+	setupDashboardRoutes(appRouterGroup, h)
 }
 
 // setupRouterGroup 初始化路由组

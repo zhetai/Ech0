@@ -6,9 +6,10 @@ import (
 	"sync"
 	"time"
 
-	logUtil "github.com/lin-snow/ech0/internal/util/log"
 	"github.com/oklog/ulid/v2"
 	"go.uber.org/zap"
+
+	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
 // 定义事件类型

@@ -34,6 +34,7 @@ const (
 	GET_MUSIC_URL_SUCCESS      = "获取音乐播放链接成功"
 	GET_HELLO_SUCCESS          = "获取Hello成功"
 	GET_S3_PRESIGN_URL_SUCCESS = "获取 S3 预签名 URL 成功"
+	GET_METRICS_SUCCESS        = "获取系统指标成功"
 )
 
 // Setting 成功相关常量
