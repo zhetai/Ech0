@@ -1,8 +1,8 @@
 <template>
   <div
-    class="px-4 pb-4 py-2 mb-10 mx-auto flex flex-col min-h-screen max-w-screen-lg border border-gray-300 rounded-md mt-4"
+    class="px-4 pb-4 py-2 mx-auto flex flex-col max-w-screen-lg border border-gray-300 rounded-md mt-4"
   >
-    <h1 class="text-4xl sm:text-6xl italic font-bold text-center text-gray-300 mb-8">Ech0 Panel</h1>
+    <h1 class="text-4xl md:text-6xl italic font-bold text-center text-gray-300 mb-8">Ech0 Panel</h1>
 
     <!-- 移动端选择器 -->
     <div class="md:hidden mb-6 px-2">
@@ -15,21 +15,21 @@
       <div class="flex gap-2 mt-3">
         <button
           @click="router.push('/')"
-          class="flex-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+          class="flex-1 px-4 py-2 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 text-gray-600 hover:opacity-75 bg-transparent"
         >
           返回首页
         </button>
         <button
           v-if="userStore.isLogin"
           @click="handleLogout"
-          class="flex-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+          class="flex-1 px-4 py-2 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 text-gray-600 hover:opacity-75 bg-transparent"
         >
           退出登录
         </button>
         <button
           v-else
           @click="router.push('/auth')"
-          class="flex-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+          class="flex-1 px-4 py-2 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 text-gray-600 hover:opacity-75 bg-transparent"
         >
           登录 / 注册
         </button>
@@ -37,15 +37,11 @@
     </div>
 
     <!-- 主内容区 -->
-    <div class="mx-auto flex my-4 w-full">
+    <div class="mx-auto flex my-4 w-full max-w-screen-lg">
       <!-- 桌面端侧边栏 -->
-      <div class="hidden md:flex flex-col gap-3 w-1/5 pr-8">
+      <div class="hidden md:flex flex-col gap-2 w-48 pr-8 shrink-0">
         <!-- 返回首页 -->
-        <BaseButton
-          @click="router.push('/')"
-          class="text-gray-600 rounded-md !shadow-none !border-none !ring-0 !bg-transparent group"
-          title="返回首页"
-        >
+        <BaseButton @click="router.push('/')" :class="getButtonClasses('', true)" title="返回首页">
           <Arrow
             class="w-9 h-9 rotate-180 transition-transform duration-200 group-hover:-translate-x-1"
           />
@@ -57,12 +53,7 @@
         <BaseButton
           :icon="Status"
           @click="router.push('/panel/status')"
-          class="flex items-center justify-center gap-2"
-          :class="
-            currentRoute === 'panel-status'
-              ? 'text-gray-800 rounded-md transition-all !bg-gray-200'
-              : 'text-gray-600 rounded-md transition-all'
-          "
+          :class="getButtonClasses('panel-status')"
           title="状态"
         >
           状态
@@ -72,12 +63,7 @@
         <BaseButton
           :icon="Setting"
           @click="router.push('/panel/setting')"
-          class="flex items-center justify-center gap-2"
-          :class="
-            currentRoute === 'panel-setting'
-              ? 'text-gray-800 rounded-md transition-all !bg-gray-200'
-              : 'text-gray-600 rounded-md transition-all'
-          "
+          :class="getButtonClasses('panel-setting')"
           title="设置"
         >
           设置
@@ -87,12 +73,7 @@
         <BaseButton
           :icon="User"
           @click="router.push('/panel/user')"
-          class="flex items-center justify-center gap-2"
-          :class="
-            currentRoute === 'panel-user'
-              ? 'text-gray-800 rounded-md transition-all !bg-gray-200'
-              : 'text-gray-600 rounded-md transition-all'
-          "
+          :class="getButtonClasses('panel-user')"
           title="个人中心"
         >
           个人中心
@@ -102,12 +83,7 @@
         <BaseButton
           :icon="Others"
           @click="router.push('/panel/advance')"
-          class="flex items-center justify-center gap-2"
-          :class="
-            currentRoute === 'panel-advance'
-              ? 'text-gray-800 rounded-md transition-all !bg-gray-200'
-              : 'text-gray-600 rounded-md transition-all'
-          "
+          :class="getButtonClasses('panel-advance')"
           title="高级"
         >
           高级
@@ -119,7 +95,7 @@
         <BaseButton
           :icon="Logout"
           @click="handleLogout"
-          class="flex items-center justify-center gap-2 rounded-md"
+          :class="getBottomButtonClasses()"
           title="退出登录"
         >
           退出登入
@@ -129,7 +105,7 @@
         <BaseButton
           :icon="Auth"
           @click="router.push('/auth')"
-          class="flex items-center justify-center gap-2 rounded-md"
+          :class="getBottomButtonClasses()"
           title="登录 / 注册"
         >
           登录 / 注册
@@ -137,7 +113,7 @@
       </div>
 
       <!-- 路由内容 -->
-      <div class="flex-1 w-full md:w-4/5">
+      <div class="flex-1 min-w-0">
         <router-view />
       </div>
     </div>
@@ -168,6 +144,25 @@ const route = useRoute()
 
 const currentRoute = computed(() => route.name as string)
 const selectedRoute = ref(route.path)
+
+// 统一的按钮样式计算函数
+const getButtonClasses = (routeName: string, isBackButton = false) => {
+  const baseClasses = isBackButton
+    ? 'text-gray-600 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 hover:opacity-75 p-2 group bg-transparent'
+    : 'flex items-center gap-2 pl-3 py-1 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 justify-start bg-transparent'
+
+  const activeClasses =
+    currentRoute.value === routeName
+      ? 'text-gray-800 bg-gray-300'
+      : 'text-gray-600 hover:opacity-75'
+
+  return `${baseClasses} ${activeClasses}`
+}
+
+// 底部按钮样式
+const getBottomButtonClasses = () => {
+  return 'flex items-center gap-2 pl-3 py-1 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 text-gray-600 hover:opacity-75 justify-start bg-transparent'
+}
 
 // 路由选项
 const routeOptions = [
