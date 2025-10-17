@@ -18,3 +18,4 @@ func NewDashboardService(monitor *monitor.Monitor) DashboardServiceInterface {
 func (s *DashboardService) GetMetrics() (model.Metrics, error) {
 	return s.monitor.GetMetrics(), nil
 }
+

@@ -3,10 +3,16 @@ package monitor
 import (
 	"log"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/lin-snow/ech0/internal/metric"
 	model "github.com/lin-snow/ech0/internal/model/metric"
+)
+
+var (
+	instance *Monitor
+	once     sync.Once
 )
 
 type Monitor struct {
@@ -15,24 +21,33 @@ type Monitor struct {
 	mu        sync.RWMutex
 	interval  time.Duration
 	stopChan  chan struct{}
-	running   bool
+	running   atomic.Bool
 }
 
-// NewMonitor 创建一个新的监控器，指定采样器与采样周期。
+// NewMonitor 创建一个新的监控器（单例）。
 func NewMonitor(collector metric.MetricCollector) *Monitor {
-	return &Monitor{
-		collector: collector,
-		interval:  30 * time.Second,
-		stopChan:  make(chan struct{}),
-	}
+	once.Do(func() {
+		instance = &Monitor{
+			collector: collector,
+			interval:  30 * time.Second,
+			stopChan:  make(chan struct{}),
+		}
+		instance.Start()
+	})
+	return instance
 }
 
 // Start 开始定时采集系统指标。
 func (m *Monitor) Start() {
-	if m.running {
+	if m.running.Load() {
 		return
 	}
-	m.running = true
+	m.running.Store(true)
+
+	// 首次采样
+	if err := m.collect(); err != nil {
+		log.Printf("[Monitor] initial collect error: %v", err)
+	}
 
 	go func() {
 		ticker := time.NewTicker(m.interval)
@@ -46,19 +61,21 @@ func (m *Monitor) Start() {
 				}
 			case <-m.stopChan:
 				log.Println("[Monitor] stopped")
-				m.running = false
+				m.running.Store(false)
 				return
 			}
 		}
 	}()
 }
 
-// Stop 停止监控。
+// Stop 停止监控（支持重启）。
 func (m *Monitor) Stop() {
-	if !m.running {
+	if !m.running.Load() {
 		return
 	}
 	close(m.stopChan)
+	m.stopChan = make(chan struct{}) // 重建通道以支持重启
+	m.running.Store(false)
 }
 
 // collect 内部采样逻辑。
@@ -67,7 +84,6 @@ func (m *Monitor) collect() error {
 	if err != nil {
 		return err
 	}
-
 	m.mu.Lock()
 	m.metrics = data
 	m.mu.Unlock()
@@ -87,7 +103,6 @@ func (m *Monitor) ForceCollect() (model.Metrics, error) {
 	if err != nil {
 		return data, err
 	}
-
 	m.mu.Lock()
 	m.metrics = data
 	m.mu.Unlock()
