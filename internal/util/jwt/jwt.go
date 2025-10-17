@@ -32,6 +32,25 @@ func CreateClaims(user userModel.User) jwt.Claims {
 	return claims
 }
 
+// CreateClaims 创建Claims 带过期时间
+func CreateClaimsWithExpiry(user userModel.User, expiry int64) jwt.Claims {
+	leeway := time.Second * 60 // 允许的时间偏差
+	claims := authModel.MyClaims{
+		Userid:   user.ID,
+		Username: user.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    config.Config.Auth.Jwt.Issuer,
+			Subject:   user.Username,
+			Audience:  jwt.ClaimStrings{config.Config.Auth.Jwt.Audience},
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expiry) * time.Second)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now().Add(-leeway)),
+		},
+	}
+
+	return claims
+}
+
 // GenerateToken 生成JWT Token
 func GenerateToken(claim jwt.Claims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)

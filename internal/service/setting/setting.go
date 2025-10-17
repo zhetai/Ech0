@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/lin-snow/ech0/internal/config"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
@@ -16,6 +17,7 @@ import (
 	"github.com/lin-snow/ech0/internal/transaction"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
+	jwtUtil "github.com/lin-snow/ech0/internal/util/jwt"
 )
 
 type SettingService struct {
@@ -492,6 +494,109 @@ func (settingService *SettingService) CreateWebhook(userid uint, newWebhook *mod
 
 	settingService.txManager.Run(func(ctx context.Context) error {
 		return settingService.webhookRepository.CreateWebhook(ctx, webhook)
+	})
+
+	return nil
+}
+
+// ListAccessTokens 列出访问令牌
+func (settingService *SettingService) ListAccessTokens(userid uint) ([]model.AccessTokenSetting, error) {
+	// 鉴权
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return nil, err
+	}
+	if !user.IsAdmin {
+		return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	tokens, err := settingService.settingRepository.ListAccessTokens()
+	if err != nil {
+		return []model.AccessTokenSetting{}, nil
+	}
+
+	// 处理tokens,过滤并删除过期的token
+	var validTokens []model.AccessTokenSetting
+	currentTime := time.Now()
+	for _, token := range tokens {
+		if token.Expiry.IsZero() || token.Expiry.After(currentTime) {
+			validTokens = append(validTokens, token)
+		} else {
+			// 删除过期的token
+			settingService.txManager.Run(func(ctx context.Context) error {
+				return settingService.settingRepository.DeleteAccessTokenByID(ctx, uint(token.ID))
+			})
+		}
+	}
+
+	return validTokens, nil
+}
+
+// CreateAccessToken 创建访问令牌
+func (settingService *SettingService) CreateAccessToken(
+	userid uint,
+	newToken *model.AccessTokenSettingDto,
+) (string, error) {
+	// 鉴权
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return "", err
+	}
+	if !user.IsAdmin {
+		return "", errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	name := newToken.Name
+	expiry := newToken.Expiry
+	var expiryDuration time.Duration
+
+	switch expiry {
+	case model.EIGHT_HOUR_EXPIRY:
+		expiryDuration = 8 * time.Hour
+	case model.ONE_MONTH_EXPIRY:
+		expiryDuration = 30 * 24 * time.Hour
+	case model.NEVER_EXPIRY:
+		expiryDuration = 0
+	default:
+		expiryDuration = 8 * time.Hour
+	}
+
+	// 生成jwt令牌
+	claims := jwtUtil.CreateClaimsWithExpiry(user, int64(expiryDuration))
+	tokenString, err := jwtUtil.GenerateToken(claims)
+	if err != nil {
+		return "", err
+	}
+
+	// 保存到数据库
+	accessToken := &model.AccessTokenSetting{
+		UserID:    user.ID,
+		Token:     tokenString,
+		Name:      name,
+		Expiry:    time.Now().Add(expiryDuration),
+		CreatedAt: time.Now(),
+	}
+
+	settingService.txManager.Run(func(ctx context.Context) error {
+		return settingService.settingRepository.CreateAccessToken(ctx, accessToken)
+	})
+
+	return tokenString, nil
+}
+
+// DeleteAccessToken 删除访问令牌
+func (settingService *SettingService) DeleteAccessToken(userid, id uint) error {
+	// 鉴权
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
+	settingService.txManager.Run(func(ctx context.Context) error {
+		return settingService.settingRepository.DeleteAccessTokenByID(ctx, id)
 	})
 
 	return nil

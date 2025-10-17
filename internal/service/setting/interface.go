@@ -44,4 +44,13 @@ type SettingServiceInterface interface {
 
 	// CreateWebhook 创建 Webhook
 	CreateWebhook(userid uint, newWebhook *model.WebhookDto) error
+
+	// ListAccessTokens 列出访问令牌
+	ListAccessTokens(userid uint) ([]model.AccessTokenSetting, error)
+
+	// CreateAccessToken 创建访问令牌
+	CreateAccessToken(userid uint, newToken *model.AccessTokenSettingDto) (string, error)
+
+	// DeleteAccessToken 删除访问令牌
+	DeleteAccessToken(userid, id uint) error
 }

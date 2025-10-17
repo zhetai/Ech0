@@ -468,3 +468,111 @@ func (settingHandler *SettingHandler) CreateWebhook() gin.HandlerFunc {
 		}
 	})
 }
+
+// ListAccessTokens 列出访问令牌
+//
+// @Summary 列出访问令牌
+// @Description 列出当前用户的所有访问令牌
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response{data=[]model.AccessTokenSetting} "列出访问令牌成功"
+// @Failure 200 {object} res.Response "列出访问令牌失败"
+// @Router /access-tokens [get]
+func (settingHandler *SettingHandler) ListAccessTokens() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		result, err := settingHandler.settingService.ListAccessTokens(userid)
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: result,
+			Msg:  commonModel.LIST_ACCESS_TOKENS_SUCCESS,
+		}
+	})
+}
+
+// CreateAccessToken 创建访问令牌
+//
+// @Summary 创建访问令牌
+// @Description 为当前用户创建一个新的访问令牌
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param accessToken body model.AccessTokenSettingDto true "新的访问令牌信息"
+// @Success 200 {object} res.Response{data=model.AccessTokenSetting} "创建访问令牌成功"
+// @Failure 200 {object} res.Response "创建访问令牌失败"
+// @Router /access-tokens [post]
+func (settingHandler *SettingHandler) CreateAccessToken() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 解析请求体中的参数
+		var newAccessToken model.AccessTokenSettingDto
+		if err := ctx.ShouldBindJSON(&newAccessToken); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		createdToken, err := settingHandler.settingService.CreateAccessToken(userid, &newAccessToken)
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: createdToken,
+			Msg:  commonModel.CREATE_ACCESS_TOKEN_SUCCESS,
+		}
+	})
+}
+
+// DeleteAccessToken 删除访问令牌
+//
+// @Summary 删除访问令牌
+// @Description 根据 ID 删除指定的访问令牌
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param id path int true "要删除的访问令牌 ID"
+// @Success 200 {object} res.Response "删除访问令牌成功"
+// @Failure 200 {object} res.Response "删除访问令牌失败"
+// @Router /access-tokens/{id} [delete]
+func (settingHandler *SettingHandler) DeleteAccessToken() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		// 从路径参数中获取 访问令牌 ID
+		idStr := ctx.Param("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+			}
+		}
+
+		if err := settingHandler.settingService.DeleteAccessToken(userid, uint(id)); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.DELETE_ACCESS_TOKEN_SUCCESS,
+		}
+	})
+}

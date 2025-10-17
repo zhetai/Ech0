@@ -56,3 +56,8 @@ type WebhookDto struct {
 	Secret   string `json:"secret,omitempty"`                     // 签名密钥，用于请求验证（HMAC等）
 	IsActive bool   `json:"is_active"        gorm:"default:true"` // 启用/禁用状态
 }
+
+type AccessTokenSettingDto struct {
+	Name   string `json:"name"`   // 访问令牌名称
+	Expiry string `json:"expiry"` // 访问令牌过期时间，Unix 时间戳格式
+}

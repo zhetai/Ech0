@@ -41,4 +41,13 @@ type SettingHandlerInterface interface {
 
 	// CreateWebhook 创建 Webhook
 	CreateWebhook() gin.HandlerFunc
+
+	// ListAccessTokens 列出访问令牌
+	ListAccessTokens() gin.HandlerFunc
+
+	// CreateAccessToken 创建访问令牌
+	CreateAccessToken() gin.HandlerFunc
+
+	// DeleteAccessToken 删除访问令牌
+	DeleteAccessToken() gin.HandlerFunc
 }
