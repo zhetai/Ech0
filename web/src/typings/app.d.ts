@@ -243,6 +243,20 @@ declare namespace App {
         secret?: string
         is_active: boolean
       }
+
+      type AccessTokenSetting = {
+        id: number
+        user_id: number
+        token: string
+        name: string
+        expiry: string
+        created_at: string
+      }
+
+      type AccessTokenSettingDto = {
+        name: string
+        expiry: string
+      }
     }
 
     namespace Connect {

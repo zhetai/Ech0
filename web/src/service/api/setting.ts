@@ -117,3 +117,28 @@ export function fetchDeleteWebhook(webhookId: number) {
     method: 'DELETE',
   })
 }
+
+// 列出访问令牌
+export function fetchListAccessTokens() {
+  return request<App.Api.Setting.AccessTokenSetting[]>({
+    url: '/access-tokens',
+    method: 'GET',
+  })
+}
+
+// 创建访问令牌
+export function fetchCreateAccessToken(dto: App.Api.Setting.AccessTokenSettingDto) {
+  return request<string>({
+    url: '/access-tokens',
+    method: 'POST',
+    data: dto,
+  })
+}
+
+// 删除访问令牌
+export function fetchDeleteAccessToken(tokenId: number) {
+  return request({
+    url: `/access-tokens/${tokenId}`,
+    method: 'DELETE',
+  })
+}
