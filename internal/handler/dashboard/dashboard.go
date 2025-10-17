@@ -54,13 +54,11 @@ func (dashboardHandler *DashboardHandler) GetMetrics() gin.HandlerFunc {
 // @Tags 通用功能
 // @Accept json
 // @Produce json
-// @Success 200 {object} res.Response "订阅系统指标成功"
-// @Failure 200 {object} res.Response "订阅系统指标失败"
 // @Router /ws/metrics [get]
 func (dashboardHandler *DashboardHandler) WSSubsribeMetrics() gin.HandlerFunc {
 	return gin.HandlerFunc(func(ctx *gin.Context) {
 		userId := ctx.MustGet("userid").(uint)
-		if err := dashboardHandler.dashboardService.WSSubsribeMetrics(ctx, userId); err != nil {
+		if err := dashboardHandler.dashboardService.WSSubsribeMetrics(ctx.Writer, ctx.Request, userId); err != nil {
 			logUtil.GetLogger().Error("WebSocket Subscribe Metrics Failed", zap.String("Err", err.Error()))
 		}
 	})

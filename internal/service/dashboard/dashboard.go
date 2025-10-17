@@ -3,21 +3,25 @@ package service
 import (
 	"encoding/json"
 	"log"
+	"net/http"
 	"time"
 
-	"github.com/coder/websocket"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+
 	model "github.com/lin-snow/ech0/internal/model/metric"
 	"github.com/lin-snow/ech0/internal/monitor"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 )
 
 type DashboardService struct {
-	monitor *monitor.Monitor
-	commonService    commonService.CommonServiceInterface
+	monitor       *monitor.Monitor
+	commonService commonService.CommonServiceInterface
 }
 
-func NewDashboardService(monitor *monitor.Monitor, commonService commonService.CommonServiceInterface) DashboardServiceInterface {
+func NewDashboardService(
+	monitor *monitor.Monitor,
+	commonService commonService.CommonServiceInterface,
+) DashboardServiceInterface {
 	return &DashboardService{
 		monitor:       monitor,
 		commonService: commonService,
@@ -28,40 +32,57 @@ func (dashboardService *DashboardService) GetMetrics() (model.Metrics, error) {
 	return dashboardService.monitor.GetMetrics(), nil
 }
 
-func (dashboardService *DashboardService) WSSubsribeMetrics(ctx *gin.Context, userId uint) error {
+func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Request, userId uint) error {
 	// 鉴权
-	user, err := dashboardService.commonService.CommonGetUserByUserId(userId)
+	user, err := s.commonService.CommonGetUserByUserId(userId)
 	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("unauthorized"))
 		return err
 	}
 	if !user.IsAdmin {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("permission denied"))
 		return nil
 	}
 
-	// 接收连接
-	conn, err := websocket.Accept(ctx.Writer, ctx.Request, nil)
+	// WebSocket 升级
+	conn, err := websocket.Upgrade(w, r, nil, 1024, 1024)
 	if err != nil {
+		log.Printf("websocket upgrade failed: %v", err)
 		return err
 	}
-	defer conn.Close(websocket.StatusInternalError, "Internal Error")
+	defer conn.Close()
 
-
-	// 定时推送
 	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
 	for {
 		select {
-		case <-ctx.Done():
-			log.Println("client disconnected")
+		case <-r.Context().Done():
+			log.Printf("client disconnected")
 			return nil
 		case <-ticker.C:
-			metrics := dashboardService.monitor.GetMetrics()
+			metrics := s.monitor.GetMetrics()
 
-			data, _ := json.Marshal(metrics)
-			err = conn.Write(ctx, websocket.MessageText, data)
+			resp := struct {
+				Code int    `json:"code"`
+				Msg  string `json:"msg"`
+				Data any    `json:"data"`
+			}{
+				Code: 1,
+				Msg:  "metrics update",
+				Data: metrics,
+			}
+
+			data, err := json.Marshal(resp)
 			if err != nil {
-				log.Println("write ws error:", err)
+				log.Println("json marshal error:", err)
+				continue
+			}
+
+			if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
+				log.Printf("write ws error: %v", err)
 				return err
 			}
 		}

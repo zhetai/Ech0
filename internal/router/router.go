@@ -11,6 +11,7 @@ type AppRouterGroup struct {
 	ResourceGroup     *gin.RouterGroup
 	PublicRouterGroup *gin.RouterGroup
 	AuthRouterGroup   *gin.RouterGroup
+	WSRouterGroup     *gin.RouterGroup
 }
 
 // SetupRouter 配置路由
@@ -71,9 +72,12 @@ func setupRouterGroup(r *gin.Engine) *AppRouterGroup {
 	public := r.Group("/api")
 	auth := r.Group("/api")
 	auth.Use(middleware.JWTAuthMiddleware())
+	ws := r.Group("/ws")
+	ws.Use(middleware.JWTAuthMiddleware())
 	return &AppRouterGroup{
 		ResourceGroup:     resource,
 		PublicRouterGroup: public,
 		AuthRouterGroup:   auth,
+		WSRouterGroup:     ws,
 	}
 }
