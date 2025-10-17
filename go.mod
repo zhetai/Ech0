@@ -10,7 +10,6 @@ require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/charmbracelet/ssh v0.0.0-20250826160808-ebfa259c7309
 	github.com/charmbracelet/wish v1.4.7
-	github.com/coder/websocket v1.8.14
 	github.com/dgraph-io/ristretto/v2 v2.3.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-co-op/gocron/v2 v2.16.6
@@ -19,6 +18,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.7.0
 	github.com/gorilla/feeds v1.2.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/minio/minio-go/v7 v7.0.95
 	github.com/muesli/termenv v0.16.0
 	github.com/oklog/ulid/v2 v2.1.1
@@ -82,7 +82,6 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/goccy/go-yaml v1.18.0 // indirect
-	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
