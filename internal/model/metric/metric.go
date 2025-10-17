@@ -45,6 +45,7 @@ type SystemMetric struct {
 	Time          time.Time     // 采样时间
 }
 
+// Metrics 综合监控指标
 type Metrics struct {
 	CPU     CpuMetric     // CPU 监控指标
 	Memory  MemoryMetric  // 内存监控指标
