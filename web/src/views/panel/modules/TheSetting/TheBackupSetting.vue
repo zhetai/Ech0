@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
+  <PanelCard>
     <!-- 数据管理 -->
     <div>
       <div class="flex items-center justify-start mb-3">
@@ -39,10 +39,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </PanelCard>
 </template>
 
 <script setup lang="ts">
+import PanelCard from '@/layout/PanelCard.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import CreateBackup from '@/components/icons/createbackup.vue'
 import ExportBackup from '@/components/icons/exportbackup.vue'

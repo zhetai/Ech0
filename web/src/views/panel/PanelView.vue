@@ -15,7 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full px-2">
     <PanelPage />
   </div>
 </template>

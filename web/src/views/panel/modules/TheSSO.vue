@@ -1,7 +1,7 @@
 <template>
   <div class="w-full px-2">
     <!-- OAuth2 设置 -->
-    <TheOAuth2Setting />
+    <TheOAuth2Setting class="mb-3" />
   </div>
 </template>
 

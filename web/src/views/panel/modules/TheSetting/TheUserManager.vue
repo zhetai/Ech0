@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4">
+  <PanelCard>
     <div class="flex flex-row items-center justify-between mb-3">
       <h1 class="text-gray-600 font-bold text-lg">用户管理</h1>
       <div class="flex flex-row items-center justify-end gap-2 w-14">
@@ -35,10 +35,11 @@
         />
       </div>
     </div>
-  </div>
+  </PanelCard>
 </template>
 
 <script setup lang="ts">
+import PanelCard from '@/layout/PanelCard.vue'
 import Edit from '@/components/icons/edit.vue'
 import Close from '@/components/icons/close.vue'
 import { ref, onMounted } from 'vue'

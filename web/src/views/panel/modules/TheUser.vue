@@ -1,10 +1,10 @@
 <template>
   <div class="w-full px-2">
     <!-- 用户设置 -->
-    <TheUserSetting />
+    <TheUserSetting class="mb-3" />
 
     <!-- 用户管理 -->
-    <TheUserManager />
+    <TheUserManager class="mb-3" />
   </div>
 </template>
 

@@ -11,5 +11,5 @@ type DashboardServiceInterface interface {
 	GetMetrics() (model.Metrics, error)
 
 	// WSSubsribeMetrics 通过 WebSocket 订阅系统指标
-	WSSubsribeMetrics(w http.ResponseWriter, r *http.Request, userId uint) error
+	WSSubsribeMetrics(w http.ResponseWriter, r *http.Request) error
 }

@@ -2,16 +2,20 @@
   <div
     class="px-4 pb-4 py-2 mx-auto flex flex-col max-w-screen-lg border border-gray-300 rounded-md mt-4"
   >
-    <h1 class="text-4xl md:text-6xl italic font-bold text-center text-gray-300 mb-8">Ech0 Panel</h1>
+    <h1 class="text-4xl md:text-6xl italic font-bold font-serif text-center text-gray-300 mb-8">
+      Ech0 Panel
+    </h1>
 
     <!-- 移动端选择器 -->
     <div class="md:hidden mb-6 px-2">
-      <BaseSelect
-        v-model="selectedRoute"
-        :options="routeOptions"
-        placeholder="选择页面"
-        @change="handleRouteChange"
-      />
+      <div class="w-1/2">
+        <BaseSelect
+          v-model="selectedRoute"
+          :options="routeOptions"
+          placeholder="选择页面"
+          @change="handleRouteChange"
+        />
+      </div>
       <div class="flex gap-2 mt-3">
         <button
           @click="router.push('/')"
@@ -51,7 +55,7 @@
 
         <!-- 仪表盘 -->
         <BaseButton
-          :icon="Others"
+          :icon="Dashboard"
           @click="router.push('/panel/dashboard')"
           :class="getButtonClasses('panel-dashboard')"
           title="仪表盘"
@@ -157,6 +161,7 @@ import Arrow from '@/components/icons/arrow.vue'
 import User from '@/components/icons/user.vue'
 import Auth from '@/components/icons/auth.vue'
 import Status from '@/components/icons/status.vue'
+import Dashboard from '@/components/icons/dashboard.vue'
 import Others from '@/components/icons/theothers.vue'
 import Setting from '@/components/icons/setting.vue'
 import Storage from '@/components/icons/storage.vue'
@@ -185,7 +190,7 @@ const getButtonClasses = (routeName: string, isBackButton = false) => {
 
   const activeClasses =
     currentRoute.value === routeName
-      ? 'text-gray-800 bg-gray-300'
+      ? 'text-gray-800 bg-orange-200'
       : 'text-gray-600 hover:opacity-75'
 
   return `${baseClasses} ${activeClasses}`

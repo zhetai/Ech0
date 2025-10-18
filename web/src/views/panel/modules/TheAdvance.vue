@@ -1,10 +1,10 @@
 <template>
   <div class="w-full px-2">
     <!-- Webhook 设置 -->
-    <TheWebhookSetting />
+    <TheWebhookSetting class="mb-3" />
 
     <!-- 数据管理 -->
-    <TheBackupSetting />
+    <TheBackupSetting class="mb-3" />
   </div>
 </template>
 

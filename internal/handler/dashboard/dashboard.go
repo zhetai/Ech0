@@ -1,12 +1,16 @@
 package handler
 
 import (
+	"log"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
 	res "github.com/lin-snow/ech0/internal/handler/response"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	service "github.com/lin-snow/ech0/internal/service/dashboard"
+	jwtUtil "github.com/lin-snow/ech0/internal/util/jwt"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
@@ -57,8 +61,21 @@ func (dashboardHandler *DashboardHandler) GetMetrics() gin.HandlerFunc {
 // @Router /ws/metrics [get]
 func (dashboardHandler *DashboardHandler) WSSubsribeMetrics() gin.HandlerFunc {
 	return gin.HandlerFunc(func(ctx *gin.Context) {
-		userId := ctx.MustGet("userid").(uint)
-		if err := dashboardHandler.dashboardService.WSSubsribeMetrics(ctx.Writer, ctx.Request, userId); err != nil {
+		token := ctx.Query("token")
+		if token == "" {
+			log.Println("token 无效", token)
+			return 
+		}
+
+		token = strings.Trim(token, `"`) // 去掉可能的双引号
+
+		// 使用 JWT Util进行处理
+		if _, err := jwtUtil.ParseToken(token); err != nil {
+			log.Println("token 解析无效", token)
+			return
+		}
+		
+		if err := dashboardHandler.dashboardService.WSSubsribeMetrics(ctx.Writer, ctx.Request); err != nil {
 			logUtil.GetLogger().Error("WebSocket Subscribe Metrics Failed", zap.String("Err", err.Error()))
 		}
 	})

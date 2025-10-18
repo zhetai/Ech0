@@ -1,13 +1,13 @@
 <template>
   <div class="w-full px-2">
     <!-- 系统设置 -->
-    <TheSystemSetting />
+    <TheSystemSetting class="mb-3" />
 
     <!-- 评论设置 -->
-    <TheCommentSetting />
+    <TheCommentSetting class="mb-3" />
 
     <!-- Connect设置 -->
-    <TheConnectSetting />
+    <TheConnectSetting class="mb-3" />
   </div>
 </template>
 

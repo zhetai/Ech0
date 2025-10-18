@@ -1,7 +1,7 @@
 <template>
   <div class="w-full px-2">
     <!-- 存储设置 -->
-    <TheStorageSetting />
+    <TheStorageSetting class="mb-3" />
   </div>
 </template>
 

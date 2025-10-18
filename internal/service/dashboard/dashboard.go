@@ -32,39 +32,38 @@ func (dashboardService *DashboardService) GetMetrics() (model.Metrics, error) {
 	return dashboardService.monitor.GetMetrics(), nil
 }
 
-func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Request, userId uint) error {
+func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Request) error {
 	// 鉴权
-	user, err := s.commonService.CommonGetUserByUserId(userId)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("unauthorized"))
-		return err
-	}
-	if !user.IsAdmin {
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("permission denied"))
-		return nil
-	}
+	// user, err := s.commonService.CommonGetUserByUserId(userId)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	w.Write([]byte("unauthorized"))
+	// 	return err
+	// }
+	// if !user.IsAdmin {
+	// 	w.WriteHeader(http.StatusForbidden)
+	// 	w.Write([]byte("permission denied"))
+	// 	return nil
+	// }
 
 	// WebSocket 升级
-	conn, err := websocket.Upgrade(w, r, nil, 1024, 1024)
+	upgrader := websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true },
+	}
+	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("websocket upgrade failed: %v", err)
 		return err
 	}
-	defer conn.Close()
+	go func() {
+		ticker := time.NewTicker(5 * time.Second)
+		defer ticker.Stop()
+		defer conn.Close()
 
-	ticker := time.NewTicker(5 * time.Second)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-r.Context().Done():
-			log.Printf("client disconnected")
-			return nil
-		case <-ticker.C:
+		for {
 			metrics := s.monitor.GetMetrics()
-
 			resp := struct {
 				Code int    `json:"code"`
 				Msg  string `json:"msg"`
@@ -75,16 +74,15 @@ func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Requ
 				Data: metrics,
 			}
 
-			data, err := json.Marshal(resp)
-			if err != nil {
-				log.Println("json marshal error:", err)
-				continue
-			}
+			data, _ := json.Marshal(resp)
 
 			if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
-				log.Printf("write ws error: %v", err)
-				return err
+				log.Println("write ws error:", err)
+				return
 			}
+
+			time.Sleep(5 * time.Second)
 		}
-	}
+	}()
+	return nil
 }

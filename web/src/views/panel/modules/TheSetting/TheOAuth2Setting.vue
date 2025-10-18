@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
+  <PanelCard class="mb-3">
     <!-- OAuth2 设置 -->
     <div class="w-full">
       <div class="flex flex-row items-center justify-between mb-3">
@@ -173,11 +173,11 @@
         />
       </div>
     </div>
-  </div>
+  </PanelCard>
 
   <div
     v-if="OAuth2Setting.enable && OAuth2Setting.provider"
-    class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3"
+    class="rounded-md border border-dashed border-gray-300 p-4 mb-3"
   >
     <!-- OAuth2 账号绑定 -->
     <div class="w-full">
@@ -188,7 +188,7 @@
           v-if="
             oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0
           "
-          class="mt-2 border border-dashed border-gray-300 rounded-md p-3 flex items-center justify-center bg-gray-50"
+          class="mt-2 border border-dashed border-gray-300 rounded-md p-3 flex items-center justify-center"
         >
           <p class="text-gray-500 font-bold flex items-center">
             <component
@@ -215,6 +215,7 @@
 </template>
 
 <script setup lang="ts">
+import PanelCard from '@/layout/PanelCard.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseSwitch from '@/components/common/BaseSwitch.vue'
 import BaseSelect from '@/components/common/BaseSelect.vue'
