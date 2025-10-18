@@ -309,8 +309,8 @@ onBeforeUnmount(() => {
 }
 
 :deep(.md-editor) {
-  /* font-family: var(--font-sans); */
-  font-family: 'LXGW WenKai Screen';
+  font-family: var(--font-sans);
+  /* font-family: 'LXGW WenKai Screen'; */
 }
 
 :deep(.md-editor div.github-theme) {
