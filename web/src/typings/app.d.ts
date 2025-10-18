@@ -367,7 +367,7 @@ declare namespace App {
         Total: number     // 磁盘总大小
         Used: number      // 已使用磁盘大小
         Available: number      // 可用磁盘大小
-        UsagePercent: number// 磁盘使用率百分比
+        Percentage: number// 磁盘使用率百分比
       }
 
       // NetworkMetric 网络监控指标
