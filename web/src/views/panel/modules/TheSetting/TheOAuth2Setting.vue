@@ -177,7 +177,7 @@
 
   <div
     v-if="OAuth2Setting.enable && OAuth2Setting.provider"
-    class="rounded-md border border-dashed border-gray-300 p-4 mb-3"
+    class="rounded-md border border-dashed border-gray-400 p-4 mb-3"
   >
     <!-- OAuth2 账号绑定 -->
     <div class="w-full">
@@ -188,7 +188,7 @@
           v-if="
             oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0
           "
-          class="mt-2 border border-dashed border-gray-300 rounded-md p-3 flex items-center justify-center"
+          class="mt-2 border border-dashed border-gray-400 rounded-md p-3 flex items-center justify-center"
         >
           <p class="text-gray-500 font-bold flex items-center">
             <component
