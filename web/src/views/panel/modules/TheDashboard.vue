@@ -3,24 +3,24 @@
     <div>
       <div class="md:flex items-center gap-2">
         <!-- CPU -->
-        <MetricCard title="CPU 使用率" class="md:w-1/2">
+        <MetricCard title="CPU 使用率" class="md:w-1/2 mb-2 md:mb-0">
           <VChart class="h-60" :option="cpuOption" autoresize />
         </MetricCard>
 
         <!-- Memory -->
-        <MetricCard title="内存使用率" class="md:w-1/2">
+        <MetricCard title="内存使用率" class="md:w-1/2 mb-2 md:mb-0">
           <VChart class="h-60" :option="memoryOption" autoresize />
         </MetricCard>
       </div>
 
       <div class="md:flex items-center mt-4 gap-2">
         <!-- Disk -->
-        <MetricCard title="磁盘使用情况" class="md:w-1/2">
+        <MetricCard title="磁盘使用情况" class="md:w-1/2 mb-2 md:mb-0">
           <VChart class="h-60" :option="diskOption" autoresize />
         </MetricCard>
 
         <!-- System -->
-        <MetricCard title="系统信息" class="md:w-1/2">
+        <MetricCard title="系统信息" class="md:w-1/2 mb-2 md:mb-0">
           <div class="text-md text-stone-500 font-bold h-60 p-2">
             <p>
               主机名：<span class="text-sm font-normal">{{ metrics.System?.Hostname }}</span>
@@ -58,6 +58,7 @@ import {
 } from 'echarts/components'
 import { GaugeChart, LineChart, BarChart, PieChart } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
+import { color } from 'echarts'
 
 // 注册按需组件
 use([
@@ -135,6 +136,8 @@ const networkOption = ref({})
 // 实时更新函数
 function updateCharts() {
   cpuOption.value = {
+    color: ['#f5d2ae'],
+    tooltip: { formatter: '{a} <br/>{b} : {c}%' },
     series: [
       {
         type: 'gauge',
@@ -146,6 +149,7 @@ function updateCharts() {
   }
 
   memoryOption.value = {
+    color: ['#f5d2ae', '#fae2bf'],
     tooltip: { trigger: 'item' },
     legend: { bottom: '0%' },
     series: [
@@ -153,6 +157,23 @@ function updateCharts() {
         name: '内存',
         type: 'pie',
         radius: ['40%', '70%'],
+        label: {
+          position: 'center',
+          formatter: () => {
+            // 显示百分比，保留1位小数
+            return `${metrics.value.Memory.Percentage.toFixed(1)}%`
+          },
+          fontSize: 24,
+          fontWeight: 'bold',
+          color: '#a67c52',
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 28,
+            fontWeight: 'bold',
+          },
+        },
         data: [
           { value: metrics.value.Memory.Used, name: '已用' },
           { value: metrics.value.Memory.Available, name: '可用' },
@@ -162,6 +183,8 @@ function updateCharts() {
   }
 
   diskOption.value = {
+    tooltip: { trigger: 'item' },
+    color: ['#f5d2ae'],
     grid: { left: '10%', right: '10%', bottom: '10%', top: '15%' },
     xAxis: { type: 'category', data: ['磁盘使用率'] },
     yAxis: { type: 'value', max: 100 },
@@ -169,12 +192,17 @@ function updateCharts() {
       {
         type: 'bar',
         data: [metrics.value.Disk.Percentage],
-        label: { show: true, position: 'top', formatter: '{c}%' },
+        label: {
+          show: true,
+          position: 'top',
+          formatter: (params: any) => `${Number(params.value).toFixed(2)}%`,
+        },
       },
     ],
   }
 
   networkOption.value = {
+    color: ['#f5d2ae'],
     tooltip: { trigger: 'axis' },
     legend: { data: ['上传(B/s)', '下载(B/s)'] },
     xAxis: { type: 'category', data: [metrics.value.System.Time] },

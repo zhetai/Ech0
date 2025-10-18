@@ -33,7 +33,7 @@
           :icon="Logout"
           @click="handleLogout"
           class="w-10 h-10 rounded-md"
-          title="退出登录"
+          title="退出"
         >
         </BaseButton>
         <!-- 登录 / 注册 -->
