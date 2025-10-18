@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -63,7 +62,6 @@ func (dashboardHandler *DashboardHandler) WSSubsribeMetrics() gin.HandlerFunc {
 	return gin.HandlerFunc(func(ctx *gin.Context) {
 		token := ctx.Query("token")
 		if token == "" {
-			log.Println("token 无效", token)
 			return 
 		}
 
@@ -71,7 +69,6 @@ func (dashboardHandler *DashboardHandler) WSSubsribeMetrics() gin.HandlerFunc {
 
 		// 使用 JWT Util进行处理
 		if _, err := jwtUtil.ParseToken(token); err != nil {
-			log.Println("token 解析无效", token)
 			return
 		}
 		

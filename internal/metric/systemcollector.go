@@ -109,6 +109,10 @@ func (sc *SystemCollector) Collect() (model.Metrics, error) {
 		m.System.KernelArch = hostInfo.KernelArch
 		m.System.Uptime = time.Duration(hostInfo.Uptime) * time.Second
 		m.System.Time = now
+		m.System.TimeZone = now.Location().String()
+		m.System.ProcessCount = int(hostInfo.Procs)
+		m.System.GolangVersion = runtime.Version()
+		m.System.GoRoutineCount = runtime.NumGoroutine()
 	}
 
 	return m, nil

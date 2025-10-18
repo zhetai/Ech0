@@ -11,6 +11,7 @@ import (
 	model "github.com/lin-snow/ech0/internal/model/metric"
 	"github.com/lin-snow/ech0/internal/monitor"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
+	fmtUtil "github.com/lin-snow/ech0/internal/util/format"
 )
 
 type DashboardService struct {
@@ -33,19 +34,6 @@ func (dashboardService *DashboardService) GetMetrics() (model.Metrics, error) {
 }
 
 func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Request) error {
-	// 鉴权
-	// user, err := s.commonService.CommonGetUserByUserId(userId)
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	w.Write([]byte("unauthorized"))
-	// 	return err
-	// }
-	// if !user.IsAdmin {
-	// 	w.WriteHeader(http.StatusForbidden)
-	// 	w.Write([]byte("permission denied"))
-	// 	return nil
-	// }
-
 	// WebSocket 升级
 	upgrader := websocket.Upgrader{
 		ReadBufferSize:  1024,
@@ -63,7 +51,9 @@ func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Requ
 		defer conn.Close()
 
 		for {
-			metrics := s.monitor.GetMetrics()
+			rawMetrics := s.monitor.GetMetrics()
+			formatted := fmtUtil.FormatMetrics(&rawMetrics)
+
 			resp := struct {
 				Code int    `json:"code"`
 				Msg  string `json:"msg"`
@@ -71,7 +61,7 @@ func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Requ
 			}{
 				Code: 1,
 				Msg:  "metrics update",
-				Data: metrics,
+				Data: formatted,
 			}
 
 			data, _ := json.Marshal(resp)
@@ -86,3 +76,4 @@ func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Requ
 	}()
 	return nil
 }
+

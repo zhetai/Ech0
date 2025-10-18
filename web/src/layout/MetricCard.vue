@@ -1,5 +1,5 @@
 <template>
-  <div class="border border-gray-400 border-dashed rounded-md">
+  <div class="border border-gray-400 border-dashed rounded-md text-nowrap overflow-auto">
     <slot></slot>
   </div>
 </template>

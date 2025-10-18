@@ -20,8 +20,11 @@
         </MetricCard>
 
         <!-- System -->
-        <MetricCard title="系统信息" class="md:w-1/2 mb-2 md:mb-0">
+        <MetricCard title="状态信息" class="md:w-1/2 mb-2 md:mb-0">
           <div class="text-md text-stone-500 font-bold h-60 p-2">
+            <p>
+              登录用户：<span class="text-sm font-normal">{{ userStore.user?.username }}</span>
+            </p>
             <p>
               主机名：<span class="text-sm font-normal">{{ metrics.System?.Hostname }}</span>
             </p>
@@ -32,10 +35,19 @@
               内核版本：<span class="text-sm font-normal">{{ metrics.System?.KernelVersion }}</span>
             </p>
             <p>
-              运行时长：<span class="text-sm font-normal">{{ metrics.System?.Uptime }} s</span>
+              运行时长：<span class="text-sm font-normal">{{ metrics.System?.Uptime }} Hours</span>
             </p>
             <p>
               当前时间：<span class="text-sm font-normal">{{ metrics.System?.Time }}</span>
+            </p>
+            <p>
+              进程数：<span class="text-sm font-normal">{{ metrics.System?.ProcessCount }}</span>
+            </p>
+            <p>
+              Go版本：<span class="text-sm font-normal">{{ metrics.System?.GolangVersion }}</span>
+            </p>
+            <p>
+              协程数：<span class="text-sm font-normal">{{ metrics.System?.GoRoutineCount }}</span>
             </p>
           </div>
         </MetricCard>
@@ -58,7 +70,9 @@ import {
 } from 'echarts/components'
 import { GaugeChart, LineChart, BarChart, PieChart } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
-import { color } from 'echarts'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 // 注册按需组件
 use([
@@ -104,6 +118,11 @@ const metrics = ref<App.Api.Dashboard.Metrics>({
     KernelVersion: '',
     Time: '',
     KernelArch: '',
+    TimeZone: '',
+    ProcessCount: 0,
+    ThreadCount: 0,
+    GolangVersion: '',
+    GoRoutineCount: 0,
   },
 })
 
@@ -175,8 +194,8 @@ function updateCharts() {
           },
         },
         data: [
-          { value: metrics.value.Memory.Used, name: '已用' },
-          { value: metrics.value.Memory.Available, name: '可用' },
+          { value: metrics.value.Memory.Used, name: '已用(GB)' },
+          { value: metrics.value.Memory.Available, name: '可用(GB)' },
         ],
       },
     ],

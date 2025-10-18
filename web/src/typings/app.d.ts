@@ -386,6 +386,11 @@ declare namespace App {
         KernelVersion: string        // 内核版本
         KernelArch: string        // 内核架构
         Time: string     // 采样时间
+        TimeZone: string        // 采样时区
+        ProcessCount: number           // 当前进程数
+        ThreadCount: number           // 当前线程数
+        GolangVersion: string        // Golang 版本
+        GoRoutineCount: number           // 当前 Goroutine 数量
       }
 
       // Metrics 综合监控指标
