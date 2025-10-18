@@ -21,6 +21,11 @@ const router = createRouter({
       redirect: '/panel/status',
       children: [
         {
+          path: 'dashboard',
+          name: 'panel-dashboard',
+          component: () => import('../views/panel/modules/TheDashboard.vue'),
+        },
+        {
           path: 'status',
           name: 'panel-status',
           component: () => import('../views/panel/modules/TheStatus.vue'),
@@ -34,6 +39,16 @@ const router = createRouter({
           path: 'user',
           name: 'panel-user',
           component: () => import('../views/panel/modules/TheUser.vue'),
+        },
+        {
+          path: 'storage',
+          name: 'panel-storage',
+          component: () => import('../views/panel/modules/TheStorage.vue'),
+        },
+        {
+          path: 'sso',
+          name: 'panel-sso',
+          component: () => import('../views/panel/modules/TheSSO.vue'),
         },
         {
           path: 'advance',

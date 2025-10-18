@@ -49,24 +49,34 @@
 
         <div class="h-px bg-gray-300 mx-2" />
 
-        <!-- 状态 -->
+        <!-- 仪表盘 -->
         <BaseButton
+          :icon="Others"
+          @click="router.push('/panel/dashboard')"
+          :class="getButtonClasses('panel-dashboard')"
+          title="仪表盘"
+        >
+          仪表盘
+        </BaseButton>
+
+        <!-- 状态 -->
+        <!-- <BaseButton
           :icon="Status"
           @click="router.push('/panel/status')"
           :class="getButtonClasses('panel-status')"
           title="状态"
         >
           状态
-        </BaseButton>
+        </BaseButton> -->
 
         <!-- 设置 -->
         <BaseButton
           :icon="Setting"
           @click="router.push('/panel/setting')"
           :class="getButtonClasses('panel-setting')"
-          title="设置"
+          title="系统"
         >
-          设置
+          系统
         </BaseButton>
 
         <!-- 个人中心 -->
@@ -74,9 +84,29 @@
           :icon="User"
           @click="router.push('/panel/user')"
           :class="getButtonClasses('panel-user')"
-          title="个人中心"
+          title="成员"
         >
-          个人中心
+          成员
+        </BaseButton>
+
+        <!-- 存储 -->
+        <BaseButton
+          :icon="Storage"
+          @click="router.push('/panel/storage')"
+          :class="getButtonClasses('panel-storage')"
+          title="存储"
+        >
+          存储
+        </BaseButton>
+
+        <!-- 单点登录 -->
+        <BaseButton
+          :icon="Sso"
+          @click="router.push('/panel/sso')"
+          :class="getButtonClasses('panel-sso')"
+          title="单点登录"
+        >
+          单点登录
         </BaseButton>
 
         <!-- 高级 -->
@@ -129,6 +159,8 @@ import Auth from '@/components/icons/auth.vue'
 import Status from '@/components/icons/status.vue'
 import Others from '@/components/icons/theothers.vue'
 import Setting from '@/components/icons/setting.vue'
+import Storage from '@/components/icons/storage.vue'
+import Sso from '@/components/icons/sso.vue'
 import Logout from '@/components/icons/logout.vue'
 import { computed, ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
@@ -166,9 +198,12 @@ const getBottomButtonClasses = () => {
 
 // 路由选项
 const routeOptions = [
-  { label: '状态', value: '/panel/status' },
+  { label: '仪表盘', value: '/panel/dashboard' },
+  // { label: '状态', value: '/panel/status' },
   { label: '设置', value: '/panel/setting' },
   { label: '个人中心', value: '/panel/user' },
+  { label: '存储', value: '/panel/storage' },
+  { label: '单点登录', value: '/panel/sso' },
   { label: '高级', value: '/panel/advance' },
 ]
 

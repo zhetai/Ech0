@@ -27,7 +27,7 @@
       >
         <!-- Selected Value Display -->
         <span
-          :class="['truncate', !selectedOption && placeholder ? 'text-gray-500' : 'text-gray-900']"
+          :class="['truncate', !selectedOption && placeholder ? 'text-gray-500' : 'text-gray-600']"
         >
           {{ displayValue }}
         </span>
@@ -75,7 +75,7 @@
             @mouseenter="highlightedIndex = index"
           >
             <div class="flex items-center justify-between">
-              <span class="truncate">{{ getOptionLabel(option) }}</span>
+              <span class="truncate text-gray-500 font-bold">{{ getOptionLabel(option) }}</span>
               <!-- Check Icon for Selected -->
               <svg
                 v-if="isSelected(option)"
