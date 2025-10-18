@@ -51,6 +51,11 @@ const router = createRouter({
           component: () => import('../views/panel/modules/TheSSO.vue'),
         },
         {
+          path: 'extension',
+          name: 'panel-extension',
+          component: () => import('../views/panel/modules/TheExtension.vue'),
+        },
+        {
           path: 'advance',
           name: 'panel-advance',
           component: () => import('../views/panel/modules/TheAdvance.vue'),

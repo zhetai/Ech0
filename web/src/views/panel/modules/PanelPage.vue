@@ -113,6 +113,16 @@
           单点登录
         </BaseButton>
 
+        <!-- 功能扩展 -->
+        <BaseButton
+          :icon="Extension"
+          @click="router.push('/panel/extension')"
+          :class="getButtonClasses('panel-extension')"
+          title="功能扩展"
+        >
+          功能扩展
+        </BaseButton>
+
         <!-- 高级 -->
         <BaseButton
           :icon="Others"
@@ -160,7 +170,7 @@ import BaseSelect from '@/components/common/BaseSelect.vue'
 import Arrow from '@/components/icons/arrow.vue'
 import User from '@/components/icons/user.vue'
 import Auth from '@/components/icons/auth.vue'
-import Status from '@/components/icons/status.vue'
+import Extension from '@/components/icons/extension.vue'
 import Dashboard from '@/components/icons/dashboard.vue'
 import Others from '@/components/icons/theothers.vue'
 import Setting from '@/components/icons/setting.vue'
@@ -209,6 +219,7 @@ const routeOptions = [
   { label: '个人中心', value: '/panel/user' },
   { label: '存储', value: '/panel/storage' },
   { label: '单点登录', value: '/panel/sso' },
+  { label: '功能扩展', value: '/panel/extension' },
   { label: '高级', value: '/panel/advance' },
 ]
 
