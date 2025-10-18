@@ -105,11 +105,7 @@ docker run -d \
   -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/backup:/app/backup \
-  -v /proc:/host_proc:ro \
-  -v /sys/fs/cgroup:/host_cgroup:ro \
   -e JWT_SECRET="Hello Echos" \
-  --env HOST_PROC=/host_proc \
-  --env HOST_CGROUP=/host_cgroup \
   sn0wl1n/ech0:latest
 ```
 
@@ -151,13 +147,8 @@ docker run -d \
   -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/backup:/app/backup \
-  -v /proc:/host_proc:ro \
-  -v /sys/fs/cgroup:/host_cgroup:ro \
   -e JWT_SECRET="Hello Echos" \
-  --env HOST_PROC=/host_proc \
-  --env HOST_CGROUP=/host_cgroup \
   sn0wl1n/ech0:latest
-
 ```
 
 ### 💎 Docker Compose
