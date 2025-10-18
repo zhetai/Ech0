@@ -1,42 +1,50 @@
 <template>
   <div
-    class="px-4 pb-4 py-2 mx-auto flex flex-col max-w-screen-lg border-3 border-stone-300 rounded-md mt-4"
+    class="px-4 pb-4 py-2 mx-auto flex flex-col max-w-screen-lg border-3 border-stone-300 rounded-md mt-4 mb-12"
   >
     <h1 class="text-4xl md:text-6xl italic font-bold font-serif text-center text-gray-300 mb-8">
       Ech0 Panel
     </h1>
 
     <!-- 移动端选择器 -->
-    <div class="md:hidden mb-6 px-2">
+    <div class="md:hidden mb-6 px-2 flex justify-between items-center mb-3">
       <div class="w-1/2">
         <BaseSelect
+          class="!focus:ring-0"
           v-model="selectedRoute"
           :options="routeOptions"
           placeholder="选择页面"
           @change="handleRouteChange"
         />
       </div>
-      <div class="flex gap-2 mt-3">
-        <button
+
+      <div class="flex gap-2 items-center">
+        <!-- 返回首页 -->
+        <BaseButton
+          :icon="Home"
           @click="router.push('/')"
-          class="flex-1 px-4 py-2 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 text-gray-600 hover:opacity-75 bg-transparent"
+          class="w-10 h-10 rounded-md"
+          title="返回首页"
         >
-          返回首页
-        </button>
-        <button
+        </BaseButton>
+        <!-- 退出登录 -->
+        <BaseButton
           v-if="userStore.isLogin"
+          :icon="Logout"
           @click="handleLogout"
-          class="flex-1 px-4 py-2 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 text-gray-600 hover:opacity-75 bg-transparent"
+          class="w-10 h-10 rounded-md"
+          title="退出登录"
         >
-          退出登录
-        </button>
-        <button
+        </BaseButton>
+        <!-- 登录 / 注册 -->
+        <BaseButton
           v-else
+          :icon="Auth"
           @click="router.push('/auth')"
-          class="flex-1 px-4 py-2 rounded-md transition-all duration-300 border-none !shadow-none !ring-0 text-gray-600 hover:opacity-75 bg-transparent"
+          class="w-10 h-10 rounded-md"
+          title="登录 / 注册"
         >
-          登录 / 注册
-        </button>
+        </BaseButton>
       </div>
     </div>
 
@@ -170,6 +178,7 @@ import BaseSelect from '@/components/common/BaseSelect.vue'
 import Arrow from '@/components/icons/arrow.vue'
 import User from '@/components/icons/user.vue'
 import Auth from '@/components/icons/auth.vue'
+import Home from '@/components/icons/home.vue'
 import Extension from '@/components/icons/extension.vue'
 import Dashboard from '@/components/icons/dashboard.vue'
 import Others from '@/components/icons/theothers.vue'

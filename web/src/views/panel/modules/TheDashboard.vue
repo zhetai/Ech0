@@ -1,6 +1,5 @@
 <template>
-  <div class="w-full px-2">The Dashboard</div>
-  <pre>{{ dashboardMetrics }}</pre>
+  <div class="w-full px-2"></div>
 </template>
 
 <script setup lang="ts">
