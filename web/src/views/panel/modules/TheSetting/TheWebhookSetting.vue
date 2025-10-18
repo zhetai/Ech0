@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
+  <PanelCard>
     <!-- Webhook 设置 -->
     <div class="w-full">
       <div class="flex flex-row items-center justify-between mb-4">
@@ -68,10 +68,12 @@
           :key="index"
           class="flex w-full flex-row items-center justify-between text-gray-500 gap-3 h-10 border-b border-gray-200 last:border-0 flex-shrink-0"
         >
-          <div class="w-60 flex-nowrap flex items-start gap-2">
-            <span class="w-26 font-bold text-nowrap overflow-x-auto">{{ webhook.name }}</span>
+          <div class="w-60 md:w-full flex-nowrap flex items-start gap-2">
+            <span class="w-26 md:w-32 font-bold text-nowrap overflow-x-auto">{{
+              webhook.name
+            }}</span>
             <span class="text-gray-700 font-mono font-bold"> | </span>
-            <span class="w-32 overflow-x-auto" :title="webhook.url">
+            <span class="w-32 md:w-72 overflow-x-auto" :title="webhook.url">
               {{ webhook.url }}
             </span>
           </div>
@@ -84,10 +86,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </PanelCard>
 </template>
 
 <script setup lang="ts">
+import PanelCard from '@/layout/PanelCard.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import Edit from '@/components/icons/edit.vue'

@@ -15,9 +15,52 @@ const router = createRouter({
       },
     },
     {
+      path: '/widget',
+      name: 'widget',
+      component: () => import('../views/widget/WidgetView.vue'),
+    },
+    {
       path: '/panel',
       name: 'panel',
       component: () => import('../views/panel/PanelView.vue'),
+      redirect: '/panel/dashboard',
+      children: [
+        {
+          path: 'dashboard',
+          name: 'panel-dashboard',
+          component: () => import('../views/panel/modules/TheDashboard.vue'),
+        },
+        {
+          path: 'setting',
+          name: 'panel-setting',
+          component: () => import('../views/panel/modules/TheSetting.vue'),
+        },
+        {
+          path: 'user',
+          name: 'panel-user',
+          component: () => import('../views/panel/modules/TheUser.vue'),
+        },
+        {
+          path: 'storage',
+          name: 'panel-storage',
+          component: () => import('../views/panel/modules/TheStorage.vue'),
+        },
+        {
+          path: 'sso',
+          name: 'panel-sso',
+          component: () => import('../views/panel/modules/TheSSO.vue'),
+        },
+        {
+          path: 'extension',
+          name: 'panel-extension',
+          component: () => import('../views/panel/modules/TheExtension.vue'),
+        },
+        {
+          path: 'advance',
+          name: 'panel-advance',
+          component: () => import('../views/panel/modules/TheAdvance.vue'),
+        },
+      ],
     },
     {
       path: '/auth',

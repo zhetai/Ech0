@@ -46,7 +46,7 @@ func (fa *FediverseAgent) Handle(ctx context.Context, e *Event) error {
 	// 处理事件，与联邦宇宙交互
 	switch e.Type {
 	case EventTypeEchoCreated:
-		fa.HandleCreateEchoEvent(ctx, e)
+		fa.HandleCreateEchoEvent(ctx, e) // 创建 Echo 事件
 
 	default:
 		return nil // 忽略其他事件

@@ -14,12 +14,15 @@ import (
 	handler8 "github.com/lin-snow/ech0/internal/handler/backup"
 	handler4 "github.com/lin-snow/ech0/internal/handler/common"
 	handler7 "github.com/lin-snow/ech0/internal/handler/connect"
+	handler10 "github.com/lin-snow/ech0/internal/handler/dashboard"
 	handler3 "github.com/lin-snow/ech0/internal/handler/echo"
 	handler9 "github.com/lin-snow/ech0/internal/handler/fediverse"
 	handler5 "github.com/lin-snow/ech0/internal/handler/setting"
 	handler6 "github.com/lin-snow/ech0/internal/handler/todo"
 	handler2 "github.com/lin-snow/ech0/internal/handler/user"
 	"github.com/lin-snow/ech0/internal/handler/web"
+	"github.com/lin-snow/ech0/internal/metric"
+	"github.com/lin-snow/ech0/internal/monitor"
 	repository2 "github.com/lin-snow/ech0/internal/repository/common"
 	repository8 "github.com/lin-snow/ech0/internal/repository/connect"
 	repository3 "github.com/lin-snow/ech0/internal/repository/echo"
@@ -33,6 +36,7 @@ import (
 	service8 "github.com/lin-snow/ech0/internal/service/backup"
 	"github.com/lin-snow/ech0/internal/service/common"
 	service7 "github.com/lin-snow/ech0/internal/service/connect"
+	service9 "github.com/lin-snow/ech0/internal/service/dashboard"
 	service5 "github.com/lin-snow/ech0/internal/service/echo"
 	service4 "github.com/lin-snow/ech0/internal/service/fediverse"
 	service2 "github.com/lin-snow/ech0/internal/service/setting"
@@ -76,7 +80,11 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	backupServiceInterface := service8.NewBackupService(commonServiceInterface, ebProvider)
 	backupHandler := handler8.NewBackupHandler(backupServiceInterface)
 	fediverseHandler := handler9.NewFediverseHandler(fediverseServiceInterface)
-	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler, fediverseHandler)
+	metricCollector := metric.NewSystemCollector()
+	monitorMonitor := monitor.NewMonitor(metricCollector)
+	dashboardServiceInterface := service9.NewDashboardService(monitorMonitor, commonServiceInterface)
+	dashboardHandler := handler10.NewDashboardHandler(dashboardServiceInterface)
+	handlers := NewHandlers(webHandler, userHandler, echoHandler, commonHandler, settingHandler, todoHandler, connectHandler, backupHandler, fediverseHandler, dashboardHandler)
 	return handlers, nil
 }
 
@@ -149,6 +157,9 @@ var ConnectSet = wire.NewSet(repository8.NewConnectRepository, service7.NewConne
 // BackupSet 包含了构建 BackupHandler 所需的所有 Provider
 var BackupSet = wire.NewSet(handler8.NewBackupHandler, service8.NewBackupService)
 
+// DashboardSet 包含了构建 DashboardHandler 所需的所有 Provider
+var DashboardSet = wire.NewSet(service9.NewDashboardService, handler10.NewDashboardHandler)
+
 // WebhookSet 包含了构建 WebhookDispatcher 所需的所有 Provider
 var WebhookSet = wire.NewSet(repository5.NewWebhookRepository)
 
@@ -166,3 +177,9 @@ var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewF
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
 var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewDeadLetterResolver, event.NewEventHandlers, event.NewEventRegistry)
+
+// MetricSet 包含了构建 Metric 相关所需的所有 Provider
+var MetricSet = wire.NewSet(metric.NewSystemCollector)
+
+// MonitorSet 包含了构建 Monitor 相关所需的所有 Provider
+var MonitorSet = wire.NewSet(monitor.NewMonitor)

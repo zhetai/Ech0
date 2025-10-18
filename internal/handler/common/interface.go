@@ -38,4 +38,7 @@ type CommonHandlerInterface interface {
 
 	// GetS3PresignURL 获取 S3 预签名 URL
 	GetS3PresignURL() gin.HandlerFunc
+
+	// GetMetrics 获取系统指标
+	GetMetrics() gin.HandlerFunc
 }

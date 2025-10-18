@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-md shadow-sm ring-1 ring-gray-200 ring-inset bg-white p-4 mb-3">
+  <PanelCard>
     <!-- Ech0 Connect设置 -->
     <div class="w-full">
       <div class="flex flex-row items-center justify-between mb-3">
@@ -61,10 +61,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </PanelCard>
 </template>
 
 <script setup lang="ts">
+import PanelCard from '@/layout/PanelCard.vue'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import Edit from '@/components/icons/edit.vue'

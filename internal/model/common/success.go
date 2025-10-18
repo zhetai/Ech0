@@ -34,6 +34,7 @@ const (
 	GET_MUSIC_URL_SUCCESS      = "获取音乐播放链接成功"
 	GET_HELLO_SUCCESS          = "获取Hello成功"
 	GET_S3_PRESIGN_URL_SUCCESS = "获取 S3 预签名 URL 成功"
+	GET_METRICS_SUCCESS        = "获取系统指标成功"
 )
 
 // Setting 成功相关常量
@@ -51,6 +52,9 @@ const (
 	DELETE_WEBHOOK_SUCCESS          = "删除 Webhook 成功"
 	UPDATE_WEBHOOK_SUCCESS          = "更新 Webhook 成功"
 	CREATE_WEBHOOK_SUCCESS          = "创建 Webhook 成功"
+	LIST_ACCESS_TOKENS_SUCCESS      = "列出访问令牌成功"
+	CREATE_ACCESS_TOKEN_SUCCESS     = "创建访问令牌成功"
+	DELETE_ACCESS_TOKEN_SUCCESS     = "删除访问令牌成功"
 )
 
 // To do 成功相关常量

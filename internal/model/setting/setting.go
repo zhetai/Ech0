@@ -1,5 +1,13 @@
 package model
 
+import "time"
+
+const (
+	EIGHT_HOUR_EXPIRY string = "8_hours"
+	ONE_MONTH_EXPIRY  string = "1_month"
+	NEVER_EXPIRY      string = "never"
+)
+
 // SystemSetting 定义系统设置实体
 type SystemSetting struct {
 	SiteTitle     string `json:"site_title"`     // 站点标题
@@ -45,4 +53,14 @@ type OAuth2Setting struct {
 	AuthURL      string   `json:"auth_url"`      // OAuth2 授权 URL
 	TokenURL     string   `json:"token_url"`     // OAuth2 令牌 URL
 	UserInfoURL  string   `json:"user_info_url"` // OAuth2 用户信息 URL
+}
+
+// AccessTokenSetting 定义访问令牌设置实体
+type AccessTokenSetting struct {
+	ID        int       `json:"id"`         // 访问令牌 ID
+	UserID    uint      `json:"user_id"`    // 创建该访问令牌的用户 ID
+	Token     string    `json:"token"`      // 访问令牌
+	Name      string    `json:"name"`       // 访问令牌名称
+	Expiry    time.Time `json:"expiry"`     // 访问令牌过期时间，Unix 时间戳格式
+	CreatedAt time.Time `json:"created_at"` // 访问令牌创建时间，Unix 时间戳格式
 }

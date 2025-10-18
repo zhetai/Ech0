@@ -13,12 +13,15 @@ import (
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
+	dashboardHandler "github.com/lin-snow/ech0/internal/handler/dashboard"
 	echoHandler "github.com/lin-snow/ech0/internal/handler/echo"
 	fediverseHandler "github.com/lin-snow/ech0/internal/handler/fediverse"
 	settingHandler "github.com/lin-snow/ech0/internal/handler/setting"
 	todoHandler "github.com/lin-snow/ech0/internal/handler/todo"
 	userHandler "github.com/lin-snow/ech0/internal/handler/user"
 	webHandler "github.com/lin-snow/ech0/internal/handler/web"
+	"github.com/lin-snow/ech0/internal/metric"
+	"github.com/lin-snow/ech0/internal/monitor"
 	commonRepository "github.com/lin-snow/ech0/internal/repository/common"
 	connectRepository "github.com/lin-snow/ech0/internal/repository/connect"
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
@@ -32,6 +35,7 @@ import (
 	backupService "github.com/lin-snow/ech0/internal/service/backup"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	connectService "github.com/lin-snow/ech0/internal/service/connect"
+	dashboardService "github.com/lin-snow/ech0/internal/service/dashboard"
 	echoService "github.com/lin-snow/ech0/internal/service/echo"
 	fediverseService "github.com/lin-snow/ech0/internal/service/fediverse"
 	settingService "github.com/lin-snow/ech0/internal/service/setting"
@@ -60,9 +64,12 @@ func BuildHandlers(
 		SettingSet,
 		TodoSet,
 		ConnectSet,
+		DashboardSet,
 		BackupSet,
 		FediverseCoreSet,
 		FediverseSet,
+		MetricSet,
+		MonitorSet,
 		NewHandlers, // NewHandlers 聚合各个模块的Handler
 	)
 
@@ -177,6 +184,12 @@ var BackupSet = wire.NewSet(
 	backupService.NewBackupService,
 )
 
+// DashboardSet 包含了构建 DashboardHandler 所需的所有 Provider
+var DashboardSet = wire.NewSet(
+	dashboardService.NewDashboardService,
+	dashboardHandler.NewDashboardHandler,
+)
+
 // WebhookSet 包含了构建 WebhookDispatcher 所需的所有 Provider
 var WebhookSet = wire.NewSet(
 	webhookRepository.NewWebhookRepository,
@@ -212,4 +225,14 @@ var EventSet = wire.NewSet(
 	event.NewDeadLetterResolver,
 	event.NewEventHandlers,
 	event.NewEventRegistry,
+)
+
+// MetricSet 包含了构建 Metric 相关所需的所有 Provider
+var MetricSet = wire.NewSet(
+	metric.NewSystemCollector,
+)
+
+// MonitorSet 包含了构建 Monitor 相关所需的所有 Provider
+var MonitorSet = wire.NewSet(
+	monitor.NewMonitor,
 )

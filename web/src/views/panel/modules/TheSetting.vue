@@ -1,18 +1,14 @@
 <template>
   <div class="w-full px-2">
     <!-- 系统设置 -->
-    <TheSystemSetting />
+    <TheSystemSetting class="mb-3" />
 
-    <!-- 评论设置 -->
-    <TheCommentSetting />
-
-    <!-- Connect设置 -->
-    <TheConnectSetting />
+    <!-- 访问令牌设置 -->
+    <TheAccessTokenSetting class="mb-3" />
   </div>
 </template>
 
 <script setup lang="ts">
 import TheSystemSetting from './TheSetting/TheSystemSetting.vue'
-import TheCommentSetting from './TheSetting/TheCommentSetting.vue'
-import TheConnectSetting from './TheSetting/TheConnectSetting.vue'
+import TheAccessTokenSetting from './TheSetting/TheAccessTokenSetting.vue'
 </script>

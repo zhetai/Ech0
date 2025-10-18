@@ -5,6 +5,7 @@ import (
 	backupHandler "github.com/lin-snow/ech0/internal/handler/backup"
 	commonHandler "github.com/lin-snow/ech0/internal/handler/common"
 	connectHandler "github.com/lin-snow/ech0/internal/handler/connect"
+	dashboardHandler "github.com/lin-snow/ech0/internal/handler/dashboard"
 	echoHandler "github.com/lin-snow/ech0/internal/handler/echo"
 	fediverseHandler "github.com/lin-snow/ech0/internal/handler/fediverse"
 	settingHandler "github.com/lin-snow/ech0/internal/handler/setting"
@@ -25,6 +26,7 @@ type Handlers struct {
 	ConnectHandler   *connectHandler.ConnectHandler
 	BackupHandler    *backupHandler.BackupHandler
 	FediverseHandler *fediverseHandler.FediverseHandler
+	DashboardHandler *dashboardHandler.DashboardHandler
 }
 
 // NewHandlers 创建Handlers实例
@@ -38,6 +40,7 @@ func NewHandlers(
 	connectHandler *connectHandler.ConnectHandler,
 	backupHandler *backupHandler.BackupHandler,
 	fediverseHandler *fediverseHandler.FediverseHandler,
+	dashboardHandler *dashboardHandler.DashboardHandler,
 ) *Handlers {
 	return &Handlers{
 		WebHandler:       webHandler,
@@ -49,6 +52,7 @@ func NewHandlers(
 		ConnectHandler:   connectHandler,
 		BackupHandler:    backupHandler,
 		FediverseHandler: fediverseHandler,
+		DashboardHandler: dashboardHandler,
 	}
 }
 

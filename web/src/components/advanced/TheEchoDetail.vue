@@ -232,8 +232,8 @@ onMounted(() => {
 }
 
 .md-editor {
-  /* font-family: var(--font-sans); */
-  font-family: 'LXGW WenKai Screen';
+  font-family: var(--font-sans);
+  /* font-family: 'LXGW WenKai Screen'; */
 }
 
 :deep(ul li) {

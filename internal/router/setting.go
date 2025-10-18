@@ -24,4 +24,8 @@ func setupSettingRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.AuthRouterGroup.POST("/webhook", h.SettingHandler.CreateWebhook())
 	appRouterGroup.AuthRouterGroup.PUT("/webhook", h.SettingHandler.UpdateWebhook())
 	appRouterGroup.AuthRouterGroup.DELETE("/webhook/:id", h.SettingHandler.DeleteWebhook())
+
+	appRouterGroup.AuthRouterGroup.GET("/access-tokens", h.SettingHandler.ListAccessTokens())
+	appRouterGroup.AuthRouterGroup.POST("/access-tokens", h.SettingHandler.CreateAccessToken())
+	appRouterGroup.AuthRouterGroup.DELETE("/access-tokens/:id", h.SettingHandler.DeleteAccessToken())
 }

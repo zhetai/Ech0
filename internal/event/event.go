@@ -2,12 +2,14 @@ package event
 
 import (
 	"context"
-	"log"
 	"math/rand"
 	"sync"
 	"time"
 
 	"github.com/oklog/ulid/v2"
+	"go.uber.org/zap"
+
+	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
 // 定义事件类型
@@ -126,7 +128,8 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 		go func(h EventHandler) {
 			if err := h(ctx, event); err != nil {
 				// 错误处理
-				log.Println("Event Handler Error:", err)
+				logUtil.GetLogger().Error("Event Handler Error:", zap.String("err", err.Error()))
+				// log.Println("Event Handler Error:", err)
 			}
 		}(handler)
 	}
@@ -141,7 +144,8 @@ func (eb *EventBus) Publish(ctx context.Context, event *Event) error {
 			go func(h EventHandler) {
 				if err := h(ctx, event); err != nil {
 					// 错误处理
-					log.Println("Event Handler Error:", err)
+					logUtil.GetLogger().Error("Event Handler Error:", zap.String("err", err.Error()))
+					// log.Println("Event Handler Error:", err)
 				}
 			}(gh.handler)
 		}
