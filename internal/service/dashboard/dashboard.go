@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
@@ -42,7 +41,8 @@ func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Requ
 	}
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Printf("websocket upgrade failed: %v", err)
+		// 禁用日志输出
+		// log.Printf("websocket upgrade failed: %v", err)
 		return err
 	}
 	go func() {
@@ -67,7 +67,8 @@ func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Requ
 			data, _ := json.Marshal(resp)
 
 			if err := conn.WriteMessage(websocket.TextMessage, data); err != nil {
-				log.Println("write ws error:", err)
+				// 禁用日志输出
+				// log.Println("write ws error:", err)
 				return
 			}
 
@@ -76,4 +77,3 @@ func (s *DashboardService) WSSubsribeMetrics(w http.ResponseWriter, r *http.Requ
 	}()
 	return nil
 }
-
