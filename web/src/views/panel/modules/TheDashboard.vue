@@ -126,9 +126,7 @@ const metrics = ref<App.Api.Dashboard.Metrics>({
   },
 })
 
-const { status, sendMessage, onMessage, open, ws } = useOWebSocket<
-  App.Api.Response<App.Api.Dashboard.Metrics>
->({
+const { onMessage, open } = useOWebSocket<App.Api.Response<App.Api.Dashboard.Metrics>>({
   url: 'ws://localhost:6277/ws/dashboard/metrics',
   autoReconnect: true,
   heartbeat: true,
@@ -214,7 +212,7 @@ function updateCharts() {
         label: {
           show: true,
           position: 'top',
-          formatter: (params: any) => `${Number(params.value).toFixed(2)}%`,
+          formatter: (params: { value: number }) => `${Number(params.value).toFixed(2)}%`,
         },
       },
     ],

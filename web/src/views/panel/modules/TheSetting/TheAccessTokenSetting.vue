@@ -12,26 +12,28 @@
         </div>
       </div>
     </div>
+
+    <div class="my-2 text-gray-400">访问令牌配置开发中……</div>
   </PanelCard>
 </template>
 
 <script setup lang="ts">
 import PanelCard from '@/layout/PanelCard.vue'
-import BaseInput from '@/components/common/BaseInput.vue'
-import BaseButton from '@/components/common/BaseButton.vue'
+// import BaseInput from '@/components/common/BaseInput.vue'
+// import BaseButton from '@/components/common/BaseButton.vue'
 import Edit from '@/components/icons/edit.vue'
-import Trashbin from '@/components/icons/trashbin.vue'
+// import Trashbin from '@/components/icons/trashbin.vue'
 import Close from '@/components/icons/close.vue'
 import { ref, onMounted } from 'vue'
 import { useSettingStore } from '@/stores/setting'
-import { storeToRefs } from 'pinia'
-import { fetchDeleteWebhook, fetchCreateWebhook } from '@/service/api'
-import { useBaseDialog } from '@/composables/useBaseDialog'
-import { theToast } from '@/utils/toast'
+// import { storeToRefs } from 'pinia'
+// import { fetchDeleteWebhook, fetchCreateWebhook } from '@/service/api'
+// import { useBaseDialog } from '@/composables/useBaseDialog'
+// import { theToast } from '@/utils/toast'
 
 const accessTokenEdit = ref<boolean>(false)
 const useSetting = useSettingStore()
-const { AccessTokens } = storeToRefs(useSetting)
+// const { AccessTokens } = storeToRefs(useSetting)
 
 onMounted(async () => {
   await useSetting.getAllAccessTokens()

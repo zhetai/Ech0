@@ -1,6 +1,5 @@
 import { useWebSocket } from '@vueuse/core'
-import { ref, reactive, watch } from 'vue'
-
+import { reactive, watch } from 'vue'
 
 interface WSOptions {
   url: string
@@ -12,7 +11,7 @@ interface WSOptions {
 // 泛型 T 表示服务端返回的数据结构
 type Callback<T> = (payload: T) => void
 
-export function useOWebSocket<T = any>(options: WSOptions) {
+export function useOWebSocket<T = unknown>(options: WSOptions) {
   const { url, autoReconnect = true, heartbeat = true, protocols } = options
 
   // 获取 JWT token
@@ -51,7 +50,7 @@ export function useOWebSocket<T = any>(options: WSOptions) {
     }
   })
 
-  const sendMessage = (payload: any) => {
+  const sendMessage = (payload: unknown) => {
     send(JSON.stringify(payload))
   }
 

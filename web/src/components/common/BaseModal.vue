@@ -39,10 +39,10 @@
   </TransitionRoot>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: Boolean,
     required: true,

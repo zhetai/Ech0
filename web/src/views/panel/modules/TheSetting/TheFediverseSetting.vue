@@ -7,7 +7,6 @@
 
 <script setup lang="ts">
 import PanelCard from '@/layout/PanelCard.vue'
-import TheFediverseSetting from './TheSetting/TheFediverseSetting.vue'
 </script>
 
 <style scoped></style>
