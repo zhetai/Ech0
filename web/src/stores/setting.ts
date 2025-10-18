@@ -7,6 +7,7 @@ import {
   fetchGetS3Settings,
   fetchGetOAuth2Settings,
   fetchGetAllWebhooks,
+  fetchListAccessTokens,
 } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
@@ -58,6 +59,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     user_info_url: '',
   })
   const Webhooks = ref<App.Api.Setting.Webhook[]>([])
+  const AccessTokens = ref<App.Api.Setting.AccessToken[]>([])
   const loading = ref<boolean>(true)
   const router = useRouter()
 
@@ -134,6 +136,13 @@ export const useSettingStore = defineStore('settingStore', () => {
     }
   }
 
+  const getAllAccessTokens = async () => {
+    const res = await fetchListAccessTokens()
+    if (res.code === 1) {
+      AccessTokens.value = res.data
+    }
+  }
+
   const setSystemReady = (status: boolean) => {
     isSystemReady.value = status
   }
@@ -154,7 +163,9 @@ export const useSettingStore = defineStore('settingStore', () => {
     S3Setting,
     OAuth2Setting,
     Webhooks,
+    AccessTokens,
     loading,
+    getAllAccessTokens,
     getSystemReady,
     getSystemSetting,
     getCommentSetting,

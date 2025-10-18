@@ -136,9 +136,9 @@
           :icon="Others"
           @click="router.push('/panel/advance')"
           :class="getButtonClasses('panel-advance')"
-          title="高级"
+          title="外部集成"
         >
-          高级
+          外部集成
         </BaseButton>
 
         <div class="h-px bg-gray-300 mx-2" />
@@ -150,7 +150,7 @@
           :class="getBottomButtonClasses()"
           title="退出登录"
         >
-          退出登入
+          登出
         </BaseButton>
 
         <!-- 登录 / 注册 -->
@@ -160,7 +160,7 @@
           :class="getBottomButtonClasses()"
           title="登录 / 注册"
         >
-          登录 / 注册
+          登录
         </BaseButton>
       </div>
 
@@ -229,7 +229,7 @@ const routeOptions = [
   { label: '存储', value: '/panel/storage' },
   { label: '单点登录', value: '/panel/sso' },
   { label: '功能扩展', value: '/panel/extension' },
-  { label: '高级', value: '/panel/advance' },
+  { label: '外部集成', value: '/panel/advance' },
 ]
 
 // 监听路由变化，更新选择器

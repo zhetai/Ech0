@@ -244,7 +244,7 @@ declare namespace App {
         is_active: boolean
       }
 
-      type AccessTokenSetting = {
+      type AccessToken = {
         id: number
         user_id: number
         token: string
@@ -253,7 +253,7 @@ declare namespace App {
         created_at: string
       }
 
-      type AccessTokenSettingDto = {
+      type AccessTokenDto = {
         name: string
         expiry: string
       }

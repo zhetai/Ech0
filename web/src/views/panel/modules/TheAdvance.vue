@@ -3,12 +3,12 @@
     <!-- Webhook 设置 -->
     <TheWebhookSetting class="mb-3" />
 
-    <!-- 数据管理 -->
-    <TheBackupSetting class="mb-3" />
+    <!-- 联邦设置 -->
+    <TheFediverseSetting />
   </div>
 </template>
 
 <script setup lang="ts">
-import TheBackupSetting from './TheSetting/TheBackupSetting.vue'
 import TheWebhookSetting from './TheSetting/TheWebhookSetting.vue'
+import TheFediverseSetting from './TheSetting/TheFediverseSetting.vue'
 </script>

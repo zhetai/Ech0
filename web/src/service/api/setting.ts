@@ -120,14 +120,14 @@ export function fetchDeleteWebhook(webhookId: number) {
 
 // 列出访问令牌
 export function fetchListAccessTokens() {
-  return request<App.Api.Setting.AccessTokenSetting[]>({
+  return request<App.Api.Setting.AccessToken[]>({
     url: '/access-tokens',
     method: 'GET',
   })
 }
 
 // 创建访问令牌
-export function fetchCreateAccessToken(dto: App.Api.Setting.AccessTokenSettingDto) {
+export function fetchCreateAccessToken(dto: App.Api.Setting.AccessTokenDto) {
   return request<string>({
     url: '/access-tokens',
     method: 'POST',

@@ -38,7 +38,7 @@
           />
           <BaseButton
             v-if="editMode"
-            class="rounded-md text-center w-auto text-align-center h-8"
+            class="rounded-md text-center w-auto text-align-center h-8 md:ml-5"
             @click="handTriggerUpload"
           >
             更改
