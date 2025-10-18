@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   ech0:
     image: sn0wl1n/ech0:latest
@@ -8,5 +8,9 @@ services:
       - "6278:6278"
     volumes:
       - ./ech0/data:/app/data
+      - /proc:/host_proc:ro
+      - /sys/fs/cgroup:/host_cgroup:ro
     environment:
-      - JWT_SECRET="Hello Echos"
+      - JWT_SECRET=Hello Echos
+      - HOST_PROC=/host_proc
+      - HOST_CGROUP=/host_cgroup
