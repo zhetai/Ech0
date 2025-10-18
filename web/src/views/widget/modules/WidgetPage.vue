@@ -21,7 +21,7 @@
 import BaseButton from '@/components/common/BaseButton.vue'
 import Arrow from '@/components/icons/arrow.vue'
 import TheStatus from './TheStatus.vue'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
