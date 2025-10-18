@@ -38,3 +38,21 @@ export const getSystemReadyStatus = () => {
     return false
   }
 }
+
+// src/utils/ws.ts
+export function getWsUrl(path: string) {
+  // 取出基础地址
+  const baseUrl = import.meta.env.VITE_SERVICE_BASE_URL
+
+  // 根据当前协议选择 ws 或 wss
+  const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:'
+
+  // 如果是相对路径（生产环境配置为 "/"），自动拼上当前域名
+  if (baseUrl === '/' || baseUrl.startsWith('/')) {
+    return `${wsProtocol}//${location.host}${path}`
+  }
+
+  // 否则使用开发环境配置的完整 baseUrl
+  const httpUrl = new URL(baseUrl)
+  return `${wsProtocol}//${httpUrl.host}${path}`
+}

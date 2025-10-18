@@ -71,6 +71,7 @@ import {
 import { GaugeChart, LineChart, BarChart, PieChart } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useUserStore } from '@/stores/user'
+import { getWsUrl } from '@/service/request/shared'
 
 const userStore = useUserStore()
 
@@ -127,7 +128,7 @@ const metrics = ref<App.Api.Dashboard.Metrics>({
 })
 
 const { onMessage, open } = useOWebSocket<App.Api.Response<App.Api.Dashboard.Metrics>>({
-  url: 'ws://localhost:6277/ws/dashboard/metrics',
+  url: getWsUrl('/ws/dashboard/metrics'),
   autoReconnect: true,
   heartbeat: true,
 })
