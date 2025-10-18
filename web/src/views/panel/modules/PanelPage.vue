@@ -71,16 +71,6 @@
           仪表盘
         </BaseButton>
 
-        <!-- 状态 -->
-        <!-- <BaseButton
-          :icon="Status"
-          @click="router.push('/panel/status')"
-          :class="getButtonClasses('panel-status')"
-          title="状态"
-        >
-          状态
-        </BaseButton> -->
-
         <!-- 设置 -->
         <BaseButton
           :icon="Setting"
@@ -223,7 +213,6 @@ const getBottomButtonClasses = () => {
 // 路由选项
 const routeOptions = [
   { label: '仪表盘', value: '/panel/dashboard' },
-  // { label: '状态', value: '/panel/status' },
   { label: '设置', value: '/panel/setting' },
   { label: '个人中心', value: '/panel/user' },
   { label: '存储', value: '/panel/storage' },

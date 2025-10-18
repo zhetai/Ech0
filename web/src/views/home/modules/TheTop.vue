@@ -34,18 +34,13 @@
             <Rss class="w-8 h-8 text-gray-400" />
           </a>
         </div>
-        <!-- Fediverse -->
-        <!-- <div class="relative mr-1">
-        <RouterLink to="/fediverse" title="联邦宇宙">
-          <Other class="w-8 h-8 text-gray-400" />
-        </RouterLink>
-      </div> -->
-        <!-- ConnectPage -->
-        <!-- <div class="relative mr-2 xl:hidden">
-        <RouterLink to="/connect" title="连接">
-          <Other class="w-8 h-8 text-gray-400" />
-        </RouterLink>
-      </div> -->
+        <!-- Ech0 Widget -->
+        <div class="block xl:hidden">
+          <RouterLink to="/Widget" title="Ech0 Widget">
+            <!-- icon -->
+            <Widget class="w-8 h-8 text-gray-400" />
+          </RouterLink>
+        </div>
         <!-- PanelPage -->
         <div>
           <RouterLink to="/panel" title="面板">
@@ -68,6 +63,7 @@ import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import Close from '@/components/icons/close.vue'
 import Filter from '@/components/icons/filter.vue'
+import Widget from '@/components/icons/widget.vue'
 const echoStore = useEchoStore()
 const { refreshForSearch, getEchosByPage } = echoStore
 const { searchingMode, filteredTag, isFilteringMode } = storeToRefs(echoStore)

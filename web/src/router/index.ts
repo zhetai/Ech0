@@ -15,6 +15,11 @@ const router = createRouter({
       },
     },
     {
+      path: '/widget',
+      name: 'widget',
+      component: () => import('../views/widget/WidgetView.vue'),
+    },
+    {
       path: '/panel',
       name: 'panel',
       component: () => import('../views/panel/PanelView.vue'),
@@ -24,11 +29,6 @@ const router = createRouter({
           path: 'dashboard',
           name: 'panel-dashboard',
           component: () => import('../views/panel/modules/TheDashboard.vue'),
-        },
-        {
-          path: 'status',
-          name: 'panel-status',
-          component: () => import('../views/panel/modules/TheStatus.vue'),
         },
         {
           path: 'setting',
