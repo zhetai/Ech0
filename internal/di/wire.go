@@ -68,9 +68,7 @@ func BuildHandlers(
 		BackupSet,
 		FediverseCoreSet,
 		FediverseSet,
-		MetricSet,
-		MonitorSet,
-		NewHandlers, // NewHandlers 聚合各个模块的Handler
+		NewHandlers, // NewHandlers 聚合各个模块的 Handler
 	)
 
 	return &Handlers{}, nil
