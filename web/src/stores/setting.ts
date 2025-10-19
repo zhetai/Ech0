@@ -139,14 +139,22 @@ export const useSettingStore = defineStore('settingStore', () => {
   const getAllWebhooks = async () => {
     const res = await fetchGetAllWebhooks()
     if (res.code === 1) {
-      Webhooks.value = res.data
+      if (res.data) {
+        Webhooks.value = res.data
+      } else {
+        Webhooks.value = []
+      }
     }
   }
 
   const getAllAccessTokens = async () => {
     const res = await fetchListAccessTokens()
     if (res.code === 1) {
-      AccessTokens.value = res.data
+      if (res.data) {
+        AccessTokens.value = res.data
+      } else {
+        AccessTokens.value = []
+      }
     }
   }
 
