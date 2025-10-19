@@ -65,7 +65,7 @@ export enum MusicProvider {
 
 // Access Token Expiration Time
 export enum AccessTokenExpiration {
-  EIGHT_HOUR_EXPIRY = "8_hours", // 8小时
-  ONE_MONTH_EXPIRY = "1_month", // 1个月
-  NEVER_EXPIRY = "never", // 永不过期
+  EIGHT_HOUR_EXPIRY = '8_hours', // 8小时
+  ONE_MONTH_EXPIRY = '1_month', // 1个月
+  NEVER_EXPIRY = 'never', // 永不过期
 }

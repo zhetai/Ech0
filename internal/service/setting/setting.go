@@ -518,11 +518,13 @@ func (settingService *SettingService) ListAccessTokens(userid uint) ([]model.Acc
 	// 处理tokens,过滤并删除过期的token
 	var validTokens []model.AccessTokenSetting
 	currentTime := time.Now()
+
 	for _, token := range tokens {
-		if token.Expiry.IsZero() || token.Expiry.After(currentTime) {
+		if token.Expiry == nil || token.Expiry.After(currentTime) {
+			// nil 表示永不过期，或者还没过期
 			validTokens = append(validTokens, token)
 		} else {
-			// 删除过期的token
+			// 删除过期 token
 			settingService.txManager.Run(func(ctx context.Context) error {
 				return settingService.settingRepository.DeleteAccessTokenByID(ctx, uint(token.ID))
 			})
@@ -568,12 +570,21 @@ func (settingService *SettingService) CreateAccessToken(
 		return "", err
 	}
 
+	// 处理数据库存储的 expiry
+	var expiryPtr *time.Time
+	if expiry == model.NEVER_EXPIRY {
+		expiryPtr = nil // 永不过期，用 NULL
+	} else {
+		t := time.Now().Add(expiryDuration)
+		expiryPtr = &t
+	}
+
 	// 保存到数据库
 	accessToken := &model.AccessTokenSetting{
 		UserID:    user.ID,
 		Token:     tokenString,
 		Name:      name,
-		Expiry:    time.Now().Add(expiryDuration),
+		Expiry:    expiryPtr,
 		CreatedAt: time.Now(),
 	}
 

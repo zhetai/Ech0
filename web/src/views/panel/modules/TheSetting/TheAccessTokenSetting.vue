@@ -25,19 +25,21 @@
               <th class="px-3 py-2 text-right text-sm font-semibold text-stone-600">操作</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-gray-100 text-nowrap">
             <tr v-for="t in AccessTokens" :key="t.id">
-              <td class="px-3 py-2 flex items-center gap-x-1 font-mono text-sm text-gray-700">
+              <td class="px-3 py-2 flex items-center gap-x-1 font-mono text-sm text-stone-700">
                 {{ formatToken(t.token) }}
                 <button class="p-1 hover:bg-gray-100 rounded" @click="handleCopyToken(t.token)">
                   <Clipboard class="w-5 h-5 text-gray-500" />
                 </button>
               </td>
-              <td class="px-3 py-2 text-sm text-gray-700">{{ t.name }}</td>
-              <td class="px-3 py-2 text-sm text-gray-500">
+              <td class="px-3 py-2 text-sm text-stone-700">
+                <span :title="t.name" class="truncate block max-w-xs">{{ t.name }}</span>
+              </td>
+              <td class="px-3 py-2 text-sm text-stone-500">
                 {{ new Date(t.created_at).toLocaleString() }}
               </td>
-              <td class="px-3 py-2 text-sm text-gray-500">
+              <td class="px-3 py-2 text-sm text-stone-500">
                 {{ t.expiry ? new Date(t.expiry).toLocaleString() : '永不过期' }}
               </td>
               <td class="px-3 py-2 text-right">

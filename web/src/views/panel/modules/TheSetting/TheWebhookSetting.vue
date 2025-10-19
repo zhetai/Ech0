@@ -53,36 +53,45 @@
       </div>
 
       <!-- Webhook 列表 -->
-      <div
-        v-if="Webhooks.length === 0 && !webhookEdit"
-        class="flex flex-col items-center justify-center mt-2"
-      >
-        <span class="text-gray-400">暂无 Webhook...</span>
-      </div>
-      <div
-        v-else-if="Webhooks.length !== 0 && !webhookEdit"
-        class="mt-2 border border-dashed border-gray-300 rounded-md p-2 flex flex-col gap-2 max-h-60 overflow-y-auto"
-      >
-        <div
-          v-for="(webhook, index) in Webhooks"
-          :key="index"
-          class="flex w-full flex-row items-center justify-between text-gray-500 gap-3 h-10 border-b border-gray-200 last:border-0 flex-shrink-0"
-        >
-          <div class="w-60 md:w-full flex-nowrap flex items-start gap-2">
-            <span class="w-26 md:w-32 font-bold text-nowrap overflow-x-auto">{{
-              webhook.name
-            }}</span>
-            <span class="text-gray-700 font-mono font-bold"> | </span>
-            <span class="w-32 md:w-72 overflow-x-auto" :title="webhook.url">
-              {{ webhook.url }}
-            </span>
-          </div>
-          <BaseButton
-            :icon="Trashbin"
-            @click="handleDeleteWebhook(webhook.id)"
-            class="w-7 h-7 rounded-md"
-            title="删除 Webhook"
-          />
+      <div v-else>
+        <div v-if="Webhooks.length === 0" class="flex flex-col items-center justify-center mt-2">
+          <span class="text-gray-400">暂无 Webhook...</span>
+        </div>
+
+        <div v-else class="mt-2 overflow-x-auto border border-stone-300 rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr class="bg-stone-50 opacity-70">
+                <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">名称</th>
+                <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">URL</th>
+                <th class="px-3 py-2 text-right text-sm font-semibold text-stone-600">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 text-nowrap">
+              <tr v-for="webhook in Webhooks" :key="webhook.id">
+                <td class="px-3 py-2 text-sm text-stone-700">
+                  <span :title="webhook.name" class="truncate block max-w-xs">{{
+                    webhook.name
+                  }}</span>
+                </td>
+                <td
+                  class="px-3 py-2 text-sm text-stone-700 font-mono truncate max-w-xs"
+                  :title="webhook.url"
+                >
+                  {{ webhook.url }}
+                </td>
+                <td class="px-3 py-2 text-right">
+                  <button
+                    class="p-1 hover:bg-gray-100 rounded"
+                    @click="handleDeleteWebhook(webhook.id)"
+                    title="删除 Webhook"
+                  >
+                    <Trashbin class="w-5 h-5 text-red-500" />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

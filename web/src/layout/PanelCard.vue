@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-md p-4 border border-dashed border-stone-400">
+  <div class="rounded-md p-4 border border-dashed border-stone-400 overflow-auto">
     <slot></slot>
   </div>
 </template>

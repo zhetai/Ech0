@@ -61,6 +61,6 @@ type AccessTokenSetting struct {
 	UserID    uint      `json:"user_id"`    // 创建该访问令牌的用户 ID
 	Token     string    `json:"token"`      // 访问令牌
 	Name      string    `json:"name"`       // 访问令牌名称
-	Expiry    time.Time `json:"expiry"`     // 访问令牌过期时间，Unix 时间戳格式
+	Expiry    *time.Time `json:"expiry"`     // 指针类型，NULL 表示永不过期
 	CreatedAt time.Time `json:"created_at"` // 访问令牌创建时间，Unix 时间戳格式
 }
