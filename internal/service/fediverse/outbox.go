@@ -65,7 +65,7 @@ func (fediverseService *FediverseService) HandleOutboxPage(
 }
 
 func (fediverseService *FediverseService) HandleOutbox(username string) (model.OutboxResponse, error) {
-	outbox, err := fediverseService.HandleOutbox(username)
+	outbox, err := fediverseService.core.BuildOutbox(username)
 	if err != nil {
 		return model.OutboxResponse{}, err
 	}

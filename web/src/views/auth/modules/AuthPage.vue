@@ -20,8 +20,18 @@
           </div>
         </div>
         <!-- 账号密码输入 -->
-        <BaseInput v-model="username" type="text" placeholder="请输入用户名" class="mb-4" />
-        <BaseInput v-model="password" type="password" placeholder="请输入密码" class="mb-4" />
+        <BaseInput
+          v-model="username"
+          type="text"
+          placeholder="请输入用户名"
+          class="mb-4 bg-white"
+        />
+        <BaseInput
+          v-model="password"
+          type="password"
+          placeholder="请输入密码"
+          class="mb-4 bg-white"
+        />
         <div class="flex justify-between items-center px-0.5">
           <BaseButton
             @click="router.push({ name: 'home' })"
@@ -60,8 +70,18 @@
             </button>
           </div>
         </div>
-        <BaseInput v-model="username" type="text" placeholder="请输入用户名" class="mb-4" />
-        <BaseInput v-model="password" type="password" placeholder="请输入密码" class="mb-4" />
+        <BaseInput
+          v-model="username"
+          type="text"
+          placeholder="请输入用户名"
+          class="mb-4 bg-white"
+        />
+        <BaseInput
+          v-model="password"
+          type="password"
+          placeholder="请输入密码"
+          class="mb-4 bg-white"
+        />
         <div class="flex justify-between items-center px-0.5">
           <BaseButton
             @click="router.push({ name: 'home' })"
