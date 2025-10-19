@@ -225,6 +225,11 @@ declare namespace App {
         oauth_id: string
       }
 
+      type FediverseSetting = {
+        enable: boolean
+        server_url: string
+      }
+
       type Webhook = {
         id: number
         name: string

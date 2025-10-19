@@ -1,5 +1,7 @@
 <template>
-  <div class="mx-auto flex flex-col max-w-screen-lg rounded-md mt-4 mb-12">
+  <div
+    class="border border-stone-300 p-4 mx-auto flex flex-col max-w-screen-lg rounded-md mt-4 mb-12 shadow-xs"
+  >
     <h1
       class="text-4xl md:text-6xl italic font-bold font-serif text-center text-gray-300 mb-8 md:mb-12"
     >
@@ -10,7 +12,7 @@
     <div class="md:hidden mb-6 px-2 flex justify-between items-center mb-3">
       <div class="w-1/2">
         <BaseSelect
-          class="!focus:ring-0"
+          class="!focus:ring-0 h-9"
           v-model="selectedRoute"
           :options="routeOptions"
           placeholder="选择页面"
@@ -23,7 +25,7 @@
         <BaseButton
           :icon="BackHand"
           @click="router.push('/')"
-          class="w-10 h-10 rounded-md"
+          class="w-9 h-9 rounded-md"
           title="返回首页"
         >
         </BaseButton>
@@ -32,7 +34,7 @@
           v-if="userStore.isLogin"
           :icon="Logout"
           @click="handleLogout"
-          class="w-10 h-10 rounded-md"
+          class="w-9 h-9 rounded-md"
           title="退出"
         >
         </BaseButton>
@@ -41,7 +43,7 @@
           v-else
           :icon="Auth"
           @click="router.push('/auth')"
-          class="w-10 h-10 rounded-md"
+          class="w-9 h-9 rounded-md"
           title="登录 / 注册"
         >
         </BaseButton>
@@ -49,9 +51,7 @@
     </div>
 
     <!-- 主内容区 -->
-    <div
-      class="mx-auto flex my-4 w-full max-w-screen-lg border border-stone-300 p-4 shadow-xs rounded-md"
-    >
+    <div class="mx-auto flex my-4 w-full max-w-screen-lg rounded-md">
       <!-- 桌面端侧边栏 -->
       <div class="hidden md:flex flex-col gap-2 w-48 pr-8 shrink-0">
         <!-- 返回首页 -->
@@ -154,6 +154,8 @@
         >
           登录
         </BaseButton>
+
+        <div class="text-stone-300 font-serif my-2">Version: {{ settingStore.hello?.version }}</div>
       </div>
 
       <!-- 路由内容 -->
@@ -180,6 +182,7 @@ import Sso from '@/components/icons/sso.vue'
 import Logout from '@/components/icons/logout.vue'
 import { computed, ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useSettingStore } from '@/stores/setting'
 import { useRouter, useRoute } from 'vue-router'
 import { theToast } from '@/utils/toast'
 import { useBaseDialog } from '@/composables/useBaseDialog'
@@ -187,6 +190,7 @@ import { useBaseDialog } from '@/composables/useBaseDialog'
 const { openConfirm } = useBaseDialog()
 
 const userStore = useUserStore()
+const settingStore = useSettingStore()
 const router = useRouter()
 const route = useRoute()
 

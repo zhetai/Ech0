@@ -8,6 +8,8 @@ import {
   fetchGetOAuth2Settings,
   fetchGetAllWebhooks,
   fetchListAccessTokens,
+  fetchGetFediverseSettings,
+  fetchHelloEch0,
 } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
@@ -60,6 +62,11 @@ export const useSettingStore = defineStore('settingStore', () => {
   })
   const Webhooks = ref<App.Api.Setting.Webhook[]>([])
   const AccessTokens = ref<App.Api.Setting.AccessToken[]>([])
+  const FediverseSetting = ref<App.Api.Setting.FediverseSetting>({
+    enable: false,
+    server_url: '',
+  })
+  const hello = ref<App.Api.Ech0.HelloEch0>()
   const loading = ref<boolean>(true)
   const router = useRouter()
 
@@ -143,6 +150,20 @@ export const useSettingStore = defineStore('settingStore', () => {
     }
   }
 
+  const getFediverseSetting = async () => {
+    const res = await fetchGetFediverseSettings()
+    if (res.code === 1) {
+      FediverseSetting.value = res.data
+    }
+  }
+
+  const getHelloEch0 = async () => {
+    const res = await fetchHelloEch0()
+    if (res.code === 1) {
+      hello.value = res.data
+    }
+  }
+
   const setSystemReady = (status: boolean) => {
     isSystemReady.value = status
   }
@@ -154,6 +175,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     getSystemSetting()
     getCommentSetting()
     getS3Setting()
+    getHelloEch0()
   }
 
   return {
@@ -164,7 +186,10 @@ export const useSettingStore = defineStore('settingStore', () => {
     OAuth2Setting,
     Webhooks,
     AccessTokens,
+    FediverseSetting,
+    hello,
     loading,
+
     getAllAccessTokens,
     getSystemReady,
     getSystemSetting,
@@ -172,7 +197,9 @@ export const useSettingStore = defineStore('settingStore', () => {
     getS3Setting,
     getOAuth2Setting,
     getAllWebhooks,
+    getFediverseSetting,
     setSystemReady,
+    getHelloEch0,
     init,
   }
 })

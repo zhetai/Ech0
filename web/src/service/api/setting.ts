@@ -142,3 +142,20 @@ export function fetchDeleteAccessToken(tokenId: number) {
     method: 'DELETE',
   })
 }
+
+// 获取联邦网络设置
+export function fetchGetFediverseSettings() {
+  return request<App.Api.Setting.FediverseSetting>({
+    url: '/fediverse/settings',
+    method: 'GET',
+  })
+}
+
+// 更新联邦网络设置
+export function fetchUpdateFediverseSettings(fediverseSetting: App.Api.Setting.FediverseSetting) {
+  return request({
+    url: '/fediverse/settings',
+    method: 'PUT',
+    data: fediverseSetting,
+  })
+}

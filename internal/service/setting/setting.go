@@ -630,6 +630,8 @@ func (settingService *SettingService) GetFediverseSetting(userid uint, setting *
 			if err := settingService.keyvalueRepository.AddKeyValue(ctx, commonModel.FediverseSettingKey, string(settingToJSON)); err != nil {
 				return err
 			}
+
+			return nil
 		}
 
 		if err := jsonUtil.JSONUnmarshal([]byte(fediverseSetting.(string)), setting); err != nil {
@@ -668,9 +670,9 @@ func (settingService *SettingService) UpdateFediverseSetting(userid uint, newSet
 		}
 
 		// 更新 ServerURL
-		if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.ServerURLKey, setting.ServerURL); err != nil {
-			return err
-		}
+		// if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.ServerURLKey, setting.ServerURL); err != nil {
+		// 	return err
+		// }
 
 		return nil
 	})
