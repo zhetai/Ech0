@@ -83,5 +83,3 @@ app.use(router)
 app.component('BaseDialog', BaseDialog)
 
 app.mount('#app')
-
-

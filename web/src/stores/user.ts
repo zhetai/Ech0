@@ -130,5 +130,4 @@ export const useUserStore = defineStore('userStore', () => {
     refreshCurrentUser,
     init,
   }
-},
-)
+})
