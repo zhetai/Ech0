@@ -60,7 +60,6 @@
                   <button
                     class="p-1 hover:bg-gray-100 rounded"
                     @click="handleDisconnect(connect.id)"
-                    :disabled="!connectsEdit"
                     title="断开连接"
                   >
                     <Disconnect class="w-5 h-5 text-red-500" />

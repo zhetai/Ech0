@@ -14,7 +14,10 @@
     </div>
 
     <div v-if="!accessTokenEdit">
-      <div class="mt-2 overflow-x-auto border border-stone-300 rounded-lg">
+      <div v-if="AccessTokens.length === 0" class="flex flex-col items-center justify-center mt-2">
+        <span class="text-gray-400">暂无 Access Token...</span>
+      </div>
+      <div v-else class="mt-2 overflow-x-auto border border-stone-300 rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
           <thead>
             <tr class="bg-stone-50 opacity-70">
@@ -45,7 +48,7 @@
               <td class="px-3 py-2 text-right">
                 <button
                   class="p-1 hover:bg-gray-100 rounded"
-                  @click="handleDeleteAccessToken(t.id)"
+                  @click="handleDeleteAccessToken(t)"
                   title="删除 Token"
                 >
                   <Trashbin class="w-5 h-5 text-red-500" />
@@ -119,7 +122,6 @@ const accessTokenEdit = ref<boolean>(false)
 const useSetting = useSettingStore()
 const { AccessTokens } = storeToRefs(useSetting)
 
-const deleteTarget = ref<App.Api.Setting.AccessToken | null>(null)
 const accessTokenToAdd = ref<App.Api.Setting.AccessTokenDto>({
   name: '',
   expiry: AccessTokenExpiration.EIGHT_HOUR_EXPIRY,
@@ -161,18 +163,17 @@ const handleCancelAddAccessToken = () => {
 }
 
 // 删除 Access Token
-const handleDeleteAccessToken = async (id: number) => {
-  if (!deleteTarget.value) return
+const handleDeleteAccessToken = async (item: App.Api.Setting.AccessToken) => {
+  if (!item) return
 
   openConfirm({
     title: '确认删除此 Access Token 吗？',
-    description: `Token 名称：${deleteTarget.value.name}`,
+    description: `Token 名称：${item.name}`,
     onConfirm: async () => {
-      const res = await fetchDeleteAccessToken(id)
+      const res = await fetchDeleteAccessToken(item.id)
       if (res.code === 1) {
         theToast.success('Access Token 删除成功')
         await useSetting.getAllAccessTokens()
-        deleteTarget.value = null
       }
     },
   })
