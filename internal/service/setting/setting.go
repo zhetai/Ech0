@@ -621,7 +621,7 @@ func (settingService *SettingService) GetFediverseSetting(userid uint, setting *
 			// 数据库中不存在数据，手动添加初始数据
 			setting.Enable = false
 			setting.ServerURL = ""
-			
+
 			// 序列化为 JSON
 			settingToJSON, err := jsonUtil.JSONMarshal(setting)
 			if err != nil {

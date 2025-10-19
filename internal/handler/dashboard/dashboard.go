@@ -62,7 +62,7 @@ func (dashboardHandler *DashboardHandler) WSSubsribeMetrics() gin.HandlerFunc {
 	return gin.HandlerFunc(func(ctx *gin.Context) {
 		token := ctx.Query("token")
 		if token == "" {
-			return 
+			return
 		}
 
 		token = strings.Trim(token, `"`) // 去掉可能的双引号
@@ -71,7 +71,7 @@ func (dashboardHandler *DashboardHandler) WSSubsribeMetrics() gin.HandlerFunc {
 		if _, err := jwtUtil.ParseToken(token); err != nil {
 			return
 		}
-		
+
 		if err := dashboardHandler.dashboardService.WSSubsribeMetrics(ctx.Writer, ctx.Request); err != nil {
 			logUtil.GetLogger().Error("WebSocket Subscribe Metrics Failed", zap.String("Err", err.Error()))
 		}

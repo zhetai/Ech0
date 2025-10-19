@@ -37,15 +37,15 @@ type NetworkMetric struct {
 
 // SystemMetric 系统监控指标
 type SystemMetric struct {
-	Hostname      string        // 主机名
-	OsName        string        // 操作系统名称
-	Uptime        time.Duration // 系统运行时长
-	KernelVersion string        // 内核版本
-	KernelArch    string        // 内核架构
-	Time          time.Time     // 采样时间
-	TimeZone      string        // 采样时区
-	ProcessCount int           // 当前进程数
-	ThreadCount  int           // 当前线程数
+	Hostname       string        // 主机名
+	OsName         string        // 操作系统名称
+	Uptime         time.Duration // 系统运行时长
+	KernelVersion  string        // 内核版本
+	KernelArch     string        // 内核架构
+	Time           time.Time     // 采样时间
+	TimeZone       string        // 采样时区
+	ProcessCount   int           // 当前进程数
+	ThreadCount    int           // 当前线程数
 	GolangVersion  string        // Golang 版本
 	GoRoutineCount int           // 当前 Goroutine 数量
 }
