@@ -168,6 +168,26 @@ docker-compose up -d --force-recreate
 docker image prune -f
 ```
 
+### ☸️ Kubernetes (Helm)
+
+1.  **Update the repository:**
+    Navigate to your local Ech0 repository directory and pull the latest changes.
+    ```shell
+    cd Ech0
+    git pull
+    ```
+
+2.  **Upgrade the Helm Release:**
+    Use the `helm upgrade` command to update your release.
+    ```shell
+    # helm upgrade <release-name> <chart-directory>
+    helm upgrade ech0 ./charts/ech0
+    ```
+    If you used a custom release name and namespace, use the corresponding names:
+    ```shell
+    helm upgrade my-ech0 ./charts/ech0 --namespace my-namespace
+    ```
+
 ---
 
 ## Access Modes
