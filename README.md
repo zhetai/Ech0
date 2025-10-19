@@ -35,12 +35,12 @@ Ech0 是一款专为个人用户设计的新一代开源自托管平台，低成
   - [极速部署](#极速部署)
     - [🐳 Docker 部署（推荐）](#-docker-部署推荐)
     - [🐋 Docker Compose](#-docker-compose)
+    - [☸️ Kubernetes (Helm)](#️-kubernetes-helm)
   - [版本更新](#版本更新)
     - [🔄 Docker](#-docker)
     - [💎 Docker Compose](#-docker-compose-1)
   - [访问方式](#访问方式)
     - [🖥️ TUI 模式](#️-tui-模式)
-    - [🔐 SSH 模式](#-ssh-模式)
   - [常见问题](#常见问题)
   - [反馈与社区](#反馈与社区)
   - [项目架构](#项目架构)
@@ -51,7 +51,6 @@ Ech0 是一款专为个人用户设计的新一代开源自托管平台，低成
   - [致谢](#致谢)
   - [Star 增长曲线](#star-增长曲线)
   - [支持项目](#支持项目)
-  </details>
 
 ---
 
@@ -102,7 +101,6 @@ curl -fsSL "http://echo.soopy.cn/install.sh" -o install_ech0.sh && bash install_
 docker run -d \
   --name ech0 \
   -p 6277:6277 \
-  -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/backup:/app/backup \
   -e JWT_SECRET="Hello Echos" \
@@ -167,7 +165,6 @@ docker pull sn0wl1n/ech0:latest
 docker run -d \
   --name ech0 \
   -p 6277:6277 \
-  -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/backup:/app/backup \
   -e JWT_SECRET="Hello Echos" \
@@ -198,13 +195,13 @@ docker image prune -f
 
 直接运行对应的二进制文件即可。例如在 Windows 中，双击 `Ech0.exe`。
 
-### 🔐 SSH 模式
+<!-- ### 🔐 SSH 模式
 
 在终端通过 6278 端口连接部署实例：
 
 ```shell
 ssh -p 6278 ssh.vaaat.com
-```
+``` -->
 
 ---
 
