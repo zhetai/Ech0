@@ -57,10 +57,16 @@ type OAuth2Setting struct {
 
 // AccessTokenSetting 定义访问令牌设置实体
 type AccessTokenSetting struct {
-	ID        int       `json:"id"`         // 访问令牌 ID
-	UserID    uint      `json:"user_id"`    // 创建该访问令牌的用户 ID
-	Token     string    `json:"token"`      // 访问令牌
-	Name      string    `json:"name"`       // 访问令牌名称
+	ID        int        `json:"id"`         // 访问令牌 ID
+	UserID    uint       `json:"user_id"`    // 创建该访问令牌的用户 ID
+	Token     string     `json:"token"`      // 访问令牌
+	Name      string     `json:"name"`       // 访问令牌名称
 	Expiry    *time.Time `json:"expiry"`     // 指针类型，NULL 表示永不过期
-	CreatedAt time.Time `json:"created_at"` // 访问令牌创建时间，Unix 时间戳格式
+	CreatedAt time.Time  `json:"created_at"` // 访问令牌创建时间，Unix 时间戳格式
+}
+
+// FediverseSetting 定义联邦网络设置实体
+type FediverseSetting struct {
+	Enable    bool   `json:"enable"`     // 是否启用联邦网络功能
+	ServerURL string `json:"server_url"` // 服务器 URL
 }

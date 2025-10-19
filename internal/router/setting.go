@@ -28,4 +28,7 @@ func setupSettingRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.AuthRouterGroup.GET("/access-tokens", h.SettingHandler.ListAccessTokens())
 	appRouterGroup.AuthRouterGroup.POST("/access-tokens", h.SettingHandler.CreateAccessToken())
 	appRouterGroup.AuthRouterGroup.DELETE("/access-tokens/:id", h.SettingHandler.DeleteAccessToken())
+
+	appRouterGroup.AuthRouterGroup.GET("/fediverse/settings", h.SettingHandler.GetFediverseSettings())
+	appRouterGroup.AuthRouterGroup.PUT("/fediverse/settings", h.SettingHandler.UpdateFediverseSettings())
 }

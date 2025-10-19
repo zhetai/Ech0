@@ -55,6 +55,8 @@ const (
 	LIST_ACCESS_TOKENS_SUCCESS      = "列出访问令牌成功"
 	CREATE_ACCESS_TOKEN_SUCCESS     = "创建访问令牌成功"
 	DELETE_ACCESS_TOKEN_SUCCESS     = "删除访问令牌成功"
+	GET_FEDIVERSE_SETTINGS_SUCCESS  = "获取联邦网络设置成功"
+	UPDATE_FEDIVERSE_SETTINGS_SUCCESS = "更新联邦网络设置成功"
 )
 
 // To do 成功相关常量

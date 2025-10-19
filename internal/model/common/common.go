@@ -103,6 +103,8 @@ const (
 	OAuth2SettingKey = "oauth2_setting"
 	// ServerURLKey 是服务器URL设置的键
 	ServerURLKey = "server_url"
+	// FediverseSettingKey 是联邦网络设置的键
+	FediverseSettingKey = "fediverse_setting"
 	// MigrationKey 是数据库迁移的标记键
 	MigrationKey = "db_migration:message_to_echo:v1"
 )

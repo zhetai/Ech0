@@ -5,12 +5,33 @@ import (
 	"errors"
 	"fmt"
 
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	echoModel "github.com/lin-snow/ech0/internal/model/echo"
+	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
+	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 )
 
 // PushEchoToFediverse 将 Echo 推送到联邦网络
 func (core *FediverseCore) PushEchoToFediverse(userId uint, echo echoModel.Echo) error {
+	// 检查是否开启了联邦网络功能
+	var fediverseSetting settingModel.FediverseSetting
+	if fediverseSettingJSON, err := core.keyvalueRepo.GetKeyValue(commonModel.FediverseSettingKey); err == nil {
+		if err := jsonUtil.JSONUnmarshal([]byte(fediverseSettingJSON.(string)), &fediverseSetting); err != nil {
+			return err
+		}
+	} else {
+		return err
+	}
+
+	if !fediverseSetting.Enable {
+		return nil
+	}
+
+	if echo.Private {
+		return nil
+	}
+
 	// 获取用户
 	user, err := core.userRepository.GetUserByID(int(userId))
 	if err != nil {

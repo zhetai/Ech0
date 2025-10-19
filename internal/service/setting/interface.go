@@ -53,4 +53,10 @@ type SettingServiceInterface interface {
 
 	// DeleteAccessToken 删除访问令牌
 	DeleteAccessToken(userid, id uint) error
+
+	// GetFediverseSetting 获取联邦网络设置
+	GetFediverseSetting(userid uint, setting *model.FediverseSetting) error
+
+	// UpdateFediverseSetting 更新联邦网络设置
+	UpdateFediverseSetting(userid uint, newSetting *model.FediverseSettingDto) error
 }

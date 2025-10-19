@@ -50,4 +50,10 @@ type SettingHandlerInterface interface {
 
 	// DeleteAccessToken 删除访问令牌
 	DeleteAccessToken() gin.HandlerFunc
+
+	// GetFediverseSettings 获取联邦网络设置
+	GetFediverseSettings() gin.HandlerFunc
+
+	// UpdateFediverseSettings 更新联邦网络设置
+	UpdateFediverseSettings() gin.HandlerFunc
 }
