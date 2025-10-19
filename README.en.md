@@ -33,6 +33,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
   - [Quick Deployment](#quick-deployment)
     - [🐳 Docker (Recommended)](#-docker-recommended)
     - [🐋 Docker Compose](#-docker-compose)
+    - [☸️ Kubernetes (Helm)](#️-kubernetes-helm)
   - [Upgrading](#upgrading)
     - [🔄 Docker](#-docker)
     - [💎 Docker Compose](#-docker-compose-1)
@@ -96,7 +97,6 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 docker run -d \
   --name ech0 \
   -p 6277:6277 \
-  -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/backup:/app/backup \
   -e JWT_SECRET="Hello Echos" \
@@ -153,7 +153,6 @@ docker pull sn0wl1n/ech0:latest
 docker run -d \
   --name ech0 \
   -p 6277:6277 \
-  -p 6278:6278 \
   -v /opt/ech0/data:/app/data \
   -v /opt/ech0/backup:/app/backup \
   -e JWT_SECRET="Hello Echos" \
