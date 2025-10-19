@@ -4,7 +4,7 @@ import { fetchLogin, fetchSignup, fetchGetCurrentUser } from '@/service/api'
 import { saveAuthToken } from '@/service/request/shared'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
-import { useRouter } from 'vue-router'
+import router from '@/router'
 import { useEchoStore } from './echo'
 
 export const useUserStore = defineStore('userStore', () => {
@@ -13,7 +13,6 @@ export const useUserStore = defineStore('userStore', () => {
    */
   const user = ref<App.Api.User.User | null>(null)
   const isLogin = computed(() => !!user.value)
-  const router = useRouter()
 
   /**
    * actions
