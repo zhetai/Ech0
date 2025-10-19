@@ -186,10 +186,10 @@ const { S3Setting } = storeToRefs(settingStore)
 const storageEditMode = ref<boolean>(false)
 
 const S3ServiceOptions = ref<{ label: string; value: S3Provider }[]>([
-  { label: 'AWS', value: S3Provider.AWS },
+  // { label: 'AWS', value: S3Provider.AWS },
   { label: 'MinIO', value: S3Provider.MINIO },
-  { label: '阿里OSS', value: S3Provider.ALIYUN },
-  { label: '腾讯COS', value: S3Provider.TENCENT },
+  // { label: '阿里OSS', value: S3Provider.ALIYUN },
+  // { label: '腾讯COS', value: S3Provider.TENCENT },
   { label: 'Other', value: S3Provider.OTHER },
 ])
 

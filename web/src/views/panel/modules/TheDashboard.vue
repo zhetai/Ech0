@@ -72,7 +72,6 @@ import { GaugeChart, LineChart, BarChart, PieChart } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useUserStore } from '@/stores/user'
 import { getWsUrl } from '@/service/request/shared'
-import { animateLabelValue } from 'echarts/types/src/label/labelStyle.js'
 
 const userStore = useUserStore()
 

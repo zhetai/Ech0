@@ -21,7 +21,7 @@
       <div class="flex gap-2 items-center">
         <!-- 返回首页 -->
         <BaseButton
-          :icon="Home"
+          :icon="BackHand"
           @click="router.push('/')"
           class="w-10 h-10 rounded-md"
           title="返回首页"
@@ -170,7 +170,7 @@ import BaseSelect from '@/components/common/BaseSelect.vue'
 import Arrow from '@/components/icons/arrow.vue'
 import User from '@/components/icons/user.vue'
 import Auth from '@/components/icons/auth.vue'
-import Home from '@/components/icons/home.vue'
+import BackHand from '@/components/icons/backhand.vue'
 import Extension from '@/components/icons/extension.vue'
 import Dashboard from '@/components/icons/dashboard.vue'
 import Others from '@/components/icons/theothers.vue'

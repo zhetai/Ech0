@@ -59,7 +59,7 @@
       >
         <div
           v-show="isOpen"
-          class="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-lg border border-gray-200 overflow-auto focus:outline-none"
+          class="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-70 rounded-lg border border-gray-200 overflow-auto focus:outline-none"
         >
           <div
             v-for="(option, index) in normalizedOptions"
