@@ -72,6 +72,8 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 🪶 **Highly Available Webhook**: Enables real-time integration and collaboration with external systems, supporting event-driven automated workflows  
 📝 **Built-in Todo Management**: Easily capture and manage daily tasks to stay organized and productive  
 🧰 **Command-Line Powerhouse**: A built-in high-availability CLI that empowers developers and advanced users with precision control and seamless automation  
+🔑 **Quick Access Token Management**: Generate and revoke access tokens with one click for secure and efficient API calls and third-party integrations  
+📊 **Real-Time System Resource Monitoring**: High-performance WebSocket-based monitoring dashboard for instant visibility into runtime status  
 📟 **Refined TUI Experience**: A beautifully designed terminal interface offering intuitive management of Ech0  
 🔗 **Ech0 Connect**: A multi-instance connectivity feature that enables real-time status sharing and synchronization between Ech0 nodes  
 🎵 **Seamless Music Integration**: Lightweight embedded music player providing immersive soundscapes and focus modes  
