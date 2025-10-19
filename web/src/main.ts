@@ -71,6 +71,12 @@ const app = createApp(App)
 const pinia = createPinia()
 
 app.use(pinia)
+
+// init
+await initStores().catch((e) => {
+  console.error('Failed to initialize stores:', e)
+})
+
 app.use(router)
 
 // 全局注册组件
@@ -78,7 +84,4 @@ app.component('BaseDialog', BaseDialog)
 
 app.mount('#app')
 
-// init
-initStores().catch((e) => {
-  console.error('Failed to initialize stores:', e)
-})
+
