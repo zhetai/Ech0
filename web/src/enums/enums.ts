@@ -62,3 +62,10 @@ export enum MusicProvider {
   QQ = 'tencent', // QQ音乐
   APPLE = 'apple', // Apple Music
 }
+
+// Access Token Expiration Time
+export enum AccessTokenExpiration {
+  EIGHT_HOUR_EXPIRY = "8_hours", // 8小时
+  ONE_MONTH_EXPIRY = "1_month", // 1个月
+  NEVER_EXPIRY = "never", // 永不过期
+}

@@ -27,10 +27,10 @@ func (settingRepository *SettingRepository) getDB(ctx context.Context) *gorm.DB 
 }
 
 // ListAccessTokens 列出访问令牌
-func (settingRepository *SettingRepository) ListAccessTokens() ([]model.AccessTokenSetting, error) {
+func (settingRepository *SettingRepository) ListAccessTokens(userID uint) ([]model.AccessTokenSetting, error) {
 	var tokens []model.AccessTokenSetting
 	// 查询所有访问令牌
-	if err := settingRepository.db().Find(&tokens).Error; err != nil {
+	if err := settingRepository.db().Where("user_id = ?", userID).Find(&tokens).Error; err != nil {
 		return nil, err
 	}
 	return tokens, nil

@@ -7,16 +7,16 @@
           <VChart class="h-60" :option="cpuOption" autoresize />
         </MetricCard>
 
-        <!-- Memory -->
-        <MetricCard title="内存使用率" class="md:w-1/2 mb-2 md:mb-0">
-          <VChart class="h-60" :option="memoryOption" autoresize />
+        <!-- Disk -->
+        <MetricCard title="磁盘使用情况" class="md:w-1/2 mb-2 md:mb-0">
+          <VChart class="h-60" :option="diskOption" autoresize />
         </MetricCard>
       </div>
 
       <div class="md:flex items-center mt-4 gap-2">
-        <!-- Disk -->
-        <MetricCard title="磁盘使用情况" class="md:w-1/2 mb-2 md:mb-0">
-          <VChart class="h-60" :option="diskOption" autoresize />
+        <!-- Memory -->
+        <MetricCard title="内存使用率" class="md:w-1/2 mb-2 md:mb-0">
+          <VChart class="h-60" :option="memoryOption" autoresize />
         </MetricCard>
 
         <!-- System -->
@@ -72,6 +72,7 @@ import { GaugeChart, LineChart, BarChart, PieChart } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useUserStore } from '@/stores/user'
 import { getWsUrl } from '@/service/request/shared'
+import { animateLabelValue } from 'echarts/types/src/label/labelStyle.js'
 
 const userStore = useUserStore()
 
@@ -155,13 +156,46 @@ const networkOption = ref({})
 function updateCharts() {
   cpuOption.value = {
     color: ['#f5d2ae'],
-    tooltip: { formatter: '{a} <br/>{b} : {c}%' },
+    tooltip: {
+      trigger: 'axis',
+      formatter: '{a}: {c} MHz',
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true,
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      // 使用两个空点让同一个 y 值横跨整个 x 轴
+      data: ['', ''],
+      axisLabel: { show: false },
+      axisTick: { show: false },
+      axisLine: { show: false },
+    },
+    yAxis: {
+      type: 'value',
+      name: 'CPU(MHz)',
+    },
     series: [
       {
-        type: 'gauge',
-        progress: { show: true, width: 10 },
-        detail: false,
-        data: [{ value: metrics.value.CPU.UsagePercent, name: 'CPU' }],
+        name: 'CPU 频率',
+        type: 'line',
+        smooth: true,
+        // 不显示点
+        symbol: 'none',
+        // 两个相同的值使线贯穿整个 x 轴
+        data: [metrics.value.CPU.FrequencyMHz, metrics.value.CPU.FrequencyMHz],
+        areaStyle: {},
+        lineStyle: {
+          width: 2,
+          color: '#f5d2ae',
+        },
+        itemStyle: {
+          color: '#f5d2ae',
+        },
       },
     ],
   }
@@ -176,12 +210,13 @@ function updateCharts() {
         type: 'pie',
         radius: ['40%', '70%'],
         label: {
+          show: false,
           position: 'center',
           formatter: () => {
             // 显示百分比，保留1位小数
             return `${metrics.value.Memory.Percentage.toFixed(1)}%`
           },
-          fontSize: 24,
+          fontSize: 12,
           fontWeight: 'bold',
           color: '#a67c52',
         },
@@ -193,8 +228,8 @@ function updateCharts() {
           },
         },
         data: [
-          { value: metrics.value.Memory.Used, name: '已用(GB)' },
-          { value: metrics.value.Memory.Available, name: '可用(GB)' },
+          { value: metrics.value.Memory.Used, name: '已用内存(GB)' },
+          { value: metrics.value.Memory.Available, name: '可用内存(GB)' },
         ],
       },
     ],

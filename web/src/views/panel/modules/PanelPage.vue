@@ -1,8 +1,8 @@
 <template>
-  <div
-    class="px-4 pb-4 py-2 mx-auto flex flex-col max-w-screen-lg border-3 border-stone-300 rounded-md mt-4 mb-12"
-  >
-    <h1 class="text-4xl md:text-6xl italic font-bold font-serif text-center text-gray-300 mb-8">
+  <div class="mx-auto flex flex-col max-w-screen-lg rounded-md mt-4 mb-12">
+    <h1
+      class="text-4xl md:text-6xl italic font-bold font-serif text-center text-gray-300 mb-8 md:mb-12"
+    >
       Ech0 Panel
     </h1>
 
@@ -49,7 +49,9 @@
     </div>
 
     <!-- 主内容区 -->
-    <div class="mx-auto flex my-4 w-full max-w-screen-lg">
+    <div
+      class="mx-auto flex my-4 w-full max-w-screen-lg border border-stone-300 p-4 shadow-xs rounded-md"
+    >
       <!-- 桌面端侧边栏 -->
       <div class="hidden md:flex flex-col gap-2 w-48 pr-8 shrink-0">
         <!-- 返回首页 -->

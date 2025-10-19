@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/lin-snow/ech0/cmd"
+	_ "github.com/lin-snow/ech0/internal/bootstrap"
 	"github.com/lin-snow/ech0/internal/config"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )

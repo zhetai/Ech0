@@ -510,7 +510,7 @@ func (settingService *SettingService) ListAccessTokens(userid uint) ([]model.Acc
 		return nil, errors.New(commonModel.NO_PERMISSION_DENIED)
 	}
 
-	tokens, err := settingService.settingRepository.ListAccessTokens()
+	tokens, err := settingService.settingRepository.ListAccessTokens(user.ID)
 	if err != nil {
 		return []model.AccessTokenSetting{}, nil
 	}

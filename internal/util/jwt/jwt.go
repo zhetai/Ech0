@@ -42,10 +42,14 @@ func CreateClaimsWithExpiry(user userModel.User, expiry int64) jwt.Claims {
 			Issuer:    config.Config.Auth.Jwt.Issuer,
 			Subject:   user.Username,
 			Audience:  jwt.ClaimStrings{config.Config.Auth.Jwt.Audience},
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(expiry) * time.Second)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now().Add(-leeway)),
 		},
+	}
+
+	// expiry = 0 表示永不过期
+	if expiry > 0 {
+		claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Duration(expiry) * time.Second))
 	}
 
 	return claims
