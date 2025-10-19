@@ -117,6 +117,29 @@ docker run -d \
 docker-compose up -d
 ```
 
+### ☸️ Kubernetes (Helm)
+
+If you want to deploy Ech0 in a Kubernetes cluster, you can use the Helm Chart provided in this project.
+
+Since this project does not provide an online Helm repository, you need to clone the repository to your local machine first, and then install from the local directory.
+
+1.  **Clone the repository:**
+    ```shell
+    git clone https://github.com/lin-snow/Ech0.git
+    cd Ech0
+    ```
+
+2.  **Install with Helm:**
+    ```shell
+    # helm install <release-name> <chart-directory>
+    helm install ech0 ./charts/ech0
+    ```
+
+    You can also customize the release name and namespace:
+    ```shell
+    helm install my-ech0 ./charts/ech0 --namespace my-namespace --create-namespace
+    ```
+
 ---
 
 ## Upgrading

@@ -141,7 +141,9 @@ func DoSSH() {
 
 // DoTui 执行 TUI
 func DoTui() {
+	// 清除屏幕当前字符
 	tui.ClearScreen()
+	// 打印 ASCII 风格 Banner
 	tui.PrintCLIBanner()
 
 	for {
@@ -160,7 +162,7 @@ func DoTui() {
 		if ssh.SSHServer != nil {
 			options = append(options, huh.NewOption("🛑 停止 SSH 服务", "ssh"))
 		} else {
-			options = append(options, huh.NewOption("🦄 启动 SSH 服务", "ssh"))
+			options = append(options, huh.NewOption("🔐 启动 SSH 服务", "ssh"))
 		}
 
 		options = append(options,

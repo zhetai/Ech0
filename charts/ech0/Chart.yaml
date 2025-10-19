@@ -1,0 +1,7 @@
+apiVersion: v2
+name: ech0
+description: A Helm chart for Ech0
+type: application
+version: 0.1.0
+appVersion: "v2.8.3"
+icon: "https://github.com/HoronLee/Ech0/blob/dev/docs/imgs/logo.svg"
