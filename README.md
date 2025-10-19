@@ -185,6 +185,26 @@ docker-compose up -d --force-recreate
 docker image prune -f
 ```
 
+### ☸️ Kubernetes (Helm)
+
+1. **更新代码库:**
+   进入本地的 Ech0 代码库目录，并拉取最新的代码。
+   ```shell
+   cd Ech0
+   git pull
+   ```
+
+2. **更新 Helm Release:**
+   使用 `helm upgrade` 命令更新你的发布版本。
+   ```shell
+   # helm upgrade <发布名称> <chart目录>
+   helm upgrade ech0 ./charts/ech0
+   ```
+   如果你使用了自定义的发布名称和命名空间，请使用对应的名称：
+   ```shell
+   helm upgrade my-ech0 ./charts/ech0 --namespace my-namespace
+   ```
+
 ---
 
 ## 访问方式
