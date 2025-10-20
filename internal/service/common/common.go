@@ -599,18 +599,29 @@ func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, se
 	return commonService.objStorage, s3setting, nil
 }
 
-// GetS3ObjectURL 获取 S3 对象的 URL
+// GetS3ObjectURL 获取 S3 对象的 URL（支持自定义 CDN）
 func (CommonService *CommonService) GetS3ObjectURL(s3Setting settingModel.S3Setting, objectKey string) (string, error) {
 	if s3Setting.Endpoint == "" || s3Setting.BucketName == "" || objectKey == "" {
 		return "", errors.New(commonModel.S3_CONFIG_ERROR)
 	}
 
-	protocal := "http"
+	protocol := "http"
 	if s3Setting.UseSSL {
-		protocal = "https"
+		protocol = "https"
 	}
 
-	return fmt.Sprintf("%s://%s/%s/%s", protocal, s3Setting.Endpoint, s3Setting.BucketName, objectKey), nil
+	// 默认使用 Endpoint
+	baseURL := fmt.Sprintf("%s://%s/%s", protocol, s3Setting.Endpoint, s3Setting.BucketName)
+
+	// 如果配置了 CDNURL，则替换为 CDN 地址
+	if s3Setting.CDNURL != "" {
+		// 用户一般会直接填 https://cdn.xxx.com，不需要拼 protocol
+		baseURL = strings.TrimRight(s3Setting.CDNURL, "/")
+	}
+
+	// 拼接对象路径
+	objectKey = strings.TrimLeft(objectKey, "/")
+	return fmt.Sprintf("%s/%s", baseURL, objectKey), nil
 }
 
 // CleanupTempFiles 清理过期的临时文件

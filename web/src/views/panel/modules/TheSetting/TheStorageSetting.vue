@@ -160,6 +160,26 @@
           class="w-full !py-1"
         />
       </div>
+
+      <!-- CDN 加速域名（可选） -->
+      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <h2 class="font-semibold w-30 flex-shrink-0">CDN 域名:</h2>
+        <span
+          v-if="!storageEditMode"
+          class="truncate max-w-40 inline-block align-middle"
+          :title="S3Setting.cdn_url"
+          style="vertical-align: middle"
+        >
+          {{ S3Setting.cdn_url.length === 0 ? '暂无' : S3Setting.cdn_url }}
+        </span>
+        <BaseInput
+          v-else
+          v-model="S3Setting.cdn_url"
+          type="text"
+          placeholder="S3 CDN 域名（可选）"
+          class="w-full !py-1"
+        />
+      </div>
     </div>
   </PanelCard>
 </template>
