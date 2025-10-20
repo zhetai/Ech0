@@ -13,6 +13,7 @@ const router = createRouter({
       component: HomeView,
       meta: {
         title: 'Home',
+        optionalAuth: true,
       },
     },
     {
@@ -25,6 +26,9 @@ const router = createRouter({
       name: 'panel',
       component: () => import('../views/panel/PanelView.vue'),
       redirect: '/panel/dashboard',
+      meta: {
+        requiresAuth: true,
+      },
       children: [
         {
           path: 'dashboard',
@@ -62,14 +66,14 @@ const router = createRouter({
           component: () => import('../views/panel/modules/TheAdvance.vue'),
         },
       ],
-      beforeEnter: (to, from, next) => {
-        const userStore = useUserStore()
-        if (userStore.isLogin) {
-          next()
-        } else {
-          next({ name: 'auth' })
-        }
-      },
+      // beforeEnter: (to, from, next) => {
+      //   const userStore = useUserStore()
+      //   if (userStore.isLogin) {
+      //     next()
+      //   } else {
+      //     next({ name: 'auth' })
+      //   }
+      // },
     },
     {
       path: '/auth',
@@ -97,6 +101,31 @@ const router = createRouter({
       component: NotFoundView,
     },
   ],
+})
+
+// 全局路由守卫
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore()
+
+  // 等待用户信息初始化完成
+  if (!userStore.initialized) {
+    await userStore.init()
+  }
+
+  const token = localStorage.getItem('token')
+  const needRedirect = localStorage.getItem('needLoginRedirect')
+
+  //  强制鉴权页面或 token 无效
+  if (
+    (to.meta.requiresAuth && !userStore.isLogin) ||
+    (to.meta.optionalAuth && token && !userStore.isLogin && needRedirect === 'true')
+  ) {
+    localStorage.removeItem('needLoginRedirect')
+    localStorage.removeItem('token')
+    return next({ name: 'auth' })
+  }
+
+  next()
 })
 
 export default router

@@ -13,7 +13,7 @@ import {
 } from '@/service/api'
 import { localStg } from '@/utils/storage'
 import { theToast } from '@/utils/toast'
-import { useRouter } from 'vue-router'
+import router from '@/router'
 import { CommentProvider, S3Provider, OAuth2Provider } from '@/enums/enums'
 
 export const useSettingStore = defineStore('settingStore', () => {
@@ -68,7 +68,6 @@ export const useSettingStore = defineStore('settingStore', () => {
   })
   const hello = ref<App.Api.Ech0.HelloEch0>()
   const loading = ref<boolean>(true)
-  const router = useRouter()
 
   /**
    * Actions

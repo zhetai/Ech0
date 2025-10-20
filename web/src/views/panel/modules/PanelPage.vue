@@ -254,6 +254,9 @@ const handleLogout = () => {
     onConfirm: () => {
       // 清除用户信息
       userStore.logout()
+      // 跳转到首页
+      router.push('/')
+      theToast.success('已退出登录')
     },
   })
 }

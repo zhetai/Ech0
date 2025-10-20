@@ -13,6 +13,7 @@ export const useUserStore = defineStore('userStore', () => {
    */
   const user = ref<App.Api.User.User | null>(null)
   const isLogin = computed(() => !!user.value)
+  const initialized = ref<boolean>(false)
 
   /**
    * actions
@@ -80,15 +81,17 @@ export const useUserStore = defineStore('userStore', () => {
   // 退出登录
   async function logout() {
     // 清除token
-    localStg.removeItem('token')
     user.value = null
 
     // 清除echo数据
     const echoStore = useEchoStore()
     echoStore.clearEchos()
 
-    // 重新登录
-    router.push({ name: 'auth' })
+    // 标记需要重定向到登录页
+    localStg.setItem('needLoginRedirect', true)
+
+    // 重新登录(⚠️：交给路由守卫处理)
+    // router.push({ name: 'auth' })
   }
 
   // 自动登录
@@ -110,16 +113,18 @@ export const useUserStore = defineStore('userStore', () => {
     } else {
       // 获取用户信息失败，清除token
       console.log('获取用户信息失败，清除token，重新登录')
-      logout()
+      await logout()
     }
   }
 
   // 初始化
   const init = async () => {
     await autoLogin()
+    initialized.value = true
   }
 
   return {
+    initialized,
     user,
     isLogin,
     login,
