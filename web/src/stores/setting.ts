@@ -9,6 +9,7 @@ import {
   fetchGetAllWebhooks,
   fetchListAccessTokens,
   fetchGetFediverseSettings,
+  fetchGetBackupScheduleSetting,
   fetchHelloEch0,
 } from '@/service/api'
 import { localStg } from '@/utils/storage'
@@ -65,6 +66,10 @@ export const useSettingStore = defineStore('settingStore', () => {
   const FediverseSetting = ref<App.Api.Setting.FediverseSetting>({
     enable: false,
     server_url: '',
+  })
+  const BackupSchedule = ref<App.Api.Setting.BackupSchedule>({
+    enable: false,
+    cron_expression: '0 2 * * 0',
   })
   const hello = ref<App.Api.Ech0.HelloEch0>()
   const loading = ref<boolean>(true)
@@ -164,6 +169,13 @@ export const useSettingStore = defineStore('settingStore', () => {
     }
   }
 
+  const getBackupSchedule = async () => {
+    const res = await fetchGetBackupScheduleSetting()
+    if (res.code === 1) {
+      BackupSchedule.value = res.data
+    }
+  }
+
   const getHelloEch0 = async () => {
     const res = await fetchHelloEch0()
     if (res.code === 1) {
@@ -194,6 +206,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     Webhooks,
     AccessTokens,
     FediverseSetting,
+    BackupSchedule,
     hello,
     loading,
 
@@ -207,6 +220,7 @@ export const useSettingStore = defineStore('settingStore', () => {
     getFediverseSetting,
     setSystemReady,
     getHelloEch0,
+    getBackupSchedule,
     init,
   }
 })
