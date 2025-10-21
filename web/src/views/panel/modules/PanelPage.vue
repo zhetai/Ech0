@@ -155,7 +155,9 @@
           登录
         </BaseButton>
 
-        <div class="text-stone-300 font-serif my-2">Version: {{ settingStore.hello?.version }}</div>
+        <div class="text-stone-300 font-serif my-2 ml-3">
+          Version: {{ settingStore.hello?.version }}
+        </div>
       </div>
 
       <!-- 路由内容 -->
