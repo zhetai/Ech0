@@ -97,4 +97,3 @@ export async function getImageSize(file: File): Promise<{ width: number; height:
   const bitmap = await createImageBitmap(file)
   return { width: bitmap.width, height: bitmap.height }
 }
-

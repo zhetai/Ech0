@@ -142,7 +142,7 @@ const initUppy = () => {
   document.addEventListener('paste', handlePaste)
 
   // 添加文件时
-  uppy.on('files-added', (file) => {
+  uppy.on('files-added', () => {
     if (!isLogin.value) {
       theToast.error('请先登录再上传图片 😢')
       return

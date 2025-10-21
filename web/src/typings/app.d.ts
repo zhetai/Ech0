@@ -77,8 +77,8 @@ declare namespace App {
         image_url: string
         image_source: string
         object_key?: string // 对象存储的Key (如果是本地存储则为空)
-        width: number     // 图片宽度
-        height: number   // 图片高度
+        width: number // 图片宽度
+        height: number // 图片高度
       }
 
       type Tag = {
@@ -92,8 +92,8 @@ declare namespace App {
         image_url: string
         image_source: string
         object_key?: string // 对象存储的Key (如果是本地存储则为空)
-        width?: number     // 图片宽度
-        height?: number   // 图片高度
+        width?: number // 图片宽度
+        height?: number // 图片高度
       }
 
       type TagToAdd = {
