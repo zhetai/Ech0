@@ -291,7 +291,7 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 			}
 		}
 
-		bingURL, err := userHandler.userService.BindOAuth(
+		bindURL, err := userHandler.userService.BindOAuth(
 			userid,
 			string(commonModel.OAuth2GITHUB),
 			req.RedirectURI,
@@ -304,7 +304,7 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 		}
 
 		return res.Response{
-			Data: bingURL,
+			Data: bindURL,
 			Msg:  commonModel.GET_OAUTH_BINGURL_SUCCESS,
 		}
 	})
@@ -372,7 +372,7 @@ func (userHandler *UserHandler) BindGoogle() gin.HandlerFunc {
 			}
 		}
 
-		bingURL, err := userHandler.userService.BindOAuth(
+		bindURL, err := userHandler.userService.BindOAuth(
 			userid,
 			string(commonModel.OAuth2GOOGLE),
 			req.RedirectURI,
@@ -385,7 +385,7 @@ func (userHandler *UserHandler) BindGoogle() gin.HandlerFunc {
 		}
 
 		return res.Response{
-			Data: bingURL,
+			Data: bindURL,
 			Msg:  commonModel.GET_OAUTH_BINGURL_SUCCESS,
 		}
 	})
@@ -436,6 +436,87 @@ func (userHandler *UserHandler) GoogleCallback() gin.HandlerFunc {
 	})
 }
 
+// CustomOAuthLogin 处理自定义 OAuth2 登录请求
+func (userHandler *UserHandler) CustomOAuthLogin() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取重定向 URL
+		redirect_URI := ctx.Query("redirect_uri")
+
+		redirectURL, err := userHandler.userService.GetOAuthLoginURL(
+			string(commonModel.OAuth2CUSTOM),
+			redirect_URI,
+		)
+		if err != nil {
+			return res.Response{
+				Msg: commonModel.FAILED_TO_GET_CUSTOM_LOGIN_URL,
+				Err: err,
+			}
+		}
+
+		// 重定向到自定义 OAuth2 登录页面
+		ctx.Redirect(302, redirectURL)
+		return res.Response{}
+	})
+}
+
+// CustomOAuthCallback 处理自定义 OAuth2 回调
+func (userHandler *UserHandler) CustomOAuthCallback() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		code := ctx.Query("code")
+		state := ctx.Query("state")
+		if code == "" || state == "" {
+			return res.Response{
+				Msg: commonModel.INVALID_PARAMS,
+				Err: nil,
+			}
+		}
+
+		redirectURL := userHandler.userService.HandleOAuthCallback(
+			string(commonModel.OAuth2CUSTOM),
+			code,
+			state,
+		)
+		ctx.Redirect(302, redirectURL)
+		return res.Response{}
+	})
+}
+
+// BindCustomOAuth 绑定自定义 OAuth2 账号
+func (userHandler *UserHandler) BindCustomOAuth() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		type Req struct {
+			RedirectURI string `json:"redirect_uri"`
+		}
+		var req Req
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err: err,
+			}
+		}
+
+		bindURL, err := userHandler.userService.BindOAuth(
+			userid,
+			string(commonModel.OAuth2CUSTOM),
+			req.RedirectURI,
+		)
+		if err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: bindURL,
+			Msg:  commonModel.GET_OAUTH_BINGURL_SUCCESS,
+		}
+	})
+}
+
 // GetOAuthInfo 获取 OAuth2 配置信息
 func (userHandler *UserHandler) GetOAuthInfo() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
@@ -444,8 +525,11 @@ func (userHandler *UserHandler) GetOAuthInfo() gin.HandlerFunc {
 
 		// 获取 provider 参数
 		provider := ctx.Query("provider")
-		if provider != "github" && provider != "google" {
-			provider = "github" // 默认使用 GitHub
+		switch provider {
+		case string(commonModel.OAuth2GITHUB), string(commonModel.OAuth2GOOGLE), string(commonModel.OAuth2CUSTOM):
+			// 保持原值
+		default:
+			provider = string(commonModel.OAuth2GITHUB) // 默认使用 GitHub
 		}
 
 		// 调用 Service 层获取 OAuth2 信息

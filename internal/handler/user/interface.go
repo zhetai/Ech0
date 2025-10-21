@@ -42,6 +42,15 @@ type UserHandlerInterface interface {
 	// BindGoogle 绑定 Google 账号
 	BindGoogle() gin.HandlerFunc
 
+	// CustomOAuthLogin 处理自定义 OAuth2 登录请求
+	CustomOAuthLogin() gin.HandlerFunc
+
+	// CustomOAuthCallback 处理自定义 OAuth2 回调
+	CustomOAuthCallback() gin.HandlerFunc
+
+	// BindCustomOAuth 绑定自定义 OAuth2 账号
+	BindCustomOAuth() gin.HandlerFunc
+
 	// GetOAuthInfo 获取 OAuth2 配置信息
 	GetOAuthInfo() gin.HandlerFunc
 }

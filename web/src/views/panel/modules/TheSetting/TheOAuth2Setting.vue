@@ -195,17 +195,36 @@
               :is="oauthInfo.provider === 'github' ? Github : Google"
               class="w-5 h-5 mr-2"
             />
-            <span>{{ oauthInfo.provider === 'github' ? 'GitHub' : 'Google' }}</span> 账号已绑定
+            <span>{{
+              oauthInfo.provider === 'github'
+                ? 'GitHub'
+                : oauthInfo.provider === 'google'
+                  ? 'Google'
+                  : '自定义 OAuth2 账号'
+            }}</span>
+            账号已绑定
           </p>
         </div>
         <BaseButton v-else class="rounded-md mt-2" @click="handleBindOAuth2()">
           <div class="flex items-center justify-between">
             <component
-              :is="OAuth2Setting.provider === 'github' ? Github : Google"
+              :is="
+                OAuth2Setting.provider === 'github'
+                  ? Github
+                  : OAuth2Setting.provider === 'google'
+                    ? Google
+                    : Custom
+              "
               class="w-5 h-5 mr-2"
             />
             <span class="flex-1 text-left">
-              {{ OAuth2Setting.provider === 'github' ? '绑定 GitHub 账号' : '绑定 Google 账号' }}
+              {{
+                OAuth2Setting.provider === 'github'
+                  ? '绑定 GitHub 账号'
+                  : OAuth2Setting.provider === 'google'
+                    ? '绑定 Google 账号'
+                    : '绑定自定义 OAuth2 账号'
+              }}
             </span>
           </div>
         </BaseButton>
@@ -230,6 +249,7 @@ import { OAuth2Provider } from '@/enums/enums'
 import { fetchUpdateOAuth2Settings, fetchBindOAuth2, fetchGetOAuthInfo } from '@/service/api'
 import Github from '@/components/icons/github.vue'
 import Google from '@/components/icons/google.vue'
+import Custom from '@/components/icons/customoauth.vue'
 import { storeToRefs } from 'pinia'
 
 const settingStore = useSettingStore()

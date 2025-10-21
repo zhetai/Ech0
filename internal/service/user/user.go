@@ -499,6 +499,21 @@ func (userService *UserService) HandleOAuthCallback(provider string, code string
 
 		return userService.resolveOAuthCallback(oauthState, provider, googleUser.Sub)
 
+	case string(commonModel.OAuth2CUSTOM):
+		accessToken, err := exchangeCustomCodeForToken(setting, code)
+		if err != nil {
+			fmt.Printf("Error exchanging %s code for token: %v\n", provider, err)
+			return ""
+		}
+
+		customUserID, err := fetchCustomUserInfo(setting, accessToken)
+		if err != nil {
+			fmt.Printf("Error fetching %s user info: %v\n", provider, err)
+			return ""
+		}
+
+		return userService.resolveOAuthCallback(oauthState, provider, customUserID)
+
 	default:
 		return ""
 	}
@@ -558,6 +573,17 @@ func (userService *UserService) buildOAuthAuthorizeURL(
 		}
 
 		return fmt.Sprintf("%s?%s", setting.AuthURL, params.Encode())
+	case string(commonModel.OAuth2CUSTOM):
+		params := url.Values{}
+		params.Set("client_id", setting.ClientID)
+		params.Set("redirect_uri", setting.RedirectURI)
+		params.Set("response_type", "code")
+		params.Set("state", state)
+		if scope != "" {
+			params.Set("scope", scope)
+		}
+
+		return fmt.Sprintf("%s?%s", setting.AuthURL, params.Encode())
 	default:
 		return ""
 	}
@@ -569,6 +595,8 @@ func bindingPermissionError(provider string) error {
 		return errors.New(commonModel.NO_PERMISSION_BINDING_GITHUB)
 	case string(commonModel.OAuth2GOOGLE):
 		return errors.New(commonModel.NO_PERMISSION_BINDING_GOOGLE)
+	case string(commonModel.OAuth2CUSTOM):
+		return errors.New(commonModel.NO_PERMISSION_BINDING_CUSTOM)
 	default:
 		return errors.New(commonModel.NO_PERMISSION_DENIED)
 	}
@@ -738,6 +766,77 @@ func fetchGoogleUserInfo(setting *settingModel.OAuth2Setting, accessToken string
 	return &user, nil
 }
 
+// exchangeCustomCodeForToken 通用 OAuth2 令牌交换
+func exchangeCustomCodeForToken(setting *settingModel.OAuth2Setting, code string) (string, error) {
+	data := url.Values{}
+	data.Set("client_id", setting.ClientID)
+	data.Set("client_secret", setting.ClientSecret)
+	data.Set("code", code)
+	data.Set("redirect_uri", setting.RedirectURI)
+	data.Set("grant_type", "authorization_code")
+
+	req, _ := http.NewRequest("POST", setting.TokenURL, strings.NewReader(data.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		return "", errors.New("Custom token 响应错误: " + string(body))
+	}
+
+	var tokenResp map[string]any
+	if err := json.Unmarshal(body, &tokenResp); err != nil {
+		return "", err
+	}
+
+	if accessToken, ok := tokenResp["access_token"]; ok {
+		if tokenStr := fmt.Sprint(accessToken); tokenStr != "" && tokenStr != "<nil>" {
+			return tokenStr, nil
+		}
+	}
+
+	return "", errors.New("Custom token 响应缺少 access_token")
+}
+
+// fetchCustomUserInfo 获取自定义 OAuth2 用户信息
+func fetchCustomUserInfo(setting *settingModel.OAuth2Setting, accessToken string) (string, error) {
+	req, _ := http.NewRequest("GET", setting.UserInfoURL, nil)
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		return "", errors.New("Custom 用户信息请求失败: " + string(body))
+	}
+
+	var userData map[string]any
+	if err := json.Unmarshal(body, &userData); err != nil {
+		return "", err
+	}
+
+	for _, key := range []string{"id", "sub", "user_id", "uid"} {
+		if val, ok := userData[key]; ok {
+			if id := fmt.Sprint(val); id != "" && id != "<nil>" {
+				return id, nil
+			}
+		}
+	}
+
+	return "", errors.New("Custom 用户信息缺少唯一标识字段 (id/sub/user_id/uid)")
+}
+
 // GetOAuthInfo 获取 OAuth2 信息
 func (userService *UserService) GetOAuthInfo(userId uint, provider string) (model.OAuthInfoDto, error) {
 	var oauthInfo model.OAuthInfoDto
@@ -750,7 +849,7 @@ func (userService *UserService) GetOAuthInfo(userId uint, provider string) (mode
 
 	// 检查用户是否为管理员
 	if !user.IsAdmin {
-		return oauthInfo, errors.New(commonModel.NO_PERMISSION_BINDING_GITHUB)
+		return oauthInfo, bindingPermissionError(provider)
 	}
 
 	oauthInfoBinding, err := userService.userRepository.GetOAuthInfo(userId, provider)
