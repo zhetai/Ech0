@@ -61,7 +61,7 @@ func BuildHandlers(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory,
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, echoRepositoryInterface, keyValueRepositoryInterface, ebProvider)
 	settingRepositoryInterface := repository4.NewSettingRepository(dbProvider)
 	webhookRepositoryInterface := repository5.NewWebhookRepository(dbProvider)
-	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface, settingRepositoryInterface, webhookRepositoryInterface)
+	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface, settingRepositoryInterface, webhookRepositoryInterface, ebProvider)
 	userServiceInterface := service3.NewUserService(transactionManager, userRepositoryInterface, settingServiceInterface, ebProvider)
 	userHandler := handler2.NewUserHandler(userServiceInterface)
 	fediverseRepositoryInterface := repository6.NewFediverseRepository(dbProvider)
@@ -95,8 +95,11 @@ func BuildTasker(dbProvider func() *gorm.DB, cacheFactory *cache.CacheFactory, t
 	echoRepositoryInterface := repository3.NewEchoRepository(dbProvider, iCache)
 	keyValueRepositoryInterface := keyvalue.NewKeyValueRepository(dbProvider, iCache)
 	commonServiceInterface := service.NewCommonService(transactionManager, commonRepositoryInterface, echoRepositoryInterface, keyValueRepositoryInterface, ebProvider)
+	settingRepositoryInterface := repository4.NewSettingRepository(dbProvider)
+	webhookRepositoryInterface := repository5.NewWebhookRepository(dbProvider)
+	settingServiceInterface := service2.NewSettingService(transactionManager, commonServiceInterface, keyValueRepositoryInterface, settingRepositoryInterface, webhookRepositoryInterface, ebProvider)
 	queueRepositoryInterface := repository9.NewQueueRepository(dbProvider)
-	tasker := task.NewTasker(commonServiceInterface, ebProvider, queueRepositoryInterface)
+	tasker := task.NewTasker(commonServiceInterface, settingServiceInterface, ebProvider, queueRepositoryInterface)
 	return tasker, nil
 }
 
@@ -113,7 +116,8 @@ func BuildEventRegistrar(dbProvider func() *gorm.DB, ebProvider func() event.IEv
 	fediverseCore := fediverse.NewFediverseCore(fediverseRepositoryInterface, keyValueRepositoryInterface, userRepositoryInterface, echoRepositoryInterface)
 	fediverseAgent := event.NewFediverseAgent(fediverseCore, queueRepositoryInterface, transactionManager)
 	deadLetterResolver := event.NewDeadLetterResolver(queueRepositoryInterface, webhookDispatcher, fediverseAgent)
-	eventHandlers := event.NewEventHandlers(webhookDispatcher, deadLetterResolver, fediverseAgent)
+	backupScheduler := event.NewBackupScheduler()
+	eventHandlers := event.NewEventHandlers(webhookDispatcher, deadLetterResolver, fediverseAgent, backupScheduler)
 	eventRegistrar := event.NewEventRegistry(ebProvider, eventHandlers)
 	return eventRegistrar, nil
 }
@@ -176,7 +180,7 @@ var FediverseCoreSet = wire.NewSet(fediverse.NewFediverseCore)
 var FediverseSet = wire.NewSet(repository6.NewFediverseRepository, service4.NewFediverseService, handler9.NewFediverseHandler, event.NewFediverseAgent)
 
 // EventSet 包含了构建 Event 相关所需的所有 Provider
-var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewDeadLetterResolver, event.NewEventHandlers, event.NewEventRegistry)
+var EventSet = wire.NewSet(event.NewWebhookDispatcher, event.NewBackupScheduler, event.NewDeadLetterResolver, event.NewEventHandlers, event.NewEventRegistry)
 
 // MetricSet 包含了构建 Metric 相关所需的所有 Provider
 var MetricSet = wire.NewSet(metric.NewSystemCollector)

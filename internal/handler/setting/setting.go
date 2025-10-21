@@ -657,10 +657,10 @@ func (settingHandler *SettingHandler) UpdateFediverseSettings() gin.HandlerFunc 
 func (settingHandler *SettingHandler) GetBackupScheduleSetting() gin.HandlerFunc {
 	return res.Execute(func(ctx *gin.Context) res.Response {
 		// 获取当前用户 ID
-		userid := ctx.MustGet("userid").(uint)
+		// userid := ctx.MustGet("userid").(uint)
 
 		var backupSchedule model.BackupSchedule
-		if err := settingHandler.settingService.GetBackupScheduleSetting(userid, &backupSchedule); err != nil {
+		if err := settingHandler.settingService.GetBackupScheduleSetting(&backupSchedule); err != nil {
 			return res.Response{
 				Msg: "",
 				Err: err,

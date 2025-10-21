@@ -3,6 +3,7 @@ package task
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/go-co-op/gocron/v2"
@@ -11,20 +12,24 @@ import (
 
 	"github.com/lin-snow/ech0/internal/backup"
 	"github.com/lin-snow/ech0/internal/event"
+	settingModel "github.com/lin-snow/ech0/internal/model/setting"
 	queueRepository "github.com/lin-snow/ech0/internal/repository/queue"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
+	settingService "github.com/lin-snow/ech0/internal/service/setting"
 	logUtil "github.com/lin-snow/ech0/internal/util/log"
 )
 
 type Tasker struct {
-	scheduler     gocron.Scheduler
-	commonService commonService.CommonServiceInterface
-	eventBus      event.IEventBus
-	queueRepo     queueRepository.QueueRepositoryInterface
+	scheduler      gocron.Scheduler
+	commonService  commonService.CommonServiceInterface
+	settingService settingService.SettingServiceInterface
+	eventBus       event.IEventBus
+	queueRepo      queueRepository.QueueRepositoryInterface
 }
 
 func NewTasker(
 	commonService commonService.CommonServiceInterface,
+	settingService settingService.SettingServiceInterface,
 	eventBusProvider func() event.IEventBus,
 	queueRepo queueRepository.QueueRepositoryInterface,
 ) *Tasker {
@@ -37,17 +42,29 @@ func NewTasker(
 	}
 
 	return &Tasker{
-		scheduler:     scheduler,
-		commonService: commonService,
-		eventBus:      eventBusProvider(),
-		queueRepo:     queueRepo,
+		scheduler:      scheduler,
+		commonService:  commonService,
+		settingService: settingService,
+		eventBus:       eventBusProvider(),
+		queueRepo:      queueRepo,
 	}
 }
 
 func (t *Tasker) Start() {
 	t.CleanupTempFilesTask()  // 启动清理临时文件任务
 	t.DeadLetterConsumeTask() // 启动死信任务消费任务
-	t.ScheduleBackupTask()    // 启动定时备份任务
+
+	// 读取自动备份cron设置
+	var backupScheduleSetting settingModel.BackupSchedule
+	if err := t.settingService.GetBackupScheduleSetting(&backupScheduleSetting); err != nil {
+		logUtil.GetLogger().Error("Failed to get backup schedule setting", zap.String("error", err.Error()))
+		// 默认启用定时备份任务
+		backupScheduleSetting.Enable = false
+		backupScheduleSetting.CronExpression = "0 2 * * 0" // 每周日2点执行一次
+	}
+	if backupScheduleSetting.Enable {
+		t.ScheduleBackupTask(backupScheduleSetting.CronExpression) // 启动定时备份任务
+	}
 
 	t.scheduler.Start()
 }
@@ -109,15 +126,19 @@ func (t *Tasker) DeadLetterConsumeTask() {
 }
 
 // ScheduleBackupTask 定时备份任务
-func (t *Tasker) ScheduleBackupTask() {
-	// 每周日2点执行一次
+func (t *Tasker) ScheduleBackupTask(cronExpression string) {
+	// 判断 cron 表达式的字段数量来确定是否包含秒字段
+	// 5 位表达式（分 时 日 月 周）：withSeconds = false
+	// 6 位表达式（秒 分 时 日 月 周）：withSeconds = true
+	withSeconds := false
+	// 按空格分割 cron 表达式以准确判断字段数量
+	fieldCount := len(strings.Fields(cronExpression))
+	if fieldCount == 6 {
+		withSeconds = true
+	}
+
 	_, err := t.scheduler.NewJob(
-		gocron.WeeklyJob(
-			1,
-			gocron.NewWeekdays(time.Sunday),
-			gocron.NewAtTimes(gocron.NewAtTime(2, 0, 0)),
-		), // 正式环境每周日2点执行一次
-		// gocron.DurationJob(5*time.Second), // 测试环境为每天执行一次
+		gocron.CronJob(cronExpression, withSeconds),
 		gocron.NewTask(
 			func() {
 				// 执行备份
@@ -140,6 +161,7 @@ func (t *Tasker) ScheduleBackupTask() {
 				)
 			},
 		),
+		gocron.WithTags("BackupSchedule"),
 	)
 	if err != nil {
 		logUtil.GetLogger().Error("Failed to schedule ScheduleBackupTask", zap.String("error", err.Error()))

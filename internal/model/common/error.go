@@ -77,6 +77,7 @@ const (
 const (
 	NO_SUCH_COMMENT_PROVIDER            = "无效的评论服务提供者"
 	WEBHOOK_NAME_OR_URL_CANNOT_BE_EMPTY = "Webhook 名称或 URL 不能为空"
+	INVALID_CRON_EXPRESSION             = "无效的 Cron 表达式"
 )
 
 // Backup 错误相关常量

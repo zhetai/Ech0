@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/lin-snow/ech0/internal/config"
+	"github.com/lin-snow/ech0/internal/event"
 	authModel "github.com/lin-snow/ech0/internal/model/auth"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	model "github.com/lin-snow/ech0/internal/model/setting"
@@ -15,6 +16,7 @@ import (
 	webhookRepository "github.com/lin-snow/ech0/internal/repository/webhook"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
 	"github.com/lin-snow/ech0/internal/transaction"
+	fmtUtil "github.com/lin-snow/ech0/internal/util/format"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 	jwtUtil "github.com/lin-snow/ech0/internal/util/jwt"
@@ -26,6 +28,7 @@ type SettingService struct {
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
 	settingRepository  settingRepository.SettingRepositoryInterface
 	webhookRepository  webhookRepository.WebhookRepositoryInterface
+	eventBus           event.IEventBus
 }
 
 func NewSettingService(
@@ -34,6 +37,7 @@ func NewSettingService(
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface,
 	settingRepository settingRepository.SettingRepositoryInterface,
 	webhookRepository webhookRepository.WebhookRepositoryInterface,
+	ebProvider func() event.IEventBus,
 ) SettingServiceInterface {
 	return &SettingService{
 		txManager:          tm,
@@ -41,6 +45,7 @@ func NewSettingService(
 		keyvalueRepository: keyvalueRepository,
 		webhookRepository:  webhookRepository,
 		settingRepository:  settingRepository,
+		eventBus:           ebProvider(),
 	}
 }
 
@@ -679,15 +684,15 @@ func (settingService *SettingService) UpdateFediverseSetting(userid uint, newSet
 }
 
 // GetBackupScheduleSetting 获取备份计划
-func (settingService *SettingService) GetBackupScheduleSetting(userid uint, setting *model.BackupSchedule) error {
+func (settingService *SettingService) GetBackupScheduleSetting(setting *model.BackupSchedule) error {
 	// 鉴权
-	user, err := settingService.commonService.CommonGetUserByUserId(userid)
-	if err != nil {
-		return err
-	}
-	if !user.IsAdmin {
-		return errors.New(commonModel.NO_PERMISSION_DENIED)
-	}
+	// user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	// if err != nil {
+	// 	return err
+	// }
+	// if !user.IsAdmin {
+	// 	return errors.New(commonModel.NO_PERMISSION_DENIED)
+	// }
 
 	return settingService.txManager.Run(func(ctx context.Context) error {
 		backupSchedule, err := settingService.keyvalueRepository.GetKeyValue(commonModel.BackupScheduleKey)
@@ -736,6 +741,11 @@ func (settingService *SettingService) UpdateBackupScheduleSetting(
 		setting.Enable = newSetting.Enable
 		setting.CronExpression = newSetting.CronExpression
 
+		// 验证 Cron 表达式是否合法
+		if err := fmtUtil.ValidateCrontabExpression(setting.CronExpression); err != nil {
+			return errors.New(commonModel.INVALID_CRON_EXPRESSION)
+		}
+
 		settingToJSON, err := jsonUtil.JSONMarshal(setting)
 		if err != nil {
 			return err
@@ -746,6 +756,17 @@ func (settingService *SettingService) UpdateBackupScheduleSetting(
 		if err := settingService.keyvalueRepository.UpdateKeyValue(ctx, commonModel.BackupScheduleKey, settingToJSONString); err != nil {
 			return err
 		}
+
+		// 发送更新备份计划的事件
+		settingService.eventBus.Publish(
+			context.Background(),
+			event.NewEvent(
+				event.EventTypeUpdateBackupSchedule,
+				event.EventPayload{
+					event.EventPayloadSchedule: setting,
+				},
+			),
+		)
 
 		return nil
 	})

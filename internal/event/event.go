@@ -24,9 +24,10 @@ const (
 
 	EventTypeResourceUploaded EventType = "resource.uploaded" // 资源上传
 
-	EventTypeSystemBackup  EventType = "system.backup"  // 系统快照备份
-	EventTypeSystemRestore EventType = "system.restore" // 系统快照恢复
-	EventTypeSystemExport  EventType = "system.export"  // 系统快照导出
+	EventTypeSystemBackup         EventType = "system.backup"                 // 系统快照备份
+	EventTypeSystemRestore        EventType = "system.restore"                // 系统快照恢复
+	EventTypeSystemExport         EventType = "system.export"                 // 系统快照导出
+	EventTypeUpdateBackupSchedule EventType = "system.update_backup_schedule" // 更新自动备份计划
 
 	EventTypeDeadLetterRetried EventType = "deadletter.retried" // 死信任务重试
 )
@@ -36,6 +37,7 @@ const (
 	EventPayloadUser       = "user"
 	EventPayloadEcho       = "echo"
 	EventPayloadData       = "data"
+	EventPayloadSchedule   = "schedule"
 	EventPayloadInfo       = "info"
 	EventPayloadMeta       = "meta"
 	EventPayloadTime       = "time"

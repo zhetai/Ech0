@@ -61,7 +61,7 @@ type SettingServiceInterface interface {
 	UpdateFediverseSetting(userid uint, newSetting *model.FediverseSettingDto) error
 
 	// GetBackupScheduleSetting 获取备份计划
-	GetBackupScheduleSetting(userid uint, setting *model.BackupSchedule) error
+	GetBackupScheduleSetting(setting *model.BackupSchedule) error
 
 	// UpdateBackupScheduleSetting 更新备份计划
 	UpdateBackupScheduleSetting(userid uint, newSetting *model.BackupScheduleDto) error

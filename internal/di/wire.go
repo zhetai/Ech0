@@ -64,6 +64,8 @@ func BuildHandlers(
 		SettingSet,
 		TodoSet,
 		ConnectSet,
+		MetricSet,
+		MonitorSet,
 		DashboardSet,
 		BackupSet,
 		FediverseCoreSet,
@@ -84,6 +86,8 @@ func BuildTasker(
 		CacheSet,
 		KeyValueSet,
 		TransactionManagerSet,
+		WebhookSet,
+		SettingSet,
 		EchoSet,
 		CommonSet,
 		QueueSet,
@@ -220,6 +224,7 @@ var FediverseSet = wire.NewSet(
 // EventSet 包含了构建 Event 相关所需的所有 Provider
 var EventSet = wire.NewSet(
 	event.NewWebhookDispatcher,
+	event.NewBackupScheduler,
 	event.NewDeadLetterResolver,
 	event.NewEventHandlers,
 	event.NewEventRegistry,
