@@ -142,7 +142,7 @@ const initUppy = () => {
   document.addEventListener('paste', handlePaste)
 
   // 添加文件时
-  uppy.on('files-added', () => {
+  uppy.on('files-added', (file) => {
     if (!isLogin.value) {
       theToast.error('请先登录再上传图片 😢')
       return
@@ -196,7 +196,7 @@ const initUppy = () => {
   // 单个文件上传成功后，保存文件 URL 到 files 列表
   uppy.on('upload-success', (file, response) => {
     theToast.success(`好耶,上传成功！🎉`)
-    // console.log("Upload success", file, response);
+
     // 分两种情况: Local 或者 S3
     if (memorySource.value === ImageSource.LOCAL) {
       const fileUrl = String(response.body?.data)
@@ -222,8 +222,8 @@ const initUppy = () => {
   uppy.on('complete', () => {
     isUploading.value = false
     editorStore.ImageUploading = false
-    const result = [...files.value]
-    editorStore.handleUppyUploaded(result)
+    const ImageToAddResult = [...files.value]
+    editorStore.handleUppyUploaded(ImageToAddResult)
     files.value = []
     tempFiles.value.clear()
   })

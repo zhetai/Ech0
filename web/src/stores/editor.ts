@@ -154,6 +154,8 @@ export const useEditorStore = defineStore('editorStore', () => {
         image_url: file.image_url,
         image_source: file.image_source,
         object_key: file.object_key ? file.object_key : '',
+        width: file.width,
+        height: file.height,
       }
       handleAddMoreImage()
     })

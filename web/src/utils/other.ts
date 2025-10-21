@@ -92,3 +92,9 @@ export const parseMusicURL = (url: string) => {
   // 解析失败
   return null
 }
+
+export async function getImageSize(file: File): Promise<{ width: number; height: number }> {
+  const bitmap = await createImageBitmap(file)
+  return { width: bitmap.width, height: bitmap.height }
+}
+
