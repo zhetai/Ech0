@@ -6,10 +6,10 @@
         <h1 class="text-gray-600 font-bold text-lg">数据管理</h1>
       </div>
 
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 font-semibold">
         <!-- 备份数据 -->
         <div class="flex flex-start items-center gap-2">
-          <p class="text-gray-400">创建快照:</p>
+          <p class="text-stone-500">创建快照:</p>
           <BaseButton
             :icon="CreateBackup"
             @click="handleBackup"
@@ -19,7 +19,7 @@
         </div>
         <!-- 导出快照 -->
         <div class="flex flex-start items-center gap-2">
-          <p class="text-gray-400">导出快照:</p>
+          <p class="text-stone-500">导出快照:</p>
           <BaseButton
             :icon="ExportBackup"
             @click="handleBackupExport"
@@ -29,7 +29,7 @@
         </div>
         <!-- 恢复数据 -->
         <div class="flex flex-start items-center gap-2">
-          <p class="text-gray-400">恢复快照:</p>
+          <p class="text-stone-500">恢复快照:</p>
           <BaseButton
             :icon="RestoreBackup"
             @click="handleBackupRestore"

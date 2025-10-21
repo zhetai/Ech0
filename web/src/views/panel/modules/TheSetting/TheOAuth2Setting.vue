@@ -17,13 +17,13 @@
         </div>
 
         <!-- 开启OAuth2 -->
-        <div class="flex flex-row items-center justify-start text-gray-500 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">启用OAuth2:</h2>
           <BaseSwitch v-model="OAuth2Setting.enable" :disabled="!oauth2EditMode" />
         </div>
 
         <!-- OAuth2 Provider -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">OAuth2 模板:</h2>
           <BaseSelect
             v-model="OAuth2Setting.provider"
@@ -34,7 +34,7 @@
         </div>
 
         <!-- Client ID -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">Client ID:</h2>
           <span
             v-if="!oauth2EditMode"
@@ -54,7 +54,7 @@
         </div>
 
         <!-- Client Secret -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">Client Secret:</h2>
           <span
             v-if="!oauth2EditMode"
@@ -74,7 +74,7 @@
         </div>
 
         <!-- Callback URL -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">Callback URL:</h2>
           <span
             v-if="!oauth2EditMode"
@@ -94,7 +94,7 @@
         </div>
 
         <!-- Auth URL -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">Auth URL:</h2>
           <span
             v-if="!oauth2EditMode"
@@ -114,7 +114,7 @@
         </div>
 
         <!-- Token URL -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">Token URL:</h2>
           <span
             v-if="!oauth2EditMode"
@@ -134,7 +134,7 @@
         </div>
 
         <!-- User Info URL -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">UserInfo URL:</h2>
           <span
             v-if="!oauth2EditMode"
@@ -154,7 +154,7 @@
         </div>
 
         <!-- Scopes -->
-        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+        <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
           <h2 class="font-semibold w-30 flex-shrink-0">Scopes:</h2>
           <span
             v-if="!oauth2EditMode"
@@ -191,7 +191,7 @@
             "
             class="mt-2 border border-dashed border-gray-400 rounded-md p-3 flex items-center justify-center"
           >
-            <p class="text-gray-500 font-bold flex items-center">
+            <p class="text-stone-500 font-bold flex items-center">
               <component
                 :is="oauthInfo.provider === 'github' ? Github : Google"
                 class="w-5 h-5 mr-2"

@@ -16,13 +16,13 @@
       </div>
 
       <!-- 开启评论 -->
-      <div class="flex flex-row items-center justify-start text-gray-500 h-10">
+      <div class="flex flex-row items-center justify-start text-stone-500 h-10">
         <h2 class="font-semibold w-24 flex-shrink-0">启用评论:</h2>
         <BaseSwitch v-model="CommentSetting.enable_comment" :disabled="!commentEditMode" />
       </div>
 
       <!-- 评论服务 -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+      <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
         <h2 class="font-semibold w-24 flex-shrink-0">评论服务:</h2>
         <BaseSelect
           v-model="CommentSetting.provider"
@@ -33,7 +33,7 @@
       </div>
 
       <!-- 评论 API -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+      <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
         <h2 class="font-semibold w-24 flex-shrink-0">评论 API:</h2>
         <span
           v-if="!commentEditMode"
