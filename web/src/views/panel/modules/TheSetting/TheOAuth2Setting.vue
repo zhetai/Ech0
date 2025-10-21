@@ -1,233 +1,235 @@
 <template>
-  <PanelCard class="mb-3">
-    <!-- OAuth2 设置 -->
-    <div class="w-full">
-      <div class="flex flex-row items-center justify-between mb-3">
-        <h1 class="text-gray-600 font-bold text-lg">OAuth2设置</h1>
-        <div class="flex flex-row items-center justify-end gap-2 w-14">
-          <button v-if="oauth2EditMode" @click="handleUpdateOAuth2Setting" title="编辑">
-            <Saveupdate class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
-          </button>
-          <button @click="oauth2EditMode = !oauth2EditMode" title="编辑">
-            <Edit v-if="!oauth2EditMode" class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
-            <Close v-else class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
-          </button>
-        </div>
-      </div>
-
-      <!-- 开启OAuth2 -->
-      <div class="flex flex-row items-center justify-start text-gray-500 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">启用OAuth2:</h2>
-        <BaseSwitch v-model="OAuth2Setting.enable" :disabled="!oauth2EditMode" />
-      </div>
-
-      <!-- OAuth2 Provider -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">OAuth2 模板:</h2>
-        <BaseSelect
-          v-model="OAuth2Setting.provider"
-          :options="OAuth2ProviderOptions"
-          :disabled="!oauth2EditMode"
-          class="w-34 h-8"
-        />
-      </div>
-
-      <!-- Client ID -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">Client ID:</h2>
-        <span
-          v-if="!oauth2EditMode"
-          class="truncate max-w-40 inline-block align-middle"
-          :title="OAuth2Setting.client_id"
-          style="vertical-align: middle"
-        >
-          {{ OAuth2Setting.client_id.length === 0 ? '暂无' : OAuth2Setting.client_id }}
-        </span>
-        <BaseInput
-          v-else
-          v-model="OAuth2Setting.client_id"
-          type="text"
-          placeholder="请输入Client ID"
-          class="w-full !py-1"
-        />
-      </div>
-
-      <!-- Client Secret -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">Client Secret:</h2>
-        <span
-          v-if="!oauth2EditMode"
-          class="truncate max-w-40 inline-block align-middle"
-          :title="OAuth2Setting.client_secret"
-          style="vertical-align: middle"
-        >
-          {{ OAuth2Setting.client_secret.length === 0 ? '暂无' : OAuth2Setting.client_secret }}
-        </span>
-        <BaseInput
-          v-else
-          v-model="OAuth2Setting.client_secret"
-          type="text"
-          placeholder="请输入Client Secret"
-          class="w-full !py-1"
-        />
-      </div>
-
-      <!-- Callback URL -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">Callback URL:</h2>
-        <span
-          v-if="!oauth2EditMode"
-          class="truncate max-w-40 inline-block align-middle"
-          :title="OAuth2Setting.redirect_uri"
-          style="vertical-align: middle"
-        >
-          {{ redirect_uri.length === 0 ? '暂无' : redirect_uri }}
-        </span>
-        <BaseInput
-          v-else
-          v-model="redirect_uri"
-          type="text"
-          placeholder="请输入回调地址"
-          class="w-full !py-1"
-        />
-      </div>
-
-      <!-- Auth URL -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">Auth URL:</h2>
-        <span
-          v-if="!oauth2EditMode"
-          class="truncate max-w-40 inline-block align-middle"
-          :title="OAuth2Setting.auth_url"
-          style="vertical-align: middle"
-        >
-          {{ OAuth2Setting.auth_url.length === 0 ? '暂无' : OAuth2Setting.auth_url }}
-        </span>
-        <BaseInput
-          v-else
-          v-model="OAuth2Setting.auth_url"
-          type="text"
-          placeholder="请输入授权地址"
-          class="w-full !py-1"
-        />
-      </div>
-
-      <!-- Token URL -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">Token URL:</h2>
-        <span
-          v-if="!oauth2EditMode"
-          class="truncate max-w-40 inline-block align-middle"
-          :title="OAuth2Setting.token_url"
-          style="vertical-align: middle"
-        >
-          {{ OAuth2Setting.token_url.length === 0 ? '暂无' : OAuth2Setting.token_url }}
-        </span>
-        <BaseInput
-          v-else
-          v-model="OAuth2Setting.token_url"
-          type="text"
-          placeholder="请输入Token地址"
-          class="w-full !py-1"
-        />
-      </div>
-
-      <!-- User Info URL -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">UserInfo URL:</h2>
-        <span
-          v-if="!oauth2EditMode"
-          class="truncate max-w-40 inline-block align-middle"
-          :title="OAuth2Setting.user_info_url"
-          style="vertical-align: middle"
-        >
-          {{ OAuth2Setting.user_info_url.length === 0 ? '暂无' : OAuth2Setting.user_info_url }}
-        </span>
-        <BaseInput
-          v-else
-          v-model="OAuth2Setting.user_info_url"
-          type="text"
-          placeholder="请输入用户信息地址"
-          class="w-full !py-1"
-        />
-      </div>
-
-      <!-- Scopes -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">Scopes:</h2>
-        <span
-          v-if="!oauth2EditMode"
-          class="truncate max-w-40 inline-block align-middle"
-          :title="OAuth2Setting.scopes.join(', ')"
-          style="vertical-align: middle"
-        >
-          {{ OAuth2Setting.scopes.length === 0 ? '暂无' : OAuth2Setting.scopes.join(', ') }}
-        </span>
-        <BaseInput
-          v-else
-          v-model="scopeString"
-          type="text"
-          placeholder="请输入Scopes，多个用逗号分隔"
-          class="w-full !py-1"
-          @blur="OAuth2Setting.scopes = scopeString.split(',').map((s) => s.trim())"
-        />
-      </div>
-    </div>
-  </PanelCard>
-
-  <div
-    v-if="OAuth2Setting.enable && OAuth2Setting.provider"
-    class="rounded-md border border-dashed border-gray-400 p-4 mb-3"
-  >
-    <!-- OAuth2 账号绑定 -->
-    <div class="w-full">
-      <div class="mb-3">
-        <h1 class="text-gray-600 font-bold text-lg">账号绑定</h1>
-        <p class="text-gray-400 text-sm">注意：需先配置OAuth2信息</p>
-        <div
-          v-if="
-            oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0
-          "
-          class="mt-2 border border-dashed border-gray-400 rounded-md p-3 flex items-center justify-center"
-        >
-          <p class="text-gray-500 font-bold flex items-center">
-            <component
-              :is="oauthInfo.provider === 'github' ? Github : Google"
-              class="w-5 h-5 mr-2"
-            />
-            <span>{{
-              oauthInfo.provider === 'github'
-                ? 'GitHub'
-                : oauthInfo.provider === 'google'
-                  ? 'Google'
-                  : '自定义 OAuth2 账号'
-            }}</span>
-            账号已绑定
-          </p>
-        </div>
-        <BaseButton v-else class="rounded-md mt-2" @click="handleBindOAuth2()">
-          <div class="flex items-center justify-between">
-            <component
-              :is="
-                OAuth2Setting.provider === 'github'
-                  ? Github
-                  : OAuth2Setting.provider === 'google'
-                    ? Google
-                    : Custom
-              "
-              class="w-5 h-5 mr-2"
-            />
-            <span class="flex-1 text-left">
-              {{
-                OAuth2Setting.provider === 'github'
-                  ? '绑定 GitHub 账号'
-                  : OAuth2Setting.provider === 'google'
-                    ? '绑定 Google 账号'
-                    : '绑定自定义 OAuth2 账号'
-              }}
-            </span>
+  <div>
+    <PanelCard class="mb-3">
+      <!-- OAuth2 设置 -->
+      <div class="w-full">
+        <div class="flex flex-row items-center justify-between mb-3">
+          <h1 class="text-gray-600 font-bold text-lg">OAuth2设置</h1>
+          <div class="flex flex-row items-center justify-end gap-2 w-14">
+            <button v-if="oauth2EditMode" @click="handleUpdateOAuth2Setting" title="编辑">
+              <Saveupdate class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
+            </button>
+            <button @click="oauth2EditMode = !oauth2EditMode" title="编辑">
+              <Edit v-if="!oauth2EditMode" class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
+              <Close v-else class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
+            </button>
           </div>
-        </BaseButton>
+        </div>
+
+        <!-- 开启OAuth2 -->
+        <div class="flex flex-row items-center justify-start text-gray-500 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">启用OAuth2:</h2>
+          <BaseSwitch v-model="OAuth2Setting.enable" :disabled="!oauth2EditMode" />
+        </div>
+
+        <!-- OAuth2 Provider -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">OAuth2 模板:</h2>
+          <BaseSelect
+            v-model="OAuth2Setting.provider"
+            :options="OAuth2ProviderOptions"
+            :disabled="!oauth2EditMode"
+            class="w-34 h-8"
+          />
+        </div>
+
+        <!-- Client ID -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">Client ID:</h2>
+          <span
+            v-if="!oauth2EditMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="OAuth2Setting.client_id"
+            style="vertical-align: middle"
+          >
+            {{ OAuth2Setting.client_id.length === 0 ? '暂无' : OAuth2Setting.client_id }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="OAuth2Setting.client_id"
+            type="text"
+            placeholder="请输入Client ID"
+            class="w-full !py-1"
+          />
+        </div>
+
+        <!-- Client Secret -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">Client Secret:</h2>
+          <span
+            v-if="!oauth2EditMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="OAuth2Setting.client_secret"
+            style="vertical-align: middle"
+          >
+            {{ OAuth2Setting.client_secret.length === 0 ? '暂无' : OAuth2Setting.client_secret }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="OAuth2Setting.client_secret"
+            type="text"
+            placeholder="请输入Client Secret"
+            class="w-full !py-1"
+          />
+        </div>
+
+        <!-- Callback URL -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">Callback URL:</h2>
+          <span
+            v-if="!oauth2EditMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="OAuth2Setting.redirect_uri"
+            style="vertical-align: middle"
+          >
+            {{ redirect_uri.length === 0 ? '暂无' : redirect_uri }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="redirect_uri"
+            type="text"
+            placeholder="请输入回调地址"
+            class="w-full !py-1"
+          />
+        </div>
+
+        <!-- Auth URL -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">Auth URL:</h2>
+          <span
+            v-if="!oauth2EditMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="OAuth2Setting.auth_url"
+            style="vertical-align: middle"
+          >
+            {{ OAuth2Setting.auth_url.length === 0 ? '暂无' : OAuth2Setting.auth_url }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="OAuth2Setting.auth_url"
+            type="text"
+            placeholder="请输入授权地址"
+            class="w-full !py-1"
+          />
+        </div>
+
+        <!-- Token URL -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">Token URL:</h2>
+          <span
+            v-if="!oauth2EditMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="OAuth2Setting.token_url"
+            style="vertical-align: middle"
+          >
+            {{ OAuth2Setting.token_url.length === 0 ? '暂无' : OAuth2Setting.token_url }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="OAuth2Setting.token_url"
+            type="text"
+            placeholder="请输入Token地址"
+            class="w-full !py-1"
+          />
+        </div>
+
+        <!-- User Info URL -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">UserInfo URL:</h2>
+          <span
+            v-if="!oauth2EditMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="OAuth2Setting.user_info_url"
+            style="vertical-align: middle"
+          >
+            {{ OAuth2Setting.user_info_url.length === 0 ? '暂无' : OAuth2Setting.user_info_url }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="OAuth2Setting.user_info_url"
+            type="text"
+            placeholder="请输入用户信息地址"
+            class="w-full !py-1"
+          />
+        </div>
+
+        <!-- Scopes -->
+        <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+          <h2 class="font-semibold w-30 flex-shrink-0">Scopes:</h2>
+          <span
+            v-if="!oauth2EditMode"
+            class="truncate max-w-40 inline-block align-middle"
+            :title="OAuth2Setting.scopes.join(', ')"
+            style="vertical-align: middle"
+          >
+            {{ OAuth2Setting.scopes.length === 0 ? '暂无' : OAuth2Setting.scopes.join(', ') }}
+          </span>
+          <BaseInput
+            v-else
+            v-model="scopeString"
+            type="text"
+            placeholder="请输入Scopes，多个用逗号分隔"
+            class="w-full !py-1"
+            @blur="OAuth2Setting.scopes = scopeString.split(',').map((s) => s.trim())"
+          />
+        </div>
+      </div>
+    </PanelCard>
+
+    <div
+      v-if="OAuth2Setting.enable && OAuth2Setting.provider"
+      class="rounded-md border border-dashed border-gray-400 p-4 mb-3"
+    >
+      <!-- OAuth2 账号绑定 -->
+      <div class="w-full">
+        <div class="mb-3">
+          <h1 class="text-gray-600 font-bold text-lg">账号绑定</h1>
+          <p class="text-gray-400 text-sm">注意：需先配置OAuth2信息</p>
+          <div
+            v-if="
+              oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0
+            "
+            class="mt-2 border border-dashed border-gray-400 rounded-md p-3 flex items-center justify-center"
+          >
+            <p class="text-gray-500 font-bold flex items-center">
+              <component
+                :is="oauthInfo.provider === 'github' ? Github : Google"
+                class="w-5 h-5 mr-2"
+              />
+              <span>{{
+                oauthInfo.provider === 'github'
+                  ? 'GitHub'
+                  : oauthInfo.provider === 'google'
+                    ? 'Google'
+                    : '自定义 OAuth2 账号'
+              }}</span>
+              账号已绑定
+            </p>
+          </div>
+          <BaseButton v-else class="rounded-md mt-2" @click="handleBindOAuth2()">
+            <div class="flex items-center justify-between">
+              <component
+                :is="
+                  OAuth2Setting.provider === 'github'
+                    ? Github
+                    : OAuth2Setting.provider === 'google'
+                      ? Google
+                      : Custom
+                "
+                class="w-5 h-5 mr-2"
+              />
+              <span class="flex-1 text-left">
+                {{
+                  OAuth2Setting.provider === 'github'
+                    ? '绑定 GitHub 账号'
+                    : OAuth2Setting.provider === 'google'
+                      ? '绑定 Google 账号'
+                      : '绑定自定义 OAuth2 账号'
+                }}
+              </span>
+            </div>
+          </BaseButton>
+        </div>
       </div>
     </div>
   </div>
@@ -285,6 +287,14 @@ const handleUpdateOAuth2Setting = async () => {
       oauth2EditMode.value = false
       // 重新获取OAuth2设置
       getOAuth2Setting()
+      // 重新获取OAuth信息
+      if (OAuth2Setting.value.provider) {
+        fetchGetOAuthInfo(OAuth2Setting.value.provider).then((res) => {
+          if (res.code === 1) {
+            oauthInfo.value = res.data
+          }
+        })
+      }
     })
 }
 

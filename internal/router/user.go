@@ -12,7 +12,6 @@ func setupUserRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 	appRouterGroup.ResourceGroup.GET("/oauth/custom/login", h.UserHandler.CustomOAuthLogin())
 	appRouterGroup.ResourceGroup.GET("/oauth/custom/callback", h.UserHandler.CustomOAuthCallback())
 
-
 	// Public
 	appRouterGroup.PublicRouterGroup.POST("/login", h.UserHandler.Login())
 	appRouterGroup.PublicRouterGroup.POST("/register", h.UserHandler.Register())
