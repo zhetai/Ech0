@@ -169,7 +169,9 @@ export function fetchGetBackupScheduleSetting() {
 }
 
 // 更新备份计划
-export function fetchUpdateBackupScheduleSetting(backupSchedule: App.Api.Setting.BackupScheduleDto) {
+export function fetchUpdateBackupScheduleSetting(
+  backupSchedule: App.Api.Setting.BackupScheduleDto,
+) {
   return request({
     url: '/backup/schedule',
     method: 'POST',

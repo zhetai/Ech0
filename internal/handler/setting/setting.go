@@ -694,7 +694,7 @@ func (settingHandler *SettingHandler) UpdateBackupScheduleSetting() gin.HandlerF
 		if err := ctx.ShouldBindJSON(&backupSchedule); err != nil {
 			return res.Response{
 				Msg: commonModel.INVALID_REQUEST_BODY,
-				Err:	 err,
+				Err: err,
 			}
 		}
 

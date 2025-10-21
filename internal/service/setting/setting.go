@@ -681,21 +681,21 @@ func (settingService *SettingService) UpdateFediverseSetting(userid uint, newSet
 // GetBackupScheduleSetting 获取备份计划
 func (settingService *SettingService) GetBackupScheduleSetting(userid uint, setting *model.BackupSchedule) error {
 	// 鉴权
-		user, err := settingService.commonService.CommonGetUserByUserId(userid)
-		if err != nil {
-			return err
-		}
-		if !user.IsAdmin {
-			return errors.New(commonModel.NO_PERMISSION_DENIED)
-		}
-	
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
+
 	return settingService.txManager.Run(func(ctx context.Context) error {
 		backupSchedule, err := settingService.keyvalueRepository.GetKeyValue(commonModel.BackupScheduleKey)
 		if err != nil {
 			// 数据库中不存在数据，手动添加初始数据
 			setting.Enable = false
 			// 默认每周日凌晨2点备份
-			setting.CronExpression =  "0 2 * * 0"
+			setting.CronExpression = "0 2 * * 0"
 
 			// 序列化为 JSON
 			settingToJSON, err := jsonUtil.JSONMarshal(setting)
@@ -718,19 +718,20 @@ func (settingService *SettingService) GetBackupScheduleSetting(userid uint, sett
 }
 
 // UpdateBackupScheduleSetting 更新备份计划
-func (settingService *SettingService) UpdateBackupScheduleSetting(userid uint, newSetting *model.BackupScheduleDto) error {
+func (settingService *SettingService) UpdateBackupScheduleSetting(
+	userid uint,
+	newSetting *model.BackupScheduleDto,
+) error {
 	// 鉴权
-		user, err := settingService.commonService.CommonGetUserByUserId(userid)
-		if err != nil {
-			return err
-		}
-		if !user.IsAdmin {
-			return errors.New(commonModel.NO_PERMISSION_DENIED)
-		}
+	user, err := settingService.commonService.CommonGetUserByUserId(userid)
+	if err != nil {
+		return err
+	}
+	if !user.IsAdmin {
+		return errors.New(commonModel.NO_PERMISSION_DENIED)
+	}
 
 	return settingService.txManager.Run(func(ctx context.Context) error {
-		
-
 		var setting model.BackupSchedule
 		setting.Enable = newSetting.Enable
 		setting.CronExpression = newSetting.CronExpression
