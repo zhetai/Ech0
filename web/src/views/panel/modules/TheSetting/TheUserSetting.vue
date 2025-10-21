@@ -47,7 +47,7 @@
       </div>
 
       <!-- 用户名 -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+      <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
         <h2 class="font-semibold w-30">用户名:</h2>
         <span v-if="!editMode">{{ user?.username }}</span>
         <BaseInput
@@ -60,7 +60,7 @@
       </div>
 
       <!-- 密码 -->
-      <div class="flex flex-row items-center justify-start text-gray-500 gap-2 h-10">
+      <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
         <h2 class="font-semibold w-30">密码:</h2>
         <span v-if="!editMode">******</span>
         <BaseInput
