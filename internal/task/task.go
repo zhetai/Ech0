@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
+	"github.com/lin-snow/ech0/internal/backup"
 	"github.com/lin-snow/ech0/internal/event"
 	queueRepository "github.com/lin-snow/ech0/internal/repository/queue"
 	commonService "github.com/lin-snow/ech0/internal/service/common"
@@ -46,6 +47,8 @@ func NewTasker(
 func (t *Tasker) Start() {
 	t.CleanupTempFilesTask()  // 启动清理临时文件任务
 	t.DeadLetterConsumeTask() // 启动死信任务消费任务
+	t.ScheduleBackupTask()    // 启动定时备份任务
+
 	t.scheduler.Start()
 }
 
@@ -102,5 +105,43 @@ func (t *Tasker) DeadLetterConsumeTask() {
 	)
 	if err != nil {
 		logUtil.GetLogger().Error("Failed to schedule WebhookRetryTask", zap.String("error", err.Error()))
+	}
+}
+
+// ScheduleBackupTask 定时备份任务
+func (t *Tasker) ScheduleBackupTask() {
+	// 每周日2点执行一次
+	_, err := t.scheduler.NewJob(
+		gocron.WeeklyJob(
+			1,
+			gocron.NewWeekdays(time.Sunday),
+			gocron.NewAtTimes(gocron.NewAtTime(2, 0, 0)),
+		), // 正式环境每周日2点执行一次
+		// gocron.DurationJob(5*time.Second), // 测试环境为每天执行一次
+		gocron.NewTask(
+			func() {
+				// 执行备份
+				if path, fileName, err := backup.ExecuteBackup(); err != nil {
+					logUtil.GetLogger().Error("Failed to execute scheduled backup",
+						zap.String("path", path),
+						zap.String("fileName", fileName),
+						zap.String("error", err.Error()))
+				}
+
+				// 发布备份完成事件
+				t.eventBus.Publish(
+					context.Background(),
+					event.NewEvent(
+						event.EventTypeSystemBackup,
+						event.EventPayload{
+							event.EventPayloadInfo: "System scheduled backup completed",
+						},
+					),
+				)
+			},
+		),
+	)
+	if err != nil {
+		logUtil.GetLogger().Error("Failed to schedule ScheduleBackupTask", zap.String("error", err.Error()))
 	}
 }

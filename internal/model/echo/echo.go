@@ -39,8 +39,8 @@ type Image struct {
 	ImageURL    string `gorm:"type:text"        json:"image_url"`            // 图片URL
 	ImageSource string `gorm:"type:varchar(20)" json:"image_source"`         // 图片来源: local/url/s3/r2
 	ObjectKey   string `gorm:"type:text"        json:"object_key,omitempty"` // 对象存储的Key (如果是本地存储则为空)
-	Width       int    `gorm:"default:0"       json:"width,omitempty"`       // 图片宽度
-	Height      int    `gorm:"default:0"       json:"height,omitempty"`      // 图片高度
+	Width       int    `gorm:"default:0"        json:"width,omitempty"`      // 图片宽度
+	Height      int    `gorm:"default:0"        json:"height,omitempty"`     // 图片高度
 }
 
 // Tag 定义Tag实体

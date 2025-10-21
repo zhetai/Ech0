@@ -17,8 +17,8 @@ type ImageDto struct {
 	URL       string `json:"url"        binding:"required"`
 	SOURCE    string `json:"source"     binding:"required"`
 	ObjectKey string `json:"object_key"` // 对象存储的 Key, 用于删除 S3/R2 上的图片
-	Width	 int    `json:"width"`      // 图片宽度
-	Height   int    `json:"height"`     // 图片高度
+	Width     int    `json:"width"`      // 图片宽度
+	Height    int    `json:"height"`     // 图片高度
 }
 
 // PresignDto 用于响应 S3 预签名 URL 的请求数据传输对象
