@@ -37,6 +37,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
   - [Upgrading](#upgrading)
     - [🔄 Docker](#-docker)
     - [💎 Docker Compose](#-docker-compose-1)
+    - [☸️ Kubernetes (Helm)](#️-kubernetes-helm-1)
   - [Access Modes](#access-modes)
     - [🖥️ TUI Mode](#️-tui-mode)
     - [🔐 SSH Mode](#-ssh-mode)
@@ -60,7 +61,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 🚀 **Instant Deployment**: Zero configuration required — from installation to operation in just one command  
 ✍️ **Distraction-Free Writing**: A clean, online Markdown editor with rich plugin support and real-time preview  
 📦 **Data Sovereignty**: All content is stored locally in SQLite, with full RSS feed support  
-🔐 **Secure Backup Mechanism**: One-click full-data export and backup via Web, TUI, or CLI  
+🔐 **Secure Backup Mechanism**: One-click export and full data backup across Web, TUI, and CLI modes, with automatic background backup support  
 ♻️ **Seamless Recovery**: Supports TUI/CLI snapshot restoration and Web-based zero-downtime recovery, ensuring data safety with ease  
 🎉 **Forever Free**: Open-sourced under the AGPL-3.0 license — no tracking, no subscriptions, no external dependencies  
 🌍 **Cross-Platform Adaptation**: Fully responsive design optimized for desktop, tablet, and mobile browsers  
