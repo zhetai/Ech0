@@ -266,6 +266,16 @@ declare namespace App {
         name: string
         expiry: string
       }
+
+      type BackupSchedule = {
+        enable: boolean
+        cron_expression: string
+      }
+
+      type BackupScheduleDto = {
+        enable: boolean
+        cron_expression: string
+      }
     }
 
     namespace Connect {

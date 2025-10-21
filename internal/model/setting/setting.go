@@ -70,3 +70,8 @@ type FediverseSetting struct {
 	Enable    bool   `json:"enable"`     // 是否启用联邦网络功能
 	ServerURL string `json:"server_url"` // 服务器 URL
 }
+
+type BackupSchedule struct {
+	Enable         bool   `json:"enable"`          // 是否启用备份计划
+	CronExpression string `json:"cron_expression"` // 备份计划的 Cron 表达式
+}

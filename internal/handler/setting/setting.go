@@ -643,3 +643,70 @@ func (settingHandler *SettingHandler) UpdateFediverseSettings() gin.HandlerFunc 
 		}
 	})
 }
+
+// GetBackupScheduleSetting 获取备份计划
+//
+// @Summary 获取备份计划
+// @Description 获取系统的定期备份计划设置
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Success 200 {object} res.Response{data=model.BackupSchedule} "获取备份计划成功"
+// @Failure 200 {object} res.Response "获取备份计划失败"
+// @Router /backup/schedule [get]
+func (settingHandler *SettingHandler) GetBackupScheduleSetting() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+
+		var backupSchedule model.BackupSchedule
+		if err := settingHandler.settingService.GetBackupScheduleSetting(userid, &backupSchedule); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Data: backupSchedule,
+			Msg:  commonModel.GET_SETTINGS_SUCCESS,
+		}
+	})
+}
+
+// UpdateScheduleBackupSettings 更新备份计划
+//
+// @Summary 更新备份计划
+// @Description 为系统设置定期备份计划
+// @Tags 系统设置
+// @Accept json
+// @Produce json
+// @Param backupSchedule body model.BackupScheduleDto true "备份计划设置"
+// @Success 200 {object} res.Response "设置备份计划成功"
+// @Failure 200 {object} res.Response "设置备份计划失败"
+// @Router /backup/schedule [post]
+func (settingHandler *SettingHandler) UpdateBackupScheduleSetting() gin.HandlerFunc {
+	return res.Execute(func(ctx *gin.Context) res.Response {
+		// 获取当前用户 ID
+		userid := ctx.MustGet("userid").(uint)
+		// 解析请求体中的参数
+		var backupSchedule model.BackupScheduleDto
+		if err := ctx.ShouldBindJSON(&backupSchedule); err != nil {
+			return res.Response{
+				Msg: commonModel.INVALID_REQUEST_BODY,
+				Err:	 err,
+			}
+		}
+
+		if err := settingHandler.settingService.UpdateBackupScheduleSetting(userid, &backupSchedule); err != nil {
+			return res.Response{
+				Msg: "",
+				Err: err,
+			}
+		}
+
+		return res.Response{
+			Msg: commonModel.SCHEDULE_BACKUP_SUCCESS,
+		}
+	})
+}

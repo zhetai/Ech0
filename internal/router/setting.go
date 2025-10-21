@@ -31,4 +31,7 @@ func setupSettingRoutes(appRouterGroup *AppRouterGroup, h *di.Handlers) {
 
 	appRouterGroup.AuthRouterGroup.GET("/fediverse/settings", h.SettingHandler.GetFediverseSettings())
 	appRouterGroup.AuthRouterGroup.PUT("/fediverse/settings", h.SettingHandler.UpdateFediverseSettings())
+
+	appRouterGroup.AuthRouterGroup.GET("/backup/schedule", h.SettingHandler.GetBackupScheduleSetting())
+	appRouterGroup.AuthRouterGroup.POST("/backup/schedule", h.SettingHandler.UpdateBackupScheduleSetting())
 }

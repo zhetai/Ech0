@@ -106,6 +106,8 @@ const (
 	ServerURLKey = "server_url"
 	// FediverseSettingKey 是联邦网络设置的键
 	FediverseSettingKey = "fediverse_setting"
+	// BackupScheduleKey 是备份计划设置的键
+	BackupScheduleKey = "backup_schedule"
 	// MigrationKey 是数据库迁移的标记键
 	MigrationKey = "db_migration:message_to_echo:v1"
 )

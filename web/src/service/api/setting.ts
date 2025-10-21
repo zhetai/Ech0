@@ -159,3 +159,20 @@ export function fetchUpdateFediverseSettings(fediverseSetting: App.Api.Setting.F
     data: fediverseSetting,
   })
 }
+
+// 获取备份计划
+export function fetchGetBackupScheduleSetting() {
+  return request<App.Api.Setting.BackupSchedule>({
+    url: '/backup/schedule',
+    method: 'GET',
+  })
+}
+
+// 更新备份计划
+export function fetchUpdateBackupScheduleSetting(backupSchedule: App.Api.Setting.BackupScheduleDto) {
+  return request({
+    url: '/backup/schedule',
+    method: 'POST',
+    data: backupSchedule,
+  })
+}

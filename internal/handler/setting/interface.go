@@ -56,4 +56,10 @@ type SettingHandlerInterface interface {
 
 	// UpdateFediverseSettings 更新联邦网络设置
 	UpdateFediverseSettings() gin.HandlerFunc
+
+	// GetBackupScheduleSetting 获取备份计划
+	GetBackupScheduleSetting() gin.HandlerFunc
+
+	// UpdateBackupScheduleSetting 更新备份计划
+	UpdateBackupScheduleSetting() gin.HandlerFunc
 }
