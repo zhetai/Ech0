@@ -30,23 +30,14 @@ type UserServiceInterface interface {
 	// DeleteUser 删除用户
 	DeleteUser(userid, id uint) error
 
-	// BindGitHub 绑定 GitHub 账号
-	BindGitHub(userID uint, redirect_URI string) (string, error)
+	// BindOAuth 绑定 OAuth2 账号
+	BindOAuth(userID uint, provider string, redirectURI string) (string, error)
 
-	// 获取 GitHub 登录 URL
-	GetGitHubLoginURL(redirect_URI string) (string, error)
+	// GetOAuthLoginURL 获取 OAuth2 登录 URL
+	GetOAuthLoginURL(provider string, redirectURI string) (string, error)
 
-	// HandleGitHubCallback 处理 GitHub OAuth2 回调
-	HandleGitHubCallback(code string, state string) string
-
-	// BindGoogle 绑定 Google 账号
-	BindGoogle(userID uint, redirect_URI string) (string, error)
-
-	// 获取 Google 登录 URL
-	GetGoogleLoginURL(redirect_URI string) (string, error)
-
-	// HandleGoogleCallback 处理 Google OAuth2 回调
-	HandleGoogleCallback(code string, state string) string
+	// HandleOAuthCallback 处理 OAuth2 回调
+	HandleOAuthCallback(provider string, code string, state string) string
 
 	// GetOAuthInfo 获取 OAuth2 配置信息
 	GetOAuthInfo(userId uint, provider string) (model.OAuthInfoDto, error)

@@ -83,6 +83,7 @@ const (
 const (
 	OAuth2GITHUB OAuth2Provider = "github"
 	OAuth2GOOGLE OAuth2Provider = "google"
+	OAuth2CUSTOM OAuth2Provider = "custom"
 )
 
 // key value表

@@ -241,6 +241,7 @@ const oauth2EditMode = ref(false)
 const OAuth2ProviderOptions = [
   { label: 'GitHub', value: OAuth2Provider.GITHUB },
   { label: 'Google', value: OAuth2Provider.GOOGLE },
+  { label: 'Custom', value: OAuth2Provider.CUSTOM },
 ]
 
 const redirect_uri = ref(`${window.location.origin}/oauth/${OAuth2Setting.value.provider}/callback`)
@@ -308,6 +309,16 @@ function getProviderTemplate(provider: string) {
       token_url: 'https://oauth2.googleapis.com/token',
       user_info_url: 'https://openidconnect.googleapis.com/v1/userinfo',
       scopes: ['openid'], // 只要OAuth ID
+    }
+  } else if (provider === String(OAuth2Provider.CUSTOM)) {
+    scopeString.value = ''
+    redirect_uri.value = `${window.location.origin}/oauth/custom/callback`
+    return {
+      redirect_uri: `${window.location.origin}/oauth/custom/callback`,
+      auth_url: '',
+      token_url: '',
+      user_info_url: '',
+      scopes: [],
     }
   }
   return {}

@@ -291,7 +291,11 @@ func (userHandler *UserHandler) BindGitHub() gin.HandlerFunc {
 			}
 		}
 
-		bingURL, err := userHandler.userService.BindGitHub(userid, req.RedirectURI)
+		bingURL, err := userHandler.userService.BindOAuth(
+			userid,
+			string(commonModel.OAuth2GITHUB),
+			req.RedirectURI,
+		)
 		if err != nil {
 			return res.Response{
 				Msg: "",
@@ -312,7 +316,10 @@ func (userHandler *UserHandler) GitHubLogin() gin.HandlerFunc {
 		// 获取重定向 URL
 		redirect_URI := ctx.Query("redirect_uri")
 
-		redirectURL, err := userHandler.userService.GetGitHubLoginURL(redirect_URI)
+		redirectURL, err := userHandler.userService.GetOAuthLoginURL(
+			string(commonModel.OAuth2GITHUB),
+			redirect_URI,
+		)
 		if err != nil {
 			return res.Response{
 				Msg: commonModel.FAILED_TO_GET_GITHUB_LOGIN_URL,
@@ -338,7 +345,11 @@ func (userHandler *UserHandler) GitHubCallback() gin.HandlerFunc {
 			}
 		}
 
-		redirectURL := userHandler.userService.HandleGitHubCallback(code, state)
+		redirectURL := userHandler.userService.HandleOAuthCallback(
+			string(commonModel.OAuth2GITHUB),
+			code,
+			state,
+		)
 		ctx.Redirect(302, redirectURL)
 		return res.Response{}
 	})
@@ -361,7 +372,11 @@ func (userHandler *UserHandler) BindGoogle() gin.HandlerFunc {
 			}
 		}
 
-		bingURL, err := userHandler.userService.BindGoogle(userid, req.RedirectURI)
+		bingURL, err := userHandler.userService.BindOAuth(
+			userid,
+			string(commonModel.OAuth2GOOGLE),
+			req.RedirectURI,
+		)
 		if err != nil {
 			return res.Response{
 				Msg: "",
@@ -382,7 +397,10 @@ func (userHandler *UserHandler) GoogleLogin() gin.HandlerFunc {
 		// 获取重定向 URL
 		redirect_URI := ctx.Query("redirect_uri")
 
-		redirectURL, err := userHandler.userService.GetGoogleLoginURL(redirect_URI)
+		redirectURL, err := userHandler.userService.GetOAuthLoginURL(
+			string(commonModel.OAuth2GOOGLE),
+			redirect_URI,
+		)
 		if err != nil {
 			return res.Response{
 				Msg: commonModel.FAILED_TO_GET_GOOGLE_LOGIN_URL,
@@ -408,7 +426,11 @@ func (userHandler *UserHandler) GoogleCallback() gin.HandlerFunc {
 			}
 		}
 
-		redirectURL := userHandler.userService.HandleGoogleCallback(code, state)
+		redirectURL := userHandler.userService.HandleOAuthCallback(
+			string(commonModel.OAuth2GOOGLE),
+			code,
+			state,
+		)
 		ctx.Redirect(302, redirectURL)
 		return res.Response{}
 	})
