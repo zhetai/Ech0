@@ -264,6 +264,12 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 		if !user.IsAdmin {
 			return errors.New(commonModel.NO_PERMISSION_DENIED)
 		}
+		// 检查endpoint是否为http(s)动态改变USE SSL
+		if strings.HasPrefix(strings.ToLower(strings.TrimSpace(newSetting.Endpoint)), "https://") {
+			newSetting.UseSSL = true
+		} else if strings.HasPrefix(strings.ToLower(strings.TrimSpace(newSetting.Endpoint)), "http://") {
+			newSetting.UseSSL = false
+		}
 
 		// 去除Endpoint的协议头（http://或https://）
 		endpoint := strings.TrimSpace(newSetting.Endpoint)

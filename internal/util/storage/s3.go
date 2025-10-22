@@ -9,9 +9,10 @@ import (
 	"strings"
 	"time"
 
-	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
 )
 
 type minioStorage struct {
@@ -19,7 +20,10 @@ type minioStorage struct {
 	bucketName string
 }
 
-func NewMinioStorage(endpoint, accessKey, secretKey, bucketName, region, provider string, secure bool) (ObjectStorage, error) {
+func NewMinioStorage(
+	endpoint, accessKey, secretKey, bucketName, region, provider string,
+	secure bool,
+) (ObjectStorage, error) {
 	if accessKey == "" || secretKey == "" || bucketName == "" {
 		return nil, fmt.Errorf("invalid S3 configuration")
 	}

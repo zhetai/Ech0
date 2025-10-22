@@ -46,7 +46,7 @@ export const useTodoStore = defineStore('todoStore', () => {
           loading.value = false
         }
       },
-      { immediate: true }
+      { immediate: true },
     )
   }
 
