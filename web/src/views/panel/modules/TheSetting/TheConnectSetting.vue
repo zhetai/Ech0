@@ -33,7 +33,7 @@
       <!-- Connect 列表 -->
       <div v-else>
         <div v-if="connects.length === 0" class="flex flex-col items-center justify-center mt-2">
-          <span class="text-gray-400">暂无连接...</span>
+          <span class="text-stone-400">暂无连接...</span>
         </div>
 
         <div v-else class="mt-2 overflow-x-auto border border-stone-300 rounded-lg">

@@ -184,12 +184,12 @@
       <div class="w-full">
         <div class="mb-3">
           <h1 class="text-gray-600 font-bold text-lg">账号绑定</h1>
-          <p class="text-gray-400 text-sm">注意：需先配置OAuth2信息</p>
+          <p class="text-stone-400 text-sm">注意：需先配置OAuth2信息</p>
           <div
             v-if="
               oauthInfo && oauthInfo.oauth_id.length && oauthInfo.provider && oauthInfo.user_id != 0
             "
-            class="mt-2 border border-dashed border-gray-400 rounded-md p-3 flex items-center justify-center"
+            class="mt-2 border border-dashed border-stone-400 rounded-md p-3 flex items-center justify-center"
           >
             <p class="text-stone-500 font-bold flex items-center">
               <component

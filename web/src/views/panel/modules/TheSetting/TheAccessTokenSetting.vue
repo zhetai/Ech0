@@ -15,7 +15,7 @@
 
     <div v-if="!accessTokenEdit">
       <div v-if="AccessTokens.length === 0" class="flex flex-col items-center justify-center mt-2">
-        <span class="text-gray-400">暂无 Access Token...</span>
+        <span class="text-stone-400">暂无 Access Token...</span>
       </div>
       <div v-else class="mt-2 overflow-x-auto border border-stone-300 rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
