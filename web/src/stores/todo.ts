@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { fetchGetTodos } from '@/service/api'
 import { useUserStore } from './user'
 
@@ -10,6 +10,8 @@ export const useTodoStore = defineStore('todoStore', () => {
   const todos = ref<App.Api.Todo.Todo[]>([])
   const todoMode = ref<boolean>(false)
   const loading = ref<boolean>(true)
+
+  const userStore = useUserStore()
 
   /**
    * Actions
@@ -34,11 +36,18 @@ export const useTodoStore = defineStore('todoStore', () => {
   }
 
   function init() {
-    if (useUserStore().isLogin) {
-      getTodos()
-    } else {
-      loading.value = false
-    }
+    watch(
+      () => userStore.isLogin,
+      (isLogin) => {
+        if (isLogin) {
+          getTodos()
+        } else {
+          todos.value = []
+          loading.value = false
+        }
+      },
+      { immediate: true }
+    )
   }
 
   return {
