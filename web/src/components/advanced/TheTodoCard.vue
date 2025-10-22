@@ -7,8 +7,8 @@
       <div v-if="props.operative" class="flex justify-between items-center">
         <!-- id -->
         <div class="flex justify-start gap-1 items-center h-auto font-bold text-2xl">
-          <span class="italic text-gray-300">#</span>
-          <span class="text-gray-400">{{ props.index }}</span>
+          <span class="italic text-stone-300">#</span>
+          <span class="text-stone-400">{{ props.index }}</span>
         </div>
         <!-- 按钮 -->
         <div class="flex gap-2">
@@ -38,10 +38,10 @@
         </p>
       </div>
       <div v-if="loading">
-        <p class="text-gray-500 text-sm">加载中...</p>
+        <p class="text-stone-500 text-sm">加载中...</p>
       </div>
       <div v-if="!loading && !props.todo">
-        <p class="text-gray-500 text-sm">今日无事🎉</p>
+        <p class="text-stone-500 text-sm">今日无事🎉</p>
       </div>
     </div>
   </div>

@@ -37,7 +37,7 @@
         </div>
       </div>
       <div v-else>
-        <div class="text-gray-500 text-sm mb-2">加载中...</div>
+        <div class="text-stone-500 text-sm mb-2">加载中...</div>
       </div>
     </div>
   </div>

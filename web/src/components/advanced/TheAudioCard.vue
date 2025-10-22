@@ -19,8 +19,8 @@
         </button>
 
         <!-- 提示 -->
-        <div v-if="isPlaying" class="text-gray-500">播放中...</div>
-        <div v-else class="text-gray-500">暂停中...</div>
+        <div v-if="isPlaying" class="text-stone-500">播放中...</div>
+        <div v-else class="text-stone-500">暂停中...</div>
       </div>
 
       <audio
