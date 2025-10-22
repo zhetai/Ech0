@@ -57,7 +57,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 
 ## Highlights
 
-☁️ **Atomically Lightweight**: Consumes less than **15MB** of memory with an image size under **50MB**, powered by a single-file SQLite architecture  
+☁️ **Atomically Lightweight**: Consumes less than **15MB** of memory with an image size under **40MB**, powered by a single-file SQLite architecture  
 🚀 **Instant Deployment**: Zero configuration required — from installation to operation in just one command  
 ✍️ **Distraction-Free Writing**: A clean, online Markdown editor with rich plugin support and real-time preview  
 📦 **Data Sovereignty**: All content is stored locally in SQLite, with full RSS feed support  
