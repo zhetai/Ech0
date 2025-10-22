@@ -22,7 +22,6 @@ export enum ImageSource {
   LOCAL = 'local',
   URL = 'url',
   S3 = 's3',
-  R2 = 'r2',
 }
 
 // 评论服务提供者
@@ -39,6 +38,7 @@ export enum S3Provider {
   ALIYUN = 'aliyun',
   TENCENT = 'tencent',
   MINIO = 'minio',
+  R2 = 'r2',
   OTHER = 'other', // 其它默认按照 MINIO 处理
 }
 

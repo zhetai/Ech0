@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/lin-snow/ech0/internal/config"
@@ -214,7 +215,7 @@ func (settingService *SettingService) GetS3Setting(userid uint, setting *model.S
 		if err != nil {
 			// 数据库中不存在数据，手动添加初始数据
 			setting.Enable = false
-			setting.Provider = string(commonModel.AWS)
+			setting.Provider = string(commonModel.MINIO)
 			setting.Endpoint = ""
 			setting.AccessKey = ""
 			setting.SecretKey = ""
@@ -264,6 +265,17 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 			return errors.New(commonModel.NO_PERMISSION_DENIED)
 		}
 
+		// 去除Endpoint的协议头（http://或https://）
+		endpoint := strings.TrimSpace(newSetting.Endpoint)
+		endpoint = strings.TrimPrefix(endpoint, "http://")
+		endpoint = strings.TrimPrefix(endpoint, "https://")
+		newSetting.Endpoint = endpoint
+
+		cdnURL := strings.TrimSpace(newSetting.CDNURL)
+		if cdnURL != "" {
+			cdnURL = strings.TrimRight(cdnURL, "/")
+		}
+
 		s3Setting := &model.S3Setting{
 			Enable:     newSetting.Enable,
 			Provider:   newSetting.Provider,
@@ -271,11 +283,28 @@ func (settingService *SettingService) UpdateS3Setting(userid uint, newSetting *m
 			AccessKey:  newSetting.AccessKey,
 			SecretKey:  newSetting.SecretKey,
 			BucketName: newSetting.BucketName,
-			Region:     newSetting.Region,
+			Region:     strings.TrimSpace(newSetting.Region),
 			UseSSL:     newSetting.UseSSL,
-			CDNURL:     httpUtil.TrimURL(newSetting.CDNURL),
+			CDNURL:     cdnURL,
 			PathPrefix: httpUtil.TrimURL(newSetting.PathPrefix),
 			PublicRead: newSetting.PublicRead,
+		}
+
+		// 配置检查
+		switch s3Setting.Provider {
+		case string(commonModel.R2):
+			if s3Setting.Region == "" {
+				s3Setting.Region = "auto"
+			}
+			s3Setting.UseSSL = true
+		case string(commonModel.AWS):
+		case string(commonModel.MINIO):
+		case string(commonModel.OTHER):
+			// 其他 S3 兼容厂商（Backblaze、Wasabi、Ceph 等）
+			if s3Setting.Region == "" {
+				s3Setting.Region = "auto"
+			}
+		default:
 		}
 
 		// 序列化为 JSON

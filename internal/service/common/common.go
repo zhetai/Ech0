@@ -143,9 +143,6 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source, object
 
 		// 删除 S3 上的图片
 		return commonService.objStorage.DeleteObject(context.Background(), object_key)
-
-	case echoModel.ImageSourceR2:
-		// TODO: 实现R2图片删除
 	default:
 		// 未知图片来源按本地图片处理
 		// 获取图片名字（去除前面的/images/)
@@ -191,8 +188,6 @@ func (commonService *CommonService) DirectDeleteImage(url, source, object_key st
 		}
 		// 删除 S3 上的图片
 		return cli.DeleteObject(context.Background(), object_key)
-	case echoModel.ImageSourceR2:
-		// TODO: 实现R2图片删除
 	default:
 		// 未知图片来源按本地图片处理
 		// 获取图片名字（去除前面的/images/)
@@ -487,6 +482,7 @@ func (commonService *CommonService) GetS3PresignURL(
 ) (commonModel.PresignDto, error) {
 	var result commonModel.PresignDto
 
+	// 权限检查
 	user, err := commonService.commonRepository.GetUserByUserId(userid)
 	if err != nil {
 		return result, err
@@ -495,6 +491,7 @@ func (commonService *CommonService) GetS3PresignURL(
 		return result, errors.New(commonModel.NO_PERMISSION_DENIED)
 	}
 
+	// 参数校验
 	if s3Dto.FileName == "" {
 		return result, errors.New(commonModel.INVALID_PARAMS)
 	}
@@ -520,6 +517,7 @@ func (commonService *CommonService) GetS3PresignURL(
 		return result, errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
 	}
 
+	// 填充返回结果
 	result.FileName = s3Dto.FileName
 	result.ContentType = contentType
 
@@ -535,16 +533,19 @@ func (commonService *CommonService) GetS3PresignURL(
 	}
 
 	// 生成 Object Key (包含 PathPrefix)
-	prefix := strings.TrimSuffix(s3setting.PathPrefix, "/")
-	objectKey := fmt.Sprintf("%s/%s_%d", prefix, s3Dto.FileName, time.Now().Unix())
+	prefix := strings.Trim(s3setting.PathPrefix, "/")
+	safeName := strings.ReplaceAll(s3Dto.FileName, " ", "_")
+	objectKey := fmt.Sprintf("%s/%d_%s", prefix, time.Now().Unix(), safeName)
+	objectKey = strings.TrimPrefix(objectKey, "/")
 	result.ObjectKey = objectKey
 
-	// 生成预签名 URL
+	// 生成预签名 URL (有效期24小时)
 	presignURL, err := commonService.objStorage.PresignURL(context.Background(), objectKey, 24*time.Hour, method)
 	if err != nil {
 		return result, err
 	}
 	result.PresignURL = presignURL
+
 	// 生成访问 URL
 	fileURL, err := commonService.GetS3ObjectURL(s3setting, objectKey)
 	if err != nil {
@@ -571,7 +572,7 @@ func (commonService *CommonService) GetS3PresignURL(
 	return result, nil
 }
 
-// GetS3Client 获取 S3 客户端和配置信息
+// GetS3Client 获取 S3 客户端和配置信息（支持 R2 / AWS / MinIO / 其他）
 func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, settingModel.S3Setting, error) {
 	// 检查是否配置了 S3
 	var s3setting settingModel.S3Setting
@@ -590,6 +591,8 @@ func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, se
 		s3setting.AccessKey,
 		s3setting.SecretKey,
 		s3setting.BucketName,
+		s3setting.Region,
+		s3setting.Provider,
 		s3setting.UseSSL,
 	)
 	if err != nil {
@@ -614,9 +617,14 @@ func (CommonService *CommonService) GetS3ObjectURL(s3Setting settingModel.S3Sett
 	baseURL := fmt.Sprintf("%s://%s/%s", protocol, s3Setting.Endpoint, s3Setting.BucketName)
 
 	// 如果配置了 CDNURL，则替换为 CDN 地址
-	if s3Setting.CDNURL != "" {
+	if trimmedCDN := strings.TrimSpace(s3Setting.CDNURL); trimmedCDN != "" {
 		// 用户一般会直接填 https://cdn.xxx.com，不需要拼 protocol
-		baseURL = strings.TrimRight(s3Setting.CDNURL, "/")
+		cdnURL := strings.TrimRight(trimmedCDN, "/")
+		lowerCDN := strings.ToLower(cdnURL)
+		if !strings.HasPrefix(lowerCDN, "http://") && !strings.HasPrefix(lowerCDN, "https://") {
+			cdnURL = fmt.Sprintf("%s://%s", protocol, cdnURL)
+		}
+		baseURL = cdnURL
 	}
 
 	// 拼接对象路径

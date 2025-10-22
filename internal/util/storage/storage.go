@@ -26,8 +26,6 @@ func UploadFile(
 		return UploadFileToLocal(file, fileType)
 	case commonModel.S3_FILE:
 		// TODO: Implement S3 file upload
-	case commonModel.R2_FILE:
-		// TODO: Implement R2 file upload
 	default:
 		return "", errors.New(commonModel.NO_FILE_STORAGE_ERROR)
 	}

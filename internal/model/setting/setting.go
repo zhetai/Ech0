@@ -30,7 +30,7 @@ type CommentSetting struct {
 // S3Setting 定义 S3 存储设置实体
 type S3Setting struct {
 	Enable     bool   `json:"enable"`      // 是否启用 S3 存储
-	Provider   string `json:"provider"`    // S3 服务提供商，例如 "aws", "aliyun", "minio", "other"
+	Provider   string `json:"provider"`    // S3 服务提供商，例如 "aws", "r2", "minio", "other"
 	Endpoint   string `json:"endpoint"`    // S3 端点
 	AccessKey  string `json:"access_key"`  // 访问密钥 ID
 	SecretKey  string `json:"secret_key"`  // 秘密访问密钥

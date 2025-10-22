@@ -6,8 +6,10 @@ import (
 	"io"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
+	commonModel "github.com/lin-snow/ech0/internal/model/common"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
@@ -17,22 +19,62 @@ type minioStorage struct {
 	bucketName string
 }
 
-func NewMinioStorage(endpoint, accessKey, secretKey, bucketName string, secure bool) (ObjectStorage, error) {
+func NewMinioStorage(endpoint, accessKey, secretKey, bucketName, region, provider string, secure bool) (ObjectStorage, error) {
+	if accessKey == "" || secretKey == "" || bucketName == "" {
+		return nil, fmt.Errorf("invalid S3 configuration")
+	}
+
+	normalizedProvider := strings.ToLower(strings.TrimSpace(provider))
+
+	// 根据 Provider 自动调整 endpoint 和 SSL
+	switch normalizedProvider {
+	case string(commonModel.R2):
+		// Cloudflare R2 强制 HTTPS
+		secure = true
+		if region == "" {
+			region = "auto"
+		}
+	case string(commonModel.AWS):
+		// AWS 可以使用 region 拼接 endpoint
+		if region != "" && endpoint == "" {
+			endpoint = fmt.Sprintf("s3.%s.amazonaws.com", region)
+		}
+	case string(commonModel.MINIO):
+		// MinIO region 可空
+	case string(commonModel.OTHER), string(commonModel.ALIYUN), string(commonModel.TENCENT):
+		if region == "" {
+			region = "auto"
+		}
+	case "":
+		if region == "" {
+			region = "auto"
+		}
+	default:
+		if region == "" {
+			region = "auto"
+		}
+	}
+
+	if endpoint == "" {
+		return nil, fmt.Errorf("invalid S3 configuration")
+	}
+
 	client, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: secure,
+		Region: region,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Minio client: %w", err)
 	}
 
-	// Check if the bucket exists. If not, create it.
+	// 检查桶是否存在
 	exists, err := client.BucketExists(context.Background(), bucketName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to check if bucket exists: %w", err)
 	}
 	if !exists {
-		if err := client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{}); err != nil {
+		if err := client.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{Region: region}); err != nil {
 			return nil, fmt.Errorf("failed to create bucket: %w", err)
 		}
 	}

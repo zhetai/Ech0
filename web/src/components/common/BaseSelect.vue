@@ -6,13 +6,13 @@
     </label>
 
     <!-- Select Button -->
-    <div class="relative">
+    <div class="relative inline-block">
       <button
         :id="id"
         type="button"
         :disabled="disabled"
         :class="[
-          'w-full flex items-center justify-between px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition duration-150 ease-in-out shadow-xs sm:text-sm text-left',
+          'inline-flex items-center justify-between px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition duration-150 ease-in-out shadow-xs sm:text-sm text-left',
           disabled
             ? 'bg-gray-100 cursor-not-allowed opacity-70'
             : 'bg-white hover:border-orange-400 cursor-pointer',
@@ -59,7 +59,7 @@
       >
         <div
           v-show="isOpen"
-          class="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-70 rounded-lg border border-gray-200 overflow-auto focus:outline-none"
+          class="absolute z-50 mt-1 min-w-full bg-white shadow-lg max-h-70 rounded-lg border border-gray-200 overflow-auto focus:outline-none"
         >
           <div
             v-for="(option, index) in normalizedOptions"

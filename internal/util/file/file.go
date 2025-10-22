@@ -492,8 +492,6 @@ func GetImageURL(image echoModel.Image, serverURL string) string {
 		return image.ImageURL
 	case echoModel.ImageSourceS3:
 		return image.ImageURL
-	case echoModel.ImageSourceR2:
-		return image.ImageURL
 	default:
 		return fmt.Sprintf("%s/api/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
 	}

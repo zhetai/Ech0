@@ -34,7 +34,7 @@
           v-model="S3Setting.provider"
           :options="S3ServiceOptions"
           :disabled="!storageEditMode"
-          class="w-34 h-8"
+          class="w-fit h-8"
         />
       </div>
 
@@ -140,7 +140,7 @@
 
       <!-- S3 Region -->
       <div
-        v-if="S3Setting.provider === S3Provider.AWS"
+        v-if="S3Setting.provider !== S3Provider.MINIO"
         class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10"
       >
         <h2 class="font-semibold w-30 flex-shrink-0">S3 Region:</h2>
@@ -206,8 +206,9 @@ const { S3Setting } = storeToRefs(settingStore)
 const storageEditMode = ref<boolean>(false)
 
 const S3ServiceOptions = ref<{ label: string; value: S3Provider }[]>([
-  // { label: 'AWS', value: S3Provider.AWS },
+  { label: 'AWS', value: S3Provider.AWS },
   { label: 'MinIO', value: S3Provider.MINIO },
+  { label: 'Cloudflare R2', value: S3Provider.R2 },
   // { label: '阿里OSS', value: S3Provider.ALIYUN },
   // { label: '腾讯COS', value: S3Provider.TENCENT },
   { label: 'Other', value: S3Provider.OTHER },

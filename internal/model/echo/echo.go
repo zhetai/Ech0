@@ -37,7 +37,7 @@ type Image struct {
 	ID          uint   `gorm:"primaryKey"       json:"id"`
 	MessageID   uint   `gorm:"index;not null"   json:"message_id"`           // 关联的Echo ID(注意⚠️: 该字段名为MessageID, 但实际关联的是Echo表,因为为了兼容旧版Echo用户)
 	ImageURL    string `gorm:"type:text"        json:"image_url"`            // 图片URL
-	ImageSource string `gorm:"type:varchar(20)" json:"image_source"`         // 图片来源: local/url/s3/r2
+	ImageSource string `gorm:"type:varchar(20)" json:"image_source"`         // 图片来源: local/url/s3
 	ObjectKey   string `gorm:"type:text"        json:"object_key,omitempty"` // 对象存储的Key (如果是本地存储则为空)
 	Width       int    `gorm:"default:0"        json:"width,omitempty"`      // 图片宽度
 	Height      int    `gorm:"default:0"        json:"height,omitempty"`     // 图片高度
@@ -66,5 +66,4 @@ const (
 	ImageSourceLocal = "local" // 本地图片
 	ImageSourceURL   = "url"   // 直链图片
 	ImageSourceS3    = "s3"    // S3 图片
-	ImageSourceR2    = "r2"    // R2 图片
 )

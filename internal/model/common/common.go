@@ -57,8 +57,6 @@ const (
 	LOCAL_FILE FileStorageType = "local"
 	// S3_FILE   S3 存储类型
 	S3_FILE FileStorageType = "s3"
-	// R2_FILE   R2 存储类型
-	R2_FILE FileStorageType = "r2"
 )
 
 const (
@@ -76,6 +74,7 @@ const (
 	AWS     S3Provider = "aws"
 	ALIYUN  S3Provider = "aliyun"
 	TENCENT S3Provider = "tencent"
+	R2      S3Provider = "r2"
 	MINIO   S3Provider = "minio"
 	OTHER   S3Provider = "other"
 )
