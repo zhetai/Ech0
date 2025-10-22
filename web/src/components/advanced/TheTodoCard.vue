@@ -33,7 +33,7 @@
       </div>
       <!-- 具体内容 -->
       <div v-if="!loading && props.todo">
-        <p class="text-gray-500 text-sm whitespace-pre-wrap">
+        <p class="text-stone-500 text-sm whitespace-pre-wrap">
           {{ props.todo.content }}
         </p>
       </div>

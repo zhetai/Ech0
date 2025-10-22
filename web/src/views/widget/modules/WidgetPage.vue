@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 pb-4 py-2 mx-auto flex flex-col w-sm md:w-sm mt-4 mb-12">
-    <h1 class="text-4xl md:text-6xl italic font-bold font-serif text-center text-gray-300 mb-8">
+    <h1 class="text-4xl md:text-6xl italic font-bold font-serif text-center text-stone-300 mb-8">
       Ech0 Widget
     </h1>
 

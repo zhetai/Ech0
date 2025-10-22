@@ -1,16 +1,16 @@
 <template>
   <div class="flex justify-center items-center h-screen">
     <div class="h-1/2 max-w-sm sm:max-w-md md:max-w-lg">
-      <h1 class="text-6xl italic font-bold text-center text-gray-300 mb-4">Ech0</h1>
+      <h1 class="text-6xl italic font-bold text-center text-stone-300 mb-4 font-serif">Ech0</h1>
       <!-- 登录  -->
       <div v-if="AuthMode === 'login'">
         <!-- 模式切换 -->
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-gray-400 mb-3">登录</h2>
+          <h2 class="text-lg font-bold text-stone-400 mb-3">登录</h2>
           <div class="mb-3">
             <button
               @click="AuthMode = 'register'"
-              class="text-gray-500 hover:text-gray-700 transition duration-200"
+              class="text-stone-500 hover:text-stone-700 transition duration-200"
             >
               <div class="flex flex-row gap-0 items-center">
                 注册
@@ -55,7 +55,7 @@
             />
             <!-- 账号密码登录 -->
             <BaseButton @click="handleLogin" class="w-12 h-9 rounded-md">
-              <span class="text-gray-500">登录</span>
+              <span class="text-stone-500">登录</span>
             </BaseButton>
           </div>
         </div>
@@ -63,11 +63,11 @@
       <!-- 注册 -->
       <div v-else-if="AuthMode === 'register'">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-gray-400 mb-3">注册</h2>
+          <h2 class="text-lg font-bold text-stone-400 mb-3">注册</h2>
           <div class="mb-3">
             <button
               @click="AuthMode = 'login'"
-              class="text-gray-500 hover:text-gray-700 transition duration-200"
+              class="text-stone-500 hover:text-stone-700 transition duration-200"
             >
               <div class="flex flex-row gap-0 items-center">
                 登录
@@ -96,7 +96,7 @@
             class="rounded-md w-9 h-9"
           />
           <BaseButton @click="handleRegister" class="rounded-md">
-            <span class="text-gray-500">注册</span>
+            <span class="text-stone-500">注册</span>
           </BaseButton>
         </div>
       </div>

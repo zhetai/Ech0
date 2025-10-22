@@ -1,9 +1,9 @@
 <template>
   <div
-    class="border border-stone-300 p-4 mx-auto flex flex-col max-w-screen-lg rounded-md mt-4 mb-12 shadow-xs"
+    class="border border-stone-300 p-4 mx-auto flex flex-col max-w-screen-lg rounded-md mt-2 sm:mt-4 mb-12"
   >
     <h1
-      class="text-4xl md:text-6xl italic font-bold font-serif text-center text-gray-300 mb-8 md:mb-12"
+      class="text-4xl md:text-6xl italic font-bold font-serif text-center text-stone-300 mb-8 md:mb-12"
     >
       Ech0 Panel
     </h1>

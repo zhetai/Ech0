@@ -1,6 +1,15 @@
 <template>
   <div class="w-full px-2">
-    <div>
+    <!-- 加载状态 -->
+    <div v-if="!connected" class="flex items-center justify-center h-96">
+      <div class="flex flex-col items-center gap-4">
+        <div class="loader"></div>
+        <p class="text-stone-500">正在建立连接...</p>
+      </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div v-else>
       <div class="md:flex items-center gap-2">
         <!-- CPU -->
         <MetricCard title="CPU 使用率" class="md:w-1/2 mb-2 md:mb-0">
@@ -73,6 +82,8 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { useUserStore } from '@/stores/user'
 import { getWsUrl } from '@/service/request/shared'
 
+const connected = ref<boolean>(false)
+
 const userStore = useUserStore()
 
 // 注册按需组件
@@ -141,6 +152,10 @@ onMounted(() => {
     if (payload.code === 1 && payload.data) {
       metrics.value = payload.data
       updateCharts() // 更新图表
+      // 首次收到数据后显示内容
+      if (!connected.value) {
+        connected.value = true
+      }
     }
   })
 })
@@ -275,4 +290,25 @@ function updateCharts() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+/* 加载圆圈动画 */
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #f5d2ae;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
