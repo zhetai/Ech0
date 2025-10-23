@@ -221,8 +221,8 @@ const getBottomButtonClasses = () => {
 // 路由选项
 const routeOptions = [
   { label: '仪表盘', value: '/panel/dashboard' },
-  { label: '设置', value: '/panel/setting' },
-  { label: '个人中心', value: '/panel/user' },
+  { label: '系统', value: '/panel/setting' },
+  { label: '成员', value: '/panel/user' },
   { label: '存储', value: '/panel/storage' },
   { label: '单点登录', value: '/panel/sso' },
   { label: '功能扩展', value: '/panel/extension' },
