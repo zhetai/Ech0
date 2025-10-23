@@ -26,7 +26,7 @@
       </div>
 
       <!-- 右侧图标组 -->
-      <div class="flex justify-end items-center gap-1.5">
+      <div class="flex justify-end items-center gap-1">
         <!-- RSS -->
         <div>
           <a href="/rss" title="RSS">
