@@ -1,14 +1,17 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-    <path
-      fill="#888888"
-      d="M12 12q0-2.275 1.613-3.887T17.5 6.5t3.888 1.613T23 12zm-5.5 5.5q-2.275 0-3.887-1.612T1 12h11q0 2.275-1.612 3.888T6.5 17.5M12 12q-2.275 0-3.887-1.612T6.5 6.5t1.613-3.887T12 1zm0 11V12q2.275 0 3.888 1.613T17.5 17.5t-1.612 3.888T12 23"
-    />
+    <!-- Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE -->
+    <g fill="none" stroke="#888888" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+      <path
+        d="M17 17v4h1a2 2 0 1 0 0-4zm0-6h1.5a1.5 1.5 0 0 0 0-3H17v5M3 5a2 2 0 1 0 4 0a2 2 0 1 0-4 0"
+      />
+      <path d="M5 7v3a1 1 0 0 0 1 1h3v7a1 1 0 0 0 1 1h3m-4-8h4" />
+    </g>
   </svg>
 </template>
 
 <script lang="ts">
 export default {
-  name: 'TheOthers',
+  name: 'TablerAutomaticGearbox',
 }
 </script>

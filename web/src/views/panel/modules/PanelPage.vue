@@ -61,7 +61,7 @@
           />
         </BaseButton>
 
-        <div class="h-px bg-gray-300 mx-2" />
+        <div class="h-px bg-stone-300 mx-2" />
 
         <!-- 仪表盘 -->
         <BaseButton
@@ -73,34 +73,34 @@
           仪表盘
         </BaseButton>
 
-        <!-- 设置 -->
+        <!-- 偏好设置 -->
         <BaseButton
           :icon="Setting"
           @click="router.push('/panel/setting')"
           :class="getButtonClasses('panel-setting')"
-          title="系统"
+          title="偏好设置"
         >
-          系统
+          偏好设置
         </BaseButton>
 
-        <!-- 个人中心 -->
+        <!-- 用户中心 -->
         <BaseButton
           :icon="User"
           @click="router.push('/panel/user')"
           :class="getButtonClasses('panel-user')"
-          title="成员"
+          title="用户中心"
         >
-          成员
+          用户中心
         </BaseButton>
 
-        <!-- 存储 -->
+        <!-- 数据管理 -->
         <BaseButton
           :icon="Storage"
           @click="router.push('/panel/storage')"
           :class="getButtonClasses('panel-storage')"
-          title="存储"
+          title="数据管理"
         >
-          存储
+          数据管理
         </BaseButton>
 
         <!-- 单点登录 -->
@@ -123,7 +123,7 @@
           功能扩展
         </BaseButton>
 
-        <!-- 高级 -->
+        <!-- 外部集成 -->
         <BaseButton
           :icon="Others"
           @click="router.push('/panel/advance')"
@@ -133,7 +133,7 @@
           外部集成
         </BaseButton>
 
-        <div class="h-px bg-gray-300 mx-2" />
+        <div class="h-px bg-stone-300 mx-2" />
 
         <!-- 退出登录 -->
         <BaseButton
@@ -221,9 +221,9 @@ const getBottomButtonClasses = () => {
 // 路由选项
 const routeOptions = [
   { label: '仪表盘', value: '/panel/dashboard' },
-  { label: '系统', value: '/panel/setting' },
-  { label: '成员', value: '/panel/user' },
-  { label: '存储', value: '/panel/storage' },
+  { label: '偏好设置', value: '/panel/setting' },
+  { label: '用户中心', value: '/panel/user' },
+  { label: '数据管理', value: '/panel/storage' },
   { label: '单点登录', value: '/panel/sso' },
   { label: '功能扩展', value: '/panel/extension' },
   { label: '外部集成', value: '/panel/advance' },
