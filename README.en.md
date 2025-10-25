@@ -331,10 +331,12 @@ Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
 
 Thank you to all the friends who have supported this project! Your contributions keep it thriving 💡✨
 
-
 | ⚙️ User | 🔋 Date | 💬 Message |
 | :------: | :----------: | :------ |
-| 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | N/A |
+| 🧑‍💻 Anonymous Friend | 2025-5-19 | Silly programmer, buy yourself some sweet drink |
+| 🧑‍💻 [@sseaan](https://github.com/sseaan) | 2025-7-27 | Ech0 is a great thing🥳 |
+| 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | None |
+| 🧑‍💻 Rain🌧️ | 2025-10-23 | Thanks for fixing R2 |
 
 ---
 
