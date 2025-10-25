@@ -72,15 +72,15 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-	// 如果 Authorization 头部信息格式不正确，或者 token 格式不正确，则返回错误
-	if len(parts) != 2 || parts[0] != "Bearer" {
-		ctx.JSON(http.StatusUnauthorized, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
-			Msg: commonModel.TOKEN_NOT_VALID,
-			Err: nil,
-		})))
-		ctx.Abort()
-		return
-	}
+		// 如果 Authorization 头部信息格式不正确，或者 token 格式不正确，则返回错误
+		if len(parts) != 2 || parts[0] != "Bearer" {
+			ctx.JSON(http.StatusUnauthorized, commonModel.Fail[any](errUtil.HandleError(&commonModel.ServerError{
+				Msg: commonModel.TOKEN_NOT_VALID,
+				Err: nil,
+			})))
+			ctx.Abort()
+			return
+		}
 
 		// 解析 token
 		mc, err := jwtUtil.ParseToken(parts[1])
