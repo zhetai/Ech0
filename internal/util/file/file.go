@@ -516,7 +516,7 @@ func ValidateAndSanitizePath(baseDir, userInput, prefix string) (string, error) 
 	filename := filepath.Base(userInput)
 
 	// 检查文件名是否包含非法字符
-	if filename == "." || filename == ".." || strings.Contains(filename, "..") {
+	if filename == "." || filename == ".." {
 		return "", fmt.Errorf("非法的文件名: %s", filename)
 	}
 
