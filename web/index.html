@@ -10,7 +10,10 @@
 
     <!-- OpenGraph Meta Tags -->
     <meta property="og:title" content="Ech0" />
-    <meta property="og:description" content="Ech0 is an open-source platform for quickly sharing thoughts, text, and links with full data control." />
+    <meta
+      property="og:description"
+      content="Ech0 is an open-source platform for quickly sharing thoughts, text, and links with full data control."
+    />
     <meta property="og:image" content="/Ech0.png" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Ech0" />
@@ -38,7 +41,7 @@
     />
     <meta
       name="keywords"
-      content="Ech0, open-source, sharing, thoughts, text, links, privacy, data control, platform, web app"
+      content="Ech0, open-source, fediverse, sharing, thoughts, text, links, privacy, data control, platform, web app"
     />
     <meta name="author" content="Ech0 Team" />
 
@@ -46,33 +49,43 @@
 
     <link rel="stylesheet" href="/src/assets/main.css" />
 
-    <link rel="stylesheet" href="/others/styles/APlayer.min.css">
+    <link rel="stylesheet" href="/others/styles/APlayer.min.css" />
     <script src="/others/scripts/APlayer.min.js"></script>
     <!-- require MetingJS -->
     <script src="/others/scripts/Meting.min.js"></script>
 
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Ech0",
-      "url": "https://github.com/lin-snow/Ech0",
-      "description": "A next-generation open-source, self-hosted, lightweight federated publishing platform focused on personal idea sharing.",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Ech0 Team"
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Ech0",
+        "url": "https://github.com/lin-snow/Ech0",
+        "description": "A next-generation open-source, self-hosted, lightweight federated publishing platform focused on personal idea sharing.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Ech0 Team"
+        },
+        "sameAs": ["https://github.com/lin-snow/Ech0"]
       }
-    }
     </script>
 
+    <!-- Canonical -->
+    <link rel="canonical" href="https://lin-snow.github.io/Ech0/" />
+
+    <!-- Noscript fallback -->
+    <noscript>
+      <p>Ech0 是面向个人的新一代开源、自托管、专注思想流动的轻量级联邦发布平台。</p>
+    </noscript>
   </head>
+
   <body>
     <div id="app">
       <div id="app-loader">
-      <div class="loader"></div>
-      <p>🧙 加载中...</p>
-    </div>
+        <div class="loader"></div>
+        <p>🧙 加载中...</p>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
+    <noscript> </noscript>
   </body>
 </html>
