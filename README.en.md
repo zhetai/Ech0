@@ -50,6 +50,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
     - [Start Backend \& Frontend](#start-backend--frontend)
   - [Acknowledgements](#acknowledgements)
   - [Star History](#star-history)
+  - [Thanks for Your Support!](#thanks-for-your-support)
   - [Support](#support)
 </details>
 
@@ -323,6 +324,17 @@ Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
  </picture>
 </a>
+
+---
+
+## Thanks for Your Support!
+
+Thank you to all the friends who have supported this project! Your contributions keep it thriving 💡✨
+
+
+| ⚙️ User | 🔋 Date | 💬 Message |
+| :------: | :----------: | :------ |
+| 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | N/A |
 
 ---
 
