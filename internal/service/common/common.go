@@ -26,6 +26,7 @@ import (
 	echoRepository "github.com/lin-snow/ech0/internal/repository/echo"
 	keyvalueRepository "github.com/lin-snow/ech0/internal/repository/keyvalue"
 	"github.com/lin-snow/ech0/internal/transaction"
+	fileUtil "github.com/lin-snow/ech0/internal/util/file"
 	httpUtil "github.com/lin-snow/ech0/internal/util/http"
 	jsonUtil "github.com/lin-snow/ech0/internal/util/json"
 	mdUtil "github.com/lin-snow/ech0/internal/util/md"
@@ -36,6 +37,7 @@ type CommonService struct {
 	txManager          transaction.TransactionManager
 	commonRepository   repository.CommonRepositoryInterface
 	objStorage         storageUtil.ObjectStorage
+	objStorageMu       sync.RWMutex // 保护 objStorage 的并发访问
 	echoRepository     echoRepository.EchoRepositoryInterface
 	keyvalueRepository keyvalueRepository.KeyValueRepositoryInterface
 	eventBus           event.IEventBus
@@ -119,11 +121,11 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source, object
 
 	switch source {
 	case echoModel.ImageSourceLocal:
-		// 获取图片名字（去除前面的/images/)
-		imageName := url[len("/images/"):]
-
-		// 构造图片路径
-		imagePath := fmt.Sprintf("data/images/%s", imageName)
+		// 使用安全的路径验证和清理，防止路径遍历攻击
+		imagePath, err := fileUtil.ValidateAndSanitizePath("data/images", url, "/images/")
+		if err != nil {
+			return fmt.Errorf("路径验证失败: %w", err)
+		}
 
 		// 删除图片
 		return storageUtil.DeleteFileFromLocal(imagePath)
@@ -145,11 +147,11 @@ func (commonService *CommonService) DeleteImage(userid uint, url, source, object
 		return commonService.objStorage.DeleteObject(context.Background(), object_key)
 	default:
 		// 未知图片来源按本地图片处理
-		// 获取图片名字（去除前面的/images/)
-		imageName := url[len("/images/"):]
-
-		// 构造图片路径
-		imagePath := fmt.Sprintf("data/images/%s", imageName)
+		// 使用安全的路径验证和清理，防止路径遍历攻击
+		imagePath, err := fileUtil.ValidateAndSanitizePath("data/images", url, "/images/")
+		if err != nil {
+			return fmt.Errorf("路径验证失败: %w", err)
+		}
 
 		// 删除图片
 		return storageUtil.DeleteFileFromLocal(imagePath)
@@ -166,11 +168,11 @@ func (commonService *CommonService) DirectDeleteImage(url, source, object_key st
 
 	switch source {
 	case echoModel.ImageSourceLocal:
-		// 获取图片名字（去除前面的/images/)
-		imageName := url[len("/images/"):]
-
-		// 构造图片路径
-		imagePath := fmt.Sprintf("data/images/%s", imageName)
+		// 使用安全的路径验证和清理，防止路径遍历攻击
+		imagePath, err := fileUtil.ValidateAndSanitizePath("data/images", url, "/images/")
+		if err != nil {
+			return fmt.Errorf("路径验证失败: %w", err)
+		}
 
 		// 删除图片
 		return storageUtil.DeleteFileFromLocal(imagePath)
@@ -190,11 +192,11 @@ func (commonService *CommonService) DirectDeleteImage(url, source, object_key st
 		return cli.DeleteObject(context.Background(), object_key)
 	default:
 		// 未知图片来源按本地图片处理
-		// 获取图片名字（去除前面的/images/)
-		imageName := url[len("/images/"):]
-
-		// 构造图片路径
-		imagePath := fmt.Sprintf("data/images/%s", imageName)
+		// 使用安全的路径验证和清理，防止路径遍历攻击
+		imagePath, err := fileUtil.ValidateAndSanitizePath("data/images", url, "/images/")
+		if err != nil {
+			return fmt.Errorf("路径验证失败: %w", err)
+		}
 
 		// 删除图片
 		return storageUtil.DeleteFileFromLocal(imagePath)
@@ -448,6 +450,12 @@ func (commonService *CommonService) PlayMusic(ctx *gin.Context) {
 	// 获取音乐文件的路径
 	musicPath := config.Config.Upload.AudioPath + musicName
 
+	// 检查文件是否存在
+	if _, err := os.Stat(musicPath); os.IsNotExist(err) {
+		ctx.String(http.StatusNotFound, "音乐文件不存在")
+		return
+	}
+
 	// 获取 Content-Type
 	contentType := "audio/mpeg"
 	lowerName := strings.ToLower(musicName)
@@ -456,22 +464,19 @@ func (commonService *CommonService) PlayMusic(ctx *gin.Context) {
 		contentType = "audio/flac"
 	case strings.HasSuffix(lowerName, ".wav"):
 		contentType = "audio/wav"
-	}
-
-	// 读取文件内容
-	data, err := os.ReadFile(musicPath)
-	if err != nil {
-		ctx.String(500, "读取音乐文件失败")
-		return
+	case strings.HasSuffix(lowerName, ".m4a"):
+		contentType = "audio/mp4"
 	}
 
 	// 设置响应头
+	ctx.Header("Content-Type", contentType)
 	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	ctx.Header("Pragma", "no-cache")
 	ctx.Header("Expires", "0")
 
-	// 直接写文件内容，Gin 会自动关闭连接，不会长时间占用文件
-	ctx.Data(http.StatusOK, contentType, data)
+	// 使用流式传输，避免将整个文件加载到内存
+	// http.ServeFile 会自动处理 Range 请求，支持断点续传
+	http.ServeFile(ctx.Writer, ctx.Request, musicPath)
 }
 
 // GetS3PresignURL 获取 S3 预签名 URL
@@ -585,8 +590,26 @@ func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, se
 	}
 	s3setting.Endpoint = httpUtil.TrimURL(s3setting.Endpoint)
 
+	// 使用读锁检查客户端是否已存在
+	commonService.objStorageMu.RLock()
+	if commonService.objStorage != nil {
+		client := commonService.objStorage
+		commonService.objStorageMu.RUnlock()
+		return client, s3setting, nil
+	}
+	commonService.objStorageMu.RUnlock()
+
+	// 使用写锁初始化 S3 客户端
+	commonService.objStorageMu.Lock()
+	defer commonService.objStorageMu.Unlock()
+
+	// 双重检查：其他 goroutine 可能已经初始化了客户端
+	if commonService.objStorage != nil {
+		return commonService.objStorage, s3setting, nil
+	}
+
 	// 初始化 S3 客户端
-	commonService.objStorage, err = storageUtil.NewMinioStorage(
+	client, err := storageUtil.NewMinioStorage(
 		s3setting.Endpoint,
 		s3setting.AccessKey,
 		s3setting.SecretKey,
@@ -599,6 +622,7 @@ func (commonService *CommonService) GetS3Client() (storageUtil.ObjectStorage, se
 		return nil, s3setting, errors.New(commonModel.S3_CONFIG_ERROR)
 	}
 
+	commonService.objStorage = client
 	return commonService.objStorage, s3setting, nil
 }
 
