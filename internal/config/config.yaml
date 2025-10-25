@@ -28,6 +28,8 @@ upload:
     - "image/avif"
     - "audio/mpeg"
     - "audio/flac"
+    - "audio/wav"
+    - "audio/mp4"
 
 setting:
   sitetitle: "Ech0"
