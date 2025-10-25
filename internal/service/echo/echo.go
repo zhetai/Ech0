@@ -99,10 +99,10 @@ func (echoService *EchoService) PostEcho(userid uint, newEcho *model.Echo) error
 		for i := range newEcho.Images {
 			// 只有S3图片且有ObjectKey的才处理
 			if newEcho.Images[i].ImageSource == model.ImageSourceS3 && newEcho.Images[i].ObjectKey != "" {
-				// 直接删除临时文件记录 (开启事务)
-				echoService.txManager.Run(func(ctx context.Context) error {
-					return echoService.commonRepository.DeleteTempFileByObjectKey(ctx, newEcho.Images[i].ObjectKey)
-				})
+				// 使用外层事务的 ctx 直接调用仓储层方法
+				if err := echoService.commonRepository.DeleteTempFileByObjectKey(ctx, newEcho.Images[i].ObjectKey); err != nil {
+					return err
+				}
 			}
 		}
 
