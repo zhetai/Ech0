@@ -496,3 +496,52 @@ func GetImageURL(image echoModel.Image, serverURL string) string {
 		return fmt.Sprintf("%s/api/%s", serverURL, httpUtil.TrimURL(image.ImageURL))
 	}
 }
+
+// ValidateAndSanitizePath 验证并清理文件路径，防止路径遍历攻击
+// baseDir: 允许的基础目录（如 "data/images"）
+// userInput: 用户提供的路径部分（如 "/images/xxx.png"）
+// prefix: 需要去除的前缀（如 "/images/"）
+// 返回: 安全的完整路径和错误
+func ValidateAndSanitizePath(baseDir, userInput, prefix string) (string, error) {
+	if userInput == "" {
+		return "", fmt.Errorf("路径不能为空")
+	}
+
+	// 去除指定前缀
+	if prefix != "" && strings.HasPrefix(userInput, prefix) {
+		userInput = strings.TrimPrefix(userInput, prefix)
+	}
+
+	// 只提取文件名，禁止任何目录遍历
+	filename := filepath.Base(userInput)
+
+	// 检查文件名是否包含非法字符
+	if filename == "." || filename == ".." {
+		return "", fmt.Errorf("非法的文件名: %s", filename)
+	}
+
+	// 构造完整路径
+	fullPath := filepath.Join(baseDir, filename)
+
+	// 清理路径
+	cleanPath := filepath.Clean(fullPath)
+
+	// 获取基础目录的绝对路径
+	absBaseDir, err := filepath.Abs(baseDir)
+	if err != nil {
+		return "", fmt.Errorf("无法获取基础目录的绝对路径: %w", err)
+	}
+
+	// 获取清理后路径的绝对路径
+	absCleanPath, err := filepath.Abs(cleanPath)
+	if err != nil {
+		return "", fmt.Errorf("无法获取文件路径的绝对路径: %w", err)
+	}
+
+	// 验证清理后的路径必须在基础目录内
+	if !strings.HasPrefix(absCleanPath, absBaseDir) {
+		return "", fmt.Errorf("路径遍历攻击检测: 路径必须在 %s 目录内", baseDir)
+	}
+
+	return cleanPath, nil
+}
