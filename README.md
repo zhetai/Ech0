@@ -33,6 +33,7 @@ Ech0 是一款专为个人用户设计的新一代开源自托管平台，低成
 - [Ech0](#ech0)
   - [产品亮点](#产品亮点)
   - [极速部署](#极速部署)
+    - [🧙 脚本一键部署（推荐,请确保网络可以访问GitHub Release）](#-脚本一键部署推荐请确保网络可以访问github-release)
     - [🐳 Docker 部署（推荐）](#-docker-部署推荐)
     - [🐋 Docker Compose](#-docker-compose)
     - [☸️ Kubernetes (Helm)](#️-kubernetes-helm)
@@ -96,9 +97,9 @@ Ech0 是一款专为个人用户设计的新一代开源自托管平台，低成
 
 ## 极速部署
 
-### 🧙 脚本一键部署（推荐）
+### 🧙 脚本一键部署（推荐,请确保网络可以访问GitHub Release）
 ```shell
-curl -fsSL "http://echo.soopy.cn/install.sh" -o install_ech0.sh && bash install_ech0.sh
+curl -fsSL "https://sh.soopy.cn/ech0.sh" -o ech0.sh && bash ech0.sh
 ```
 
 ### 🐳 Docker 部署（推荐）

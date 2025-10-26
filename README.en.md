@@ -31,6 +31,7 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 - [Ech0](#ech0)
   - [Highlights](#highlights)
   - [Quick Deployment](#quick-deployment)
+    - [🧙 One-Click Script Deployment (Recommended, make sure your network can access GitHub Release)](#-one-click-script-deployment-recommended-make-sure-your-network-can-access-github-release)
     - [🐳 Docker (Recommended)](#-docker-recommended)
     - [🐋 Docker Compose](#-docker-compose)
     - [☸️ Kubernetes (Helm)](#️-kubernetes-helm)
@@ -94,6 +95,11 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 ---
 
 ## Quick Deployment
+
+### 🧙 One-Click Script Deployment (Recommended, make sure your network can access GitHub Release)
+```shell
+curl -fsSL "https://sh.soopy.cn/ech0.sh" -o ech0.sh && bash ech0.sh
+```
 
 ### 🐳 Docker (Recommended)
 
