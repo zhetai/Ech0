@@ -31,7 +31,6 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 - [Ech0](#ech0)
   - [Highlights](#highlights)
   - [Quick Deployment](#quick-deployment)
-    - [🧙 One-Click Script Deployment (Recommended, make sure your network can access GitHub Release)](#-one-click-script-deployment-recommended-make-sure-your-network-can-access-github-release)
     - [🐳 Docker (Recommended)](#-docker-recommended)
     - [🐋 Docker Compose](#-docker-compose)
     - [☸️ Kubernetes (Helm)](#️-kubernetes-helm)
@@ -95,11 +94,11 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
 ---
 
 ## Quick Deployment
-
+<!-- 
 ### 🧙 One-Click Script Deployment (Recommended, make sure your network can access GitHub Release)
 ```shell
 curl -fsSL "https://sh.soopy.cn/ech0.sh" -o ech0.sh && bash ech0.sh
-```
+``` -->
 
 ### 🐳 Docker (Recommended)
 
@@ -316,12 +315,12 @@ Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
 
 Thank you to all the friends who have supported this project! Your contributions keep it thriving 💡✨
 
-| ⚙️ User | 🔋 Date | 💬 Message |
-| :------: | :----------: | :------ |
-| 🧑‍💻 Anonymous Friend | 2025-5-19 | Silly programmer, buy yourself some sweet drink |
-| 🧑‍💻 [@sseaan](https://github.com/sseaan) | 2025-7-27 | Ech0 is a great thing🥳 |
-| 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | None |
-| 🧑‍💻 [@continue33](https://github.com/continue33) | 2025-10-23 | Thanks for fixing R2 |
+|                        ⚙️ User                        |   🔋 Date   | 💬 Message                                       |
+| :--------------------------------------------------: | :--------: | :---------------------------------------------- |
+|                  🧑‍💻 Anonymous Friend                  | 2025-5-19  | Silly programmer, buy yourself some sweet drink |
+|        🧑‍💻 [@sseaan](https://github.com/sseaan)        | 2025-7-27  | Ech0 is a great thing🥳                          |
+| 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | None                                            |
+|    🧑‍💻 [@continue33](https://github.com/continue33)    | 2025-10-23 | Thanks for fixing R2                            |
 
 ---
 
@@ -353,8 +352,8 @@ Thank you to all the friends who have supported this project! Your contributions
 🌟 If you like **Ech0**, please give it a Star! 🚀  
 Ech0 is completely free and open-source. Support helps the project continue improving.  
 
-| Platform | QR Code |
-| :------: | :------ |
+|                  Platform                  | QR Code                                                |
+| :----------------------------------------: | :----------------------------------------------------- |
 | [**Afdian**](https://afdian.com/a/l1nsn0w) | <img src="./docs/imgs/pay.jpeg" alt="Pay" width="200"> |
 
 ---
