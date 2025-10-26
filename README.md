@@ -49,9 +49,9 @@ Ech0 是一款专为个人用户设计的新一代开源自托管平台，低成
     - [后端环境要求](#后端环境要求)
     - [前端环境要求](#前端环境要求)
     - [启动前后端联调](#启动前后端联调)
-  - [致谢](#致谢)
-  - [Star 增长曲线](#star-增长曲线)
   - [感谢充电支持！](#感谢充电支持)
+  - [Star 增长曲线](#star-增长曲线)
+  - [致谢](#致谢)
   - [支持项目](#支持项目)
 
 </details>
@@ -357,14 +357,21 @@ pnpm dev # 启动前端预览
 
 ---
 
-## 致谢
+## 感谢充电支持！
 
-- 感谢 [Gin](https://github.com/gin-gonic/gin) 提供高性能的后端框架支持
-- 感谢 [Md-Editor-V3](https://github.com/imzbf/md-editor-v3) 提供强大易用的 Markdown 编辑器
-- 感谢 [Figma](https://www.figma.com/) 提供便捷的 Logo 设计工具
-- 感谢 [VSCode](https://code.visualstudio.com/) 和 [Jetbrain GoLand](https://www.jetbrains.com/) 提供强大易用的开发工具
-- 感谢异家人群友提供的各种改进建议和问题反馈
-- 感谢所有开源社区的贡献者与支持者
+感谢所有为项目充电的朋友！你们的支持让项目持续发光发热 💡✨
+
+
+| ⚙️ 用户 | 🔋 充电日期 | 💬 留言 |
+| :------: | :----------: | :------ |
+| 🧑‍💻 匿名小伙伴 | 2025-5-19 | 笨比程序员买杯糖水喝吧 |
+| 🧑‍💻 [@sseaan](https://github.com/sseaan) | 2025-7-27 | Ech0是个好东西🥳 |
+| 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | 无 |
+| 🧑‍💻 [@continue33](https://github.com/continue33) | 2025-10-23 | 感谢修复R2 |
+
+
+---
+
 
 ---
 
@@ -380,18 +387,14 @@ pnpm dev # 启动前端预览
 
 ---
 
-## 感谢充电支持！
+## 致谢
 
-感谢所有为项目充电的朋友！你们的支持让项目持续发光发热 💡✨
+- 感谢广大用户提供的各种改进建议和问题反馈
+- 感谢所有开源社区的贡献者与支持者
 
+[![Contributors](https://contrib.rocks/image?repo=lin-snow/Ech0)](https://contrib.rocks/image?repo=lin-snow/Ech0)
 
-| ⚙️ 用户 | 🔋 充电日期 | 💬 留言 |
-| :------: | :----------: | :------ |
-| 🧑‍💻 匿名小伙伴 | 2025-5-19 | 笨比程序员买杯糖水喝吧 |
-| 🧑‍💻 [@sseaan](https://github.com/sseaan) | 2025-7-27 | Ech0是个好东西🥳 |
-| 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | 无 |
-| 🧑‍💻 [@continue33](https://github.com/continue33) | 2025-10-23 | 感谢修复R2 |
-
+![Alt](https://repobeats.axiom.co/api/embed/d69b9177e4a121e31aaed95354ff862c928ca22d.svg "Repobeats analytics image")
 
 ---
 
@@ -408,6 +411,7 @@ Ech0 完全开源且免费，持续维护和优化离不开大家的支持。如
 | [**爱发电**](https://afdian.com/a/l1nsn0w) | <img src="./docs/imgs/pay.jpeg" alt="Pay" width="200"> |
 
 ---
+
 
 ```cpp
 

@@ -48,9 +48,9 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
     - [Backend Requirements](#backend-requirements)
     - [Frontend Requirements](#frontend-requirements)
     - [Start Backend \& Frontend](#start-backend--frontend)
-  - [Acknowledgements](#acknowledgements)
-  - [Star History](#star-history)
   - [Thanks for Your Support!](#thanks-for-your-support)
+  - [Star History](#star-history)
+  - [Acknowledgements](#acknowledgements)
   - [Support](#support)
 </details>
 
@@ -303,27 +303,6 @@ Preview: Backend `http://localhost:6277`, Frontend `http://localhost:5173`
 
 > When importing layered packages, prefer consistent aliases such as `xxxModel`, `xxxService`, `xxxRepository`, and so on.
 
----
-
-## Acknowledgements
-
-- [Gin](https://github.com/gin-gonic/gin)  
-- [Md-Editor-V3](https://github.com/imzbf/md-editor-v3)  
-- [Figma](https://www.figma.com/)  
-- [VSCode](https://code.visualstudio.com/) & [GoLand](https://www.jetbrains.com/go/)  
-- Open-source community contributors
-
----
-
-## Star History
-
-<a href="https://www.star-history.com/#lin-snow/Ech0&Timeline">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
- </picture>
-</a>
 
 ---
 
@@ -337,6 +316,29 @@ Thank you to all the friends who have supported this project! Your contributions
 | 🧑‍💻 [@sseaan](https://github.com/sseaan) | 2025-7-27 | Ech0 is a great thing🥳 |
 | 🧑‍💻 [@QYG2297248353](https://github.com/QYG2297248353) | 2025-10-10 | None |
 | 🧑‍💻 [@continue33](https://github.com/continue33) | 2025-10-23 | Thanks for fixing R2 |
+
+---
+
+## Star History
+
+<a href="https://www.star-history.com/#lin-snow/Ech0&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=lin-snow/Ech0&type=Timeline" />
+ </picture>
+</a>
+
+
+---
+
+## Acknowledgements
+
+- Thanks to all users for their valuable suggestions and feedback.
+- Thanks to all contributors and supporters from the open-source community.
+
+
+![Alt](https://repobeats.axiom.co/api/embed/d69b9177e4a121e31aaed95354ff862c928ca22d.svg "Repobeats analytics image")
 
 ---
 
