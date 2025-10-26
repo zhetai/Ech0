@@ -16,6 +16,7 @@ func UploadFile(
 	file *multipart.FileHeader,
 	fileType commonModel.UploadFileType,
 	storageType commonModel.FileStorageType,
+	userID uint,
 ) (string, error) {
 	if file == nil {
 		return "", errors.New(commonModel.NO_FILE_UPLOAD_ERROR)
@@ -23,7 +24,7 @@ func UploadFile(
 
 	switch storageType {
 	case commonModel.LOCAL_FILE:
-		return UploadFileToLocal(file, fileType)
+		return UploadFileToLocal(file, fileType, userID)
 	case commonModel.S3_FILE:
 		// TODO: Implement S3 file upload
 	default:

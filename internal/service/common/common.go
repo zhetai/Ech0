@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"mime"
@@ -84,7 +86,7 @@ func (commonService *CommonService) UploadImage(userId uint, file *multipart.Fil
 	}
 
 	// 调用存储函数存储图片
-	imageUrl, err := storageUtil.UploadFile(file, commonModel.ImageType, commonModel.LOCAL_FILE)
+	imageUrl, err := storageUtil.UploadFile(file, commonModel.ImageType, commonModel.LOCAL_FILE, user.ID)
 	if err != nil {
 		return "", err
 	}
@@ -393,7 +395,7 @@ func (commonService *CommonService) UploadMusic(userId uint, file *multipart.Fil
 	}
 
 	// 调用存储函数存储图片
-	audioUrl, err := storageUtil.UploadFile(file, commonModel.AudioType, commonModel.LOCAL_FILE)
+	audioUrl, err := storageUtil.UploadFile(file, commonModel.AudioType, commonModel.LOCAL_FILE, user.ID)
 	if err != nil {
 		return "", err
 	}
@@ -538,10 +540,14 @@ func (commonService *CommonService) GetS3PresignURL(
 	}
 
 	// 生成 Object Key (包含 PathPrefix)
-	prefix := strings.Trim(s3setting.PathPrefix, "/")
-	safeName := strings.ReplaceAll(s3Dto.FileName, " ", "_")
-	objectKey := fmt.Sprintf("%s/%d_%s", prefix, time.Now().Unix(), safeName)
-	objectKey = strings.TrimPrefix(objectKey, "/")
+	// prefix := strings.Trim(s3setting.PathPrefix, "/")
+	// safeName := strings.ReplaceAll(s3Dto.FileName, " ", "_")
+	// objectKey := fmt.Sprintf("%s/%d_%s", prefix, time.Now().Unix(), safeName)
+	// objectKey = strings.TrimPrefix(objectKey, "/")
+	objectKey, err := buildObjectKey(userid, s3Dto.FileName, s3setting.PathPrefix)
+	if err != nil {
+		return result, err
+	}
 	result.ObjectKey = objectKey
 
 	// 生成预签名 URL (有效期24小时)
@@ -735,4 +741,19 @@ func (commonService *CommonService) RefreshEchoImageURL(echo *echoModel.Echo) {
 	_ = commonService.txManager.Run(func(ctx context.Context) error {
 		return commonService.echoRepository.UpdateEcho(ctx, echo)
 	})
+}
+
+// buildObjectKey 构建对象存储的对象键
+func buildObjectKey(userID uint, fileName, prefix string) (string, error) {
+	prefix = strings.Trim(prefix, "/")
+	ext := filepath.Ext(fileName)
+	timestamp := time.Now().Unix()
+	randBytes := make([]byte, 3)
+	if _, err := rand.Read(randBytes); err != nil {
+		return "", err
+	}
+	randomStr := hex.EncodeToString(randBytes)
+
+	objectKey := fmt.Sprintf("%s/%d_%d_%s%s", prefix, userID, timestamp, randomStr, ext)
+	return strings.TrimPrefix(objectKey, "/"), nil
 }

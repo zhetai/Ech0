@@ -1,31 +1,32 @@
 package util
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/google/uuid"
+	"time"
 
 	"github.com/lin-snow/ech0/internal/config"
 	commonModel "github.com/lin-snow/ech0/internal/model/common"
 )
 
 // UploadFileToLocal 根据文件类型上传文件到本地存储
-func UploadFileToLocal(file *multipart.FileHeader, fileType commonModel.UploadFileType) (string, error) {
+func UploadFileToLocal(file *multipart.FileHeader, fileType commonModel.UploadFileType, userID uint) (string, error) {
 	// 根据文件类型选择上传方式
 	switch fileType {
 	case commonModel.ImageType:
 		// 上传图片到本地
-		return UploadImageToLocal(file)
+		return UploadImageToLocal(file, userID)
 	case commonModel.AudioType:
 		// 上传音频到本地
-		return UploadAudioToLocal(file)
+		return UploadAudioToLocal(file, userID)
 	default:
 		// 不支持的文件类型
 		return "", errors.New(commonModel.FILE_TYPE_NOT_ALLOWED)
@@ -33,7 +34,7 @@ func UploadFileToLocal(file *multipart.FileHeader, fileType commonModel.UploadFi
 }
 
 // UploadImageToLocal 将图片上传到本地存储
-func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
+func UploadImageToLocal(file *multipart.FileHeader, userID uint) (string, error) {
 	// 创建图片存储目录
 	if err := createDirIfNotExist(config.Config.Upload.ImagePath); err != nil {
 		return "", err
@@ -41,10 +42,13 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 
 	// 获取原始文件名和扩展名
 	ext := filepath.Ext(file.Filename)
-	baseName := strings.TrimSuffix(file.Filename, ext)
+	// baseName := strings.TrimSuffix(file.Filename, ext)
 
-	// 使用 UUID 和原始文件名生成新的文件名
-	newFileName := fmt.Sprintf("%s_%s%s", baseName, uuid.New().String(), ext)
+	// 生成新的文件名,格式为[userID]_[timestamp]_[random].[ext]
+	newFileName, err := GenerateRandomFilename(userID, ext)
+	if err != nil {
+		return "", err
+	}
 	// 保存文件到指定目录
 	savePath := filepath.Join(config.Config.Upload.ImagePath, newFileName)
 	src, err := file.Open()
@@ -82,7 +86,7 @@ func UploadImageToLocal(file *multipart.FileHeader) (string, error) {
 }
 
 // UploadAudioToLocal 将音频上传到本地存储
-func UploadAudioToLocal(file *multipart.FileHeader) (string, error) {
+func UploadAudioToLocal(file *multipart.FileHeader, userID uint) (string, error) {
 	// 创建音频存储目录
 	if err := createDirIfNotExist(config.Config.Upload.AudioPath); err != nil {
 		return "", err
@@ -137,4 +141,21 @@ func DeleteFileFromLocal(filePath string) error {
 		return err
 	}
 	return nil
+}
+
+func GenerateRandomFilename(userID uint, ext string) (string, error) {
+	timestamp := time.Now().Unix()
+	bytes := make([]byte, 3)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	randomStr := hex.EncodeToString(bytes)
+
+	// 确保扩展名前带点
+	if !strings.HasPrefix(ext, ".") {
+		ext = "." + ext
+	}
+
+	newFileName := fmt.Sprintf("%d_%d_%s%s", userID, timestamp, randomStr, ext)
+	return newFileName, nil
 }
