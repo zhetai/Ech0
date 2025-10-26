@@ -149,11 +149,22 @@ extract_package() {
     handle_error 1 "解压失败"
   fi
 
-  if [ ! -d "$package_dir" ]; then
-    handle_error 1 "未找到解压目录: $package_dir"
+  local binary_path
+  binary_path=$(find "$TMP_DIR" -mindepth 1 -maxdepth 5 -type f \
+    \( -name "ech0" -o -name "ech0-linux-${ARCH}" \) -print -quit)
+  if [ -z "$binary_path" ]; then
+    handle_error 1 "未找到 Ech0 二进制文件"
   fi
 
+  package_dir=$(dirname "$binary_path")
+
   cp -a "$package_dir"/. "$install_path"/ || handle_error 1 "复制文件失败"
+
+  local arch_binary="$install_path/ech0-linux-${ARCH}"
+  if [ -f "$arch_binary" ]; then
+    mv "$arch_binary" "$install_path/ech0" || handle_error 1 "重命名二进制失败"
+  fi
+
   chmod +x "$install_path/ech0" || handle_error 1 "设置执行权限失败"
 }
 
@@ -245,10 +256,15 @@ update_ech0() {
     handle_error 1 "解压失败"
   fi
 
-  local package_dir="$TMP_DIR/ech0-linux-${ARCH}"
-  if [ ! -d "$package_dir" ]; then
-    handle_error 1 "未找到解压目录: $package_dir"
+  local binary_path
+  binary_path=$(find "$TMP_DIR" -mindepth 1 -maxdepth 5 -type f \
+    \( -name "ech0" -o -name "ech0-linux-${ARCH}" \) -print -quit)
+  if [ -z "$binary_path" ]; then
+    handle_error 1 "未找到 Ech0 二进制文件"
   fi
+
+  local package_dir
+  package_dir=$(dirname "$binary_path")
 
   systemctl stop "$SERVICE_NAME" >/dev/null 2>&1 || true
 
@@ -256,6 +272,7 @@ update_ech0() {
     cp "$target_path/ech0" "$target_path/ech0.bak" || true
   fi
 
+  shopt -s dotglob nullglob
   for item in "$package_dir"/*; do
     local name
     name=$(basename "$item")
@@ -265,6 +282,12 @@ update_ech0() {
     rm -rf "$target_path/$name"
     cp -a "$item" "$target_path/" || handle_error 1 "更新 $name 失败"
   done
+  shopt -u dotglob nullglob
+
+  local arch_binary="$target_path/ech0-linux-${ARCH}"
+  if [ -f "$arch_binary" ]; then
+    mv "$arch_binary" "$target_path/ech0" || handle_error 1 "重命名二进制失败"
+  fi
 
   chmod +x "$target_path/ech0" || handle_error 1 "设置执行权限失败"
   rm -f "$target_path/ech0.bak"
@@ -353,12 +376,11 @@ show_menu() {
   echo "4) 查看服务状态"
   echo "5) 查看当前信息 (ech0 info)"
   echo "6) 启动服务"
-  echo "7) 启动 TUI (ech0 tui)"
-  echo "8) 停止服务"
-  echo "9) 重启服务"
+  echo "7) 停止服务"
+  echo "8) 重启服务"
   echo "0) 退出脚本"
   echo
-  read -r -p "请选择 [0-9]: " choice
+  read -r -p "请选择 [0-8]: " choice
 
   case "$choice" in
     1)
@@ -381,12 +403,9 @@ show_menu() {
       start_service
       ;;
     7)
-      run_cli_command tui
-      ;;
-    8)
       stop_service
       ;;
-    9)
+    8)
       restart_service
       ;;
     0)
@@ -416,7 +435,7 @@ main() {
       run_cli_command info
       ;;
     start)
-      start_service
+      run_cli_command tui
       ;;
     tui)
       run_cli_command tui
