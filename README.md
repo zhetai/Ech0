@@ -96,10 +96,10 @@ Ech0 是一款专为个人用户设计的新一代开源自托管平台，低成
 
 ## 极速部署
 
-<!-- ### 🧙 脚本一键部署（推荐）
+### 🧙 脚本一键部署（推荐）
 ```shell
 curl -fsSL "http://echo.soopy.cn/install.sh" -o install_ech0.sh && bash install_ech0.sh
-``` -->
+```
 
 ### 🐳 Docker 部署（推荐）
 

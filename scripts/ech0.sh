@@ -11,7 +11,7 @@ INSTALL_PATH_DEFAULT="/opt/ech0"
 TMP_DIR="/tmp/ech0-install"
 DOWNLOAD_FILE="/tmp/ech0.tar.gz"
 MANAGER_PATH="/usr/local/sbin/ech0-manager"
-COMMAND_LINK="/usr/local/bin/ech0ctl"
+COMMAND_LINK="/usr/local/bin/ech0"
 
 ARCH=""
 LATEST_TAG=""
