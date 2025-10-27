@@ -71,7 +71,7 @@ func setupRouterGroup(r *gin.Engine) *AppRouterGroup {
 	resource := r.Group("/")
 	public := r.Group("/api")
 	auth := r.Group("/api")
-	auth.Use(middleware.JWTAuthMiddleware(), middleware.NoCache())
+	auth.Use(middleware.NoCache(), middleware.JWTAuthMiddleware())
 	ws := r.Group("/ws")
 	return &AppRouterGroup{
 		ResourceGroup:     resource,
