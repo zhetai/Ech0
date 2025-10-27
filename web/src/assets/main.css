@@ -28,8 +28,8 @@ body {
 }
 
 ::selection {
-  color: #fff;
-  background: #000000;
+  color: #fffcf0;
+  background: #393022;
 }
 
 /* App 加载启动动画 */
