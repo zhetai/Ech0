@@ -38,9 +38,6 @@ Ech0 is a new-generation open-source self-hosted platform designed for individua
     - [🔄 Docker](#-docker)
     - [💎 Docker Compose](#-docker-compose-1)
     - [☸️ Kubernetes (Helm)](#️-kubernetes-helm-1)
-  - [Access Modes](#access-modes)
-    - [🖥️ TUI Mode](#️-tui-mode)
-    - [🔐 SSH Mode](#-ssh-mode)
   - [FAQ](#faq)
   - [Feedback \& Community](#feedback--community)
   - [Architecture](#architecture)
@@ -197,7 +194,7 @@ docker image prune -f
     helm upgrade my-ech0 ./charts/ech0 --namespace my-namespace
     ```
 
----
+<!-- ---
 
 ## Access Modes
 
@@ -213,7 +210,7 @@ Connect to the instance via port 6278:
 
 ```shell
 ssh -p 6278 ssh.vaaat.com
-```
+``` -->
 
 ---
 
