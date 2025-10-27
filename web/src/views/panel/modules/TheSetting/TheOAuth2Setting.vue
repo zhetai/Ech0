@@ -18,13 +18,13 @@
 
         <!-- 开启OAuth2 -->
         <div class="flex flex-row items-center justify-start text-stone-500 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">启用OAuth2:</h2>
+          <h2 class="font-semibold w-30 shrink-0">启用OAuth2:</h2>
           <BaseSwitch v-model="OAuth2Setting.enable" :disabled="!oauth2EditMode" />
         </div>
 
         <!-- OAuth2 Provider -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">OAuth2 模板:</h2>
+          <h2 class="font-semibold w-30 shrink-0">OAuth2 模板:</h2>
           <BaseSelect
             v-model="OAuth2Setting.provider"
             :options="OAuth2ProviderOptions"
@@ -35,7 +35,7 @@
 
         <!-- Client ID -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">Client ID:</h2>
+          <h2 class="font-semibold w-30 shrink-0">Client ID:</h2>
           <span
             v-if="!oauth2EditMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -49,13 +49,13 @@
             v-model="OAuth2Setting.client_id"
             type="text"
             placeholder="请输入Client ID"
-            class="w-full !py-1"
+            class="w-full py-1!"
           />
         </div>
 
         <!-- Client Secret -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">Client Secret:</h2>
+          <h2 class="font-semibold w-30 shrink-0">Client Secret:</h2>
           <span
             v-if="!oauth2EditMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -69,13 +69,13 @@
             v-model="OAuth2Setting.client_secret"
             type="text"
             placeholder="请输入Client Secret"
-            class="w-full !py-1"
+            class="w-full py-1!"
           />
         </div>
 
         <!-- Callback URL -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">Callback URL:</h2>
+          <h2 class="font-semibold w-30 shrink-0">Callback URL:</h2>
           <span
             v-if="!oauth2EditMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -89,13 +89,13 @@
             v-model="redirect_uri"
             type="text"
             placeholder="请输入回调地址"
-            class="w-full !py-1"
+            class="w-full py-1!"
           />
         </div>
 
         <!-- Auth URL -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">Auth URL:</h2>
+          <h2 class="font-semibold w-30 shrink-0">Auth URL:</h2>
           <span
             v-if="!oauth2EditMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -109,13 +109,13 @@
             v-model="OAuth2Setting.auth_url"
             type="text"
             placeholder="请输入授权地址"
-            class="w-full !py-1"
+            class="w-full py-1!"
           />
         </div>
 
         <!-- Token URL -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">Token URL:</h2>
+          <h2 class="font-semibold w-30 shrink-0">Token URL:</h2>
           <span
             v-if="!oauth2EditMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -129,13 +129,13 @@
             v-model="OAuth2Setting.token_url"
             type="text"
             placeholder="请输入Token地址"
-            class="w-full !py-1"
+            class="w-full py-1!"
           />
         </div>
 
         <!-- User Info URL -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">UserInfo URL:</h2>
+          <h2 class="font-semibold w-30 shrink-0">UserInfo URL:</h2>
           <span
             v-if="!oauth2EditMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -149,13 +149,13 @@
             v-model="OAuth2Setting.user_info_url"
             type="text"
             placeholder="请输入用户信息地址"
-            class="w-full !py-1"
+            class="w-full py-1!"
           />
         </div>
 
         <!-- Scopes -->
         <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-          <h2 class="font-semibold w-30 flex-shrink-0">Scopes:</h2>
+          <h2 class="font-semibold w-30 shrink-0">Scopes:</h2>
           <span
             v-if="!oauth2EditMode"
             class="truncate max-w-40 inline-block align-middle"
@@ -169,7 +169,7 @@
             v-model="scopeString"
             type="text"
             placeholder="请输入Scopes，多个用逗号分隔"
-            class="w-full !py-1"
+            class="w-full py-1!"
             @blur="OAuth2Setting.scopes = scopeString.split(',').map((s) => s.trim())"
           />
         </div>
@@ -193,7 +193,13 @@
           >
             <p class="text-stone-500 font-bold flex items-center">
               <component
-                :is="oauthInfo.provider === 'github' ? Github : Google"
+                :is="
+                  oauthInfo.provider === 'github'
+                    ? Github
+                    : oauthInfo.provider === 'google'
+                      ? Google
+                      : Custom
+                "
                 class="w-5 h-5 mr-2"
               />
               <span>{{
@@ -206,7 +212,11 @@
               账号已绑定
             </p>
           </div>
-          <BaseButton v-else class="rounded-md mt-2" @click="handleBindOAuth2()">
+          <BaseButton
+            v-else
+            class="rounded-md mt-2 bg-stone-50! bg-op-80"
+            @click="handleBindOAuth2()"
+          >
             <div class="flex items-center justify-between">
               <component
                 :is="

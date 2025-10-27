@@ -16,7 +16,7 @@
       </div>
       <!-- 站点标题 -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">站点标题:</h2>
+        <h2 class="font-semibold w-26 shrink-0">站点标题:</h2>
         <span v-if="!editMode">{{
           SystemSetting?.site_title.length === 0 ? '暂无' : SystemSetting.site_title
         }}</span>
@@ -25,12 +25,12 @@
           v-model="SystemSetting.site_title"
           type="text"
           placeholder="请输入站点标题"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
       <!-- 服务名称 -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">服务名称:</h2>
+        <h2 class="font-semibold w-26 shrink-0">服务名称:</h2>
         <span v-if="!editMode">{{
           SystemSetting?.server_name.length === 0 ? '暂无' : SystemSetting.server_name
         }}</span>
@@ -39,12 +39,12 @@
           v-model="SystemSetting.server_name"
           type="text"
           placeholder="请输入服务名称"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
       <!-- 服务地址 -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">服务地址:</h2>
+        <h2 class="font-semibold w-26 shrink-0">服务地址:</h2>
         <span v-if="!editMode">{{
           SystemSetting?.server_name.length === 0 ? '暂无' : SystemSetting.server_url
         }}</span>
@@ -53,12 +53,12 @@
           v-model="SystemSetting.server_url"
           type="text"
           placeholder="请输入服务地址,带http(s)"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
       <!-- ICP备案号 -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">ICP备案:</h2>
+        <h2 class="font-semibold w-26 shrink-0">ICP备案:</h2>
         <span
           v-if="!editMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -72,12 +72,12 @@
           v-model="SystemSetting.ICP_number"
           type="text"
           placeholder="请输入ICP备案号"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
       <!-- Meting API -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">MetingAPI:</h2>
+        <h2 class="font-semibold w-26 shrink-0">MetingAPI:</h2>
         <span
           v-if="!editMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -91,12 +91,12 @@
           v-model="SystemSetting.meting_api"
           type="text"
           placeholder="Meting API地址,带http(s)"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
       <!-- 自定义 CSS -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">自定义 CSS:</h2>
+        <h2 class="font-semibold w-26 shrink-0">自定义 CSS:</h2>
         <span
           v-if="!editMode"
           class="truncate max-w-full inline-block align-middle"
@@ -109,12 +109,12 @@
           v-model="SystemSetting.custom_css"
           type="text"
           placeholder="请输入自定义 CSS"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
       <!-- 自定义 Script -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">自定义 JS:</h2>
+        <h2 class="font-semibold w-26 shrink-0">自定义 JS:</h2>
         <span
           v-if="!editMode"
           class="truncate max-w-full inline-block align-middle"
@@ -127,12 +127,12 @@
           v-model="SystemSetting.custom_js"
           type="text"
           placeholder="请输入自定义 Script"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
       <!-- 允许注册 -->
       <div class="flex flex-row items-center justify-start text-stone-500 h-10">
-        <h2 class="font-semibold w-26 flex-shrink-0">允许注册:</h2>
+        <h2 class="font-semibold w-26 shrink-0">允许注册:</h2>
         <BaseSwitch v-model="SystemSetting.allow_register" :disabled="!editMode" />
       </div>
     </div>

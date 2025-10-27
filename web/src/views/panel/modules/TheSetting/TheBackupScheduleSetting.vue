@@ -17,13 +17,13 @@
 
       <!-- 开启自动备份 -->
       <div class="flex flex-row items-center justify-start text-stone-500 h-10">
-        <h2 class="font-semibold w-30 flex-shrink-0">启用自动备份:</h2>
+        <h2 class="font-semibold w-30 shrink-0">启用自动备份:</h2>
         <BaseSwitch v-model="BackupSchedule.enable" :disabled="!scheduleEditMode" />
       </div>
 
       <!-- 备份计划表达式 -->
       <div class="flex flex-row items-center justify-start text-stone-500 gap-2 h-10">
-        <h2 class="font-semibold w-38 flex-shrink-0">备份计划Crontab:</h2>
+        <h2 class="font-semibold w-38 shrink-0">备份计划Crontab:</h2>
         <span
           v-if="!scheduleEditMode"
           class="truncate max-w-40 inline-block align-middle"
@@ -39,7 +39,7 @@
           v-model="BackupSchedule.cron_expression"
           type="text"
           placeholder="备份计划Crontab表达式"
-          class="w-full !py-1"
+          class="w-full py-1!"
         />
       </div>
     </div>

@@ -44,7 +44,9 @@
                 <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">
                   Connect 地址
                 </th>
-                <th class="px-3 py-2 text-right text-sm font-semibold text-stone-600">操作</th>
+                <th class="px-3 min-w-18 py-2 text-right text-sm font-semibold text-stone-600">
+                  操作
+                </th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 text-nowrap">

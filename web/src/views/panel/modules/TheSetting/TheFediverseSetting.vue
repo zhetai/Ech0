@@ -17,7 +17,7 @@
 
       <!-- 启用联邦宇宙 -->
       <div class="flex flex-row items-center justify-start text-stone-500 h-10">
-        <h2 class="font-semibold flex-shrink-0 mr-1">启用主动推送:</h2>
+        <h2 class="font-semibold shrink-0 mr-1">启用主动推送:</h2>
         <BaseSwitch v-model="FediverseSetting.enable" :disabled="!fediverseEditMode" />
       </div>
     </div>

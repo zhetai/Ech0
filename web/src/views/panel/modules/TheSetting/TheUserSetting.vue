@@ -55,7 +55,7 @@
           v-model="userInfo.username"
           type="text"
           placeholder="请输入用户名"
-          class="w-36 !py-1"
+          class="w-36 py-1!"
         />
       </div>
 
@@ -68,7 +68,7 @@
           v-model="userInfo.password"
           type="password"
           placeholder="请输入密码"
-          class="w-36 !py-1"
+          class="w-36 py-1!"
           autocomplete="off"
         />
       </div>

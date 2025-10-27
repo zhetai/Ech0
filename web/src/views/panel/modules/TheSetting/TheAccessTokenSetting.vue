@@ -21,11 +21,17 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead>
             <tr class="bg-stone-50 opacity-70">
-              <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">Token</th>
-              <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">名称</th>
+              <th class="px-3 min-w-24 py-2 text-left text-sm font-semibold text-stone-600">
+                Token
+              </th>
+              <th class="px-3 min-w-18 py-2 text-left text-sm font-semibold text-stone-600">
+                名称
+              </th>
               <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">创建时间</th>
               <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">过期时间</th>
-              <th class="px-3 py-2 text-right text-sm font-semibold text-stone-600">操作</th>
+              <th class="px-3 min-w-18 py-2 text-right text-sm font-semibold text-stone-600">
+                操作
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 text-nowrap">
@@ -62,17 +68,17 @@
     <div v-else class="text-stone-500">
       <!-- 添加 AccessToken -->
 
-      <div>
+      <div class="flex flex-col gap-2 mb-2">
         <span>Token 名称：</span>
         <BaseInput class="w-full" v-model="accessTokenToAdd.name" placeholder="Token 名称" />
       </div>
 
-      <div>
-        <span>过期时间</span>
+      <div class="flex flex-col gap-2">
+        <span>过期时间：</span>
         <BaseSelect
           v-model="accessTokenToAdd.expiry"
           :options="ExpirationOptions"
-          class="w-34 h-8"
+          class="w-34 h-8 bg-stone-100! bg-op-80 mt-2 mb-4"
         />
       </div>
 
@@ -80,7 +86,7 @@
         <BaseButton
           :disabled="isSubmitting"
           @click="handleCancelAddAccessToken"
-          class="w-1/3 h-8 rounded-md flex justify-center mr-2"
+          class="w-1/4 h-8 rounded-md flex justify-center mr-2 bg-stone-100! bg-op-80"
           title="取消添加"
         >
           <span>取消</span>
@@ -89,7 +95,7 @@
         <BaseButton
           :loading="isSubmitting"
           @click="handleAddAccessToken"
-          class="w-1/3 h-8 rounded-md flex justify-center"
+          class="w-1/4 h-8 rounded-md flex justify-center bg-stone-100! bg-op-80"
           title="添加 Access Token"
         >
           <span class="text-gray-600">添加</span>

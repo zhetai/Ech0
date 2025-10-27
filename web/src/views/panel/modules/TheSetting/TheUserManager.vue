@@ -3,10 +3,10 @@
     <div class="flex flex-row items-center justify-between mb-3">
       <h1 class="text-gray-600 font-bold text-lg">用户管理</h1>
       <div class="flex flex-row items-center justify-end gap-2 w-14">
-        <button @click="userEditMode = !userEditMode" title="编辑">
+        <!-- <button @click="userEditMode = !userEditMode" title="编辑">
           <Edit v-if="!userEditMode" class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
           <Close v-else class="w-5 h-5 text-gray-400 hover:w-6 hover:h-6" />
-        </button>
+        </button> -->
       </div>
     </div>
 
@@ -23,28 +23,27 @@
           <thead>
             <tr class="bg-stone-50 opacity-70">
               <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">#</th>
-              <th class="px-3 py-2 text-left text-sm font-semibold text-stone-600">用户名</th>
+              <th class="px-3 min-w-18 py-2 text-left text-sm font-semibold text-stone-600">
+                用户名
+              </th>
               <th class="px-3 py-2 text-center text-sm font-semibold text-stone-600">权限更改</th>
-              <th class="px-3 py-2 text-right text-sm font-semibold text-stone-600">操作</th>
+              <th class="px-3 min-w-18 py-2 text-right text-sm font-semibold text-stone-600">
+                操作
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 text-nowrap">
-            <tr v-for="(user, index) in allusers" :key="user.id" class="hover:bg-stone-50">
+            <tr v-for="(user, index) in allusers" :key="user.id" class="">
               <td class="px-3 py-2 text-sm text-stone-700">{{ index + 1 }}</td>
               <td class="px-3 py-2 text-sm text-stone-700 font-semibold">
                 {{ user.username }}
               </td>
               <td class="px-3 py-2 text-center">
-                <BaseSwitch
-                  v-model="user.is_admin"
-                  :disabled="!userEditMode"
-                  @click="handleUpdateUserPermission(user.id)"
-                />
+                <BaseSwitch v-model="user.is_admin" @click="handleUpdateUserPermission(user.id)" />
               </td>
               <td class="px-3 py-2 text-right">
                 <button
                   class="p-1 hover:bg-gray-100 rounded"
-                  :disabled="!userEditMode"
                   @click="handleDeleteUser(user.id)"
                   title="删除用户"
                 >
@@ -61,8 +60,8 @@
 
 <script setup lang="ts">
 import PanelCard from '@/layout/PanelCard.vue'
-import Edit from '@/components/icons/edit.vue'
-import Close from '@/components/icons/close.vue'
+// import Edit from '@/components/icons/edit.vue'
+// import Close from '@/components/icons/close.vue'
 import { ref, onMounted } from 'vue'
 import BaseSwitch from '@/components/common/BaseSwitch.vue'
 import Deluser from '@/components/icons/deluser.vue'
@@ -75,7 +74,7 @@ const loading = ref<boolean>(true)
 import { fetchGetAllUsers, fetchUpdateUserPermission, fetchDeleteUser } from '@/service/api'
 
 const allusers = ref<App.Api.User.User[]>([])
-const userEditMode = ref<boolean>(false)
+// const userEditMode = ref<boolean>(false)
 
 const handleDeleteUser = async (userId: number) => {
   openConfirm({
