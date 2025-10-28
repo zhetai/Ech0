@@ -1,21 +1,18 @@
-<div style="width: 100%; text-align: justify;">
-  <span style="display: inline-block; text-align: left; width: 49%; vertical-align: middle;">
-    <a href="https://hellogithub.com/repository/lin-snow/Ech0" target="_blank">
-      <img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=8f3cafdd6ef3445dbb1c0ed6dd34c8b5&claim_uid=swhbQfnJvKS0t7I&theme=neutral"
-           alt="Featured｜HelloGitHub"
-           width="250"
-           height="54"
-           style="vertical-align: middle;" />
-    </a>
-  </span>
+<p align="left">
+  <a href="https://hellogithub.com/repository/lin-snow/Ech0" target="_blank">
+    <img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=8f3cafdd6ef3445dbb1c0ed6dd34c8b5&claim_uid=swhbQfnJvKS0t7I&theme=neutral"
+         alt="Featured｜HelloGitHub"
+         width="250"
+         height="54" />
+  </a>
+</p>
 
-  <span style="display: inline-block; text-align: right; width: 49%; vertical-align: middle;">
-    <a title="en" href="./README.en.md">
-      <img src="https://img.shields.io/badge/-English-545759?style=for-the-badge" alt="English" style="vertical-align: middle;">
-    </a>
-    <img src="https://img.shields.io/badge/-简体中文-F54A00?style=for-the-badge" alt="简体中文" style="vertical-align: middle;">
-  </span>
-</div>
+<p align="right">
+  <a title="en" href="./README.en.md">
+    <img src="https://img.shields.io/badge/-English-545759?style=for-the-badge" alt="English">
+  </a>
+  <img src="https://img.shields.io/badge/-简体中文-F54A00?style=for-the-badge" alt="简体中文">
+</p>
 
 
 <div align="center">
