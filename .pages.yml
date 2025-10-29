@@ -1,0 +1,7 @@
+application: ech0
+build:
+  commands:
+    - npm run build
+  publish: dist
+environment:
+  NODE_VERSION: "18"
